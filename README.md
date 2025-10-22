@@ -49,7 +49,21 @@ Une plateforme web collaborative de tutorat qui connecte les étudiants à des t
 - Aucun autre framework n’est autorisé (0 sinon)  
 
 ---
+## 🛠 Création de la structure du projet
 
+Pour créer l’arborescence du projet, vous pouvez utiliser les commandes suivantes sous Windows (cmd) :
+
+```bat
+type nul > index.html
+
+mkdir src\assets\images src\assets\icons src\assets\fonts
+mkdir src\css\layouts src\css\components src\css\pages
+mkdir src\js\models src\js\controllers src\js\services src\js\utils src\js\config
+mkdir src\js\views\layouts src\js\views\pages src\js\views\components
+mkdir src\layouts
+mkdir public
+mkdir docs
+```
 ## 📂 Structure du Projet
 
 ```text
