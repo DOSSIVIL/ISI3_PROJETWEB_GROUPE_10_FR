@@ -54,15 +54,25 @@ Une plateforme web collaborative de tutorat qui connecte les étudiants à des t
 Pour créer l’arborescence du projet, vous pouvez utiliser les commandes suivantes sous Windows (cmd) :
 
 ```bat
-type nul > index.html
+# 1. Création du dossier racine
+mkdir tutoring-platform
 
-mkdir src\assets\images src\assets\icons src\assets\fonts
-mkdir src\css\layouts src\css\components src\css\pages
-mkdir src\js\models src\js\controllers src\js\services src\js\utils src\js\config
-mkdir src\js\views\layouts src\js\views\pages src\js\views\components
-mkdir src\layouts
-mkdir public
-mkdir docs
+# 2. Création des dossiers principaux (src, public, docs)
+mkdir tutoring-platform/src
+mkdir tutoring-platform/public
+mkdir tutoring-platform/docs
+
+# 3. Création des dossiers de niveau src/
+mkdir tutoring-platform/src/css
+mkdir tutoring-platform/src/js
+mkdir tutoring-platform/src/layouts
+mkdir tutoring-platform/src/assets
+
+# 4. Création des sous-dossiers de niveau src/assets/
+mkdir tutoring-platform/src/assets/images
+mkdir tutoring-platform/src/assets/audio
+mkdir tutoring-platform/src/assets/video
+mkdir tutoring-platform/src/assets/fonts
 ```
 ## 📂 Structure du Projet
 
@@ -75,25 +85,15 @@ tutoring-platform/
 │   │
 │   ├── assets/
 │   │   ├── images/
-│   │   ├── icons/
+│   │   ├── audio/
+|   |   ├── Vidéo/
 │   │   └── fonts/
 │   │
 │   ├── css/
-│   │   ├── layouts/           # Styles des layouts
-│   │   ├── components/        # Styles des composants
-│   │   └── pages/             # Styles des pages
-│   │
-│   ├── js/
-│   │   ├── models/            # MODEL - Gestion des données
-│   │   ├── controllers/       # CONTROLLER - Logique métier
-│   │   ├── services/          # Services externes (Firebase, DeepSeek, PeerJS)
-│   │   ├── utils/             # Utilitaires
-│   │   ├── config/            # Configuration
-│   │   │
-│   │   └── views/             # VIEW - Interface utilisateur
-│   │       ├── layouts/       # ← LAYOUTS (header.js, footer.js, main.js)
-│   │       ├── pages/         # Pages complètes
-│   │       └── components/    # Composants réutilisables
+│   │   
+│   ├── js/   
+│   │   
+│   │   
 │   │
 │   └── layouts/               # ← TEMPLATES HTML (header.html, footer.html, main.html)
 │
