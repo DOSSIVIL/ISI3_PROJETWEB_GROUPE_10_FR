@@ -51,16 +51,16 @@ EduConnect Africa  Une plateforme web collaborative de tutorat qui connecte les 
 ---
 ## 🛠 Installation du Projet et ses dependances 
 
-# 1️⃣ Cloner le projet depuis GitHub
-git clone git@github.com:DOSSIVIL/ISI3_PROJETWEB_GROUPE_10_FR.git
+### 1️⃣ Cloner le projet depuis GitHub
+- git clone git@github.com:DOSSIVIL/ISI3_PROJETWEB_GROUPE_10_FR.git
 
-# 2️⃣ Entrer dans le dossier du projet
-cd ISI3_PROJETWEB_GROUPE_10_FR
+### 2️⃣ Entrer dans le dossier du projet
+- cd ISI3_PROJETWEB_GROUPE_10_FR
 
-# 3️⃣ Installer les dépendances du projet (Vite + JS)
-npm install
-# 4️⃣ Installer TailwindCSS, PostCSS et Autoprefixer
-npm install -D tailwindcss postcss autoprefixer
+### 3️⃣ Installer les dépendances du projet (Vite + JS)
+- npm install
+### 4️⃣ Installer TailwindCSS, PostCSS et Autoprefixer
+- npm install -D tailwindcss postcss autoprefixer
 
 
 ---
