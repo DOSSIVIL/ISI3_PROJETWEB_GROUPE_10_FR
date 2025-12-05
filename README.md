@@ -1,5 +1,5 @@
 # ISI3_PROJETWEB_GROUPE_10_FR
-#  Projet : Tutoring Platform
+#  EduConnect Africa : Tutoring Platform
 
 ---
 
@@ -13,7 +13,7 @@ En Afrique, l’accès à une éducation de qualité est souvent limité par plu
 - Fracture numérique et accès limité à Internet  
 
 **Solution proposée :**  
-Une plateforme web collaborative de tutorat qui connecte les étudiants à des tuteurs bénévoles et à des ressources éducatives adaptées au contexte africain.
+EduConnect Africa  Une plateforme web collaborative de tutorat qui connecte les étudiants à des tuteurs bénévoles et à des ressources éducatives adaptées au contexte africain.
 
 ---
 
@@ -46,59 +46,66 @@ Une plateforme web collaborative de tutorat qui connecte les étudiants à des t
 - Technologies utilisées : **Peer.js, DeepSeek API, Firestore (Firebase), Canvas**  
 - Focus sur **l’esthétique et l’ergonomie**  
 - Déploiement obligatoire de l’application web  
-- Aucun autre framework n’est autorisé (0 sinon)  
+ 
 
 ---
-## 🛠 Création de la structure du projet
+## 🛠 Installation du Projet et ses dependances 
 
-Pour créer l’arborescence du projet, vous pouvez utiliser les commandes suivantes sous Windows (cmd) :
+# 1️⃣ Cloner le projet depuis GitHub
+git clone git@github.com:DOSSIVIL/ISI3_PROJETWEB_GROUPE_10_FR.git
 
-```bat
-# 1. Création du dossier racine
-mkdir tutoring-platform
+# 2️⃣ Entrer dans le dossier du projet
+cd ISI3_PROJETWEB_GROUPE_10_FR
 
-# 2. Création des dossiers principaux (src, public, docs)
-mkdir tutoring-platform/src
-mkdir tutoring-platform/public
-mkdir tutoring-platform/docs
+# 3️⃣ Installer les dépendances du projet (Vite + JS)
+npm install
+# 4️⃣ Installer TailwindCSS, PostCSS et Autoprefixer
+npm install -D tailwindcss postcss autoprefixer
 
-# 3. Création des dossiers de niveau src/
-mkdir tutoring-platform/src/css
-mkdir tutoring-platform/src/js
-mkdir tutoring-platform/src/layouts
-mkdir tutoring-platform/src/assets
 
-# 4. Création des sous-dossiers de niveau src/assets/
-mkdir tutoring-platform/src/assets/images
-mkdir tutoring-platform/src/assets/audio
-mkdir tutoring-platform/src/assets/video
-mkdir tutoring-platform/src/assets/fonts
-```
-## 📂 Structure du Projet
+---
+
+## 📂 Structure du Projet Vite en MVC
 
 ```text
-tutoring-platform/
+ISI3_PROJETWEB_GROUPE_10_FR/
 │
-├── index.html                 # ← POINT D'ENTRÉE (appelle header, footer, main)
+├── index.html
+├── package.json
+├── package-lock.json
 │
-├── src/
-│   │
-│   ├── assets/
-│   │   ├── images/
-│   │   ├── audio/
-|   |   ├── Vidéo/
-│   │   └── fonts/
-│   │
-│   ├── css/
-│   │   
-│   ├── js/   
-│   │   
-│   │   
-│   │
-│   └── layouts/               # ← TEMPLATES HTML (header.html, footer.html, main.html)
+├── public/                 
+│   └── images/
 │
-├── public/
-│   ├── manifest.json
-│   └── service-worker.js
-│
-└── docs/
+└── src/
+    │
+    ├── models/             # M = données et logique métier
+    │   
+    │
+    │
+    ├── views/              # V = affichage (HTML/CSS)
+    │   |
+    │   |
+    │   ├── templates/      # fragments HTML
+    │   │   
+    │   │   
+    │   ├── css/
+    │   │   
+    │   └── components/     # vues dynamiques JS
+    │       
+    │
+    ├── controllers/        # C = relie Models ↔ Views
+    │   
+    │   
+    │   
+    │
+    ├── services/           # appels API, stockage local, etc.
+    │   
+    │   
+    │
+    ├── utils/              # helpers, formats, validations, etc.
+    │   
+    │
+    ├── main.js             # point d’entrée de l'application
+    └── app.js              # initialisation globale (router, événements)
+
