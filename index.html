@@ -1,13 +1,30 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./public/Images/Logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png"  sizes="40x40"  href="./Images/Logo.png">
+    
+    <!-- Pour les appareils Apple -->
+    <link rel="apple-touch-icon" href="./Images/Logo.png">
+    
     <title>EduConnect Africa</title>
-  </head>
-  <body>
-    <div id="app"></div>
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+
+    <!-- Le header sera injecté ici -->
+    <div id="header"></div>
+    
+    <!-- Le contenu principal sera injecté ici -->
+    <main id="app"></main>
+    
+    <!-- Le footer sera injecté ici -->
+    <div id="footer"></div>
+    
+    <!-- Vite injectera automatiquement le script -->
     <script type="module" src="/src/main.js"></script>
-  </body>
+</body>
 </html>

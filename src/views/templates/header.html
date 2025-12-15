@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    @keyframes fadeOutScale {
+      0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header 
+  id="main-header"
+  class="fixed top-0 left-0 right-0 bg-white/90 border-gray-200/50 backdrop-blur-lg shadow-xl border-b z-50 transition-all duration-300"
+  aria-label="En-tête de navigation principale"
+>
+  <!-- Gradient Background -->
+  <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-blue-50/10 via-purple-50/5 to-pink-50/10 opacity-40"></div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo and Title -->
+      <a href="#" class="flex items-center space-x-1 flex-shrink-0 min-w-0 md:-ml-16 sm:md:-ml-10" aria-label="Accueil EduConnect Africa">
+        <img src="../../../Images/Logo.png" alt="Logo EduConnect Africa" class="h-12 w-12 md:h-16 md:w-16 sm:md:h-28 sm:md:w-28 drop-shadow-lg" onerror="this.style.display='none'" />
+        
+        <div class="leading-tight">
+          <h1 class="text-sm md:text-xl font-bold whitespace-nowrap">
+            <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+            <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+          </h1>
+        </div>
+      </a>
+
+      <!-- Navigation (Desktop) -->
+      <nav class="hidden lg:flex space-x-2 max-w-3xl flex-1 justify-center" aria-label="Navigation principale">
+  
+        <!-- Home Link -->
+        <a href="#home" 
+           class="group flex items-center px-4 py-2.5 rounded-xl font-medium text-gray-700 transition-all duration-300 relative overflow-hidden">
+          
+          <!-- Animated Background -->
+          <div class="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+          
+          <!-- Content -->
+          <div class="relative flex items-center space-x-2">
+            <!-- Icon -->
+            <svg class="h-5 w-5 text-gray-600 group-hover:text-blue-600 transition-colors duration-300" 
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
+              <path d="M9 22V12h6v10"/>
+            </svg>
+            
+            <!-- Text -->
+            <span class="group-hover:text-blue-700 transition-colors duration-300">Home</span>
+            
+            <!-- Underline Animation -->
+            <div class="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></div>
+          </div>
+        </a>
+      
+        <!-- About Link -->
+        <a href="#about" 
+           class="group flex items-center px-4 py-2.5 rounded-xl font-medium text-gray-700 transition-all duration-300 relative overflow-hidden">
+          
+          <!-- Animated Background -->
+          <div class="absolute inset-0 bg-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+          
+          <!-- Content -->
+          <div class="relative flex items-center space-x-2">
+            <!-- Icon -->
+            <svg class="h-5 w-5 text-gray-600 group-hover:text-emerald-600 transition-colors duration-300" 
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01"/>
+            </svg>
+            
+            <!-- Text -->
+            <span class="group-hover:text-emerald-700 transition-colors duration-300">About Us</span>
+            
+            <!-- Underline Animation -->
+            <div class="absolute -bottom-1 left-0 right-0 h-0.5 bg-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></div>
+          </div>
+        </a>
+      
+      </nav>
+
+      <!-- Right Section -->
+      <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+
+        <!-- 3D Search Box (Desktop) -->
+        <div id="search-container" class="hidden md:flex relative w-40 lg:w-48 xl:w-56 transition-all duration-500">
+          <div class="relative flex items-center w-full search-3d">
+            <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl opacity-0 blur-lg transition-all duration-300" id="search-glow"></div>
+            <div id="search-box" class="relative bg-gradient-to-br from-gray-50 to-gray-100 backdrop-blur-sm rounded-2xl px-4 py-2.5 w-full shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center border border-gray-200">
+              <svg class="h-5 w-5 mr-2 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" placeholder="Rechercher..." aria-label="Recherche sur le site" class="bg-transparent outline-none text-sm flex-1 text-gray-900 placeholder-gray-400" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Language Toggle (Desktop) -->
+        <div class="relative hidden md:block">
+          <button 
+            id="lang-toggle" 
+            aria-label="Changer la langue" 
+            class="flex items-center space-x-2 px-3 py-2 rounded-xl bg-gray-100/80 text-gray-700 hover:bg-gray-200/80 hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/70"
+          >
+            <i class="fas fa-globe h-4 w-4"></i>
+            <span class="text-sm font-medium hidden sm:inline flex items-center gap-1" id="current-lang">
+              <span class="text-base">🇫🇷</span>
+              <span>FR</span>
+            </span>
+            <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          
+          <div 
+            id="lang-menu" 
+            class="hidden absolute right-0 top-12 w-40 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-50 animate-fade-in-up"
+          >
+            <button 
+              class="lang-option w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors flex items-center gap-2" 
+              data-lang="FR"
+            >
+              <span class="text-base">🇫🇷</span>
+              <span>Français</span>
+            </button>
+            
+            <button 
+              class="lang-option w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors flex items-center gap-2" 
+              data-lang="EN"
+            >
+              <span class="text-base">🇬🇧</span>
+              <span>English</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dark Mode Toggle (Desktop) -->
+        <button id="dark-mode-toggle" aria-label="Activer le mode sombre" class="hidden md:flex relative items-center justify-center p-2.5 rounded-xl bg-gray-100/80 text-gray-700 hover:bg-gray-200/80 hover:scale-110 transition-all duration-300 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70">
+          <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M16.95 16.95l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M16.95 7.05l1.42-1.42"/></svg>
+        </button>
+        
+        <!-- Connexion Button (Desktop) -->
+        <button class="hidden sm:flex px-4 py-2 text-sm font-medium rounded-xl bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+          Se connecter
+        </button>
+
+        <!-- Inscription Button with Dropdown (Desktop) -->
+        <div class="relative hidden sm:block -mr-15">
+          <button id="register-toggle" class="px-4 py-2 text-sm font-medium rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white border border-blue-500 hover:from-blue-700 hover:to-blue-800 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-xl">
+            S'inscrire
+          </button>
+          <div id="register-menu" class="hidden absolute right-0 top-12 w-64 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-sm overflow-hidden z-50 animate-fade-in-up">
+            <div class="px-4 py-3 border-b border-slate-700 bg-gradient-to-r from-slate-800 to-slate-700">
+              <p class="text-sm font-medium text-slate-300">Créer un compte</p>
+            </div>
+            <div class="p-2">
+              <button class="w-full flex items-center justify-between px-3 py-3 rounded-lg hover:bg-slate-700/50 transition-all duration-200 hover:scale-[1.02] group">
+                <div class="text-left">
+                  <p class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors">Étudiant</p>
+                  <p class="text-xs text-slate-400">Accéder aux formations</p>
+                </div>
+                <i class="fas fa-user-graduate text-blue-400 text-lg"></i>
+              </button>
+              <button class="w-full flex items-center justify-between px-3 py-3 rounded-lg hover:bg-slate-700/50 transition-all duration-200 mt-1 hover:scale-[1.02] group">
+                <div class="text-left">
+                  <p class="text-sm font-medium text-white group-hover:text-emerald-300 transition-colors">Enseignant</p>
+                  <p class="text-xs text-slate-400">Proposer des cours</p>
+                </div>
+                <i class="fas fa-chalkboard-teacher text-emerald-400 text-lg"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Button (Mobile) -->
+        <div class="relative md:hidden">
+          <button id="settings-toggle-mobile" aria-label="Paramètres" class="p-2.5 text-gray-600 hover:text-gray-800 hover:bg-gray-50/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70 transition-all duration-300 shadow-md">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </button>
+          
+          <div id="settings-menu-mobile" class="hidden absolute right-0 top-12 w-56 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-50 animate-fade-in-up">
+            <button id="lang-toggle-mobile-btn" class="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-all duration-200 group border-b border-gray-100">
+              <div class="flex items-center space-x-3">
+                <i class="fas fa-globe text-gray-600"></i>
+                <span id="current-lang-mobile" class="text-sm font-medium text-gray-700">Français 🇫🇷</span>
+              </div>
+              <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            
+            <div id="lang-submenu-mobile" class="hidden bg-gray-50">
+              <button class="lang-option-mobile w-full px-6 py-2.5 text-left text-sm hover:bg-gray-100 transition-colors flex items-center gap-2" data-lang="FR">
+                <span class="text-base">🇫🇷</span>
+                <span>Français</span>
+              </button>
+              <button class="lang-option-mobile w-full px-6 py-2.5 text-left text-sm hover:bg-gray-100 transition-colors flex items-center gap-2" data-lang="EN">
+                <span class="text-base">🇬🇧</span>
+                <span>English</span>
+              </button>
+            </div>
+            
+            <button id="dark-mode-toggle-mobile" class="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-all duration-200 group">
+              <div class="flex items-center space-x-3">
+                <svg id="moon-icon-mobile" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 0021 12.79z"/></svg>
+                <span id="dark-mode-text-mobile" class="text-sm font-medium text-gray-700">Mode Sombre</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- User Account Button (Mobile) -->
+        <div class="relative md:hidden">
+          <button id="user-toggle-mobile" aria-label="Compte utilisateur" class="p-2.5 text-gray-600 hover:text-gray-800 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/70 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-110">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 hover:rotate-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </button>
+          
+          <div id="user-menu-mobile" class="hidden absolute right-0 top-14 w-64 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-2xl overflow-hidden z-50 transform origin-top-right">
+            <!-- Se connecter -->
+            <button class="w-full flex items-center justify-between px-5 py-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100/50 transition-all duration-300 group border-b border-gray-100">
+              <div class="text-left flex items-center space-x-3">
+                <div class="p-2 rounded-lg bg-blue-100/50 group-hover:bg-blue-200/70 transition-all duration-300 group-hover:scale-110">
+                  <i class="fas fa-sign-in-alt text-blue-600 text-sm"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors duration-300">Se connecter</p>
+                  <p class="text-xs text-gray-500">Accéder à votre compte</p>
+                </div>
+              </div>
+              <svg class="h-4 w-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+            
+            <!-- Section S'inscrire -->
+            <div class="bg-gradient-to-br from-gray-50/50 to-blue-50/30 p-3">
+              <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide px-2 mb-2">S'inscrire</p>
+              
+              <!-- Étudiant -->
+              <button class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 group mb-2">
+                <div class="text-left flex items-center space-x-3">
+                  <div class="p-2 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                    <i class="fas fa-user-graduate text-blue-600 text-base"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors duration-300">Étudiant</p>
+                    <p class="text-xs text-gray-500">Accéder aux formations</p>
+                  </div>
+                </div>
+                <svg class="h-4 w-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
+              
+              <!-- Enseignant -->
+              <button class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 group">
+                <div class="text-left flex items-center space-x-3">
+                  <div class="p-2 rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 group-hover:from-emerald-200 group-hover:to-emerald-300 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                    <i class="fas fa-chalkboard-teacher text-emerald-600 text-base"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors duration-300">Enseignant</p>
+                    <p class="text-xs text-gray-500">Proposer des cours</p>
+                  </div>
+                </div>
+                <svg class="h-4 w-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-toggle" aria-label="Ouvrir le menu mobile" class="md:hidden p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70 transition-all duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+</header>
+
+<!-- Mobile Menu Off-Canvas -->
+<div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+  <div id="mobile-menu-overlay" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+
+  <div id="mobile-menu-content" class="absolute right-0 top-0 h-full w-80 max-w-[90vw] bg-white/95 backdrop-blur-xl shadow-2xl transition-transform duration-500 ease-in-out transform translate-x-full">
+    <div class="flex items-center justify-between p-4 border-b border-gray-200/20">
+      <div class="flex items-center space-x-2">
+        <img src="../../../Images/Logo.png" alt="Logo" class="h-8 w-8" onerror="this.style.display='none'" />
+        <h3 class="text-lg font-bold">
+          <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+          <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+        </h3>
+      </div>
+      <button id="mobile-menu-close" aria-label="Fermer le menu mobile" class="p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/70">
+        <svg class="h-6 w-6 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    
+    <nav class="p-4 space-y-2">
+      <a href="#home" class="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-300">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="#about" class="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-300">
+        <i class="fas fa-info-circle"></i>
+        <span>About Us</span>
+      </a>
+    </nav>
+    
+    <div class="p-4 border-t border-gray-200/20">
+      <div class="relative search-3d">
+        <div class="flex items-center bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl px-4 py-3 shadow-lg border border-gray-200">
+          <svg class="h-5 w-5 mr-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" placeholder="Rechercher..." aria-label="Recherche mobile" class="bg-transparent outline-none text-base flex-1 text-gray-900 placeholder-gray-400" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Dark mode toggle
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
+  const darkModeToggleMobile = document.getElementById('dark-mode-toggle-mobile');
+  const darkModeTextMobile = document.getElementById('dark-mode-text-mobile');
+  const moonIcon = document.getElementById('moon-icon');
+  const sunIcon = document.getElementById('sun-icon');
+  const moonIconMobile = document.getElementById('moon-icon-mobile');
+  let isDarkMode = false;
+
+  function setDarkMode(enabled) {
+    isDarkMode = enabled;
+    if(enabled) {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('bg-slate-900', 'text-gray-300');
+      document.body.classList.remove('bg-white', 'text-gray-700');
+      if(moonIcon) moonIcon.classList.add('hidden');
+      if(sunIcon) sunIcon.classList.remove('hidden');
+      if(moonIconMobile) moonIconMobile.classList.add('hidden');
+      if(darkModeTextMobile) darkModeTextMobile.textContent = 'Mode Clair';
+      if(darkModeToggle) {
+        darkModeToggle.classList.add('bg-slate-800/50', 'text-yellow-400');
+        darkModeToggle.classList.remove('bg-gray-100/80', 'text-gray-700');
+      }
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('bg-slate-900', 'text-gray-300');
+      document.body.classList.add('bg-white', 'text-gray-700');
+      if(moonIcon) moonIcon.classList.remove('hidden');
+      if(sunIcon) sunIcon.classList.add('hidden');
+      if(moonIconMobile) moonIconMobile.classList.remove('hidden');
+      if(darkModeTextMobile) darkModeTextMobile.textContent = 'Mode Sombre';
+      if(darkModeToggle) {
+        darkModeToggle.classList.remove('bg-slate-800/50', 'text-yellow-400');
+        darkModeToggle.classList.add('bg-gray-100/80', 'text-gray-700');
+      }
+    }
+  }
+
+  if(darkModeToggle) {
+    darkModeToggle.addEventListener('click', () => setDarkMode(!isDarkMode));
+  }
+  if(darkModeToggleMobile) {
+    darkModeToggleMobile.addEventListener('click', () => setDarkMode(!isDarkMode));
+  }
+
+  // Language toggle
+  const langToggle = document.getElementById('lang-toggle');
+  const langMenu = document.getElementById('lang-menu');
+  const currentLang = document.getElementById('current-lang');
+  const langOptions = document.querySelectorAll('.lang-option');
+
+  // Fonction pour obtenir le drapeau selon la langue
+  function getFlagForLang(lang) {
+    switch(lang) {
+      case 'FR': return '🇫🇷';
+      case 'EN': return '🇬🇧';
+      default: return '🌐';
+    }
+  }
+
+  // Fonction pour mettre à jour l'affichage de la langue
+  function updateLanguageDisplay(lang) {
+    const flag = getFlagForLang(lang);
+    
+    // Mettre à jour l'affichage avec le drapeau et le code
+    if(currentLang) {
+      currentLang.innerHTML = `
+        <span class="text-base">${flag}</span>
+        <span>${lang}</span>
+      `;
+    }
+    
+    // Sauvegarder la préférence (optionnel)
+    localStorage.setItem('preferredLanguage', lang);
+  }
+
+  // Récupérer la langue sauvegardée au démarrage
+  document.addEventListener('DOMContentLoaded', function() {
+    const savedLang = localStorage.getItem('preferredLanguage');
+    if (savedLang && (savedLang === 'FR' || savedLang === 'EN')) {
+      updateLanguageDisplay(savedLang);
+    }
+  });
+
+  // Ouvrir/fermer le menu (Desktop)
+  if(langToggle) {
+    langToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(langMenu) langMenu.classList.toggle('hidden');
+    });
+  }
+
+  // Changer de langue (Desktop)
+  langOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      const lang = option.getAttribute('data-lang');
+      updateLanguageDisplay(lang);
+      if(langMenu) langMenu.classList.add('hidden');
+    });
+  });
+
+  // Settings menu toggle (Mobile)
+  const settingsToggleMobile = document.getElementById('settings-toggle-mobile');
+  const settingsMenuMobile = document.getElementById('settings-menu-mobile');
+  const langToggleMobileBtn = document.getElementById('lang-toggle-mobile-btn');
+  const langSubmenuMobile = document.getElementById('lang-submenu-mobile');
+  const currentLangMobile = document.getElementById('current-lang-mobile');
+  const langOptionsMobile = document.querySelectorAll('.lang-option-mobile');
+
+  if(settingsToggleMobile) {
+    settingsToggleMobile.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(settingsMenuMobile) settingsMenuMobile.classList.toggle('hidden');
+      if(langSubmenuMobile) langSubmenuMobile.classList.add('hidden');
+    });
+  }
+
+  if(langToggleMobileBtn) {
+    langToggleMobileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(langSubmenuMobile) langSubmenuMobile.classList.toggle('hidden');
+    });
+  }
+
+  langOptionsMobile.forEach(option => {
+    option.addEventListener('click', () => {
+      const lang = option.getAttribute('data-lang');
+      const flag = getFlagForLang(lang);
+      if(currentLangMobile) {
+        currentLangMobile.innerHTML = `${option.textContent}`;
+      }
+      if(langSubmenuMobile) langSubmenuMobile.classList.add('hidden');
+      if(settingsMenuMobile) settingsMenuMobile.classList.add('hidden');
+      
+      // Mettre à jour aussi le bouton desktop
+      updateLanguageDisplay(lang);
+    });
+  });
+
+  // User menu toggle (Mobile)
+  const userToggleMobile = document.getElementById('user-toggle-mobile');
+  const userMenuMobile = document.getElementById('user-menu-mobile');
+
+  if(userToggleMobile) {
+    userToggleMobile.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(userMenuMobile) {
+        const isHidden = userMenuMobile.classList.contains('hidden');
+        
+        if(isHidden) {
+          // Ouvrir avec animation
+          userMenuMobile.classList.remove('hidden');
+          userMenuMobile.style.transformOrigin = 'top right';
+          userMenuMobile.style.animation = 'fadeInScale 0.3s ease-out forwards';
+        } else {
+          // Fermer avec animation
+          userMenuMobile.style.animation = 'fadeOutScale 0.2s ease-in forwards';
+          setTimeout(() => {
+            userMenuMobile.classList.add('hidden');
+          }, 200);
+        }
+      }
+    });
+  }
+
+  // Register menu toggle (Desktop)
+  const registerToggle = document.getElementById('register-toggle');
+  const registerMenu = document.getElementById('register-menu');
+
+  if(registerToggle) {
+    registerToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(registerMenu) registerMenu.classList.toggle('hidden');
+    });
+  }
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', () => {
+    if(langMenu) langMenu.classList.add('hidden');
+    if(registerMenu) registerMenu.classList.add('hidden');
+    if(settingsMenuMobile) settingsMenuMobile.classList.add('hidden');
+    if(userMenuMobile) userMenuMobile.classList.add('hidden');
+  });
+
+  // Fermer avec la touche Échap
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if(langMenu) langMenu.classList.add('hidden');
+      if(registerMenu) registerMenu.classList.add('hidden');
+      if(settingsMenuMobile) settingsMenuMobile.classList.add('hidden');
+      if(userMenuMobile) userMenuMobile.classList.add('hidden');
+    }
+  });
+
+  // Mobile menu toggle
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+  const mobileMenuContent = document.getElementById('mobile-menu-content');
+  const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+  function openMobileMenu() {
+    if(mobileMenu) mobileMenu.classList.remove('hidden');
+    setTimeout(() => {
+      if(mobileMenuContent) {
+        mobileMenuContent.classList.remove('translate-x-full');
+        mobileMenuContent.classList.add('translate-x-0');
+      }
+    }, 10);
+  }
+  
+  function closeMobileMenu() {
+    if(mobileMenuContent) {
+      mobileMenuContent.classList.remove('translate-x-0');
+      mobileMenuContent.classList.add('translate-x-full');
+    }
+    setTimeout(() => {
+      if(mobileMenu) mobileMenu.classList.add('hidden');
+    }, 300);
+  }
+
+  if(mobileMenuToggle) mobileMenuToggle.addEventListener('click', openMobileMenu);
+  if(mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+  if(mobileMenuClose) mobileMenuClose.addEventListener('click', closeMobileMenu);
+
+  // 3D Search effect
+  const searchContainer = document.getElementById('search-container');
+  const searchBox = document.getElementById('search-box');
+  const searchInput = searchBox ? searchBox.querySelector('input[type="search"]') : null;
+  const searchGlow = document.getElementById('search-glow');
+
+  if(searchInput) {
+    searchInput.addEventListener('focus', () => {
+      if(searchContainer) {
+        searchContainer.classList.add('w-64', 'xl:w-72');
+        searchContainer.classList.remove('w-40', 'lg:w-48', 'xl:w-56');
+      }
+      if(searchBox) searchBox.classList.add('ring-2', 'ring-blue-500/50', 'shadow-2xl');
+      if(searchGlow) searchGlow.style.opacity = '0.3';
+    });
+
+    searchInput.addEventListener('blur', () => {
+      if(searchContainer) {
+        searchContainer.classList.remove('w-64', 'xl:w-72');
+        searchContainer.classList.add('w-40', 'lg:w-48', 'xl:w-56');
+      }
+      if(searchBox) searchBox.classList.remove('ring-2', 'ring-blue-500/50', 'shadow-2xl');
+      if(searchGlow) searchGlow.style.opacity = '0';
+    });
+  }
+</script>
+
+</body>
+</html>
