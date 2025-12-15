@@ -1,321 +1,287 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistant Pédagogique IA - EduConnect Africa</title>
+    <title>EduConnect Africa IA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        africa: {
+                            green: '#27ae60',
+                            yellow: '#f1c40f',
+                            orange: '#e67e22',
+                            red: '#e74c3c',
+                            blue: '#3498db',
+                            purple: '#9b59b6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #10b981;
-            --accent: #8b5cf6;
-            --dark: #1e293b;
-            --light: #f8fafc;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
         }
         
-        body {
-            font-family: 'Inter', 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            min-height: 100vh;
+        .logo-font {
+            font-family: 'Poppins', sans-serif;
         }
         
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        .navbar-dropdown {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: top right;
         }
         
-        .gradient-bg {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        .dropdown-open {
+            opacity: 1;
+            transform: scale(1);
+            visibility: visible;
         }
         
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .dropdown-closed {
+            opacity: 0;
+            transform: scale(0.95);
+            visibility: hidden;
+        }
+        
+        .sidebar-transition {
+            transition: all 0.3s ease-in-out;
         }
         
         .chat-container {
-            height: calc(100vh - 180px);
-            scroll-behavior: smooth;
-        }
-        
-        @media (max-width: 768px) {
-            .chat-container {
-                height: calc(100vh - 160px);
-            }
-        }
-        
-        .message-user {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-radius: 18px 18px 4px 18px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-        }
-        
-        .message-ai {
-            background: white;
-            color: var(--dark);
-            border-radius: 18px 18px 18px 4px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-        
-        .category-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
-        
-        .category-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-        }
-        
-        .category-card.active {
-            border-color: var(--primary);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
-        }
-        
-        .sidebar {
-            transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 50;
-        }
-        
-        .sidebar.open {
-            transform: translateX(0);
-        }
-        
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 40;
-        }
-        
-        .overlay.active {
-            display: block;
-        }
-        
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            background: white;
-            border-radius: 18px 18px 18px 4px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-            width: fit-content;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #94a3b8;
-            margin: 0 3px;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-        
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
-            30% { transform: translateY(-8px); opacity: 1; }
-        }
-        
-        .offline-mode {
-            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-            color: white;
-        }
-        
-        .online-mode {
-            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            color: white;
-        }
-        
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
-        }
-        
-        .message-input {
-            transition: all 0.3s ease;
-            border: 2px solid #e2e8f0;
-        }
-        
-        .message-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ef4444;
-            color: white;
-            font-size: 0.7rem;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        
-        .tooltip {
-            position: relative;
-        }
-        
-        .tooltip-text {
-            visibility: hidden;
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--dark);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            z-index: 100;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .scrollbar-thin {
             scrollbar-width: thin;
-            scrollbar-color: #cbd5e1 #f1f5f9;
+            scrollbar-color: #4b5563 #1f2937;
         }
         
-        .scrollbar-thin::-webkit-scrollbar {
+        .chat-container::-webkit-scrollbar {
             width: 6px;
         }
         
-        .scrollbar-thin::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 3px;
+        .chat-container::-webkit-scrollbar-track {
+            background: #1f2937;
         }
         
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
+        .chat-container::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 20px;
         }
         
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        .message-bubble-user {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+        }
+        
+        .message-bubble-ai {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .category-card:hover {
+            transform: translateX(5px);
+            border-left-color: currentColor;
+        }
+        
+        .category-card.active {
+            border-left-color: currentColor;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            float: left;
+            margin: 0 1px;
+            background-color: #9ca3af;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+        
+        .typing-indicator span:nth-of-type(1) {
+            animation: 1s blink infinite 0.3333s;
+        }
+        
+        .typing-indicator span:nth-of-type(2) {
+            animation: 1s blink infinite 0.6666s;
+        }
+        
+        .typing-indicator span:nth-of-type(3) {
+            animation: 1s blink infinite 0.9999s;
+        }
+        
+        @keyframes blink {
+            50% {
+                opacity: 1;
+            }
         }
         
         .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 0.3s ease-in;
         }
         
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .pulse-ring {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+        }
     </style>
 </head>
-<body class="text-gray-800">
-    <!-- Overlay pour mobile -->
-    <div id="overlay" class="overlay"></div>
-    
-    <!-- En-tête professionnel -->
-    <header class="sticky top-0 z-30 glass-effect">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex items-center justify-between">
-                <!-- Logo et navigation -->
-                <div class="flex items-center space-x-4">
-                    <button id="menuToggle" class="text-gray-600 hover:text-blue-600 lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                    
-                    <a href="#" class="flex items-center space-x-3 group">
-                        <div class="gradient-bg p-2.5 rounded-xl shadow-lg group-hover:shadow-xl transition-shadow">
-                            <i class="fas fa-graduation-cap text-white text-2xl"></i>
-                        </div>
-                        <div>
-                            <h1 class="text-2xl font-bold text-gray-900">EduConnect <span class="gradient-text">Africa</span></h1>
-                            <p class="text-xs text-gray-500 font-medium">Assistant Pédagogique IA</p>
-                        </div>
-                    </a>
-                    
-                    <!-- Navigation desktop -->
-                    <nav class="hidden lg:flex items-center space-x-6 ml-6">
-                        <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Accueil</a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Tutorat</a>
-                        <a href="#" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">Assistant IA</a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Ressources</a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Profil</a>
-                    </nav>
+<body class="bg-gradient-to-br from-gray-900 to-gray-950 text-gray-100 h-screen flex flex-col overflow-hidden">
+    <!-- Header avec navbar déroulant -->
+    <header class="bg-gradient-to-r from-gray-800 to-gray-900 border-b border-gray-700/50 p-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-4">
+            <button id="sidebarToggle" class="lg:hidden text-gray-300 hover:text-white hover:bg-gray-700/50 p-2 rounded-lg transition">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <div class="w-10 h-10 bg-gradient-to-br from-africa-orange to-africa-yellow rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-gray-900"></div>
                 </div>
                 
-                <!-- Actions utilisateur -->
-                <div class="flex items-center space-x-4">
-                    <!-- Indicateur de connexion -->
-                    <div id="connectionStatus" class="hidden md:flex items-center space-x-2 online-mode px-4 py-2 rounded-full shadow-sm">
-                        <i class="fas fa-wifi"></i>
-                        <span class="text-sm font-medium">En ligne</span>
+                <div>
+                    <h1 class="text-2xl font-bold text-white logo-font">
+                        <span class="bg-gradient-to-r from-africa-orange to-africa-yellow bg-clip-text text-transparent">
+                            EduConnect
+                        </span>
+                        <span class="text-white"> Africa IA</span>
+                    </h1>
+                    <p class="text-xs text-gray-400">Éducation Intelligente pour l'Afrique</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            <!-- Indicateur de langue -->
+            <div class="hidden md:flex items-center space-x-2 bg-gray-800/50 px-3 py-1.5 rounded-lg">
+                <i class="fas fa-language text-gray-400"></i>
+                <div id="langIndicator" class="flex items-center space-x-1">
+                    <span class="px-2 py-0.5 bg-africa-blue text-white rounded text-xs font-medium">FR</span>
+                </div>
+            </div>
+            
+            <!-- Bouton navbar déroulant -->
+            <div class="relative">
+                <button id="navbarDropdownBtn" class="flex items-center space-x-3 px-4 py-2.5 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl transition-all duration-300 shadow-lg group">
+                    <div class="relative">
+                        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-comments text-africa-orange"></i>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-africa-green rounded-full border-2 border-gray-900"></div>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-sm font-semibold text-white">Discussions</p>
+                        <p class="text-xs text-white/80">Historique & Profil</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-white/80 text-sm transition-transform duration-300 group-hover:rotate-180"></i>
+                </button>
+                
+                <!-- Navbar déroulant -->
+                <div id="navbarDropdown" class="absolute right-0 mt-2 w-80 bg-gradient-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl shadow-2xl navbar-dropdown dropdown-closed z-50 overflow-hidden">
+                    <!-- En-tête du dropdown -->
+                    <div class="p-4 border-b border-gray-700/50 bg-gradient-to-r from-gray-800 to-gray-900">
+                        <h3 class="font-semibold text-white flex items-center">
+                            <i class="fas fa-history mr-2 text-africa-orange"></i>
+                            Discussions Récentes
+                        </h3>
+                        <p class="text-xs text-gray-400 mt-1">Vos dernières conversations</p>
                     </div>
                     
-                    <!-- Indicateur de langue -->
-                    <div class="flex items-center space-x-3 bg-gray-50 px-4 py-2 rounded-full border border-gray-200">
-                        <span class="text-sm font-medium text-gray-700">Langue:</span>
-                        <div class="flex items-center space-x-2">
-                            <button id="langFR" class="language-btn font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg text-sm">FR</button>
-                            <span class="text-gray-300">|</span>
-                            <button id="langEN" class="language-btn text-gray-500 hover:text-blue-600 px-3 py-1 rounded-lg text-sm">EN</button>
+                    <!-- Liste des discussions -->
+                    <div id="recentDiscussions" class="max-h-64 overflow-y-auto p-2 space-y-1">
+                        <!-- Les discussions récentes seront chargées ici -->
+                        <div class="p-4 text-center text-gray-500 text-sm">
+                            <i class="fas fa-comment-slash text-2xl mb-2 text-gray-600"></i>
+                            <p>Aucune discussion récente</p>
+                            <p class="text-xs mt-1">Commencez une nouvelle conversation</p>
                         </div>
                     </div>
                     
-                    <!-- Notification et profil -->
-                    <div class="relative tooltip">
-                        <button class="text-gray-600 hover:text-blue-600 p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                            <i class="fas fa-bell text-xl"></i>
-                            <div id="notificationBadge" class="notification-badge">3</div>
-                        </button>
-                        <div class="tooltip-text">Notifications</div>
-                    </div>
-                    
-                    <div class="hidden md:block">
-                        <div class="flex items-center space-x-3 bg-gray-50 px-4 py-2 rounded-full border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
-                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-                                <i class="fas fa-user"></i>
+                    <!-- Profil utilisateur -->
+                    <div class="p-4 border-t border-gray-700/50 bg-gray-900/50">
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-africa-blue to-africa-purple flex items-center justify-center shadow-lg">
+                                    <span class="text-white font-semibold">JD</span>
+                                </div>
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-gray-900 pulse-ring"></div>
                             </div>
-                            <div class="hidden lg:block">
-                                <p class="text-sm font-medium text-gray-900">Étudiant</p>
-                                <p class="text-xs text-gray-500">Bac Terminale</p>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-semibold text-white">Jean Dupont</p>
+                                        <p class="text-xs text-gray-400">Étudiant - Terminale</p>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-gray-800 text-xs rounded-full text-gray-300">
+                                        <i class="fas fa-user-graduate mr-1"></i>Étudiant
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between mt-2">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full flex items-center">
+                                            <i class="fas fa-globe-africa mr-1 text-africa-green"></i>
+                                            <span id="profileLang">Français</span>
+                                        </span>
+                                        <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full">
+                                            <i class="fas fa-messages mr-1 text-africa-blue"></i>
+                                            <span id="totalDiscussions">0</span> discussions
+                                        </span>
+                                    </div>
+                                    <button class="text-xs text-africa-orange hover:text-africa-orange/80 transition">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -323,532 +289,224 @@
             </div>
         </div>
     </header>
-    
-    <!-- Interface principale -->
-    <div class="flex h-screen">
-        <!-- Sidebar pour l'historique -->
-        <aside id="sidebar" class="sidebar fixed inset-y-0 left-0 z-20 w-80 bg-white shadow-2xl lg:relative lg:translate-x-0 lg:z-0">
-            <div class="h-full flex flex-col">
-                <!-- En-tête sidebar -->
-                <div class="p-6 border-b border-gray-100">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-gray-900 flex items-center">
-                            <i class="fas fa-history mr-3 text-blue-600"></i>Historique
-                        </h2>
-                        <button id="closeSidebar" class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 lg:hidden">
-                            <i class="fas fa-times text-lg"></i>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar gauche - Catégories -->
+        <aside id="sidebar" class="bg-gradient-to-b from-gray-800/80 to-gray-900/80 border-r border-gray-700/30 w-64 flex-shrink-0 sidebar-transition lg:block hidden backdrop-blur-sm">
+            <div class="p-5">
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <i class="fas fa-book-open mr-2 text-africa-orange"></i>
+                        Catégories
+                    </h2>
+                    <div class="space-y-1">
+                        <button data-category="math" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-900/30 to-blue-800/30 flex items-center justify-center group-hover:from-blue-900/50 group-hover:to-blue-800/50 transition">
+                                <i class="fas fa-calculator text-blue-400 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-white">Mathématiques</span>
+                                <p class="text-xs text-gray-400">Algèbre, géométrie, calcul</p>
+                            </div>
                         </button>
-                    </div>
-                    
-                    <!-- Statistiques -->
-                    <div class="grid grid-cols-2 gap-3 mb-6">
-                        <div class="bg-blue-50 p-3 rounded-xl">
-                            <p class="text-xs text-gray-500">Sessions aujourd'hui</p>
-                            <p class="text-xl font-bold text-blue-600">5</p>
-                        </div>
-                        <div class="bg-green-50 p-3 rounded-xl">
-                            <p class="text-xs text-gray-500">Questions résolues</p>
-                            <p class="text-xl font-bold text-green-600">24</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Recherche -->
-                    <div class="relative">
-                        <input type="text" id="searchHistory" placeholder="Rechercher une conversation..." class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                        <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
-                        <button class="absolute right-3 top-3 text-gray-400 hover:text-blue-600">
-                            <i class="fas fa-filter"></i>
+                        
+                        <button data-category="physics" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-900/30 to-green-800/30 flex items-center justify-center group-hover:from-green-900/50 group-hover:to-green-800/50 transition">
+                                <i class="fas fa-atom text-green-400 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-white">Physique</span>
+                                <p class="text-xs text-gray-400">Mécanique, électricité, optique</p>
+                            </div>
+                        </button>
+                        
+                        <button data-category="earth" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-900/30 to-yellow-800/30 flex items-center justify-center group-hover:from-yellow-900/50 group-hover:to-yellow-800/50 transition">
+                                <i class="fas fa-globe-africa text-yellow-400 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-white">Sciences de la Terre</span>
+                                <p class="text-xs text-gray-400">Géologie, climat, ressources</p>
+                            </div>
+                        </button>
+                        
+                        <button data-category="literature" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-900/30 to-purple-800/30 flex items-center justify-center group-hover:from-purple-900/50 group-hover:to-purple-800/50 transition">
+                                <i class="fas fa-book text-purple-400 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-white">Littérature camerounaise</span>
+                                <p class="text-xs text-gray-400">Auteurs, œuvres, histoire</p>
+                            </div>
+                        </button>
+                        
+                        <button data-category="computer" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-900/30 to-red-800/30 flex items-center justify-center group-hover:from-red-900/50 group-hover:to-red-800/50 transition">
+                                <i class="fas fa-laptop-code text-red-400 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-white">Informatique</span>
+                                <p class="text-xs text-gray-400">Programmation, réseaux, IA</p>
+                            </div>
                         </button>
                     </div>
                 </div>
                 
-                <!-- Liste des conversations -->
-                <div class="flex-1 overflow-y-auto p-6 scrollbar-thin">
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Conversations récentes</h3>
-                    
-                    <div class="space-y-4">
-                        <!-- Conversation 1 -->
-                        <div class="history-item p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl cursor-pointer transition-all hover:shadow-md fade-in" data-category="math">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center space-x-2">
-                                    <span class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">Mathématiques</span>
-                                    <span class="text-xs text-gray-500">Aujourd'hui, 14:32</span>
-                                </div>
-                                <i class="fas fa-check-circle text-green-500"></i>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Équations quadratiques</h4>
-                            <p class="text-sm text-gray-600 line-clamp-2">Résolution d'équations du second degré avec discriminant et formule générale...</p>
-                            <div class="flex items-center justify-between mt-3">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-robot text-blue-600 text-xs"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500">Assistant IA</span>
-                                </div>
-                                <span class="text-xs text-blue-600 font-medium">4 messages</span>
-                            </div>
+                <div class="mt-6 pt-6 border-t border-gray-700/30">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <i class="fas fa-wifi-slash mr-2 text-gray-400"></i>
+                        Mode hors ligne
+                    </h3>
+                    <div class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 rounded-xl p-4 border border-gray-700/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-white">Historique disponible</span>
+                            <div class="w-3 h-3 bg-africa-green rounded-full animate-pulse"></div>
                         </div>
-                        
-                        <!-- Conversation 2 -->
-                        <div class="history-item p-4 bg-white border border-gray-200 rounded-xl cursor-pointer transition-all hover:shadow-md hover:border-purple-200 fade-in" data-category="info">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center space-x-2">
-                                    <span class="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs font-semibold rounded-full">Informatique</span>
-                                    <span class="text-xs text-gray-500">Hier, 11:20</span>
-                                </div>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Algorithmes de tri</h4>
-                            <p class="text-sm text-gray-600 line-clamp-2">Différence entre QuickSort, MergeSort et leur complexité algorithmique...</p>
-                            <div class="flex items-center justify-between mt-3">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-robot text-purple-600 text-xs"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500">Assistant IA</span>
-                                </div>
-                                <span class="text-xs text-gray-500">8 messages</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Conversation 3 -->
-                        <div class="history-item p-4 bg-white border border-gray-200 rounded-xl cursor-pointer transition-all hover:shadow-md hover:border-green-200 fade-in" data-category="earth">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center space-x-2">
-                                    <span class="px-2.5 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Sciences Terre</span>
-                                    <span class="text-xs text-gray-500">12 mai, 09:15</span>
-                                </div>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Tectonique des plaques</h4>
-                            <p class="text-sm text-gray-600 line-clamp-2">Formation des montagnes et mouvements des plaques tectoniques...</p>
-                            <div class="flex items-center justify-between mt-3">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-robot text-green-600 text-xs"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500">Assistant IA</span>
-                                </div>
-                                <span class="text-xs text-gray-500">6 messages</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Conversation 4 -->
-                        <div class="history-item p-4 bg-white border border-gray-200 rounded-xl cursor-pointer transition-all hover:shadow-md hover:border-yellow-200 fade-in" data-category="literature">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center space-x-2">
-                                    <span class="px-2.5 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">Littérature</span>
-                                    <span class="text-xs text-gray-500">10 mai, 16:45</span>
-                                </div>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">"Ville Cruelle" - Eza Boto</h4>
-                            <p class="text-sm text-gray-600 line-clamp-2">Analyse des thèmes de la colonisation et de l'identité culturelle...</p>
-                            <div class="flex items-center justify-between mt-3">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-robot text-yellow-600 text-xs"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500">Assistant IA</span>
-                                </div>
-                                <span class="text-xs text-gray-500">7 messages</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Conversation 5 -->
-                        <div class="history-item p-4 bg-white border border-gray-200 rounded-xl cursor-pointer transition-all hover:shadow-md hover:border-red-200 fade-in" data-category="physics">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center space-x-2">
-                                    <span class="px-2.5 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full">Physique</span>
-                                    <span class="text-xs text-gray-500">8 mai, 13:30</span>
-                                </div>
-                            </div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Lois de Newton</h4>
-                            <p class="text-sm text-gray-600 line-clamp-2">Application des lois du mouvement dans des problèmes pratiques...</p>
-                            <div class="flex items-center justify-between mt-3">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-robot text-red-600 text-xs"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500">Assistant IA</span>
-                                </div>
-                                <span class="text-xs text-gray-500">5 messages</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Mode hors ligne -->
-                    <div class="mt-8 p-5 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl shadow-sm">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center mr-3">
-                                    <i class="fas fa-wifi-slash text-amber-600"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-900">Mode hors ligne</h4>
-                                    <p class="text-sm text-gray-600">Accès sans connexion</p>
-                                </div>
-                            </div>
-                            <div id="offlineBadge" class="offline-mode px-3 py-1 rounded-full text-xs font-semibold">
-                                Activé
-                            </div>
-                        </div>
-                        <div class="space-y-3">
-                            <button id="downloadHistory" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-white border border-amber-300 text-amber-700 rounded-xl text-sm font-semibold hover:bg-amber-50 transition-colors">
-                                <i class="fas fa-download"></i>
-                                <span>Télécharger l'historique complet</span>
-                            </button>
-                            <button id="clearHistory" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-amber-100 border border-amber-200 text-amber-800 rounded-xl text-sm font-medium hover:bg-amber-200 transition-colors">
-                                <i class="fas fa-trash-alt"></i>
-                                <span>Effacer l'historique local</span>
+                        <p class="text-xs text-gray-400">Consultez vos anciennes discussions sans connexion</p>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-xs text-gray-400">
+                                <i class="fas fa-database mr-1"></i>
+                                <span id="offlineCount">0</span> conversations
+                            </span>
+                            <button class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded-lg transition">
+                                <i class="fas fa-sync mr-1"></i>Synchroniser
                             </button>
                         </div>
-                        <p class="text-xs text-gray-500 mt-3 text-center">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            L'historique est stocké localement sur votre appareil
-                        </p>
                     </div>
                 </div>
                 
-                <!-- Pied de sidebar -->
-                <div class="p-6 border-t border-gray-100">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-900">Espace utilisé</p>
-                            <p class="text-xs text-gray-500">12.5 MB sur 50 MB</p>
+                <!-- Statistiques -->
+                <div class="mt-6 pt-6 border-t border-gray-700/30">
+                    <h3 class="text-sm font-medium text-gray-400 mb-3">Statistiques du jour</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-gray-800/30 rounded-lg p-3 text-center">
+                            <div class="text-2xl font-bold text-africa-orange" id="dailyMessages">0</div>
+                            <div class="text-xs text-gray-400">Messages</div>
                         </div>
-                        <div class="w-24 bg-gray-200 rounded-full h-2">
-                            <div class="bg-blue-600 h-2 rounded-full w-1/4"></div>
+                        <div class="bg-gray-800/30 rounded-lg p-3 text-center">
+                            <div class="text-2xl font-bold text-africa-green" id="dailyTime">0</div>
+                            <div class="text-xs text-gray-400">Minutes</div>
                         </div>
                     </div>
                 </div>
             </div>
         </aside>
-        
-        <!-- Zone de chat principale -->
+
+        <!-- Contenu principal - Chat -->
         <main class="flex-1 flex flex-col">
             <!-- En-tête du chat -->
-            <div class="glass-effect border-b border-gray-200 p-4 md:p-6">
-                <div class="container mx-auto">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <div class="relative">
-                                <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center text-white shadow-lg pulse-animation">
-                                    <i class="fas fa-robot text-2xl"></i>
-                                </div>
-                                <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
+            <div class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 border-b border-gray-700/30 p-5">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center space-x-3">
+                            <div id="categoryIcon" class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-900/30 to-blue-800/30 flex items-center justify-center">
+                                <i class="fas fa-robot text-2xl text-gray-400"></i>
                             </div>
                             <div>
-                                <h2 class="text-xl font-bold text-gray-900">Assistant Pédagogique IA</h2>
-                                <div class="flex items-center space-x-3 mt-1">
-                                    <p class="text-sm text-gray-600">Spécialisé en <span id="currentCategory" class="font-semibold text-blue-600">Mathématiques</span></p>
-                                    <div class="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                    <div class="flex items-center space-x-1 text-green-600">
-                                        <i class="fas fa-circle text-xs"></i>
-                                        <span class="text-xs font-medium">Disponible 24h/24</span>
-                                    </div>
-                                </div>
+                                <h2 id="currentCategory" class="text-2xl font-bold text-white">Assistant Pédagogique</h2>
+                                <p id="categoryDescription" class="text-sm text-gray-400">
+                                    Sélectionnez une matière pour commencer
+                                </p>
                             </div>
-                        </div>
-                        
-                        <!-- Actions du chat -->
-                        <div class="flex items-center space-x-2">
-                            <button class="tooltip p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                                <i class="fas fa-share-alt text-lg"></i>
-                                <div class="tooltip-text">Partager la conversation</div>
-                            </button>
-                            <button class="tooltip p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                                <i class="fas fa-print text-lg"></i>
-                                <div class="tooltip-text">Imprimer</div>
-                            </button>
-                            <button id="clearChat" class="tooltip p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors">
-                                <i class="fas fa-trash-alt text-lg"></i>
-                                <div class="tooltip-text">Effacer la conversation</div>
-                            </button>
                         </div>
                     </div>
                     
-                    <!-- Sélecteur de catégories -->
-                    <div class="mt-6">
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Sélectionnez une matière :</h3>
-                        <div class="flex flex-wrap gap-3">
-                            <div class="category-card active p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border-2 border-blue-200 shadow-sm" data-category="math">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-calculator text-white text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900">Mathématiques</h4>
-                                        <p class="text-xs text-gray-600">Algèbre, Géométrie, Calcul</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="category-card p-4 bg-white border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md" data-category="physics">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-atom text-white text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900">Physique</h4>
-                                        <p class="text-xs text-gray-600">Mécanique, Électricité, Optique</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="category-card p-4 bg-white border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md" data-category="earth">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-globe-africa text-white text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900">Sciences de la Terre</h4>
-                                        <p class="text-xs text-gray-600">Géologie, Climat, Environnement</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="category-card p-4 bg-white border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md" data-category="literature">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-book text-white text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900">Littérature camerounaise</h4>
-                                        <p class="text-xs text-gray-600">Auteurs, Œuvres, Analyses</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="category-card p-4 bg-white border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md" data-category="info">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-laptop-code text-white text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900">Informatique</h4>
-                                        <p class="text-xs text-gray-600">Programmation, Algorithmes, Réseaux</p>
-                                    </div>
-                                </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="px-4 py-2 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700/30">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-message text-africa-blue"></i>
+                                <span class="text-sm font-medium">
+                                    <span id="messageCount">0</span> messages
+                                </span>
                             </div>
                         </div>
+                        <button id="clearChat" class="p-3 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl border border-gray-700/30 text-gray-400 hover:text-white transition-all duration-300 group">
+                            <i class="fas fa-trash-alt group-hover:rotate-12 transition-transform"></i>
+                        </button>
+                        <button id="newChat" class="p-3 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white transition-all duration-300 shadow-lg group">
+                            <i class="fas fa-plus group-hover:rotate-90 transition-transform"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Zone de messages -->
-            <div id="chatMessages" class="chat-container flex-1 overflow-y-auto p-4 md:p-6 scrollbar-thin">
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-6 chat-container">
                 <!-- Message de bienvenue -->
-                <div class="flex items-start space-x-4 mb-6 fade-in">
-                    <div class="flex-shrink-0 w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white shadow-md">
-                        <i class="fas fa-robot"></i>
+                <div class="text-center py-12 px-4">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center shadow-2xl">
+                        <i class="fas fa-robot text-4xl text-africa-orange"></i>
                     </div>
-                    <div class="message-ai max-w-3/4 lg:max-w-2/3 p-5">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <p class="font-bold text-gray-900">Assistant EduConnect</p>
-                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">IA</span>
+                    <h3 class="text-2xl font-bold text-white mb-3">Bienvenue sur EduConnect Africa IA</h3>
+                    <p class="text-gray-400 max-w-2xl mx-auto mb-8">
+                        Votre assistant pédagogique intelligent pour l'éducation en Afrique. Sélectionnez une matière à gauche pour commencer votre apprentissage personnalisé.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+                        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-4 rounded-xl border border-gray-700/30">
+                            <i class="fas fa-brain text-2xl text-africa-blue mb-3"></i>
+                            <h4 class="font-semibold text-white mb-2">IA Adaptative</h4>
+                            <p class="text-xs text-gray-400">Répond dans votre langue et s'adapte à votre niveau</p>
                         </div>
-                        <p class="text-gray-700 mb-3">Bonjour ! 👋 Je suis votre assistant pédagogique IA pour <span class="font-semibold text-blue-600">EduConnect Africa</span>. Je suis spécialement conçu pour vous aider dans votre apprentissage, en me concentrant sur le contexte éducatif africain.</p>
-                        
-                        <div class="bg-gray-50 rounded-lg p-4 mb-3">
-                            <p class="font-medium text-gray-900 mb-2">📚 <span class="underline">Matières disponibles :</span></p>
-                            <ul class="text-gray-700 text-sm space-y-1 ml-5 list-disc">
-                                <li><span class="font-medium">Mathématiques</span> - Algèbre, géométrie, calcul, etc.</li>
-                                <li><span class="font-medium">Physique</span> - Mécanique, électricité, optique, etc.</li>
-                                <li><span class="font-medium">Sciences de la Terre</span> - Géologie, climat, environnement, etc.</li>
-                                <li><span class="font-medium">Littérature camerounaise</span> - Auteurs, œuvres, analyses, etc.</li>
-                                <li><span class="font-medium">Informatique</span> - Programmation, algorithmes, réseaux, etc.</li>
-                            </ul>
+                        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-4 rounded-xl border border-gray-700/30">
+                            <i class="fas fa-book-open text-2xl text-africa-green mb-3"></i>
+                            <h4 class="font-semibold text-white mb-2">5 Matières</h4>
+                            <p class="text-xs text-gray-400">Mathématiques, Physique, Sciences, Littérature, Informatique</p>
                         </div>
-                        
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-language text-blue-600"></i>
-                                <span class="text-sm text-gray-600">Langue : <span id="currentLanguage" class="font-semibold">Français</span></span>
-                            </div>
-                            <div class="w-px h-4 bg-gray-300"></div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-lightbulb text-amber-500"></i>
-                                <span class="text-sm text-gray-600">Conseil : Sélectionnez une matière ci-dessus pour commencer</span>
-                            </div>
+                        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-4 rounded-xl border border-gray-700/30">
+                            <i class="fas fa-wifi-slash text-2xl text-africa-orange mb-3"></i>
+                            <h4 class="font-semibold text-white mb-2">Hors Ligne</h4>
+                            <p class="text-xs text-gray-400">Consultez votre historique sans connexion Internet</p>
                         </div>
-                        <span class="text-xs text-gray-500 block mt-3">Système • Aujourd'hui, 14:30</span>
-                    </div>
-                </div>
-                
-                <!-- Message exemple utilisateur -->
-                <div class="flex justify-end mb-6 fade-in">
-                    <div class="message-user max-w-3/4 lg:max-w-2/3 p-5">
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="font-medium text-blue-100">Vous</p>
-                            <div class="flex items-center space-x-1">
-                                <i class="fas fa-check text-blue-200 text-xs"></i>
-                                <i class="fas fa-check text-blue-200 text-xs"></i>
-                            </div>
-                        </div>
-                        <p>Bonjour, pouvez-vous m'expliquer comment résoudre une équation du second degré ? Je prépare mon examen de fin d'année.</p>
-                        <span class="text-xs text-blue-200 block mt-2 text-right">14:32</span>
-                    </div>
-                </div>
-                
-                <!-- Message exemple IA -->
-                <div class="flex items-start space-x-4 mb-6 fade-in">
-                    <div class="flex-shrink-0 w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white shadow-md">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="message-ai max-w-3/4 lg:max-w-2/3 p-5">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <p class="font-bold text-gray-900">Assistant EduConnect</p>
-                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">Mathématiques</span>
-                        </div>
-                        <p class="text-gray-700 mb-3">Bien sûr ! Une équation du second degré (ou équation quadratique) s'écrit sous la forme générale :</p>
-                        
-                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-3">
-                            <div class="font-mono text-center text-lg font-bold text-blue-800">ax² + bx + c = 0</div>
-                            <p class="text-sm text-gray-600 text-center mt-1">où a, b et c sont des constantes réelles avec a ≠ 0</p>
-                        </div>
-                        
-                        <p class="text-gray-700 mb-3">Pour la résoudre, on utilise le <span class="font-semibold">discriminant</span> Δ = b² - 4ac :</p>
-                        
-                        <div class="space-y-3 mb-4">
-                            <div class="flex items-start space-x-3">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <span class="text-green-800 font-bold text-sm">1</span>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Si Δ > 0</p>
-                                    <p class="text-gray-700 text-sm">Deux solutions réelles distinctes : x₁ = (-b - √Δ)/(2a) et x₂ = (-b + √Δ)/(2a)</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-3">
-                                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <span class="text-blue-800 font-bold text-sm">2</span>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Si Δ = 0</p>
-                                    <p class="text-gray-700 text-sm">Une solution double (racine double) : x = -b/(2a)</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start space-x-3">
-                                <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <span class="text-red-800 font-bold text-sm">3</span>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Si Δ < 0</p>
-                                    <p class="text-gray-700 text-sm">Deux solutions complexes conjuguées</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 rounded-lg p-3 mb-3">
-                            <p class="font-medium text-gray-900 mb-1">📝 <span class="underline">Exemple pratique :</span></p>
-                            <p class="text-gray-700 text-sm">Pour x² + 5x + 6 = 0, on a a=1, b=5, c=6, donc Δ = 5² - 4×1×6 = 25 - 24 = 1.</p>
-                            <p class="text-gray-700 text-sm">Puisque Δ > 0, les solutions sont x₁ = (-5 - 1)/2 = -3 et x₂ = (-5 + 1)/2 = -2.</p>
-                        </div>
-                        
-                        <div class="flex items-center space-x-4 border-t border-gray-100 pt-3">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-lightbulb text-amber-500"></i>
-                                <span class="text-sm text-gray-600">Conseil : Vérifiez vos solutions en les replaçant dans l'équation initiale !</span>
-                            </div>
-                        </div>
-                        <span class="text-xs text-gray-500 block mt-3">Assistant IA • Aujourd'hui, 14:33</span>
-                    </div>
-                </div>
-                
-                <!-- Indicateur de saisie (caché par défaut) -->
-                <div id="typingIndicator" class="flex items-start space-x-4 mb-6 hidden">
-                    <div class="flex-shrink-0 w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white shadow-md">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <span class="text-sm text-gray-600 ml-3">L'assistant rédige une réponse...</span>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Zone de saisie -->
-            <div class="glass-effect border-t border-gray-200 p-4">
-                <div class="container mx-auto">
+            <div class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 border-t border-gray-700/30 p-5">
+                <div class="max-w-4xl mx-auto">
                     <div class="flex items-end space-x-4">
-                        <!-- Actions supplémentaires -->
-                        <div class="hidden md:flex flex-col space-y-2">
-                            <button class="tooltip p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                                <i class="fas fa-paperclip text-lg"></i>
-                                <div class="tooltip-text">Joindre un fichier</div>
+                        <div class="flex space-x-2">
+                            <button id="attachBtn" class="p-3 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl border border-gray-700/30 text-gray-400 hover:text-white transition-all duration-300 group">
+                                <i class="fas fa-paperclip group-hover:rotate-12 transition-transform"></i>
                             </button>
-                            <button class="tooltip p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                                <i class="fas fa-image text-lg"></i>
-                                <div class="tooltip-text">Insérer une image</div>
-                            </button>
-                            <button class="tooltip p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                                <i class="fas fa-microphone text-lg"></i>
-                                <div class="tooltip-text">Dictée vocale</div>
+                            <button id="micBtn" class="p-3 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl border border-gray-700/30 text-gray-400 hover:text-white transition-all duration-300 group">
+                                <i class="fas fa-microphone group-hover:scale-110 transition-transform"></i>
                             </button>
                         </div>
                         
-                        <!-- Zone de texte principale -->
                         <div class="flex-1 relative">
-                            <div class="message-input bg-white rounded-2xl shadow-sm overflow-hidden">
-                                <textarea id="messageInput" rows="2" placeholder="Posez votre question à l'assistant IA... (Appuyez sur Entrée pour envoyer, Shift+Entrée pour aller à la ligne)" class="w-full px-5 py-4 focus:outline-none resize-none scrollbar-thin max-h-40"></textarea>
+                            <div class="relative">
+                                <textarea 
+                                    id="messageInput" 
+                                    rows="1" 
+                                    placeholder="Posez votre question ici en français ou en anglais..." 
+                                    class="w-full bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700/30 rounded-2xl p-4 pr-24 text-white placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-africa-orange focus:border-transparent shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                                    disabled
+                                ></textarea>
                                 
-                                <div class="flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-gray-50">
-                                    <div class="flex items-center space-x-4">
-                                        <button class="text-gray-500 hover:text-blue-600 transition-colors">
-                                            <i class="fas fa-smile text-lg"></i>
-                                        </button>
-                                        <button class="text-gray-500 hover:text-blue-600 transition-colors">
-                                            <i class="fas fa-font text-lg"></i>
-                                        </button>
-                                        <div class="text-xs text-gray-500">
-                                            <span id="charCount">0</span>/500 caractères
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex items-center space-x-3">
-                                        <button id="clearInput" class="text-gray-500 hover:text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors text-sm">
-                                            Effacer
-                                        </button>
-                                        <button id="sendButton" class="gradient-bg text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center space-x-2 group">
-                                            <span>Envoyer</span>
-                                            <i class="fas fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
-                                        </button>
-                                    </div>
+                                <div class="absolute right-3 bottom-3 flex items-center space-x-2">
+                                    <span id="charCount" class="text-xs text-gray-500">0/2000</span>
+                                    <button id="sendBtn" class="p-3 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 group" disabled>
+                                        <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                                    </button>
                                 </div>
                             </div>
                             
-                            <!-- Suggestions rapides -->
-                            <div class="mt-3 flex flex-wrap gap-2">
-                                <span class="text-xs text-gray-500 font-medium">Suggestions :</span>
-                                <button class="suggestion-btn text-xs bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
-                                    Explique-moi le théorème de Pythagore
-                                </button>
-                                <button class="suggestion-btn text-xs bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
-                                    Qu'est-ce qu'un algorithme ?
-                                </button>
-                                <button class="suggestion-btn text-xs bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
-                                    Parle-moi de la littérature camerounaise
-                                </button>
+                            <div class="flex items-center justify-between mt-3 px-2">
+                                <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-language"></i>
+                                        <span>Langue auto-détectée</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-lightbulb"></i>
+                                        <span>Appuyez sur <kbd class="px-2 py-1 bg-gray-800 rounded-lg">Enter</kbd> pour envoyer</span>
+                                    </div>
+                                </div>
+                                <div id="inputStatus" class="text-xs px-3 py-1 bg-gray-800 rounded-full text-gray-400">
+                                    <i class="fas fa-info-circle mr-1"></i>Sélectionnez une matière
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Informations supplémentaires -->
-                    <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center space-x-1">
-                                <i class="fas fa-shield-alt"></i>
-                                <span>Conversation sécurisée</span>
-                            </div>
-                            <div class="flex items-center space-x-1">
-                                <i class="fas fa-history"></i>
-                                <span>Historique sauvegardé</span>
-                            </div>
-                        </div>
-                        <div>
-                            <span>EduConnect Africa • Assistant Pédagogique IA v2.1</span>
                         </div>
                     </div>
                 </div>
@@ -856,699 +514,669 @@
         </main>
     </div>
 
-    <!-- Modal de confirmation -->
-    <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black opacity-50"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2" id="modalTitle">Confirmation</h3>
-                <p class="text-gray-600" id="modalMessage">Êtes-vous sûr de vouloir effectuer cette action ?</p>
-            </div>
-            <div class="flex space-x-3">
-                <button id="modalCancel" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors">
-                    Annuler
-                </button>
-                <button id="modalConfirm" class="flex-1 px-4 py-3 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-colors">
-                    Confirmer
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification toast -->
-    <div id="toast" class="fixed bottom-4 right-4 z-50 hidden">
-        <div class="bg-gray-900 text-white px-6 py-4 rounded-xl shadow-xl max-w-sm">
-            <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
-                </div>
-                <div>
-                    <p class="font-medium" id="toastTitle">Notification</p>
-                    <p class="text-sm text-gray-300" id="toastMessage">Action effectuée avec succès</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Overlay pour mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden hidden transition-opacity"></div>
 
     <script>
-        // État de l'application
-        const appState = {
-            currentLanguage: 'FR',
-            currentCategory: 'Mathématiques',
-            isOnline: true,
-            messageCount: 0,
-            typingTimeout: null
-        };
+        // Configuration de l'API DeepSeek
+        const DEEPSEEK_API_KEY = "sk-702c2e402d684805b623d877a47910c7";
+        const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
         
-        // Réponses IA par catégorie
-        const aiResponses = {
-            'math': [
-                "Les mathématiques sont un langage universel qui décrit les modèles et les structures de notre monde. Elles sont essentielles pour développer la pensée logique et analytique. Quel concept mathématique spécifique souhaitez-vous explorer aujourd'hui ?",
-                "Dans le contexte africain, les mathématiques ont une riche histoire, avec des contributions comme celles du système de comptage Yoruba. Comment puis-je vous aider avec vos problèmes mathématiques ?",
-                "Les mathématiques ne sont pas seulement des chiffres et des formules, mais aussi une façon de penser et de résoudre des problèmes. Voulez-vous travailler sur l'algèbre, la géométrie, les statistiques ou un autre domaine ?"
-            ],
-            'physics': [
-                "La physique explore les lois fondamentales qui régissent l'univers, de l'infiniment petit (physique quantique) à l'infiniment grand (cosmologie). C'est une science fondamentale pour comprendre le monde qui nous entoure.",
-                "La physique appliquée est cruciale pour le développement technologique en Afrique, des énergies renouvelables aux technologies médicales. Sur quel sujet physique souhaitez-vous discuter ?",
-                "La physique combine souvent théorie et expérimentation. Voulez-vous comprendre un concept particulier comme les lois de Newton, l'électromagnétisme, ou la thermodynamique ?"
-            ],
-            'earth': [
-                "Les sciences de la Terre étudient notre planète dans son ensemble : sa structure interne, son atmosphère, ses océans et ses processus géologiques. Cette connaissance est essentielle pour relever des défis comme le changement climatique.",
-                "En Afrique, les sciences de la Terre sont particulièrement importantes pour la gestion des ressources naturelles, la prévention des risques naturels et la compréhension des changements environnementaux.",
-                "Les sciences de la Terre comprennent la géologie, la météorologie, l'océanographie et la climatologie. Lequel de ces domaines vous intéresse le plus ?"
-            ],
-            'literature': [
-                "La littérature camerounaise est riche et diversifiée, reflétant les réalités culturelles, historiques et sociales du Cameroun. Elle est un miroir de l'âme africaine et de ses aspirations.",
-                "Des auteurs comme Mongo Beti, Ferdinand Oyono, Calixthe Beyala, Patrice Nganang et Léonora Miano ont marqué la littérature camerounaise. Leurs œuvres explorent des thèmes comme la colonisation, l'identité et la modernité.",
-                "La littérature camerounaise aborde souvent des questions cruciales pour la société africaine contemporaine. De quelle œuvre ou de quel auteur souhaitez-vous discuter ?"
-            ],
-            'info': [
-                "L'informatique est au cœur de la transformation numérique de l'Afrique. Elle offre des opportunités d'innovation et de développement dans divers secteurs comme l'éducation, la santé et l'agriculture.",
-                "Dans le contexte africain, l'informatique adaptée aux besoins locaux est cruciale. Voulez-vous discuter de programmation, de développement web, d'algorithmes ou d'un autre sujet informatique ?",
-                "L'informatique évolue rapidement avec des domaines comme l'intelligence artificielle, le cloud computing et la cybersécurité. Ces technologies peuvent apporter des solutions aux défis spécifiques du continent africain."
-            ]
-        };
-        
-        // Questions suggérées par catégorie
-        const suggestedQuestions = {
-            'math': [
-                "Explique-moi le théorème de Pythagore",
-                "Comment résoudre un système d'équations ?",
-                "Qu'est-ce qu'une fonction logarithmique ?",
-                "Définis la dérivée d'une fonction"
-            ],
-            'physics': [
-                "Quelle est la différence entre vitesse et accélération ?",
-                "Explique les lois de Newton",
-                "Comment fonctionne un circuit électrique ?",
-                "Qu'est-ce que l'énergie cinétique ?"
-            ],
-            'earth': [
-                "Comment se forment les volcans ?",
-                "Explique le cycle de l'eau",
-                "Qu'est-ce que la tectonique des plaques ?",
-                "Comment prévoit-on la météo ?"
-            ],
-            'literature': [
-                "Parle-moi de la littérature camerounaise",
-                "Qui est Mongo Beti ?",
-                "Analyse 'Ville Cruelle' d'Eza Boto",
-                "Quels sont les thèmes de la littérature africaine ?"
-            ],
-            'info': [
-                "Qu'est-ce qu'un algorithme ?",
-                "Explique la différence entre HTML et CSS",
-                "Comment fonctionne Internet ?",
-                "Qu'est-ce qu'une base de données ?"
-            ]
-        };
-        
-        // Initialisation des éléments DOM
-        const elements = {
-            menuToggle: document.getElementById('menuToggle'),
-            closeSidebar: document.getElementById('closeSidebar'),
-            sidebar: document.getElementById('sidebar'),
-            overlay: document.getElementById('overlay'),
-            categoryCards: document.querySelectorAll('.category-card'),
-            chatMessages: document.getElementById('chatMessages'),
-            messageInput: document.getElementById('messageInput'),
-            sendButton: document.getElementById('sendButton'),
-            typingIndicator: document.getElementById('typingIndicator'),
-            currentCategory: document.getElementById('currentCategory'),
-            currentLanguage: document.getElementById('currentLanguage'),
-            langFR: document.getElementById('langFR'),
-            langEN: document.getElementById('langEN'),
-            connectionStatus: document.getElementById('connectionStatus'),
-            offlineBadge: document.getElementById('offlineBadge'),
-            charCount: document.getElementById('charCount'),
-            clearInput: document.getElementById('clearInput'),
-            clearChat: document.getElementById('clearChat'),
-            downloadHistory: document.getElementById('downloadHistory'),
-            searchHistory: document.getElementById('searchHistory'),
-            historyItems: document.querySelectorAll('.history-item'),
-            suggestionButtons: document.querySelectorAll('.suggestion-btn'),
-            notificationBadge: document.getElementById('notificationBadge'),
-            confirmModal: document.getElementById('confirmModal'),
-            modalTitle: document.getElementById('modalTitle'),
-            modalMessage: document.getElementById('modalMessage'),
-            modalCancel: document.getElementById('modalCancel'),
-            modalConfirm: document.getElementById('modalConfirm'),
-            toast: document.getElementById('toast'),
-            toastTitle: document.getElementById('toastTitle'),
-            toastMessage: document.getElementById('toastMessage')
-        };
-        
-        // Initialisation de l'application
-        function initApp() {
-            // Charger l'état depuis le stockage local
-            loadAppState();
-            
-            // Configurer les écouteurs d'événements
-            setupEventListeners();
-            
-            // Mettre à jour l'interface
-            updateUI();
-            
-            // Simuler une connexion internet
-            simulateConnection();
-            
-            // Mettre à jour les suggestions
-            updateSuggestions();
-            
-            // Afficher le toast de bienvenue
-            setTimeout(() => {
-                showToast('Bienvenue', 'Assistant pédagogique IA prêt à vous aider !');
-            }, 1000);
-        }
-        
-        // Charger l'état de l'application depuis le stockage local
-        function loadAppState() {
-            const savedState = localStorage.getItem('educonnectAIState');
-            if (savedState) {
-                const state = JSON.parse(savedState);
-                appState.currentLanguage = state.currentLanguage || 'FR';
-                appState.currentCategory = state.currentCategory || 'Mathématiques';
-                appState.messageCount = state.messageCount || 0;
+        // Configuration des catégories avec couleurs améliorées
+        const categories = {
+            math: {
+                name: "Mathématiques",
+                description: "Algèbre, géométrie, calcul, statistiques et plus encore",
+                icon: "fa-calculator",
+                color: "text-blue-400",
+                gradient: "from-blue-900/30 to-blue-800/30",
+                prompt: "Tu es un tuteur expert en mathématiques. Tu aides les étudiants africains à comprendre les concepts mathématiques. Réponds de manière claire, avec des exemples concrets et adaptés au contexte africain."
+            },
+            physics: {
+                name: "Physique",
+                description: "Mécanique, électricité, thermodynamique, optique et plus",
+                icon: "fa-atom",
+                color: "text-green-400",
+                gradient: "from-green-900/30 to-green-800/30",
+                prompt: "Tu es un tuteur expert en physique. Tu expliques les concepts physiques de manière simple avec des applications pratiques dans la vie quotidienne en Afrique. Utilise des exemples pertinents."
+            },
+            earth: {
+                name: "Sciences de la Terre",
+                description: "Géologie, climatologie, écologie, ressources naturelles",
+                icon: "fa-globe-africa",
+                color: "text-yellow-400",
+                gradient: "from-yellow-900/30 to-yellow-800/30",
+                prompt: "Tu es un expert en sciences de la Terre spécialisé sur l'Afrique. Tu parles de géologie africaine, climat, ressources naturelles et environnement. Mets l'accent sur le contexte africain."
+            },
+            literature: {
+                name: "Littérature camerounaise",
+                description: "Auteurs, œuvres, littérature francophone et anglophone",
+                icon: "fa-book",
+                color: "text-purple-400",
+                gradient: "from-purple-900/30 to-purple-800/30",
+                prompt: "Tu es un expert en littérature camerounaise. Tu connais les auteurs classiques et contemporains, les œuvres majeures et les mouvements littéraires du Cameroun. Parle aussi bien français qu'anglais selon la langue de l'utilisateur."
+            },
+            computer: {
+                name: "Informatique",
+                description: "Programmation, réseaux, bases de données, IA",
+                icon: "fa-laptop-code",
+                color: "text-red-400",
+                gradient: "from-red-900/30 to-red-800/30",
+                prompt: "Tu es un tuteur en informatique spécialisé pour les étudiants africains. Tu enseignes la programmation, les concepts informatiques avec des exemples pratiques et des conseils pour le marché du travail africain."
             }
-        }
+        };
         
-        // Sauvegarder l'état de l'application dans le stockage local
-        function saveAppState() {
-            localStorage.setItem('educonnectAIState', JSON.stringify(appState));
-        }
+        // Variables globales
+        let currentCategory = null;
+        let chatHistory = [];
+        let isProcessing = false;
+        let dailyStats = {
+            messages: 0,
+            startTime: new Date()
+        };
         
-        // Configurer les écouteurs d'événements
-        function setupEventListeners() {
-            // Navigation sidebar
-            elements.menuToggle.addEventListener('click', () => {
-                elements.sidebar.classList.add('open');
-                elements.overlay.classList.add('active');
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDailyStats();
+            updateOfflineCount();
+            loadRecentDiscussions();
+            
+            // Gestion du dropdown navbar
+            const dropdownBtn = document.getElementById('navbarDropdownBtn');
+            const dropdown = document.getElementById('navbarDropdown');
+            
+            let isDropdownOpen = false;
+            
+            dropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleDropdown();
             });
             
-            elements.closeSidebar.addEventListener('click', closeSidebar);
-            elements.overlay.addEventListener('click', closeSidebar);
-            
-            // Changement de catégorie
-            elements.categoryCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const category = card.getAttribute('data-category');
-                    selectCategory(category);
-                });
+            // Fermer le dropdown en cliquant à l'extérieur
+            document.addEventListener('click', function(e) {
+                if (isDropdownOpen && !dropdown.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                    closeDropdown();
+                }
             });
             
-            // Gestion des langues
-            elements.langFR.addEventListener('click', () => setLanguage('FR'));
-            elements.langEN.addEventListener('click', () => setLanguage('EN'));
+            function toggleDropdown() {
+                isDropdownOpen = !isDropdownOpen;
+                if (isDropdownOpen) {
+                    dropdown.classList.remove('dropdown-closed');
+                    dropdown.classList.add('dropdown-open');
+                } else {
+                    closeDropdown();
+                }
+            }
             
-            // Gestion des messages
-            elements.messageInput.addEventListener('input', handleMessageInput);
-            elements.messageInput.addEventListener('keydown', handleMessageKeydown);
-            elements.sendButton.addEventListener('click', sendMessage);
-            elements.clearInput.addEventListener('click', () => {
-                elements.messageInput.value = '';
-                updateCharCount();
-            });
+            function closeDropdown() {
+                isDropdownOpen = false;
+                dropdown.classList.remove('dropdown-open');
+                dropdown.classList.add('dropdown-closed');
+            }
             
-            // Actions de l'historique
-            elements.clearChat.addEventListener('click', () => showConfirm('Effacer la conversation', 'Voulez-vous vraiment effacer toute la conversation en cours ?', clearChat));
-            elements.downloadHistory.addEventListener('click', downloadHistory);
-            
-            // Recherche dans l'historique
-            elements.searchHistory.addEventListener('input', searchHistory);
-            
-            // Clic sur les éléments d'historique
-            elements.historyItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const category = item.getAttribute('data-category');
-                    const title = item.querySelector('h4').textContent;
-                    loadHistoryItem(category, title);
-                });
-            });
-            
-            // Suggestions rapides
-            elements.suggestionButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    elements.messageInput.value = button.textContent;
-                    updateCharCount();
-                    autoResizeTextarea();
-                });
-            });
-            
-            // Gestion du modal de confirmation
-            elements.modalCancel.addEventListener('click', hideModal);
-            
-            // Simulation de basculement hors ligne
-            elements.offlineBadge.addEventListener('click', toggleOfflineMode);
-            
-            // Fermeture du modal avec la touche Échap
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
+            // Exposer pour d'autres fonctions
+            window.closeNavbarDropdown = closeDropdown;
+        });
+        
+        // Gestion des catégories
+        document.querySelectorAll('.category-card').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.dataset.category;
+                selectCategory(category);
+                
+                // Fermer la sidebar sur mobile
+                if (window.innerWidth < 1024) {
                     closeSidebar();
-                    hideModal();
                 }
             });
-        }
+        });
         
-        // Fermer la sidebar
-        function closeSidebar() {
-            elements.sidebar.classList.remove('open');
-            elements.overlay.classList.remove('active');
-        }
-        
-        // Sélectionner une catégorie
-        function selectCategory(categoryKey) {
-            // Mettre à jour les cartes de catégorie
-            elements.categoryCards.forEach(card => {
+        function selectCategory(category) {
+            if (currentCategory === category) return;
+            
+            // Désactiver toutes les catégories
+            document.querySelectorAll('.category-card').forEach(card => {
                 card.classList.remove('active');
-                if (card.getAttribute('data-category') === categoryKey) {
-                    card.classList.add('active');
-                }
             });
             
-            // Mettre à jour la catégorie actuelle
-            const categoryNames = {
-                'math': 'Mathématiques',
-                'physics': 'Physique',
-                'earth': 'Sciences de la Terre',
-                'literature': 'Littérature camerounaise',
-                'info': 'Informatique'
+            // Activer la catégorie sélectionnée
+            const selectedCard = document.querySelector(`[data-category="${category}"]`);
+            selectedCard.classList.add('active');
+            
+            currentCategory = category;
+            const catInfo = categories[category];
+            
+            // Mettre à jour l'affichage
+            document.getElementById('currentCategory').textContent = catInfo.name;
+            document.getElementById('categoryDescription').textContent = catInfo.description;
+            document.getElementById('categoryIcon').className = `w-12 h-12 rounded-xl bg-gradient-to-br ${catInfo.gradient} flex items-center justify-center`;
+            document.getElementById('categoryIcon').innerHTML = `<i class="fas ${catInfo.icon} text-2xl ${catInfo.color}"></i>`;
+            
+            // Activer la zone de saisie
+            document.getElementById('messageInput').disabled = false;
+            document.getElementById('sendBtn').disabled = false;
+            document.getElementById('inputStatus').innerHTML = `<i class="fas fa-check-circle mr-1 text-africa-green"></i>Prêt à discuter`;
+            
+            // Afficher le message de bienvenue
+            showCategoryWelcome(catInfo);
+            
+            // Charger l'historique
+            loadChatHistory(category);
+        }
+        
+        function showCategoryWelcome(catInfo) {
+            const chatContainer = document.getElementById('chatMessages');
+            chatContainer.innerHTML = '';
+            
+            const welcomeMessage = `
+                <div class="flex items-start space-x-4 fade-in">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${catInfo.gradient} flex items-center justify-center flex-shrink-0">
+                        <i class="fas ${catInfo.icon} text-2xl ${catInfo.color}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="message-bubble-ai rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-bold text-white">Assistant ${catInfo.name}</span>
+                                    <span class="px-2 py-1 bg-gray-800 text-xs rounded-full text-gray-300">
+                                        <i class="fas fa-robot mr-1"></i>IA
+                                    </span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-0.5 bg-blue-900 text-blue-200 text-xs rounded-full">FR</span>
+                                    <span class="px-2 py-0.5 bg-green-900 text-green-200 text-xs rounded-full">EN</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-100 mb-4">Bonjour ! Je suis votre assistant spécialisé en <span class="font-semibold text-white">${catInfo.name.toLowerCase()}</span>. Je suis ici pour vous aider à comprendre les concepts et répondre à vos questions.</p>
+                            <div class="bg-gray-900/50 rounded-xl p-4 mb-4">
+                                <p class="text-sm font-medium text-white mb-2 flex items-center">
+                                    <i class="fas fa-lightbulb mr-2 text-africa-yellow"></i>
+                                    Exemple de question :
+                                </p>
+                                <p class="text-gray-300 text-sm">"${getExampleQuestion(currentCategory)}"</p>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-gray-400">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Je répondrai automatiquement dans la langue de votre message</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            chatContainer.innerHTML = welcomeMessage;
+            updateMessageCount();
+        }
+        
+        function getExampleQuestion(category) {
+            const examples = {
+                math: "Pouvez-vous expliquer le théorème de Pythagore avec un exemple concret?",
+                physics: "Comment fonctionne un panneau solaire et pourquoi est-ce important en Afrique?",
+                earth: "Quelles sont les principales ressources naturelles de l'Afrique et comment sont-elles formées?",
+                literature: "Quels sont les auteurs camerounais les plus influents et leurs œuvres majeures?",
+                computer: "Comment créer un site web simple avec HTML et CSS?"
             };
-            
-            appState.currentCategory = categoryNames[categoryKey];
-            elements.currentCategory.textContent = appState.currentCategory;
-            
-            // Mettre à jour les suggestions
-            updateSuggestions();
-            
-            // Ajouter un message système
-            addSystemMessage(`Catégorie changée : ${appState.currentCategory}. Posez vos questions dans cette matière !`);
-            
-            // Sauvegarder l'état
-            saveAppState();
+            return examples[category] || "Posez votre question ici...";
         }
         
-        // Mettre à jour les suggestions rapides
-        function updateSuggestions() {
-            const suggestionsContainer = document.querySelector('.flex-wrap.gap-2');
-            if (!suggestionsContainer) return;
-            
-            // Nettoyer les anciennes suggestions (sauf les 3 premières)
-            const existingButtons = suggestionsContainer.querySelectorAll('.suggestion-btn');
-            existingButtons.forEach((btn, index) => {
-                if (index >= 3) btn.remove();
-            });
-            
-            // Ajouter les nouvelles suggestions
-            const categoryKey = Object.keys(aiResponses).find(key => {
-                const categoryNames = {
-                    'math': 'Mathématiques',
-                    'physics': 'Physique',
-                    'earth': 'Sciences de la Terre',
-                    'literature': 'Littérature camerounaise',
-                    'info': 'Informatique'
-                };
-                return categoryNames[key] === appState.currentCategory;
-            });
-            
-            if (categoryKey && suggestedQuestions[categoryKey]) {
-                suggestedQuestions[categoryKey].forEach(question => {
-                    const button = document.createElement('button');
-                    button.className = 'suggestion-btn text-xs bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors';
-                    button.textContent = question;
-                    button.addEventListener('click', () => {
-                        elements.messageInput.value = question;
-                        updateCharCount();
-                        autoResizeTextarea();
-                    });
-                    suggestionsContainer.appendChild(button);
-                });
+        // Gestion des messages
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('newChat').addEventListener('click', function() {
+            if (currentCategory) {
+                showCategoryWelcome(categories[currentCategory]);
+                chatHistory = [];
             }
-        }
+        });
         
-        // Changer la langue
-        function setLanguage(language) {
-            appState.currentLanguage = language;
-            elements.currentLanguage.textContent = language === 'FR' ? 'Français' : 'Anglais';
-            
-            // Mettre à jour les boutons de langue
-            if (language === 'FR') {
-                elements.langFR.classList.add('font-bold', 'text-blue-600', 'bg-blue-50');
-                elements.langFR.classList.remove('text-gray-500');
-                elements.langEN.classList.remove('font-bold', 'text-blue-600', 'bg-blue-50');
-                elements.langEN.classList.add('text-gray-500');
-            } else {
-                elements.langEN.classList.add('font-bold', 'text-blue-600', 'bg-blue-50');
-                elements.langEN.classList.remove('text-gray-500');
-                elements.langFR.classList.remove('font-bold', 'text-blue-600', 'bg-blue-50');
-                elements.langFR.classList.add('text-gray-500');
-            }
-            
-            // Ajouter un message système
-            const languageName = language === 'FR' ? 'français' : 'anglais';
-            addSystemMessage(`Langue changée : ${languageName}. Je vais maintenant répondre en ${languageName}.`);
-            
-            // Sauvegarder l'état
-            saveAppState();
-        }
-        
-        // Gérer la saisie de message
-        function handleMessageInput() {
-            updateCharCount();
-            autoResizeTextarea();
-        }
-        
-        // Gérer les touches du clavier
-        function handleMessageKeydown(e) {
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
-        }
+        });
         
-        // Mettre à jour le compteur de caractères
-        function updateCharCount() {
-            const count = elements.messageInput.value.length;
-            elements.charCount.textContent = count;
+        // Compteur de caractères
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
             
-            if (count > 450) {
-                elements.charCount.classList.add('text-red-500', 'font-bold');
-                elements.charCount.classList.remove('text-gray-500');
+            const count = this.value.length;
+            document.getElementById('charCount').textContent = `${count}/2000`;
+            
+            if (count > 1900) {
+                document.getElementById('charCount').className = 'text-xs text-africa-red';
+            } else if (count > 1500) {
+                document.getElementById('charCount').className = 'text-xs text-africa-orange';
             } else {
-                elements.charCount.classList.remove('text-red-500', 'font-bold');
-                elements.charCount.classList.add('text-gray-500');
+                document.getElementById('charCount').className = 'text-xs text-gray-500';
+            }
+        });
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || !currentCategory || isProcessing) return;
+            if (message.length > 2000) {
+                alert("Le message est trop long (max 2000 caractères)");
+                return;
+            }
+            
+            // Détecter la langue
+            const lang = detectLanguage(message);
+            updateLanguageIndicator(lang);
+            updateProfileLanguage(lang);
+            
+            // Ajouter le message au chat
+            addMessageToChat(message, 'user', lang);
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('charCount').textContent = '0/2000';
+            document.getElementById('charCount').className = 'text-xs text-gray-500';
+            
+            // Mettre à jour les statistiques
+            dailyStats.messages++;
+            updateDailyStats();
+            
+            // Afficher l'indicateur de frappe
+            showTypingIndicator();
+            
+            isProcessing = true;
+            document.getElementById('inputStatus').innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i>L'IA réfléchit...`;
+            
+            try {
+                // Préparer l'historique pour l'API
+                const messagesForAPI = [
+                    {
+                        role: "system",
+                        content: categories[currentCategory].prompt + " Réponds dans la même langue que l'utilisateur. Sois précis, pédagogique et adapté au contexte africain."
+                    },
+                    ...chatHistory.slice(-6).map(msg => ({
+                        role: msg.role === 'user' ? 'user' : 'assistant',
+                        content: msg.content
+                    })),
+                    {
+                        role: "user",
+                        content: message
+                    }
+                ];
+                
+                // Appel à l'API DeepSeek
+                const response = await fetch(DEEPSEEK_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "deepseek-chat",
+                        messages: messagesForAPI,
+                        max_tokens: 1500,
+                        temperature: 0.7,
+                        stream: false
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur API: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+                
+                // Ajouter la réponse au chat
+                removeTypingIndicator();
+                addMessageToChat(aiResponse, 'assistant', lang);
+                
+                // Sauvegarder dans l'historique
+                saveToHistory(currentCategory, message, aiResponse, lang);
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                removeTypingIndicator();
+                addMessageToChat("Désolé, une erreur s'est produite lors de la connexion à l'IA. Veuillez réessayer ou vérifier votre connexion Internet.", 'assistant', 'fr');
+            } finally {
+                isProcessing = false;
+                document.getElementById('inputStatus').innerHTML = `<i class="fas fa-check-circle mr-1 text-africa-green"></i>Prêt à discuter`;
             }
         }
         
-        // Redimensionnement automatique de la zone de texte
-        function autoResizeTextarea() {
-            elements.messageInput.style.height = 'auto';
-            elements.messageInput.style.height = (elements.messageInput.scrollHeight) + 'px';
-        }
-        
-        // Envoyer un message
-        function sendMessage() {
-            const message = elements.messageInput.value.trim();
+        function addMessageToChat(message, sender, lang) {
+            const chatContainer = document.getElementById('chatMessages');
             
-            if (message === '') return;
+            const messageElement = document.createElement('div');
+            messageElement.className = `flex items-start space-x-4 fade-in ${sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`;
             
-            // Ajouter le message de l'utilisateur
-            addUserMessage(message);
+            const avatar = sender === 'user' ? 
+                `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-africa-orange to-africa-yellow flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <i class="fas fa-user text-white"></i>
+                </div>` :
+                `<div class="w-12 h-12 rounded-xl bg-gradient-to-br ${categories[currentCategory]?.gradient || 'from-gray-700 to-gray-800'} flex items-center justify-center flex-shrink-0">
+                    <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} ${categories[currentCategory]?.color || 'text-gray-300'} text-xl"></i>
+                </div>`;
             
-            // Effacer la zone de saisie
-            elements.messageInput.value = '';
-            updateCharCount();
-            autoResizeTextarea();
+            const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            const langText = lang === 'fr' ? 'Français' : 'English';
+            const langColor = lang === 'fr' ? 'blue' : 'red';
             
-            // Incrémenter le compteur de messages
-            appState.messageCount++;
-            
-            // Simuler une réponse IA
-            simulateAIResponse(message);
-            
-            // Mettre à jour les notifications
-            updateNotifications();
-            
-            // Sauvegarder l'état
-            saveAppState();
-        }
-        
-        // Ajouter un message utilisateur
-        function addUserMessage(text) {
-            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex justify-end mb-6 fade-in';
-            messageDiv.innerHTML = `
-                <div class="message-user max-w-3/4 lg:max-w-2/3 p-5">
+            const bubble = sender === 'user' ? 
+                `<div class="message-bubble-user rounded-2xl p-5 max-w-2xl">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-medium text-blue-100">Vous</p>
-                        <div class="flex items-center space-x-1">
-                            <i class="fas fa-check text-blue-200 text-xs"></i>
-                            <i class="fas fa-check text-blue-200 text-xs"></i>
-                        </div>
-                    </div>
-                    <p>${text}</p>
-                    <span class="text-xs text-blue-200 block mt-2 text-right">${timestamp}</span>
-                </div>
-            `;
-            elements.chatMessages.appendChild(messageDiv);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
-        }
-        
-        // Ajouter un message IA
-        function addAIMessage(text, category) {
-            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const categoryNames = {
-                'math': 'Mathématiques',
-                'physics': 'Physique',
-                'earth': 'Sciences de la Terre',
-                'literature': 'Littérature camerounaise',
-                'info': 'Informatique'
-            };
-            
-            const categoryKey = Object.keys(categoryNames).find(key => categoryNames[key] === category) || 'math';
-            const categoryColor = {
-                'math': 'bg-blue-100 text-blue-800',
-                'physics': 'bg-red-100 text-red-800',
-                'earth': 'bg-green-100 text-green-800',
-                'literature': 'bg-yellow-100 text-yellow-800',
-                'info': 'bg-purple-100 text-purple-800'
-            }[categoryKey];
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex items-start space-x-4 mb-6 fade-in';
-            messageDiv.innerHTML = `
-                <div class="flex-shrink-0 w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white shadow-md">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <div class="message-ai max-w-3/4 lg:max-w-2/3 p-5">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <p class="font-bold text-gray-900">Assistant EduConnect</p>
-                        <span class="px-2 py-1 ${categoryColor} text-xs font-semibold rounded-full">${category}</span>
-                    </div>
-                    <p class="text-gray-700">${text}</p>
-                    <div class="flex items-center space-x-4 border-t border-gray-100 pt-3 mt-3">
                         <div class="flex items-center space-x-2">
-                            <i class="fas fa-lightbulb text-amber-500"></i>
-                            <span class="text-sm text-gray-600">Besoin de plus d'explications ? Posez une autre question !</span>
+                            <span class="font-bold text-white">Vous</span>
+                            <span class="px-2 py-0.5 bg-white/20 text-xs rounded-full text-white">
+                                <i class="fas fa-user mr-1"></i>Étudiant
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-white/80">${time}</span>
+                            <span class="px-2 py-0.5 bg-${langColor}-900 text-${langColor}-200 text-xs rounded-full">
+                                ${lang === 'fr' ? 'FR' : 'EN'}
+                            </span>
                         </div>
                     </div>
-                    <span class="text-xs text-gray-500 block mt-3">Assistant IA • ${timestamp}</span>
-                </div>
-            `;
-            elements.chatMessages.appendChild(messageDiv);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+                    <div class="text-white whitespace-pre-wrap">${escapeHtml(message)}</div>
+                </div>` :
+                `<div class="message-bubble-ai rounded-2xl p-5 max-w-2xl">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-white">Assistant IA</span>
+                            <span class="px-2 py-0.5 bg-gray-800 text-xs rounded-full text-gray-300">
+                                <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} mr-1"></i>${categories[currentCategory]?.name || 'Assistant'}
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-gray-400">${time}</span>
+                            <span class="px-2 py-0.5 bg-${langColor}-900 text-${langColor}-200 text-xs rounded-full">
+                                ${lang === 'fr' ? 'FR' : 'EN'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text-gray-100 whitespace-pre-wrap">${escapeHtml(message)}</div>
+                </div>`;
+            
+            messageElement.innerHTML = `${avatar}${bubble}`;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            updateMessageCount();
+            
+            // Ajouter à l'historique en mémoire
+            chatHistory.push({
+                role: sender,
+                content: message,
+                lang: lang,
+                timestamp: new Date().toISOString()
+            });
         }
         
-        // Ajouter un message système
-        function addSystemMessage(text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'text-center my-6 fade-in';
-            messageDiv.innerHTML = `
-                <span class="inline-block bg-gray-100 text-gray-700 text-sm px-4 py-3 rounded-xl border border-gray-200 shadow-sm">
-                    <i class="fas fa-info-circle mr-2 text-blue-600"></i>${text}
+        function detectLanguage(text) {
+            // Détection simple basée sur des mots clés
+            const frenchWords = ['le', 'la', 'les', 'un', 'une', 'des', 'est', 'et', 'à', 'dans', 'pour'];
+            const englishWords = ['the', 'a', 'an', 'is', 'and', 'to', 'in', 'of', 'for', 'with'];
+            
+            const words = text.toLowerCase().split(/\s+/);
+            let frenchCount = 0, englishCount = 0;
+            
+            words.forEach(word => {
+                if (frenchWords.includes(word)) frenchCount++;
+                if (englishWords.includes(word)) englishCount++;
+            });
+            
+            return frenchCount >= englishCount ? 'fr' : 'en';
+        }
+        
+        function showTypingIndicator() {
+            const chatContainer = document.getElementById('chatMessages');
+            const typingElement = document.createElement('div');
+            typingElement.className = 'flex items-start space-x-4 fade-in';
+            typingElement.id = 'typingIndicator';
+            typingElement.innerHTML = `
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${categories[currentCategory]?.gradient || 'from-gray-700 to-gray-800'} flex items-center justify-center flex-shrink-0">
+                    <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} ${categories[currentCategory]?.color || 'text-gray-300'} text-xl"></i>
+                </div>
+                <div class="message-bubble-ai rounded-2xl p-5">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="font-medium text-gray-300">L'IA réfléchit</span>
+                        <div class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400">Je prépare une réponse adaptée à votre question...</p>
+                </div>
+            `;
+            chatContainer.appendChild(typingElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function updateMessageCount() {
+            const chatContainer = document.getElementById('chatMessages');
+            const messageCount = chatContainer.querySelectorAll('.fade-in').length;
+            document.getElementById('messageCount').textContent = messageCount;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Gestion de l'historique
+        function saveToHistory(category, userMessage, aiResponse, lang) {
+            const history = JSON.parse(localStorage.getItem('educonnect_chat_history') || '{}');
+            
+            if (!history[category]) {
+                history[category] = [];
+            }
+            
+            history[category].push({
+                user: userMessage,
+                ai: aiResponse,
+                lang: lang,
+                timestamp: new Date().toISOString(),
+                category: category
+            });
+            
+            // Limiter à 100 conversations par catégorie
+            if (history[category].length > 100) {
+                history[category] = history[category].slice(-100);
+            }
+            
+            localStorage.setItem('educonnect_chat_history', JSON.stringify(history));
+            updateRecentDiscussions();
+            updateOfflineCount();
+            updateTotalDiscussions();
+        }
+        
+        function loadChatHistory(category) {
+            const history = JSON.parse(localStorage.getItem('educonnect_chat_history') || '{}');
+            chatHistory = [];
+            
+            if (history[category]) {
+                history[category].forEach(conv => {
+                    chatHistory.push({
+                        role: 'user',
+                        content: conv.user,
+                        lang: conv.lang
+                    });
+                    chatHistory.push({
+                        role: 'assistant',
+                        content: conv.ai,
+                        lang: conv.lang
+                    });
+                });
+            }
+        }
+        
+        function updateRecentDiscussions() {
+            const history = JSON.parse(localStorage.getItem('educonnect_chat_history') || '{}');
+            const container = document.getElementById('recentDiscussions');
+            
+            if (Object.keys(history).length === 0) {
+                container.innerHTML = `
+                    <div class="p-4 text-center text-gray-500 text-sm">
+                        <i class="fas fa-comment-slash text-2xl mb-2 text-gray-600"></i>
+                        <p>Aucune discussion récente</p>
+                        <p class="text-xs mt-1">Commencez une nouvelle conversation</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let allConversations = [];
+            Object.entries(history).forEach(([category, conversations]) => {
+                conversations.forEach(conv => {
+                    allConversations.push({
+                        ...conv,
+                        category: category
+                    });
+                });
+            });
+            
+            // Trier par date (du plus récent au plus ancien)
+            allConversations.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // Prendre les 5 plus récentes
+            const recentConversations = allConversations.slice(0, 5);
+            
+            let html = '';
+            recentConversations.forEach(conv => {
+                const date = new Date(conv.timestamp);
+                const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+                const catInfo = categories[conv.category];
+                
+                html += `
+                    <div class="p-3 hover:bg-gray-700/50 cursor-pointer rounded-lg transition m-2" onclick="selectCategory('${conv.category}'); closeNavbarDropdown();">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br ${catInfo?.gradient || 'from-gray-700 to-gray-800'} flex items-center justify-center flex-shrink-0">
+                                <i class="fas ${catInfo?.icon || 'fa-comment'} ${catInfo?.color || 'text-gray-300'}"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="font-medium text-sm text-white truncate">${catInfo?.name || conv.category}</div>
+                                        <div class="text-xs text-gray-400 truncate">${conv.user.substring(0, 60)}${conv.user.length > 60 ? '...' : ''}</div>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="text-xs text-gray-500">${timeStr}</span>
+                                        <span class="text-xs text-gray-500">${dateStr}</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 mt-2">
+                                    <span class="px-2 py-0.5 text-xs ${conv.lang === 'fr' ? 'bg-blue-900/30 text-blue-300' : 'bg-red-900/30 text-red-300'} rounded-full">
+                                        ${conv.lang === 'fr' ? 'FR' : 'EN'}
+                                    </span>
+                                    <span class="text-xs text-gray-500">
+                                        <i class="fas fa-reply mr-1"></i>${conv.ai.length > 100 ? 'Longue réponse' : 'Courte réponse'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function loadRecentDiscussions() {
+            updateRecentDiscussions();
+            updateTotalDiscussions();
+        }
+        
+        // Mise à jour des indicateurs
+        function updateLanguageIndicator(lang) {
+            const indicator = document.getElementById('langIndicator');
+            indicator.innerHTML = `
+                <span class="px-2 py-0.5 ${lang === 'fr' ? 'bg-blue-900 text-blue-200' : 'bg-red-900 text-red-200'} rounded text-xs font-medium">
+                    ${lang === 'fr' ? 'FR' : 'EN'}
                 </span>
             `;
-            elements.chatMessages.appendChild(messageDiv);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
         }
         
-        // Simuler une réponse IA
-        function simulateAIResponse(userMessage) {
-            // Afficher l'indicateur de saisie
-            elements.typingIndicator.classList.remove('hidden');
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
-            
-            // Déterminer la catégorie actuelle
-            const categoryKey = Object.keys(aiResponses).find(key => {
-                const categoryNames = {
-                    'math': 'Mathématiques',
-                    'physics': 'Physique',
-                    'earth': 'Sciences de la Terre',
-                    'literature': 'Littérature camerounaise',
-                    'info': 'Informatique'
-                };
-                return categoryNames[key] === appState.currentCategory;
-            }) || 'math';
-            
-            // Sélectionner une réponse aléatoire
-            const responses = aiResponses[categoryKey];
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            
-            // Simuler un délai de traitement
-            const delay = 1500 + Math.random() * 1500;
-            
-            setTimeout(() => {
-                elements.typingIndicator.classList.add('hidden');
-                addAIMessage(randomResponse, appState.currentCategory);
-            }, delay);
+        function updateProfileLanguage(lang) {
+            document.getElementById('profileLang').textContent = lang === 'fr' ? 'Français' : 'English';
         }
         
-        // Mettre à jour l'interface
-        function updateUI() {
-            // Mettre à jour la langue
-            setLanguage(appState.currentLanguage);
-            
-            // Mettre à jour la catégorie
-            const categoryKey = Object.keys(aiResponses).find(key => {
-                const categoryNames = {
-                    'math': 'Mathématiques',
-                    'physics': 'Physique',
-                    'earth': 'Sciences de la Terre',
-                    'literature': 'Littérature camerounaise',
-                    'info': 'Informatique'
-                };
-                return categoryNames[key] === appState.currentCategory;
-            }) || 'math';
-            
-            selectCategory(categoryKey);
-            
-            // Mettre à jour les notifications
-            updateNotifications();
-        }
-        
-        // Simuler une connexion internet
-        function simulateConnection() {
-            // 90% de chance d'être en ligne
-            appState.isOnline = Math.random() > 0.1;
-            
-            if (appState.isOnline) {
-                elements.connectionStatus.className = 'hidden md:flex items-center space-x-2 online-mode px-4 py-2 rounded-full shadow-sm';
-                elements.connectionStatus.innerHTML = '<i class="fas fa-wifi"></i><span class="text-sm font-medium">En ligne</span>';
-            } else {
-                elements.connectionStatus.className = 'hidden md:flex items-center space-x-2 offline-mode px-4 py-2 rounded-full shadow-sm';
-                elements.connectionStatus.innerHTML = '<i class="fas fa-wifi-slash"></i><span class="text-sm font-medium">Hors ligne</span>';
-                addSystemMessage('Mode hors ligne activé. Certaines fonctionnalités peuvent être limitées.');
-            }
-        }
-        
-        // Basculer le mode hors ligne
-        function toggleOfflineMode() {
-            const isOffline = elements.offlineBadge.textContent === 'Activé';
-            
-            if (isOffline) {
-                elements.offlineBadge.textContent = 'Désactivé';
-                elements.offlineBadge.className = 'bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold';
-                showToast('Mode hors ligne', 'Mode hors ligne désactivé. Connexion Internet requise pour les nouvelles réponses.');
-            } else {
-                elements.offlineBadge.textContent = 'Activé';
-                elements.offlineBadge.className = 'offline-mode px-3 py-1 rounded-full text-xs font-semibold';
-                showToast('Mode hors ligne', 'Mode hors ligne activé. Vous pouvez consulter l\'historique sans connexion.');
-                addSystemMessage('Mode hors ligne activé. Les conversations sont sauvegardées localement.');
-            }
-        }
-        
-        // Mettre à jour les notifications
-        function updateNotifications() {
-            if (appState.messageCount > 0 && appState.messageCount % 5 === 0) {
-                const count = Math.floor(appState.messageCount / 5);
-                elements.notificationBadge.textContent = count;
-                elements.notificationBadge.classList.remove('hidden');
-            }
-        }
-        
-        // Rechercher dans l'historique
-        function searchHistory() {
-            const searchTerm = elements.searchHistory.value.toLowerCase();
-            
-            elements.historyItems.forEach(item => {
-                const title = item.querySelector('h4').textContent.toLowerCase();
-                const content = item.querySelector('p').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || content.includes(searchTerm)) {
-                    item.classList.remove('hidden');
-                    item.classList.add('fade-in');
-                } else {
-                    item.classList.add('hidden');
-                }
+        function updateTotalDiscussions() {
+            const history = JSON.parse(localStorage.getItem('educonnect_chat_history') || '{}');
+            let total = 0;
+            Object.values(history).forEach(convs => {
+                total += convs.length;
             });
+            document.getElementById('totalDiscussions').textContent = total;
         }
         
-        // Charger un élément de l'historique
-        function loadHistoryItem(categoryKey, title) {
-            const categoryNames = {
-                'math': 'Mathématiques',
-                'physics': 'Physique',
-                'earth': 'Sciences de la Terre',
-                'literature': 'Littérature camerounaise',
-                'info': 'Informatique'
-            };
-            
-            // Changer de catégorie
-            selectCategory(categoryKey);
-            
-            // Ajouter un message système
-            addSystemMessage(`Conversation chargée : "${title}" (${categoryNames[categoryKey]})`);
-            
-            // Fermer la sidebar sur mobile
-            if (window.innerWidth < 1024) {
-                closeSidebar();
-            }
-            
-            showToast('Historique', `Conversation "${title}" chargée`);
-        }
-        
-        // Effacer la conversation
-        function clearChat() {
-            // Garder uniquement le message de bienvenue
-            const messages = elements.chatMessages.querySelectorAll('.flex.justify-end, .flex.items-start.space-x-4, .text-center.my-6');
-            messages.forEach(message => {
-                // Ne pas supprimer le message de bienvenue
-                if (!message.querySelector('.fa-robot') || !message.querySelector('.message-ai')?.textContent.includes('Bonjour')) {
-                    message.remove();
-                }
+        function updateOfflineCount() {
+            const history = JSON.parse(localStorage.getItem('educonnect_chat_history') || '{}');
+            let total = 0;
+            Object.values(history).forEach(convs => {
+                total += convs.length;
             });
+            document.getElementById('offlineCount').textContent = total;
+        }
+        
+        function updateDailyStats() {
+            document.getElementById('dailyMessages').textContent = dailyStats.messages;
             
-            hideModal();
-            showToast('Conversation effacée', 'La conversation a été effacée avec succès');
-            addSystemMessage('Conversation effacée. Posez une nouvelle question !');
+            const now = new Date();
+            const diffMinutes = Math.floor((now - dailyStats.startTime) / 60000);
+            document.getElementById('dailyTime').textContent = diffMinutes;
         }
         
-        // Télécharger l'historique
-        function downloadHistory() {
-            showToast('Téléchargement', 'L\'historique est en cours de téléchargement...');
+        // Effacer le chat
+        document.getElementById('clearChat').addEventListener('click', function() {
+            if (!currentCategory) return;
             
-            // Simuler un téléchargement
-            setTimeout(() => {
-                showToast('Téléchargement terminé', 'L\'historique a été sauvegardé sur votre appareil');
-            }, 1500);
-        }
+            if (confirm("Voulez-vous effacer l'historique de cette conversation?")) {
+                chatHistory = [];
+                showCategoryWelcome(categories[currentCategory]);
+            }
+        });
         
-        // Afficher une boîte de confirmation
-        function showConfirm(title, message, confirmCallback) {
-            elements.modalTitle.textContent = title;
-            elements.modalMessage.textContent = message;
-            elements.confirmModal.classList.remove('hidden');
+        // Gestion de la sidebar mobile
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
             
-            // Configurer la confirmation
-            elements.modalConfirm.onclick = () => {
-                confirmCallback();
-                hideModal();
-            };
+            sidebar.classList.toggle('hidden');
+            overlay.classList.toggle('hidden');
+        });
+        
+        document.getElementById('overlay').addEventListener('click', closeSidebar);
+        
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.add('hidden');
+            document.getElementById('overlay').classList.add('hidden');
         }
         
-        // Masquer le modal
-        function hideModal() {
-            elements.confirmModal.classList.add('hidden');
-        }
+        // Microphone (simulation)
+        document.getElementById('micBtn').addEventListener('click', function() {
+            alert("🎤 Fonctionnalité microphone en développement");
+        });
         
-        // Afficher une notification toast
-        function showToast(title, message) {
-            elements.toastTitle.textContent = title;
-            elements.toastMessage.textContent = message;
-            elements.toast.classList.remove('hidden');
-            
-            // Masquer automatiquement après 3 secondes
-            setTimeout(() => {
-                elements.toast.classList.add('hidden');
-            }, 3000);
-        }
+        // Attacher des fichiers (simulation)
+        document.getElementById('attachBtn').addEventListener('click', function() {
+            alert("📎 Fonctionnalité d'attachement en développement");
+        });
         
-        // Initialiser l'application au chargement
-        document.addEventListener('DOMContentLoaded', initApp);
+        // Exposer certaines fonctions globalement
+        window.selectCategory = selectCategory;
+        window.closeNavbarDropdown = function() {
+            const dropdown = document.getElementById('navbarDropdown');
+            dropdown.classList.remove('dropdown-open');
+            dropdown.classList.add('dropdown-closed');
+        };
     </script>
 </body>
 </html>
