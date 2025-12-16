@@ -176,7 +176,7 @@
 </head>
 <body class="bg-white text-gray-800 h-screen flex flex-col overflow-hidden">
     <!-- Header avec navbar déroulant -->
-    <header class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 p-4 flex justify-between items-center shadow-sm">
+    <header class="bg-linear-to-r from-gray-50 to-white border-b border-gray-200 p-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center space-x-4">
             <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg transition">
                 <i class="fas fa-bars text-xl"></i>
@@ -184,7 +184,7 @@
             
             <div class="flex items-center space-x-3">
                 <div class="relative">
-                    <div class="w-10 h-10 bg-gradient-to-br from-africa-orange to-africa-yellow rounded-xl flex items-center justify-center shadow">
+                    <div class="w-10 h-10 bg-linear-to-br from-africa-orange to-africa-yellow rounded-xl flex items-center justify-center shadow">
                         <i class="fas fa-graduation-cap text-white text-lg"></i>
                     </div>
                     <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-white"></div>
@@ -192,7 +192,7 @@
                 
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 logo-font">
-                        <span class="bg-gradient-to-r from-africa-orange to-africa-yellow bg-clip-text text-transparent">
+                        <span class="bg-linear-to-r from-africa-orange to-africa-yellow bg-clip-text text-transparent">
                             EduConnect
                         </span>
                         <span class="text-gray-900"> Africa IA</span>
@@ -213,7 +213,7 @@
             
             <!-- Bouton navbar déroulant -->
             <div class="relative">
-                <button id="navbarDropdownBtn" class="flex items-center space-x-3 px-4 py-2.5 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl transition-all duration-300 shadow group">
+                <button id="navbarDropdownBtn" class="flex items-center space-x-3 px-4 py-2.5 bg-linear-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl transition-all duration-300 shadow group">
                     <div class="relative">
                         <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                             <i class="fas fa-comments text-africa-orange"></i>
@@ -230,7 +230,7 @@
                 <!-- Navbar déroulant -->
                 <div id="navbarDropdown" class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl navbar-dropdown dropdown-closed z-50 overflow-hidden">
                     <!-- En-tête du dropdown -->
-                    <div class="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                    <div class="p-4 border-b border-gray-100 bg-linear-to-r from-gray-50 to-white">
                         <h3 class="font-semibold text-gray-900 flex items-center">
                             <i class="fas fa-history mr-2 text-africa-orange"></i>
                             Discussions Récentes
@@ -252,7 +252,7 @@
                     <div class="p-4 border-t border-gray-100 bg-gray-50">
                         <div class="flex items-center space-x-3">
                             <div class="relative">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-africa-blue to-africa-purple flex items-center justify-center shadow">
+                                <div class="w-12 h-12 rounded-full bg-linear-to-br from-africa-blue to-africa-purple flex items-center justify-center shadow">
                                     <span class="text-white font-semibold">JD</span>
                                 </div>
                                 <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-white pulse-ring"></div>
@@ -292,7 +292,7 @@
 
     <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar gauche - Catégories -->
-        <aside id="sidebar" class="bg-gradient-to-b from-gray-50 to-white border-r border-gray-200 w-64 flex-shrink-0 sidebar-transition lg:block hidden">
+        <aside id="sidebar" class="bg-linear-to-b from-gray-50 to-white border-r border-gray-200 w-64 shrink-0 sidebar-transition lg:block hidden">
             <div class="p-5">
                 <div class="mb-6">
                     <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -301,7 +301,7 @@
                     </h2>
                     <div class="space-y-1">
                         <button data-category="math" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-blue-50">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group-hover:from-blue-100 group-hover:to-blue-200 transition border border-blue-100">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center group-hover:from-blue-100 group-hover:to-blue-200 transition border border-blue-100">
                                 <i class="fas fa-calculator text-blue-600 text-lg"></i>
                             </div>
                             <div>
@@ -311,7 +311,7 @@
                         </button>
                         
                         <button data-category="physics" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-green-50">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center group-hover:from-green-100 group-hover:to-green-200 transition border border-green-100">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-green-50 to-green-100 flex items-center justify-center group-hover:from-green-100 group-hover:to-green-200 transition border border-green-100">
                                 <i class="fas fa-atom text-green-600 text-lg"></i>
                             </div>
                             <div>
@@ -321,7 +321,7 @@
                         </button>
                         
                         <button data-category="earth" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-yellow-50">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-center justify-center group-hover:from-yellow-100 group-hover:to-yellow-200 transition border border-yellow-100">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-yellow-50 to-yellow-100 flex items-center justify-center group-hover:from-yellow-100 group-hover:to-yellow-200 transition border border-yellow-100">
                                 <i class="fas fa-globe-africa text-yellow-600 text-lg"></i>
                             </div>
                             <div>
@@ -331,7 +331,7 @@
                         </button>
                         
                         <button data-category="literature" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-purple-50">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center group-hover:from-purple-100 group-hover:to-purple-200 transition border border-purple-100">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-purple-50 to-purple-100 flex items-center justify-center group-hover:from-purple-100 group-hover:to-purple-200 transition border border-purple-100">
                                 <i class="fas fa-book text-purple-600 text-lg"></i>
                             </div>
                             <div>
@@ -341,7 +341,7 @@
                         </button>
                         
                         <button data-category="computer" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-red-50">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center group-hover:from-red-100 group-hover:to-red-200 transition border border-red-100">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-red-50 to-red-100 flex items-center justify-center group-hover:from-red-100 group-hover:to-red-200 transition border border-red-100">
                                 <i class="fas fa-laptop-code text-red-600 text-lg"></i>
                             </div>
                             <div>
@@ -357,7 +357,7 @@
                         <i class="fas fa-wifi-slash mr-2 text-gray-500"></i>
                         Mode hors ligne
                     </h3>
-                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+                    <div class="bg-linear-to-r from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-medium text-gray-900">Historique disponible</span>
                             <div class="w-3 h-3 bg-africa-green rounded-full animate-pulse"></div>
@@ -395,11 +395,11 @@
         <!-- Contenu principal - Chat -->
         <main class="flex-1 flex flex-col">
             <!-- En-tête du chat -->
-            <div class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 p-5">
+            <div class="bg-linear-to-r from-gray-50 to-white border-b border-gray-200 p-5">
                 <div class="flex justify-between items-center">
                     <div>
                         <div class="flex items-center space-x-3">
-                            <div id="categoryIcon" class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center border border-blue-100">
+                            <div id="categoryIcon" class="w-12 h-12 rounded-xl bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center border border-blue-100">
                                 <i class="fas fa-robot text-2xl text-blue-600"></i>
                             </div>
                             <div>
@@ -423,7 +423,7 @@
                         <button id="clearChat" class="p-3 bg-white hover:bg-gray-50 rounded-xl border border-gray-300 text-gray-600 hover:text-gray-900 transition-all duration-300 group shadow-sm">
                             <i class="fas fa-trash-alt group-hover:rotate-12 transition-transform"></i>
                         </button>
-                        <button id="newChat" class="p-3 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white transition-all duration-300 shadow group">
+                        <button id="newChat" class="p-3 bg-linear-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white transition-all duration-300 shadow group">
                             <i class="fas fa-plus group-hover:rotate-90 transition-transform"></i>
                         </button>
                     </div>
@@ -434,7 +434,7 @@
             <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-6 chat-container bg-white">
                 <!-- Message de bienvenue -->
                 <div class="text-center py-12 px-4">
-                    <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center shadow-lg border border-gray-200">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center shadow-lg border border-gray-200">
                         <i class="fas fa-robot text-4xl text-africa-orange"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 mb-3">Bienvenue sur EduConnect Africa IA</h3>
@@ -442,17 +442,17 @@
                         Votre assistant pédagogique intelligent pour l'éducation en Afrique. Sélectionnez une matière à gauche pour commencer votre apprentissage personnalisé.
                     </p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                        <div class="bg-gradient-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="bg-linear-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <i class="fas fa-brain text-2xl text-africa-blue mb-3"></i>
                             <h4 class="font-semibold text-gray-900 mb-2">IA Adaptative</h4>
                             <p class="text-xs text-gray-600">Répond dans votre langue et s'adapte à votre niveau</p>
                         </div>
-                        <div class="bg-gradient-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="bg-linear-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <i class="fas fa-book-open text-2xl text-africa-green mb-3"></i>
                             <h4 class="font-semibold text-gray-900 mb-2">5 Matières</h4>
                             <p class="text-xs text-gray-600">Mathématiques, Physique, Sciences, Littérature, Informatique</p>
                         </div>
-                        <div class="bg-gradient-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="bg-linear-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <i class="fas fa-wifi-slash text-2xl text-africa-orange mb-3"></i>
                             <h4 class="font-semibold text-gray-900 mb-2">Hors Ligne</h4>
                             <p class="text-xs text-gray-600">Consultez votre historique sans connexion Internet</p>
@@ -462,7 +462,7 @@
             </div>
 
             <!-- Zone de saisie -->
-            <div class="bg-gradient-to-r from-gray-50 to-white border-t border-gray-200 p-5">
+            <div class="bg-linear-to-r from-gray-50 to-white border-t border-gray-200 p-5">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-end space-x-4">
                         <div class="flex space-x-2">
@@ -486,7 +486,7 @@
                                 
                                 <div class="absolute right-3 bottom-3 flex items-center space-x-2">
                                     <span id="charCount" class="text-xs text-gray-500">0/2000</span>
-                                    <button id="sendBtn" class="p-3 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 group" disabled>
+                                    <button id="sendBtn" class="p-3 bg-linear-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 group" disabled>
                                         <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
                                     </button>
                                 </div>
@@ -650,7 +650,7 @@
             // Mettre à jour l'affichage
             document.getElementById('currentCategory').textContent = catInfo.name;
             document.getElementById('categoryDescription').textContent = catInfo.description;
-            document.getElementById('categoryIcon').className = `w-12 h-12 rounded-xl bg-gradient-to-br ${catInfo.bgColor} flex items-center justify-center border ${catInfo.color.replace('text-', 'border-')}/20`;
+            document.getElementById('categoryIcon').className = `w-12 h-12 rounded-xl bg-linear-to-br ${catInfo.bgColor} flex items-center justify-center border ${catInfo.color.replace('text-', 'border-')}/20`;
             document.getElementById('categoryIcon').innerHTML = `<i class="fas ${catInfo.icon} text-2xl ${catInfo.color}"></i>`;
             
             // Activer la zone de saisie
@@ -671,7 +671,7 @@
             
             const welcomeMessage = `
                 <div class="flex items-start space-x-4 fade-in">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${catInfo.bgColor} flex items-center justify-center flex-shrink-0 border ${catInfo.color.replace('text-', 'border-')}/20">
+                    <div class="w-12 h-12 rounded-xl bg-linear-to-br ${catInfo.bgColor} flex items-center justify-center shrink-0 border ${catInfo.color.replace('text-', 'border-')}/20">
                         <i class="fas ${catInfo.icon} text-2xl ${catInfo.color}"></i>
                     </div>
                     <div class="flex-1">
@@ -849,10 +849,10 @@
             messageElement.className = `flex items-start space-x-4 fade-in ${sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`;
             
             const avatar = sender === 'user' ? 
-                `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-africa-orange to-africa-yellow flex items-center justify-center flex-shrink-0 shadow">
+                `<div class="w-12 h-12 rounded-xl bg-linear-to-br from-africa-orange to-africa-yellow flex items-center justify-center shrink-0 shadow">
                     <i class="fas fa-user text-white"></i>
                 </div>` :
-                `<div class="w-12 h-12 rounded-xl bg-gradient-to-br ${categories[currentCategory]?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center flex-shrink-0 border ${categories[currentCategory]?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
+                `<div class="w-12 h-12 rounded-xl bg-linear-to-br ${categories[currentCategory]?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center shrink-0 border ${categories[currentCategory]?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
                     <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} ${categories[currentCategory]?.color || 'text-gray-600'} text-xl"></i>
                 </div>`;
             
@@ -932,7 +932,7 @@
             typingElement.className = 'flex items-start space-x-4 fade-in';
             typingElement.id = 'typingIndicator';
             typingElement.innerHTML = `
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${categories[currentCategory]?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center flex-shrink-0 border ${categories[currentCategory]?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
+                <div class="w-12 h-12 rounded-xl bg-linear-to-br ${categories[currentCategory]?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center shrink-0 border ${categories[currentCategory]?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
                     <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} ${categories[currentCategory]?.color || 'text-gray-600'} text-xl"></i>
                 </div>
                 <div class="message-bubble-ai rounded-2xl p-5">
@@ -1058,7 +1058,7 @@
                 html += `
                     <div class="p-3 hover:bg-gray-50 cursor-pointer rounded-lg transition m-2 border border-gray-100" onclick="selectCategory('${conv.category}'); closeNavbarDropdown();">
                         <div class="flex items-start space-x-3">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br ${catInfo?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center flex-shrink-0 border ${catInfo?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br ${catInfo?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center shrink-0 border ${catInfo?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
                                 <i class="fas ${catInfo?.icon || 'fa-comment'} ${catInfo?.color || 'text-gray-500'}"></i>
                             </div>
                             <div class="flex-1 min-w-0">
