@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -71,7 +70,7 @@
         
         .chat-container {
             scrollbar-width: thin;
-            scrollbar-color: #4b5563 #1f2937;
+            scrollbar-color: #cbd5e1 #ffffff;
         }
         
         .chat-container::-webkit-scrollbar {
@@ -79,11 +78,11 @@
         }
         
         .chat-container::-webkit-scrollbar-track {
-            background: #1f2937;
+            background: #ffffff;
         }
         
         .chat-container::-webkit-scrollbar-thumb {
-            background-color: #4b5563;
+            background-color: #cbd5e1;
             border-radius: 20px;
         }
         
@@ -93,8 +92,9 @@
         }
         
         .message-bubble-ai {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
         }
         
         .category-card {
@@ -109,7 +109,7 @@
         
         .category-card.active {
             border-left-color: currentColor;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(14, 165, 233, 0.05);
         }
         
         .typing-indicator {
@@ -121,7 +121,7 @@
             width: 8px;
             float: left;
             margin: 0 1px;
-            background-color: #9ca3af;
+            background-color: #94a3b8;
             display: block;
             border-radius: 50%;
             opacity: 0.4;
@@ -174,106 +174,106 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-gray-950 text-gray-100 h-screen flex flex-col overflow-hidden">
+<body class="bg-white text-gray-800 h-screen flex flex-col overflow-hidden">
     <!-- Header avec navbar déroulant -->
-    <header class="bg-gradient-to-r from-gray-800 to-gray-900 border-b border-gray-700/50 p-4 flex justify-between items-center shadow-lg">
+    <header class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 p-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center space-x-4">
-            <button id="sidebarToggle" class="lg:hidden text-gray-300 hover:text-white hover:bg-gray-700/50 p-2 rounded-lg transition">
+            <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg transition">
                 <i class="fas fa-bars text-xl"></i>
             </button>
             
             <div class="flex items-center space-x-3">
                 <div class="relative">
-                    <div class="w-10 h-10 bg-gradient-to-br from-africa-orange to-africa-yellow rounded-xl flex items-center justify-center shadow-lg">
+                    <div class="w-10 h-10 bg-gradient-to-br from-africa-orange to-africa-yellow rounded-xl flex items-center justify-center shadow">
                         <i class="fas fa-graduation-cap text-white text-lg"></i>
                     </div>
-                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-gray-900"></div>
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-white"></div>
                 </div>
                 
                 <div>
-                    <h1 class="text-2xl font-bold text-white logo-font">
+                    <h1 class="text-2xl font-bold text-gray-900 logo-font">
                         <span class="bg-gradient-to-r from-africa-orange to-africa-yellow bg-clip-text text-transparent">
                             EduConnect
                         </span>
-                        <span class="text-white"> Africa IA</span>
+                        <span class="text-gray-900"> Africa IA</span>
                     </h1>
-                    <p class="text-xs text-gray-400">Éducation Intelligente pour l'Afrique</p>
+                    <p class="text-xs text-gray-500">Éducation Intelligente pour l'Afrique</p>
                 </div>
             </div>
         </div>
         
         <div class="flex items-center space-x-3">
             <!-- Indicateur de langue -->
-            <div class="hidden md:flex items-center space-x-2 bg-gray-800/50 px-3 py-1.5 rounded-lg">
-                <i class="fas fa-language text-gray-400"></i>
+            <div class="hidden md:flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">
+                <i class="fas fa-language text-gray-500"></i>
                 <div id="langIndicator" class="flex items-center space-x-1">
-                    <span class="px-2 py-0.5 bg-africa-blue text-white rounded text-xs font-medium">FR</span>
+                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-medium">FR</span>
                 </div>
             </div>
             
             <!-- Bouton navbar déroulant -->
             <div class="relative">
-                <button id="navbarDropdownBtn" class="flex items-center space-x-3 px-4 py-2.5 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl transition-all duration-300 shadow-lg group">
+                <button id="navbarDropdownBtn" class="flex items-center space-x-3 px-4 py-2.5 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl transition-all duration-300 shadow group">
                     <div class="relative">
                         <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                             <i class="fas fa-comments text-africa-orange"></i>
                         </div>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-africa-green rounded-full border-2 border-gray-900"></div>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-africa-green rounded-full border-2 border-white"></div>
                     </div>
                     <div class="text-left">
                         <p class="text-sm font-semibold text-white">Discussions</p>
-                        <p class="text-xs text-white/80">Historique & Profil</p>
+                        <p class="text-xs text-white/90">Historique & Profil</p>
                     </div>
-                    <i class="fas fa-chevron-down text-white/80 text-sm transition-transform duration-300 group-hover:rotate-180"></i>
+                    <i class="fas fa-chevron-down text-white/90 text-sm transition-transform duration-300 group-hover:rotate-180"></i>
                 </button>
                 
                 <!-- Navbar déroulant -->
-                <div id="navbarDropdown" class="absolute right-0 mt-2 w-80 bg-gradient-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl shadow-2xl navbar-dropdown dropdown-closed z-50 overflow-hidden">
+                <div id="navbarDropdown" class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl navbar-dropdown dropdown-closed z-50 overflow-hidden">
                     <!-- En-tête du dropdown -->
-                    <div class="p-4 border-b border-gray-700/50 bg-gradient-to-r from-gray-800 to-gray-900">
-                        <h3 class="font-semibold text-white flex items-center">
+                    <div class="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                        <h3 class="font-semibold text-gray-900 flex items-center">
                             <i class="fas fa-history mr-2 text-africa-orange"></i>
                             Discussions Récentes
                         </h3>
-                        <p class="text-xs text-gray-400 mt-1">Vos dernières conversations</p>
+                        <p class="text-xs text-gray-500 mt-1">Vos dernières conversations</p>
                     </div>
                     
                     <!-- Liste des discussions -->
                     <div id="recentDiscussions" class="max-h-64 overflow-y-auto p-2 space-y-1">
                         <!-- Les discussions récentes seront chargées ici -->
                         <div class="p-4 text-center text-gray-500 text-sm">
-                            <i class="fas fa-comment-slash text-2xl mb-2 text-gray-600"></i>
+                            <i class="fas fa-comment-slash text-2xl mb-2 text-gray-400"></i>
                             <p>Aucune discussion récente</p>
                             <p class="text-xs mt-1">Commencez une nouvelle conversation</p>
                         </div>
                     </div>
                     
                     <!-- Profil utilisateur -->
-                    <div class="p-4 border-t border-gray-700/50 bg-gray-900/50">
+                    <div class="p-4 border-t border-gray-100 bg-gray-50">
                         <div class="flex items-center space-x-3">
                             <div class="relative">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-africa-blue to-africa-purple flex items-center justify-center shadow-lg">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-africa-blue to-africa-purple flex items-center justify-center shadow">
                                     <span class="text-white font-semibold">JD</span>
                                 </div>
-                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-gray-900 pulse-ring"></div>
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-white pulse-ring"></div>
                             </div>
                             <div class="flex-1">
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <p class="font-semibold text-white">Jean Dupont</p>
-                                        <p class="text-xs text-gray-400">Étudiant - Terminale</p>
+                                        <p class="font-semibold text-gray-900">Jean Dupont</p>
+                                        <p class="text-xs text-gray-500">Étudiant - Terminale</p>
                                     </div>
-                                    <span class="px-2 py-0.5 bg-gray-800 text-xs rounded-full text-gray-300">
+                                    <span class="px-2 py-0.5 bg-gray-100 text-xs rounded-full text-gray-700 border border-gray-200">
                                         <i class="fas fa-user-graduate mr-1"></i>Étudiant
                                     </span>
                                 </div>
                                 <div class="flex items-center justify-between mt-2">
                                     <div class="flex items-center space-x-2">
-                                        <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full flex items-center">
+                                        <span class="text-xs px-2 py-0.5 bg-gray-100 rounded-full flex items-center border border-gray-200">
                                             <i class="fas fa-globe-africa mr-1 text-africa-green"></i>
                                             <span id="profileLang">Français</span>
                                         </span>
-                                        <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full">
+                                        <span class="text-xs px-2 py-0.5 bg-gray-100 rounded-full border border-gray-200">
                                             <i class="fas fa-messages mr-1 text-africa-blue"></i>
                                             <span id="totalDiscussions">0</span> discussions
                                         </span>
@@ -292,83 +292,83 @@
 
     <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar gauche - Catégories -->
-        <aside id="sidebar" class="bg-gradient-to-b from-gray-800/80 to-gray-900/80 border-r border-gray-700/30 w-64 flex-shrink-0 sidebar-transition lg:block hidden backdrop-blur-sm">
+        <aside id="sidebar" class="bg-gradient-to-b from-gray-50 to-white border-r border-gray-200 w-64 flex-shrink-0 sidebar-transition lg:block hidden">
             <div class="p-5">
                 <div class="mb-6">
-                    <h2 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-book-open mr-2 text-africa-orange"></i>
                         Catégories
                     </h2>
                     <div class="space-y-1">
-                        <button data-category="math" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-900/30 to-blue-800/30 flex items-center justify-center group-hover:from-blue-900/50 group-hover:to-blue-800/50 transition">
-                                <i class="fas fa-calculator text-blue-400 text-lg"></i>
+                        <button data-category="math" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-blue-50">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group-hover:from-blue-100 group-hover:to-blue-200 transition border border-blue-100">
+                                <i class="fas fa-calculator text-blue-600 text-lg"></i>
                             </div>
                             <div>
-                                <span class="font-medium text-white">Mathématiques</span>
-                                <p class="text-xs text-gray-400">Algèbre, géométrie, calcul</p>
+                                <span class="font-medium text-gray-900">Mathématiques</span>
+                                <p class="text-xs text-gray-600">Algèbre, géométrie, calcul</p>
                             </div>
                         </button>
                         
-                        <button data-category="physics" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-900/30 to-green-800/30 flex items-center justify-center group-hover:from-green-900/50 group-hover:to-green-800/50 transition">
-                                <i class="fas fa-atom text-green-400 text-lg"></i>
+                        <button data-category="physics" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-green-50">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center group-hover:from-green-100 group-hover:to-green-200 transition border border-green-100">
+                                <i class="fas fa-atom text-green-600 text-lg"></i>
                             </div>
                             <div>
-                                <span class="font-medium text-white">Physique</span>
-                                <p class="text-xs text-gray-400">Mécanique, électricité, optique</p>
+                                <span class="font-medium text-gray-900">Physique</span>
+                                <p class="text-xs text-gray-600">Mécanique, électricité, optique</p>
                             </div>
                         </button>
                         
-                        <button data-category="earth" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-900/30 to-yellow-800/30 flex items-center justify-center group-hover:from-yellow-900/50 group-hover:to-yellow-800/50 transition">
-                                <i class="fas fa-globe-africa text-yellow-400 text-lg"></i>
+                        <button data-category="earth" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-yellow-50">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-center justify-center group-hover:from-yellow-100 group-hover:to-yellow-200 transition border border-yellow-100">
+                                <i class="fas fa-globe-africa text-yellow-600 text-lg"></i>
                             </div>
                             <div>
-                                <span class="font-medium text-white">Sciences de la Terre</span>
-                                <p class="text-xs text-gray-400">Géologie, climat, ressources</p>
+                                <span class="font-medium text-gray-900">Sciences de la Terre</span>
+                                <p class="text-xs text-gray-600">Géologie, climat, ressources</p>
                             </div>
                         </button>
                         
-                        <button data-category="literature" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-900/30 to-purple-800/30 flex items-center justify-center group-hover:from-purple-900/50 group-hover:to-purple-800/50 transition">
-                                <i class="fas fa-book text-purple-400 text-lg"></i>
+                        <button data-category="literature" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-purple-50">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center group-hover:from-purple-100 group-hover:to-purple-200 transition border border-purple-100">
+                                <i class="fas fa-book text-purple-600 text-lg"></i>
                             </div>
                             <div>
-                                <span class="font-medium text-white">Littérature camerounaise</span>
-                                <p class="text-xs text-gray-400">Auteurs, œuvres, histoire</p>
+                                <span class="font-medium text-gray-900">Littérature camerounaise</span>
+                                <p class="text-xs text-gray-600">Auteurs, œuvres, histoire</p>
                             </div>
                         </button>
                         
-                        <button data-category="computer" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-900/30 to-red-800/30 flex items-center justify-center group-hover:from-red-900/50 group-hover:to-red-800/50 transition">
-                                <i class="fas fa-laptop-code text-red-400 text-lg"></i>
+                        <button data-category="computer" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-red-50">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center group-hover:from-red-100 group-hover:to-red-200 transition border border-red-100">
+                                <i class="fas fa-laptop-code text-red-600 text-lg"></i>
                             </div>
                             <div>
-                                <span class="font-medium text-white">Informatique</span>
-                                <p class="text-xs text-gray-400">Programmation, réseaux, IA</p>
+                                <span class="font-medium text-gray-900">Informatique</span>
+                                <p class="text-xs text-gray-600">Programmation, réseaux, IA</p>
                             </div>
                         </button>
                     </div>
                 </div>
                 
-                <div class="mt-6 pt-6 border-t border-gray-700/30">
-                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                        <i class="fas fa-wifi-slash mr-2 text-gray-400"></i>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-wifi-slash mr-2 text-gray-500"></i>
                         Mode hors ligne
                     </h3>
-                    <div class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 rounded-xl p-4 border border-gray-700/30">
+                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-white">Historique disponible</span>
+                            <span class="text-sm font-medium text-gray-900">Historique disponible</span>
                             <div class="w-3 h-3 bg-africa-green rounded-full animate-pulse"></div>
                         </div>
-                        <p class="text-xs text-gray-400">Consultez vos anciennes discussions sans connexion</p>
+                        <p class="text-xs text-gray-600">Consultez vos anciennes discussions sans connexion</p>
                         <div class="flex items-center justify-between mt-3">
-                            <span class="text-xs text-gray-400">
+                            <span class="text-xs text-gray-500">
                                 <i class="fas fa-database mr-1"></i>
                                 <span id="offlineCount">0</span> conversations
                             </span>
-                            <button class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded-lg transition">
+                            <button class="text-xs bg-white hover:bg-gray-50 px-3 py-1 rounded-lg transition border border-gray-300 text-gray-700">
                                 <i class="fas fa-sync mr-1"></i>Synchroniser
                             </button>
                         </div>
@@ -376,16 +376,16 @@
                 </div>
                 
                 <!-- Statistiques -->
-                <div class="mt-6 pt-6 border-t border-gray-700/30">
-                    <h3 class="text-sm font-medium text-gray-400 mb-3">Statistiques du jour</h3>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h3 class="text-sm font-medium text-gray-700 mb-3">Statistiques du jour</h3>
                     <div class="grid grid-cols-2 gap-2">
-                        <div class="bg-gray-800/30 rounded-lg p-3 text-center">
+                        <div class="bg-gray-50 rounded-lg p-3 text-center border border-gray-200">
                             <div class="text-2xl font-bold text-africa-orange" id="dailyMessages">0</div>
-                            <div class="text-xs text-gray-400">Messages</div>
+                            <div class="text-xs text-gray-600">Messages</div>
                         </div>
-                        <div class="bg-gray-800/30 rounded-lg p-3 text-center">
+                        <div class="bg-gray-50 rounded-lg p-3 text-center border border-gray-200">
                             <div class="text-2xl font-bold text-africa-green" id="dailyTime">0</div>
-                            <div class="text-xs text-gray-400">Minutes</div>
+                            <div class="text-xs text-gray-600">Minutes</div>
                         </div>
                     </div>
                 </div>
@@ -395,16 +395,16 @@
         <!-- Contenu principal - Chat -->
         <main class="flex-1 flex flex-col">
             <!-- En-tête du chat -->
-            <div class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 border-b border-gray-700/30 p-5">
+            <div class="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 p-5">
                 <div class="flex justify-between items-center">
                     <div>
                         <div class="flex items-center space-x-3">
-                            <div id="categoryIcon" class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-900/30 to-blue-800/30 flex items-center justify-center">
-                                <i class="fas fa-robot text-2xl text-gray-400"></i>
+                            <div id="categoryIcon" class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center border border-blue-100">
+                                <i class="fas fa-robot text-2xl text-blue-600"></i>
                             </div>
                             <div>
-                                <h2 id="currentCategory" class="text-2xl font-bold text-white">Assistant Pédagogique</h2>
-                                <p id="categoryDescription" class="text-sm text-gray-400">
+                                <h2 id="currentCategory" class="text-2xl font-bold text-gray-900">Assistant Pédagogique</h2>
+                                <p id="categoryDescription" class="text-sm text-gray-600">
                                     Sélectionnez une matière pour commencer
                                 </p>
                             </div>
@@ -412,18 +412,18 @@
                     </div>
                     
                     <div class="flex items-center space-x-3">
-                        <div class="px-4 py-2 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700/30">
+                        <div class="px-4 py-2 bg-white rounded-xl border border-gray-300 shadow-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-message text-africa-blue"></i>
-                                <span class="text-sm font-medium">
+                                <span class="text-sm font-medium text-gray-700">
                                     <span id="messageCount">0</span> messages
                                 </span>
                             </div>
                         </div>
-                        <button id="clearChat" class="p-3 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl border border-gray-700/30 text-gray-400 hover:text-white transition-all duration-300 group">
+                        <button id="clearChat" class="p-3 bg-white hover:bg-gray-50 rounded-xl border border-gray-300 text-gray-600 hover:text-gray-900 transition-all duration-300 group shadow-sm">
                             <i class="fas fa-trash-alt group-hover:rotate-12 transition-transform"></i>
                         </button>
-                        <button id="newChat" class="p-3 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white transition-all duration-300 shadow-lg group">
+                        <button id="newChat" class="p-3 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white transition-all duration-300 shadow group">
                             <i class="fas fa-plus group-hover:rotate-90 transition-transform"></i>
                         </button>
                     </div>
@@ -431,45 +431,45 @@
             </div>
 
             <!-- Zone de messages -->
-            <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-6 chat-container">
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-6 chat-container bg-white">
                 <!-- Message de bienvenue -->
                 <div class="text-center py-12 px-4">
-                    <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center shadow-2xl">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center shadow-lg border border-gray-200">
                         <i class="fas fa-robot text-4xl text-africa-orange"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-3">Bienvenue sur EduConnect Africa IA</h3>
-                    <p class="text-gray-400 max-w-2xl mx-auto mb-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Bienvenue sur EduConnect Africa IA</h3>
+                    <p class="text-gray-600 max-w-2xl mx-auto mb-8">
                         Votre assistant pédagogique intelligent pour l'éducation en Afrique. Sélectionnez une matière à gauche pour commencer votre apprentissage personnalisé.
                     </p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-4 rounded-xl border border-gray-700/30">
+                        <div class="bg-gradient-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <i class="fas fa-brain text-2xl text-africa-blue mb-3"></i>
-                            <h4 class="font-semibold text-white mb-2">IA Adaptative</h4>
-                            <p class="text-xs text-gray-400">Répond dans votre langue et s'adapte à votre niveau</p>
+                            <h4 class="font-semibold text-gray-900 mb-2">IA Adaptative</h4>
+                            <p class="text-xs text-gray-600">Répond dans votre langue et s'adapte à votre niveau</p>
                         </div>
-                        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-4 rounded-xl border border-gray-700/30">
+                        <div class="bg-gradient-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <i class="fas fa-book-open text-2xl text-africa-green mb-3"></i>
-                            <h4 class="font-semibold text-white mb-2">5 Matières</h4>
-                            <p class="text-xs text-gray-400">Mathématiques, Physique, Sciences, Littérature, Informatique</p>
+                            <h4 class="font-semibold text-gray-900 mb-2">5 Matières</h4>
+                            <p class="text-xs text-gray-600">Mathématiques, Physique, Sciences, Littérature, Informatique</p>
                         </div>
-                        <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-4 rounded-xl border border-gray-700/30">
+                        <div class="bg-gradient-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <i class="fas fa-wifi-slash text-2xl text-africa-orange mb-3"></i>
-                            <h4 class="font-semibold text-white mb-2">Hors Ligne</h4>
-                            <p class="text-xs text-gray-400">Consultez votre historique sans connexion Internet</p>
+                            <h4 class="font-semibold text-gray-900 mb-2">Hors Ligne</h4>
+                            <p class="text-xs text-gray-600">Consultez votre historique sans connexion Internet</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Zone de saisie -->
-            <div class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 border-t border-gray-700/30 p-5">
+            <div class="bg-gradient-to-r from-gray-50 to-white border-t border-gray-200 p-5">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-end space-x-4">
                         <div class="flex space-x-2">
-                            <button id="attachBtn" class="p-3 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl border border-gray-700/30 text-gray-400 hover:text-white transition-all duration-300 group">
+                            <button id="attachBtn" class="p-3 bg-white hover:bg-gray-50 rounded-xl border border-gray-300 text-gray-600 hover:text-gray-900 transition-all duration-300 group shadow-sm">
                                 <i class="fas fa-paperclip group-hover:rotate-12 transition-transform"></i>
                             </button>
-                            <button id="micBtn" class="p-3 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl border border-gray-700/30 text-gray-400 hover:text-white transition-all duration-300 group">
+                            <button id="micBtn" class="p-3 bg-white hover:bg-gray-50 rounded-xl border border-gray-300 text-gray-600 hover:text-gray-900 transition-all duration-300 group shadow-sm">
                                 <i class="fas fa-microphone group-hover:scale-110 transition-transform"></i>
                             </button>
                         </div>
@@ -480,13 +480,13 @@
                                     id="messageInput" 
                                     rows="1" 
                                     placeholder="Posez votre question ici en français ou en anglais..." 
-                                    class="w-full bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700/30 rounded-2xl p-4 pr-24 text-white placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-africa-orange focus:border-transparent shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                                    class="w-full bg-white border border-gray-300 rounded-2xl p-4 pr-24 text-gray-900 placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-africa-orange focus:border-transparent shadow-sm disabled:opacity-50 disabled:cursor-not-allowed text-base"
                                     disabled
                                 ></textarea>
                                 
                                 <div class="absolute right-3 bottom-3 flex items-center space-x-2">
                                     <span id="charCount" class="text-xs text-gray-500">0/2000</span>
-                                    <button id="sendBtn" class="p-3 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 group" disabled>
+                                    <button id="sendBtn" class="p-3 bg-gradient-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 group" disabled>
                                         <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
                                     </button>
                                 </div>
@@ -500,10 +500,10 @@
                                     </div>
                                     <div class="flex items-center space-x-1">
                                         <i class="fas fa-lightbulb"></i>
-                                        <span>Appuyez sur <kbd class="px-2 py-1 bg-gray-800 rounded-lg">Enter</kbd> pour envoyer</span>
+                                        <span>Appuyez sur <kbd class="px-2 py-1 bg-gray-100 rounded-lg border border-gray-300">Enter</kbd> pour envoyer</span>
                                     </div>
                                 </div>
-                                <div id="inputStatus" class="text-xs px-3 py-1 bg-gray-800 rounded-full text-gray-400">
+                                <div id="inputStatus" class="text-xs px-3 py-1 bg-gray-100 rounded-full text-gray-600 border border-gray-200">
                                     <i class="fas fa-info-circle mr-1"></i>Sélectionnez une matière
                                 </div>
                             </div>
@@ -515,53 +515,53 @@
     </div>
 
     <!-- Overlay pour mobile -->
-    <div id="overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden hidden transition-opacity"></div>
+    <div id="overlay" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden hidden transition-opacity"></div>
 
     <script>
         // Configuration de l'API DeepSeek
         const DEEPSEEK_API_KEY = "sk-702c2e402d684805b623d877a47910c7";
         const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
         
-        // Configuration des catégories avec couleurs améliorées
+        // Configuration des catégories
         const categories = {
             math: {
                 name: "Mathématiques",
                 description: "Algèbre, géométrie, calcul, statistiques et plus encore",
                 icon: "fa-calculator",
-                color: "text-blue-400",
-                gradient: "from-blue-900/30 to-blue-800/30",
+                color: "text-blue-600",
+                bgColor: "from-blue-50 to-blue-100",
                 prompt: "Tu es un tuteur expert en mathématiques. Tu aides les étudiants africains à comprendre les concepts mathématiques. Réponds de manière claire, avec des exemples concrets et adaptés au contexte africain."
             },
             physics: {
                 name: "Physique",
                 description: "Mécanique, électricité, thermodynamique, optique et plus",
                 icon: "fa-atom",
-                color: "text-green-400",
-                gradient: "from-green-900/30 to-green-800/30",
+                color: "text-green-600",
+                bgColor: "from-green-50 to-green-100",
                 prompt: "Tu es un tuteur expert en physique. Tu expliques les concepts physiques de manière simple avec des applications pratiques dans la vie quotidienne en Afrique. Utilise des exemples pertinents."
             },
             earth: {
                 name: "Sciences de la Terre",
                 description: "Géologie, climatologie, écologie, ressources naturelles",
                 icon: "fa-globe-africa",
-                color: "text-yellow-400",
-                gradient: "from-yellow-900/30 to-yellow-800/30",
+                color: "text-yellow-600",
+                bgColor: "from-yellow-50 to-yellow-100",
                 prompt: "Tu es un expert en sciences de la Terre spécialisé sur l'Afrique. Tu parles de géologie africaine, climat, ressources naturelles et environnement. Mets l'accent sur le contexte africain."
             },
             literature: {
                 name: "Littérature camerounaise",
                 description: "Auteurs, œuvres, littérature francophone et anglophone",
                 icon: "fa-book",
-                color: "text-purple-400",
-                gradient: "from-purple-900/30 to-purple-800/30",
+                color: "text-purple-600",
+                bgColor: "from-purple-50 to-purple-100",
                 prompt: "Tu es un expert en littérature camerounaise. Tu connais les auteurs classiques et contemporains, les œuvres majeures et les mouvements littéraires du Cameroun. Parle aussi bien français qu'anglais selon la langue de l'utilisateur."
             },
             computer: {
                 name: "Informatique",
                 description: "Programmation, réseaux, bases de données, IA",
                 icon: "fa-laptop-code",
-                color: "text-red-400",
-                gradient: "from-red-900/30 to-red-800/30",
+                color: "text-red-600",
+                bgColor: "from-red-50 to-red-100",
                 prompt: "Tu es un tuteur en informatique spécialisé pour les étudiants africains. Tu enseignes la programmation, les concepts informatiques avec des exemples pratiques et des conseils pour le marché du travail africain."
             }
         };
@@ -650,7 +650,7 @@
             // Mettre à jour l'affichage
             document.getElementById('currentCategory').textContent = catInfo.name;
             document.getElementById('categoryDescription').textContent = catInfo.description;
-            document.getElementById('categoryIcon').className = `w-12 h-12 rounded-xl bg-gradient-to-br ${catInfo.gradient} flex items-center justify-center`;
+            document.getElementById('categoryIcon').className = `w-12 h-12 rounded-xl bg-gradient-to-br ${catInfo.bgColor} flex items-center justify-center border ${catInfo.color.replace('text-', 'border-')}/20`;
             document.getElementById('categoryIcon').innerHTML = `<i class="fas ${catInfo.icon} text-2xl ${catInfo.color}"></i>`;
             
             // Activer la zone de saisie
@@ -671,32 +671,32 @@
             
             const welcomeMessage = `
                 <div class="flex items-start space-x-4 fade-in">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${catInfo.gradient} flex items-center justify-center flex-shrink-0">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${catInfo.bgColor} flex items-center justify-center flex-shrink-0 border ${catInfo.color.replace('text-', 'border-')}/20">
                         <i class="fas ${catInfo.icon} text-2xl ${catInfo.color}"></i>
                     </div>
                     <div class="flex-1">
                         <div class="message-bubble-ai rounded-2xl p-5">
                             <div class="flex items-center justify-between mb-3">
                                 <div class="flex items-center space-x-2">
-                                    <span class="font-bold text-white">Assistant ${catInfo.name}</span>
-                                    <span class="px-2 py-1 bg-gray-800 text-xs rounded-full text-gray-300">
+                                    <span class="font-bold text-gray-900">Assistant ${catInfo.name}</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-xs rounded-full text-gray-700 border border-gray-200">
                                         <i class="fas fa-robot mr-1"></i>IA
                                     </span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="px-2 py-0.5 bg-blue-900 text-blue-200 text-xs rounded-full">FR</span>
-                                    <span class="px-2 py-0.5 bg-green-900 text-green-200 text-xs rounded-full">EN</span>
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">FR</span>
+                                    <span class="px-2 py-0.5 bg-red-100 text-red-800 text-xs rounded-full">EN</span>
                                 </div>
                             </div>
-                            <p class="text-gray-100 mb-4">Bonjour ! Je suis votre assistant spécialisé en <span class="font-semibold text-white">${catInfo.name.toLowerCase()}</span>. Je suis ici pour vous aider à comprendre les concepts et répondre à vos questions.</p>
-                            <div class="bg-gray-900/50 rounded-xl p-4 mb-4">
-                                <p class="text-sm font-medium text-white mb-2 flex items-center">
+                            <p class="text-gray-700 mb-4">Bonjour ! Je suis votre assistant spécialisé en <span class="font-semibold text-gray-900">${catInfo.name.toLowerCase()}</span>. Je suis ici pour vous aider à comprendre les concepts et répondre à vos questions.</p>
+                            <div class="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
+                                <p class="text-sm font-medium text-gray-900 mb-2 flex items-center">
                                     <i class="fas fa-lightbulb mr-2 text-africa-yellow"></i>
                                     Exemple de question :
                                 </p>
-                                <p class="text-gray-300 text-sm">"${getExampleQuestion(currentCategory)}"</p>
+                                <p class="text-gray-600 text-sm">"${getExampleQuestion(currentCategory)}"</p>
                             </div>
-                            <div class="flex items-center space-x-2 text-xs text-gray-400">
+                            <div class="flex items-center space-x-2 text-xs text-gray-500">
                                 <i class="fas fa-info-circle"></i>
                                 <span>Je répondrai automatiquement dans la langue de votre message</span>
                             </div>
@@ -849,11 +849,11 @@
             messageElement.className = `flex items-start space-x-4 fade-in ${sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`;
             
             const avatar = sender === 'user' ? 
-                `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-africa-orange to-africa-yellow flex items-center justify-center flex-shrink-0 shadow-lg">
+                `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-africa-orange to-africa-yellow flex items-center justify-center flex-shrink-0 shadow">
                     <i class="fas fa-user text-white"></i>
                 </div>` :
-                `<div class="w-12 h-12 rounded-xl bg-gradient-to-br ${categories[currentCategory]?.gradient || 'from-gray-700 to-gray-800'} flex items-center justify-center flex-shrink-0">
-                    <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} ${categories[currentCategory]?.color || 'text-gray-300'} text-xl"></i>
+                `<div class="w-12 h-12 rounded-xl bg-gradient-to-br ${categories[currentCategory]?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center flex-shrink-0 border ${categories[currentCategory]?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
+                    <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} ${categories[currentCategory]?.color || 'text-gray-600'} text-xl"></i>
                 </div>`;
             
             const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -870,8 +870,8 @@
                             </span>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-xs text-white/80">${time}</span>
-                            <span class="px-2 py-0.5 bg-${langColor}-900 text-${langColor}-200 text-xs rounded-full">
+                            <span class="text-xs text-white/90">${time}</span>
+                            <span class="px-2 py-0.5 bg-${langColor}-100 text-${langColor}-800 text-xs rounded-full">
                                 ${lang === 'fr' ? 'FR' : 'EN'}
                             </span>
                         </div>
@@ -881,19 +881,19 @@
                 `<div class="message-bubble-ai rounded-2xl p-5 max-w-2xl">
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center space-x-2">
-                            <span class="font-bold text-white">Assistant IA</span>
-                            <span class="px-2 py-0.5 bg-gray-800 text-xs rounded-full text-gray-300">
+                            <span class="font-bold text-gray-900">Assistant IA</span>
+                            <span class="px-2 py-0.5 bg-gray-100 text-xs rounded-full text-gray-700 border border-gray-200">
                                 <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} mr-1"></i>${categories[currentCategory]?.name || 'Assistant'}
                             </span>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-xs text-gray-400">${time}</span>
-                            <span class="px-2 py-0.5 bg-${langColor}-900 text-${langColor}-200 text-xs rounded-full">
+                            <span class="text-xs text-gray-500">${time}</span>
+                            <span class="px-2 py-0.5 bg-${langColor}-100 text-${langColor}-800 text-xs rounded-full">
                                 ${lang === 'fr' ? 'FR' : 'EN'}
                             </span>
                         </div>
                     </div>
-                    <div class="text-gray-100 whitespace-pre-wrap">${escapeHtml(message)}</div>
+                    <div class="text-gray-700 whitespace-pre-wrap">${escapeHtml(message)}</div>
                 </div>`;
             
             messageElement.innerHTML = `${avatar}${bubble}`;
@@ -932,19 +932,19 @@
             typingElement.className = 'flex items-start space-x-4 fade-in';
             typingElement.id = 'typingIndicator';
             typingElement.innerHTML = `
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${categories[currentCategory]?.gradient || 'from-gray-700 to-gray-800'} flex items-center justify-center flex-shrink-0">
-                    <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} ${categories[currentCategory]?.color || 'text-gray-300'} text-xl"></i>
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${categories[currentCategory]?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center flex-shrink-0 border ${categories[currentCategory]?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
+                    <i class="fas ${categories[currentCategory]?.icon || 'fa-robot'} ${categories[currentCategory]?.color || 'text-gray-600'} text-xl"></i>
                 </div>
                 <div class="message-bubble-ai rounded-2xl p-5">
                     <div class="flex items-center space-x-2 mb-2">
-                        <span class="font-medium text-gray-300">L'IA réfléchit</span>
+                        <span class="font-medium text-gray-700">L'IA réfléchit</span>
                         <div class="typing-indicator">
                             <span></span>
                             <span></span>
                             <span></span>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-400">Je prépare une réponse adaptée à votre question...</p>
+                    <p class="text-sm text-gray-500">Je prépare une réponse adaptée à votre question...</p>
                 </div>
             `;
             chatContainer.appendChild(typingElement);
@@ -1024,7 +1024,7 @@
             if (Object.keys(history).length === 0) {
                 container.innerHTML = `
                     <div class="p-4 text-center text-gray-500 text-sm">
-                        <i class="fas fa-comment-slash text-2xl mb-2 text-gray-600"></i>
+                        <i class="fas fa-comment-slash text-2xl mb-2 text-gray-400"></i>
                         <p>Aucune discussion récente</p>
                         <p class="text-xs mt-1">Commencez une nouvelle conversation</p>
                     </div>
@@ -1056,16 +1056,16 @@
                 const catInfo = categories[conv.category];
                 
                 html += `
-                    <div class="p-3 hover:bg-gray-700/50 cursor-pointer rounded-lg transition m-2" onclick="selectCategory('${conv.category}'); closeNavbarDropdown();">
+                    <div class="p-3 hover:bg-gray-50 cursor-pointer rounded-lg transition m-2 border border-gray-100" onclick="selectCategory('${conv.category}'); closeNavbarDropdown();">
                         <div class="flex items-start space-x-3">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br ${catInfo?.gradient || 'from-gray-700 to-gray-800'} flex items-center justify-center flex-shrink-0">
-                                <i class="fas ${catInfo?.icon || 'fa-comment'} ${catInfo?.color || 'text-gray-300'}"></i>
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br ${catInfo?.bgColor || 'from-gray-50 to-gray-100'} flex items-center justify-center flex-shrink-0 border ${catInfo?.color?.replace('text-', 'border-') || 'border-gray-200'}/20">
+                                <i class="fas ${catInfo?.icon || 'fa-comment'} ${catInfo?.color || 'text-gray-500'}"></i>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex justify-between items-start">
                                     <div>
-                                        <div class="font-medium text-sm text-white truncate">${catInfo?.name || conv.category}</div>
-                                        <div class="text-xs text-gray-400 truncate">${conv.user.substring(0, 60)}${conv.user.length > 60 ? '...' : ''}</div>
+                                        <div class="font-medium text-sm text-gray-900 truncate">${catInfo?.name || conv.category}</div>
+                                        <div class="text-xs text-gray-600 truncate">${conv.user.substring(0, 60)}${conv.user.length > 60 ? '...' : ''}</div>
                                     </div>
                                     <div class="flex flex-col items-end">
                                         <span class="text-xs text-gray-500">${timeStr}</span>
@@ -1073,7 +1073,7 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2 mt-2">
-                                    <span class="px-2 py-0.5 text-xs ${conv.lang === 'fr' ? 'bg-blue-900/30 text-blue-300' : 'bg-red-900/30 text-red-300'} rounded-full">
+                                    <span class="px-2 py-0.5 text-xs ${conv.lang === 'fr' ? 'bg-blue-50 text-blue-700 border border-blue-100' : 'bg-red-50 text-red-700 border border-red-100'} rounded-full">
                                         ${conv.lang === 'fr' ? 'FR' : 'EN'}
                                     </span>
                                     <span class="text-xs text-gray-500">
@@ -1098,7 +1098,7 @@
         function updateLanguageIndicator(lang) {
             const indicator = document.getElementById('langIndicator');
             indicator.innerHTML = `
-                <span class="px-2 py-0.5 ${lang === 'fr' ? 'bg-blue-900 text-blue-200' : 'bg-red-900 text-red-200'} rounded text-xs font-medium">
+                <span class="px-2 py-0.5 ${lang === 'fr' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'} rounded text-xs font-medium">
                     ${lang === 'fr' ? 'FR' : 'EN'}
                 </span>
             `;
