@@ -1,3 +1,4 @@
+
 // Configuration API
 const API_TOKEN = '2ad1ffe2de6acb841251b8f5694ec531e074f130';
 const API_BASE_URL = 'https://aaapis.com/api/v1';
@@ -5,7 +6,182 @@ const API_BASE_URL = 'https://aaapis.com/api/v1';
 // Liste des pays africains (stockée en mémoire pour performances)
 let africanCountries = [];
 
-// Éléments DOM
+// Éléments DOM pour le mot de passe
+const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirmPassword');
+const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+const passwordStrengthText = document.getElementById('passwordStrengthText');
+const passwordScore = document.getElementById('passwordScore');
+const passwordMatchMessage = document.getElementById('passwordMatchMessage');
+const eyeToggles = document.querySelectorAll('.eye-toggle');
+
+// Éléments des exigences
+const reqLength = document.getElementById('reqLength');
+const reqUppercase = document.getElementById('reqUppercase');
+const reqLowercase = document.getElementById('reqLowercase');
+const reqNumber = document.getElementById('reqNumber');
+const reqSpecial = document.getElementById('reqSpecial');
+
+// Charger les pays africains au chargement de la page
+window.addEventListener('DOMContentLoaded', async () => {
+    await loadAfricanCountries();
+    
+    // Gestion de l'affichage/masquage des mots de passe
+    eyeToggles.forEach(eye => {
+        eye.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const isPassword = input.type === 'password';
+            
+            input.type = isPassword ? 'text' : 'password';
+            this.className = isPassword ? 'fas fa-eye-slash eye-toggle absolute right-4 top-4 text-yellow-500' 
+                                        : 'fas fa-eye eye-toggle absolute right-4 top-4 text-gray-400';
+        });
+    });
+    
+    // Initialiser la vérification du mot de passe
+    passwordInput.addEventListener('input', checkPasswordStrength);
+    confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+});
+
+// Fonction pour vérifier la force du mot de passe
+function checkPasswordStrength() {
+    const password = passwordInput.value;
+    let score = 0;
+    
+    // Vérifier chaque critère
+    const hasLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*]/.test(password);
+    
+    // Calcul du score (chaque critère vaut 20 points)
+    if (hasLength) score += 20;
+    if (hasUppercase) score += 20;
+    if (hasLowercase) score += 20;
+    if (hasNumber) score += 20;
+    if (hasSpecial) score += 20;
+    
+    // Mettre à jour les icônes des exigences
+    updateRequirementIcon(reqLength, hasLength);
+    updateRequirementIcon(reqUppercase, hasUppercase);
+    updateRequirementIcon(reqLowercase, hasLowercase);
+    updateRequirementIcon(reqNumber, hasNumber);
+    updateRequirementIcon(reqSpecial, hasSpecial);
+    
+    // Mettre à jour la barre de force avec animation
+    updateStrengthBar(score);
+    
+    // Vérifier la correspondance si le champ de confirmation n'est pas vide
+    if (confirmPasswordInput.value) {
+        checkPasswordMatch();
+    }
+}
+
+// Mettre à jour l'icône d'une exigence
+function updateRequirementIcon(element, isMet) {
+    if (isMet) {
+        element.className = 'fas fa-check-circle requirement-icon requirement-met';
+        element.style.animation = 'textPop 0.3s ease';
+    } else {
+        element.className = 'fas fa-times-circle requirement-icon requirement-not-met';
+    }
+}
+
+// Mettre à jour la barre de force avec animation (sans dégradé)
+function updateStrengthBar(score) {
+    // Animation de la barre
+    const barWidth = score;
+    passwordStrengthBar.style.width = `${barWidth}%`;
+    
+    // Animation pour le remplissage
+    passwordStrengthBar.style.animation = 'none';
+    setTimeout(() => {
+        passwordStrengthBar.style.animation = 'barFill 0.5s ease-out';
+    }, 10);
+    
+    // Retirer les anciennes classes
+    passwordStrengthBar.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+    
+    // Déterminer le niveau de force et appliquer la classe correspondante
+    let strengthLevel = '';
+    let textClass = '';
+    
+    if (score <= 40) {
+        strengthLevel = 'Faible';
+        textClass = 'strength-weak';
+        passwordStrengthBar.classList.add('strength-weak');
+    } else if (score <= 80) {
+        strengthLevel = 'Moyen';
+        textClass = 'strength-medium';
+        passwordStrengthBar.classList.add('strength-medium');
+    } else {
+        strengthLevel = 'Fort';
+        textClass = 'strength-strong';
+        passwordStrengthBar.classList.add('strength-strong');
+    }
+    
+    // Mettre à jour le texte avec animation
+    passwordStrengthText.textContent = `Force: ${strengthLevel}`;
+    passwordStrengthText.className = `password-strength-text ${textClass}`;
+    passwordStrengthText.style.animation = 'textPop 0.3s ease';
+    
+    // Mettre à jour le score
+    passwordScore.textContent = `${score}%`;
+    passwordScore.className = `password-score ${textClass}`;
+    
+    // Animation du score
+    passwordScore.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+        passwordScore.style.transform = 'scale(1)';
+    }, 200);
+}
+
+// Vérifier si les mots de passe correspondent
+function checkPasswordMatch() {
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    
+    // Effacer le message précédent
+    passwordMatchMessage.innerHTML = '';
+    
+    if (confirmPassword.length === 0) {
+        // Masquer le message si le champ est vide
+        passwordMatchMessage.classList.add('hidden');
+        confirmPasswordInput.classList.remove('border-red-500', 'border-green-500');
+        return;
+    }
+    
+    if (password === confirmPassword && password.length > 0) {
+        // Les mots de passe correspondent
+        passwordMatchMessage.innerHTML = `
+            <i class="fas fa-check-circle match-success"></i>
+            <span class="match-success">Les mots de passe correspondent</span>
+        `;
+        passwordMatchMessage.classList.remove('hidden', 'match-error');
+        passwordMatchMessage.classList.add('match-success');
+        confirmPasswordInput.classList.remove('border-red-500');
+        confirmPasswordInput.classList.add('border-green-500');
+        
+        // Animation du message
+        passwordMatchMessage.style.animation = 'textPop 0.3s ease';
+    } else if (password.length > 0) {
+        // Les mots de passe ne correspondent pas
+        passwordMatchMessage.innerHTML = `
+            <i class="fas fa-times-circle match-error"></i>
+            <span class="match-error">Les mots de passe ne correspondent pas</span>
+        `;
+        passwordMatchMessage.classList.remove('hidden', 'match-success');
+        passwordMatchMessage.classList.add('match-error');
+        confirmPasswordInput.classList.remove('border-green-500');
+        confirmPasswordInput.classList.add('border-red-500');
+        
+        // Animation du message
+        passwordMatchMessage.style.animation = 'textPop 0.3s ease';
+    }
+}
+
+// Éléments DOM pour le formulaire
 const form = document.getElementById('registrationForm');
 const paysInput = document.getElementById('paysInput');
 const paysSelected = document.getElementById('paysSelected');
@@ -17,11 +193,6 @@ const telephoneInput = document.getElementById('telephone');
 const submitBtn = document.getElementById('submitBtn');
 const btnText = document.getElementById('btnText');
 const btnLoader = document.getElementById('btnLoader');
-
-// Charger les pays africains au chargement de la page
-window.addEventListener('DOMContentLoaded', async () => {
-    await loadAfricanCountries();
-});
 
 // Fonction pour charger les pays africains via l'API RestCountries
 async function loadAfricanCountries() {
@@ -50,25 +221,6 @@ async function loadAfricanCountries() {
         console.error('Erreur lors du chargement des pays:', error);
         africanCountries = getFallbackAfricanCountries();
     }
-}
-
-// Vérifier si un pays est africain (liste de secours)
-function isAfricanCountry(countryName) {
-    const africanCountryNames = [
-        'Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina Faso', 'Burundi',
-        'Cameroon', 'Cape Verde', 'Central African Republic', 'Chad', 'Comoros',
-        'Congo', 'Democratic Republic of the Congo', 'Djibouti', 'Egypt',
-        'Equatorial Guinea', 'Eritrea', 'Ethiopia', 'Gabon', 'Gambia', 'Ghana',
-        'Guinea', 'Guinea-Bissau', 'Ivory Coast', 'Kenya', 'Lesotho', 'Liberia',
-        'Libya', 'Madagascar', 'Malawi', 'Mali', 'Mauritania', 'Mauritius',
-        'Morocco', 'Mozambique', 'Namibia', 'Niger', 'Nigeria', 'Rwanda',
-        'Sao Tome and Principe', 'Senegal', 'Seychelles', 'Sierra Leone',
-        'Somalia', 'South Africa', 'South Sudan', 'Sudan', 'Swaziland',
-        'Tanzania', 'Togo', 'Tunisia', 'Uganda', 'Zambia', 'Zimbabwe'
-    ];
-    return africanCountryNames.some(name => 
-        countryName.toLowerCase().includes(name.toLowerCase())
-    );
 }
 
 // Liste de secours des pays africains avec indicatifs
@@ -352,6 +504,27 @@ form.addEventListener('submit', async (e) => {
         isValid = false;
     }
     
+    // Validation Mot de passe
+    const password = passwordInput.value;
+    if (password.length < 8) {
+        showError('password', 'Le mot de passe doit contenir au moins 8 caractères');
+        isValid = false;
+    }
+    
+    // Validation force du mot de passe
+    const passwordScoreValue = parseInt(passwordScore.textContent);
+    if (passwordScoreValue < 60) {
+        showError('password', 'Le mot de passe est trop faible. Améliorez-le pour continuer.');
+        isValid = false;
+    }
+    
+    // Validation Confirmation mot de passe
+    const confirmPassword = confirmPasswordInput.value;
+    if (password !== confirmPassword) {
+        showError('confirmPassword', '❌ Les mots de passe ne correspondent pas');
+        isValid = false;
+    }
+    
     // Validation Langue
     const langue = document.getElementById('langue').value;
     if (!langue) {
@@ -396,6 +569,7 @@ form.addEventListener('submit', async (e) => {
             prenom: prenom,
             sexe: sexe.value,
             email: email,
+            password: password,
             langue: langue,
             pays: paysSelected.value,
             telephone: countryCode.value + telephone
@@ -411,6 +585,19 @@ form.addEventListener('submit', async (e) => {
         paysInput.value = '';
         paysSelected.value = '';
         countryCode.value = '';
+        passwordStrengthBar.style.width = '0%';
+        passwordStrengthText.textContent = 'Force du mot de passe';
+        passwordScore.textContent = '';
+        passwordMatchMessage.innerHTML = '';
+        passwordMatchMessage.classList.add('hidden');
+        
+        // Réinitialiser les icônes des exigences
+        [reqLength, reqUppercase, reqLowercase, reqNumber, reqSpecial].forEach(icon => {
+            icon.className = 'fas fa-circle requirement-icon requirement-not-met';
+        });
+        
+        // Réinitialiser la couleur de la barre
+        passwordStrengthBar.className = 'password-strength-bar';
         
         // Masquer le loader
         btnText.classList.remove('hidden');
@@ -436,4 +623,3 @@ function showError(fieldId, message) {
         field.classList.remove('error-shake');
     }, 300);
 }
-
