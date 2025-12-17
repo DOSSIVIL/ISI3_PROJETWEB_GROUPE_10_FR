@@ -5,7 +5,7 @@ export class Document {
     this.dateCreation = data.dateCreation || new Date();
     this.type = data.type || ""; // pdf, image, etc.
     this.url = data.url || ""; // si stocké dans Firebase Storage
-    this.proprietaireId = data.proprietaireId || null; // qui l'a soumis
+    this.utilisateurId = data.utilisateurId || null; // qui l'a soumis le document
   }
 
   toFirestore() {
@@ -14,7 +14,7 @@ export class Document {
       dateCreation: this.dateCreation,
       type: this.type,
       url: this.url,
-      proprietaireId: this.proprietaireId,
+      utilisateurId: this.utilisateurId,
     };
   }
 }

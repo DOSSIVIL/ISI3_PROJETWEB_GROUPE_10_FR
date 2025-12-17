@@ -5,10 +5,11 @@ export class Utilisateur {
     this.prenom = data.prenom || "";
     this.email = data.email || "";
     this.telephone = data.telephone || "";
-    this.langue = data.langue || "fr"; // par défaut français ?
-    this.typeUtilisateur = data.typeUtilisateur || "utilisateur"; // 'etudiant', 'tuteur', etc.
+    this.langue = data.langue || "fr";
+    this.typeUtilisateur = data.typeUtilisateur || "utilisateur";
     this.sexe = data.sexe || "";
     this.dateCreation = data.dateCreation || new Date();
+    this.matieresIds = data.matieresIds || [];
   }
 
   get nomComplet() {
@@ -25,6 +26,7 @@ export class Utilisateur {
       typeUtilisateur: this.typeUtilisateur,
       sexe: this.sexe,
       dateCreation: this.dateCreation,
+      matieresIds: this.matieresIds,
     };
   }
 }

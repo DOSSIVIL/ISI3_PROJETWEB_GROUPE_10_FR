@@ -5,7 +5,6 @@ export class Seance {
     this.heureDebut = data.heureDebut || "";
     this.heureFin = data.heureFin || "";
     this.typeSeance = data.typeSeance || "";
-    // Relations : tu stockeras probablement les IDs
     this.etudiantId = data.etudiantId || null;
     this.tuteurId = data.tuteurId || null;
     this.matiereId = data.matiereId || null;

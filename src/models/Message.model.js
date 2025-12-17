@@ -2,9 +2,9 @@ export class Message {
   constructor(data = {}) {
     this.id = data.id || null;
     this.contenu = data.contenu || "";
-    this.statut = data.statut || false; // boolean lu/non lu ?
+    this.statut = data.statut || false;
     this.dateEnvoi = data.dateEnvoi || new Date();
-    this.envoyeurId = data.envoyeurId || null; // utilisateur qui envoie
+    this.envoyeurId = data.envoyeurId || null;
     this.destinataireId = data.destinataireId || null;
   }
 

@@ -8,6 +8,7 @@ export class Tuteur extends Utilisateur {
     this.grade = data.grade || "";
     this.status = data.status || false;
     this.typeUtilisateur = "tuteur";
+    this.matieresIds = data.matieresIds || [];
   }
 
   toFirestore() {
@@ -16,6 +17,7 @@ export class Tuteur extends Utilisateur {
       specialite: this.specialite,
       grade: this.grade,
       status: this.status,
+      matieresIds: this.matieresIds,
     };
   }
 }
