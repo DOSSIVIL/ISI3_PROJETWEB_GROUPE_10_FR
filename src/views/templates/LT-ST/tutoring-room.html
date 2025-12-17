@@ -1,0 +1,2306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salle de Tutorat - EduConnect Africa</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles personnalisés -->
+    <link rel="stylesheet" href="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\css\LT-ST\tutoring-room.css">
+    
+    <!-- PeerJS (déplacé dans head pour être disponible plus tôt) -->
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    
+    <style>
+        .whiteboard-modal {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.3s ease-out;
+            overflow: hidden;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tool-btn.active {
+            background-color: #3B82F6;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+        
+        .color-option.selected {
+            border-color: #000;
+            box-shadow: 0 0 0 2px white;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    /* ============================================
+       STYLES IA - ADAPTÉS À VOTRE PALETTE
+       ============================================ */
+    
+    /* Bouton flottant IA */
+    .ai-floating-btn {
+        position: fixed;
+        right: 25px;
+        bottom: 25px;
+        width: 65px;
+        height: 65px;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(26, 59, 82, 0.4);
+        z-index: 999;
+        border: 3px solid white;
+        font-size: 1.8rem;
+        transition: all 0.3s ease;
+        animation: pulse-ai 2s infinite;
+    }
+    
+    .ai-floating-btn:hover {
+        transform: scale(1.15);
+        box-shadow: 0 10px 30px rgba(26, 59, 82, 0.6);
+        background: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-blue) 100%);
+    }
+    
+    .ai-floating-btn.active {
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-blue) 100%);
+        transform: rotate(45deg);
+    }
+    
+    /* Animation pulsation pour attirer l'attention */
+    @keyframes pulse-ai {
+        0% { box-shadow: 0 6px 20px rgba(26, 59, 82, 0.4); }
+        50% { box-shadow: 0 6px 30px rgba(26, 59, 82, 0.8); }
+        100% { box-shadow: 0 6px 20px rgba(26, 59, 82, 0.4); }
+    }
+    
+    /* Badge de notification */
+    .ai-floating-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--error);
+        color: white;
+        font-size: 0.7rem;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        border: 2px solid white;
+        animation: badge-pulse 1.5s infinite;
+    }
+    
+    @keyframes badge-pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    /* Panel IA principal */
+    .ai-panel {
+        position: fixed;
+        right: 25px;
+        bottom: 100px;
+        width: 380px;
+        max-height: 550px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 3px solid var(--primary-blue);
+    }
+    
+    .ai-panel.hidden {
+        display: none;
+    }
+    
+    /* En-tête du panel */
+    .ai-header {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
+        color: white;
+        padding: 18px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .ai-header h4 {
+        margin: 0;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.2rem;
+    }
+    
+    .ai-header h4 i {
+        color: var(--primary-yellow);
+        font-size: 1.4rem;
+    }
+    
+    .ai-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 1.3rem;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+    
+    .ai-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
+    }
+    
+    /* Tabs de navigation */
+    .ai-tabs {
+        display: flex;
+        background: var(--gray-100);
+        border-bottom: 2px solid var(--gray-100);
+    }
+    
+    .ai-tab {
+        flex: 1;
+        padding: 14px 10px;
+        text-align: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--gray-800);
+        transition: all 0.3s;
+        border-bottom: 3px solid transparent;
+        font-size: 0.95rem;
+    }
+    
+    .ai-tab:hover {
+        background: white;
+        color: var(--primary-blue);
+    }
+    
+    .ai-tab.active {
+        background: white;
+        color: var(--primary-blue);
+        border-bottom: 3px solid var(--primary-teal);
+    }
+    
+    /* Contenu des tabs */
+    .ai-content {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        max-height: 380px;
+        background: white;
+    }
+    
+    /* Actions rapides IA */
+    .ai-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .ai-action-btn {
+        padding: 15px 12px;
+        background: linear-gradient(to bottom, #ffffff 0%, var(--gray-50) 100%);
+        border: 2px solid var(--gray-100);
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        text-align: center;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: var(--gray-800);
+    }
+    
+    .ai-action-btn:hover {
+        background: linear-gradient(to bottom, var(--gray-50) 0%, #e5e7eb 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        border-color: var(--primary-teal);
+    }
+    
+    .ai-action-btn.active {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
+        color: white;
+        border-color: var(--primary-blue);
+        box-shadow: 0 6px 15px rgba(8, 145, 130, 0.3);
+    }
+    
+    .ai-action-btn i {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+    }
+    
+    /* Couleurs des icônes par fonction */
+    .ai-action-btn[data-action="explain"] i { color: var(--primary-blue); }
+    .ai-action-btn[data-action="exercise"] i { color: var(--primary-teal); }
+    .ai-action-btn[data-action="questions"] i { color: var(--primary-purple); }
+    .ai-action-btn[data-action="correct"] i { color: var(--success); }
+    .ai-action-btn[data-action="summarize"] i { color: var(--warning); }
+    .ai-action-btn[data-action="resources"] i { color: #8B7355; }
+    
+    .ai-action-btn.active i {
+        color: white !important;
+    }
+    
+    /* Zone de saisie */
+    .ai-input-container {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+    
+    .ai-input {
+        flex: 1;
+        padding: 14px;
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        font-size: 0.95rem;
+        resize: none;
+        min-height: 70px;
+        max-height: 120px;
+        font-family: inherit;
+        color: var(--gray-800);
+        background: var(--gray-50);
+        transition: border-color 0.3s;
+    }
+    
+    .ai-input:focus {
+        outline: none;
+        border-color: var(--primary-teal);
+        box-shadow: 0 0 0 3px rgba(8, 145, 130, 0.1);
+    }
+    
+    .ai-input::placeholder {
+        color: var(--gray-400);
+    }
+    
+    /* Bouton d'envoi */
+    .ai-send-btn {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0 22px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 60px;
+    }
+    
+    .ai-send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(26, 59, 82, 0.3);
+    }
+    
+    .ai-send-btn:active {
+        transform: translateY(0);
+    }
+    
+    /* Zone de réponse */
+    .ai-response {
+        background: linear-gradient(to bottom, var(--gray-50) 0%, #ffffff 100%);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+        border-left: 4px solid var(--primary-teal);
+        max-height: 250px;
+        overflow-y: auto;
+        border: 1px solid var(--gray-200);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .ai-response h5 {
+        margin: 0 0 12px 0;
+        color: var(--gray-800);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+    }
+    
+    .ai-response h5 i {
+        color: var(--primary-teal);
+    }
+    
+    .ai-response p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--gray-700);
+    }
+    
+    .ai-response .list-number {
+        color: var(--primary-blue);
+        font-weight: bold;
+        margin-right: 5px;
+    }
+    
+    .ai-response .list-bullet {
+        color: var(--primary-teal);
+        margin-right: 8px;
+    }
+    
+    /* Indicateur de chargement */
+    .ai-response.loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-height: 100px;
+    }
+    
+    .ai-response.loading p {
+        color: var(--gray-600);
+        font-style: italic;
+    }
+    
+    /* Boutons d'action dans la réponse */
+    .ai-response-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .ai-response-actions button {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        border: 2px solid var(--gray-200);
+        background: white;
+        color: var(--gray-700);
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .ai-response-actions button:hover {
+        background: var(--gray-50);
+        border-color: var(--primary-teal);
+        color: var(--primary-blue);
+    }
+    
+    /* Contenu des autres tabs */
+    .ai-tab-content {
+        background: white;
+    }
+    
+    .ai-tab-content.hidden {
+        display: none;
+    }
+    
+    /* Notification IA */
+    .ai-notification {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        border-left: 5px solid var(--primary-teal);
+        z-index: 1001;
+        animation: slideInRight 0.4s ease-out;
+        max-width: 350px;
+        border: 1px solid var(--gray-200);
+    }
+    
+    .ai-notification strong {
+        color: var(--primary-blue);
+        font-size: 1rem;
+    }
+    
+    .ai-notification p {
+        margin: 8px 0 0 0;
+        color: var(--gray-700);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    /* Suggestions dans le chat */
+    .chat-ai-suggestion {
+        background: linear-gradient(to right, #f0f9ff 0%, #e0f2fe 100%);
+        border: 2px solid #bae6fd;
+        border-radius: 12px;
+        padding: 15px;
+        margin: 10px 0;
+        border-left: 4px solid var(--primary-teal);
+    }
+    
+    .chat-ai-suggestion small {
+        color: var(--primary-blue);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .chat-ai-suggestion p {
+        color: #0c4a6e;
+        margin: 0 0 12px 0;
+        line-height: 1.5;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .ai-panel {
+            width: calc(100vw - 50px);
+            right: 15px;
+            bottom: 80px;
+            max-height: 70vh;
+        }
+        
+        .ai-floating-btn {
+            right: 15px;
+            bottom: 15px;
+            width: 60px;
+            height: 60px;
+        }
+        
+        .ai-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    /* Barre de défilement personnalisée */
+    .ai-content::-webkit-scrollbar,
+    .ai-response::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .ai-content::-webkit-scrollbar-track {
+        background: var(--gray-100);
+        border-radius: 4px;
+    }
+    
+    .ai-content::-webkit-scrollbar-thumb {
+        background: var(--primary-teal);
+        border-radius: 4px;
+    }
+    
+    .ai-content::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-blue);
+    }
+    
+    /* Animation d'entrée du panel */
+    @keyframes panelSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .ai-panel:not(.hidden) {
+        animation: panelSlideUp 0.3s ease-out;
+    }
+    
+    /* Style pour les erreurs */
+    .ai-error {
+        border-left-color: var(--error) !important;
+    }
+    
+    .ai-error h5 i {
+        color: var(--error);
+    }
+    
+    /* Style pour les succès */
+    .ai-success {
+        border-left-color: var(--success) !important;
+    }
+    
+    .ai-success h5 i {
+        color: var(--success);
+    }
+
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Barre supérieure -->
+    <header class="session-header">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <!-- Informations session -->
+                <div class="flex items-center gap-4">
+                    <a href="tutor-list.html" class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <div>
+                        <h1 class="session-title">
+                            <i class="fas fa-video"></i>
+                            Session de Tutorat en Direct
+                        </h1>
+                        <div class="session-info">
+                            <span class="tutor-info">
+                                <i class="fas fa-user-graduate"></i>
+                                <span id="tutor-name">Dr. Marie Curie</span>
+                            </span>
+                            <span class="subject-badge" id="subject-badge">Physique</span>
+                            <span class="session-timer" id="session-timer">00:00:00</span>
+                            <span class="connection-status">
+                                <span class="status-indicator online"></span>
+                                <span id="connection-text">Connecté</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contrôles rapides -->
+                <div class="session-controls">
+                    <div class="connection-info">
+                        <i class="fas fa-signal"></i>
+                        <span id="connection-quality">Stable</span>
+                        <span class="ping-display">Ping: <span id="ping-value">24ms</span></span>
+                    </div>
+                    
+                    <button id="help-btn" class="control-button" aria-label="Aide">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    
+                    <button id="settings-btn" class="control-button" aria-label="Paramètres">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    
+                    <div class="more-menu">
+                        <button class="control-button" aria-label="Plus d'options">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="more-dropdown">
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-volume-up mr-2"></i>Réglages audio
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-video mr-2"></i>Réglages vidéo
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-keyboard mr-2"></i>Raccourcis clavier
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-download mr-2"></i>Télécharger chat
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-flag mr-2"></i>Signaler un problème
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="container mx-auto p-4">
+        <div class="session-grid">
+            <!-- Colonne vidéos -->
+            <div class="videos-column">
+                <!-- Vidéo tuteur -->
+                <div class="video-main">
+                    <div class="video-container">
+                        <!-- Chargement -->
+                        <div id="video-loading" class="video-loading">
+                            <div class="loading-content">
+                                <div class="loading-spinner-large"></div>
+                                <p>Connexion au flux vidéo...</p>
+                                <p class="loading-note">Initialisation de WebRTC...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Placeholder -->
+                        <div id="tutor-placeholder" class="video-placeholder">
+                            <div class="placeholder-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h3 id="placeholder-tutor-name">Dr. Marie Curie</h3>
+                            <p id="placeholder-tutor-subject">Tuteur en Physique</p>
+                            <p class="placeholder-note">La vidéo commencera lorsque le tuteur rejoindra</p>
+                        </div>
+                        
+                        <!-- Élément vidéo -->
+                        <video id="tutor-video" class="video-element" autoplay playsinline></video>
+                        
+                        <!-- Indicateur de connexion -->
+                        <div id="tutor-connection-status" class="connection-indicator hidden">
+                            <i class="fas fa-wifi"></i>
+                            <span>Connexion en cours...</span>
+                        </div>
+                    </div>
+                    <div class="video-overlay">
+                        <div class="video-info">
+                            <div>
+                                <h3 id="tutor-name-display">Dr. Marie Curie</h3>
+                                <p>Tuteur en Physique • <span class="live-badge">En direct</span></p>
+                            </div>
+                            <div class="video-tags">
+                                <span class="expert-tag">
+                                    <i class="fas fa-crown"></i>Expert
+                                </span>
+                                <span class="rating-tag">
+                                    <i class="fas fa-star"></i>4.9/5
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grille inférieure -->
+                <div class="video-grid">
+                    <!-- Vidéo étudiant -->
+                    <div class="video-student">
+                        <div class="video-container">
+                            <div id="student-placeholder" class="student-placeholder">
+                                <div class="student-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h4>Vous</h4>
+                                <p>Étudiant</p>
+                            </div>
+                            <video id="student-video" class="video-element" autoplay playsinline muted></video>
+                        </div>
+                        <div class="video-overlay">
+                            <div class="student-controls">
+                                <div>
+                                    <h4>Vous</h4>
+                                    <p>Étudiant</p>
+                                </div>
+                                <div class="control-buttons">
+                                    <button id="toggle-audio" class="audio-button active" 
+                                            aria-label="Activer/désactiver le microphone"
+                                            aria-pressed="true">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                    <button id="toggle-video" class="video-button active"
+                                            aria-label="Activer/désactiver la caméra"
+                                            aria-pressed="true">
+                                        <i class="fas fa-video"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tableau blanc -->
+                    <div class="whiteboard-placeholder">
+                        <div class="whiteboard-icon">
+                            <i class="fas fa-chalkboard"></i>
+                        </div>
+                        <h4>Tableau Blanc Collaboratif</h4>
+                        <p>Dessinez, écrivez et collaborez en temps réel</p>
+                        <button id="open-whiteboard" class="whiteboard-button">
+                            <i class="fas fa-external-link-alt"></i>
+                            Ouvrir le tableau
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne chat et outils -->
+            <div class="tools-column">
+                <!-- Chat -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3>
+                            <i class="fas fa-comments"></i>
+                            Chat de la session
+                            <span class="participant-count" id="participant-count">2 participants</span>
+                        </h3>
+                    </div>
+                    
+                    <!-- Messages -->
+                    <div id="chat-messages" class="chat-messages">
+                        <!-- Messages pré-chargés -->
+                        <div class="message tutor-message">
+                            <div class="message-header">
+                                <strong>Dr. Marie Curie</strong> • <span class="message-time">10:00</span>
+                            </div>
+                            <div class="message-content">
+                                Bonjour ! Bienvenue dans notre session de tutorat. Comment puis-je vous aider aujourd'hui ?
+                            </div>
+                        </div>
+                        
+                        <div class="message student-message">
+                            <div class="message-header">
+                                <strong>Vous</strong> • <span class="message-time">10:01</span>
+                            </div>
+                            <div class="message-content">
+                                Bonjour Dr. Curie ! J'ai des difficultés avec les équations du mouvement rectiligne uniforme.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Indicateur de frappe -->
+                    <div id="typing-indicator" class="typing-indicator hidden">
+                        <span id="typing-user">Tuteur</span> est en train d'écrire
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Saisie message -->
+                    <div class="chat-input-container">
+                        <div class="input-group">
+                            <input type="text" 
+                                   id="chat-input" 
+                                   placeholder="Tapez votre message..."
+                                   class="chat-input"
+                                   maxlength="1000">
+                            <button id="send-btn" class="send-button" aria-label="Envoyer le message">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="chat-tools">
+                            <button class="chat-tool" aria-label="Émojis">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <button class="chat-tool" aria-label="Joindre un fichier">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button class="chat-tool" aria-label="Envoyer une image">
+                                <i class="fas fa-image"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Outils -->
+                <div class="tools-container">
+                    <h3>
+                        <i class="fas fa-tools"></i>
+                        Outils de session
+                    </h3>
+                    
+                    <div class="tools-grid">
+                        <button id="toggle-audio-btn" class="tool-button audio-tool active">
+                            <i class="fas fa-microphone"></i>
+                            <span>Audio</span>
+                        </button>
+                        <button id="toggle-video-btn" class="tool-button video-tool active">
+                            <i class="fas fa-video"></i>
+                            <span>Vidéo</span>
+                        </button>
+                        <button id="share-screen-btn" class="tool-button screen-tool">
+                            <i class="fas fa-desktop"></i>
+                            <span>Écran</span>
+                        </button>
+                        <button id="record-btn" class="tool-button record-tool">
+                            <i class="fas fa-circle"></i>
+                            <span>Enregistrer</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Réglages -->
+                    <div class="settings-group">
+                        <div class="setting-item">
+                            <span>Volume tuteur</span>
+                            <input type="range" min="0" max="100" value="80" 
+                                   class="volume-slider" id="tutor-volume">
+                        </div>
+                        <div class="setting-item">
+                            <span>Qualité vidéo</span>
+                            <select class="quality-select" id="video-quality">
+                                <option value="high">Haute (720p)</option>
+                                <option value="medium" selected>Moyenne (480p)</option>
+                                <option value="low">Basse (360p)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Bouton quitter -->
+                    <button id="leave-session" class="leave-button">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Quitter la session
+                    </button>
+                </div>
+                
+                <!-- Participants -->
+                <div class="participants-container">
+                    <h3>
+                        Participants (<span id="participant-number">2</span>)
+                        <span class="live-badge small">En direct</span>
+                    </h3>
+                    
+                    <div class="participants-list" id="participants-list">
+                        <div class="participant active">
+                            <div class="participant-avatar tutor-avatar">
+                                MC
+                            </div>
+                            <div class="participant-info">
+                                <strong>Dr. Marie Curie</strong>
+                                <p>Tuteur • <span class="speaking">Parle</span></p>
+                            </div>
+                            <div class="participant-status">
+                                <i class="fas fa-crown"></i>
+                                <i class="fas fa-microphone"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="participant">
+                            <div class="participant-avatar student-avatar">
+                                VO
+                            </div>
+                            <div class="participant-info">
+                                <strong>Vous</strong>
+                                <p>Étudiant • Vous</p>
+                            </div>
+                            <div class="participant-status">
+                                <i class="fas fa-microphone"></i>
+                                <i class="fas fa-video"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Tableau Blanc -->
+    <div id="whiteboard-modal" class="modal hidden">
+        <div class="modal-content whiteboard-modal" style="width: 90vw; height: 90vh; max-width: 1200px;">
+            <div class="whiteboard-header bg-gray-800 text-white p-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold">
+                    <i class="fas fa-chalkboard-teacher mr-2"></i>
+                    Tableau Blanc Collaboratif
+                </h3>
+                <button onclick="closeWhiteboard()" class="close-btn text-white hover:text-gray-300 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="whiteboard-tools bg-gray-100 p-3 border-b flex flex-wrap gap-4 items-center">
+                <div class="tool-group flex gap-1">
+                    <button class="tool-btn w-10 h-10 rounded-lg border hover:bg-gray-200 active" 
+                            data-tool="pencil" title="Crayon">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button class="tool-btn w-10 h-10 rounded-lg border hover:bg-gray-200" 
+                            data-tool="eraser" title="Gomme">
+                        <i class="fas fa-eraser"></i>
+                    </button>
+                    <button class="tool-btn w-10 h-10 rounded-lg border hover:bg-gray-200" 
+                            data-tool="line" title="Ligne">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="tool-btn w-10 h-10 rounded-lg border hover:bg-gray-200" 
+                            data-tool="rectangle" title="Rectangle">
+                        <i class="fas fa-square"></i>
+                    </button>
+                    <button class="tool-btn w-10 h-10 rounded-lg border hover:bg-gray-200" 
+                            data-tool="circle" title="Cercle">
+                        <i class="fas fa-circle"></i>
+                    </button>
+                    <button class="tool-btn w-10 h-10 rounded-lg border hover:bg-gray-200" 
+                            data-tool="text" title="Texte">
+                        <i class="fas fa-font"></i>
+                    </button>
+                </div>
+                
+                <div class="color-picker flex items-center gap-3">
+                    <label class="font-medium">Couleur:</label>
+                    <input type="color" id="color-picker" value="#000000" class="w-10 h-10 cursor-pointer">
+                    <div class="color-presets flex gap-1">
+                        <span class="color-option" style="background:#000000" data-color="#000000"></span>
+                        <span class="color-option" style="background:#FF0000" data-color="#FF0000"></span>
+                        <span class="color-option" style="background:#00FF00" data-color="#00FF00"></span>
+                        <span class="color-option" style="background:#0000FF" data-color="#0000FF"></span>
+                        <span class="color-option" style="background:#FFFF00" data-color="#FFFF00"></span>
+                        <span class="color-option" style="background:#FF00FF" data-color="#FF00FF"></span>
+                    </div>
+                </div>
+                
+                <div class="tool-settings flex items-center gap-3">
+                    <label class="font-medium">Épaisseur:</label>
+                    <input type="range" id="brush-size" min="1" max="50" value="5" 
+                           class="w-32 cursor-pointer">
+                    <span id="brush-size-value" class="w-12 text-center">5px</span>
+                </div>
+                
+                <div class="action-buttons flex gap-2 ml-auto">
+                    <button onclick="undoWhiteboard()" class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        <i class="fas fa-undo mr-1"></i>Annuler
+                    </button>
+                    <button onclick="redoWhiteboard()" class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        <i class="fas fa-redo mr-1"></i>Rétablir
+                    </button>
+                </div>
+            </div>
+            
+            <div class="whiteboard-container flex-1 overflow-auto bg-white">
+                <canvas id="whiteboard-canvas" 
+                        style="width: 100%; height: 100%; display: block; cursor: crosshair;">
+                    Votre navigateur ne supporte pas le canvas HTML5.
+                </canvas>
+            </div>
+            
+            <div class="whiteboard-footer bg-gray-100 p-3 border-t flex justify-between">
+                <div class="flex gap-2">
+                    <button onclick="clearWhiteboard()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                        <i class="fas fa-trash mr-1"></i> Effacer tout
+                    </button>
+                    <button onclick="saveWhiteboard()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                        <i class="fas fa-download mr-1"></i> Sauvegarder
+                    </button>
+                    <button onclick="toggleGrid()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                        <i class="fas fa-th mr-1"></i> Grille
+                    </button>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-sm text-gray-600 mr-3">
+                        <i class="fas fa-users mr-1"></i>
+                        <span id="whiteboard-users">1</span> utilisateur(s)
+                    </span>
+                    <button onclick="closeWhiteboard()" class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+   <!-- Panel flottant de l'IA - VERSION CORRIGÉE -->
+<button id="ai-floating-btn" class="ai-floating-btn" title="Ouvrir l'assistant IA">
+    <i class="fas fa-robot"></i>
+    <span class="ai-floating-badge" id="ai-badge" style="display: none;">!</span>
+</button>
+
+<div id="ai-panel" class="ai-panel hidden">
+    <div class="ai-header">
+        <h4>
+            <i class="fas fa-robot"></i>
+            EduAssist - Assistant IA
+        </h4>
+        <button id="ai-close" class="ai-close" title="Fermer">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="ai-tabs">
+        <button class="ai-tab active" data-tab="assistant">
+            <i class="fas fa-hands-helping"></i> Assistant
+        </button>
+        <button class="ai-tab" data-tab="explanations">
+            <i class="fas fa-lightbulb"></i> Explications
+        </button>
+        <button class="ai-tab" data-tab="exercises">
+            <i class="fas fa-pencil-alt"></i> Exercices
+        </button>
+        <button class="ai-tab" data-tab="support">
+            <i class="fas fa-life-ring"></i> Support
+        </button>
+    </div>
+    
+    <div class="ai-content">
+        <!-- Onglet Assistant -->
+        <div id="ai-tab-assistant" class="ai-tab-content">
+            <div class="ai-actions">
+                <button class="ai-action-btn" data-action="explain" title="Expliquer un concept">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Expliquer</span>
+                </button>
+                <button class="ai-action-btn" data-action="exercise" title="Générer un exercice">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span>Exercice</span>
+                </button>
+                <button class="ai-action-btn" data-action="questions" title="Poser des questions">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Questions</span>
+                </button>
+                <button class="ai-action-btn" data-action="correct" title="Corriger un texte">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Corriger</span>
+                </button>
+                <button class="ai-action-btn" data-action="summarize" title="Résumer un concept">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Résumer</span>
+                </button>
+                <button class="ai-action-btn" data-action="resources" title="Trouver des ressources">
+                    <i class="fas fa-book"></i>
+                    <span>Ressources</span>
+                </button>
+            </div>
+            
+            <div class="ai-input-container">
+                <textarea id="ai-input" class="ai-input" 
+                          placeholder="Posez votre question à l'assistant IA..."></textarea>
+                <button id="ai-send" class="ai-send-btn" title="Envoyer">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <div id="ai-response" class="ai-response hidden">
+                <!-- Les réponses de l'IA apparaîtront ici -->
+            </div>
+        </div>
+        
+        <!-- Onglet Explications -->
+        <div id="ai-tab-explanations" class="ai-tab-content hidden">
+            <div class="ai-response">
+                <h5><i class="fas fa-graduation-cap"></i> Explications disponibles</h5>
+                <p>Les explications générées par l'assistant apparaîtront ici. Elles sont sauvegardées pendant votre session.</p>
+                <div id="explanations-list" style="margin-top: 15px;">
+                    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: var(--primary-blue);">Aucune explication générée</strong>
+                        <p style="color: var(--gray-600); margin-top: 5px; font-size: 0.9rem;">
+                            Utilisez l'onglet Assistant pour obtenir des explications.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Onglet Exercices -->
+        <div id="ai-tab-exercises" class="ai-tab-content hidden">
+            <div class="ai-response">
+                <h5><i class="fas fa-tasks"></i> Exercices générés</h5>
+                <p>Les exercices créés par l'assistant seront affichés ici avec leurs solutions.</p>
+                <div id="exercises-list" style="margin-top: 15px;">
+                    <div style="background: #f0f9ff; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: var(--primary-teal);">Aucun exercice généré</strong>
+                        <p style="color: var(--gray-600); margin-top: 5px; font-size: 0.9rem;">
+                            Générez des exercices dans l'onglet Assistant.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Onglet Support -->
+        <div id="ai-tab-support" class="ai-tab-content hidden">
+            <div class="ai-response">
+                <h5><i class="fas fa-star"></i> Support d'apprentissage</h5>
+                <div id="support-content">
+                    <p><strong>Conseils pour optimiser votre session :</strong></p>
+                    <ul style="margin: 12px 0; padding-left: 20px; color: var(--gray-700);">
+                        <li><span style="color: var(--primary-teal);">✓</span> Posez des questions précises</li>
+                        <li><span style="color: var(--primary-teal);">✓</span> Notez les points clés</li>
+                        <li><span style="color: var(--primary-teal);">✓</span> Reformulez avec vos mots</li>
+                        <li><span style="color: var(--primary-teal);">✓</span> Demandez des exemples</li>
+                    </ul>
+                    <button id="ai-get-support" class="ai-action-btn" style="width: 100%; margin-top: 15px;">
+                        <i class="fas fa-magic"></i>
+                        Obtenir des conseils personnalisés
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Scripts -->
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\chat-ai.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\firebase-config.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\firebase-services.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\tutoring-room.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\peer-manager.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\whiteboard.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\tutors-list.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\chat-ai.js"></script>
+
+    <script>
+        // Variables globales
+        let sessionTimerInterval;
+        let pingInterval;
+        let isSessionActive = false;
+        let notificationTimeout;
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initialisation de la salle de tutorat...');
+            
+            // Vérifier la compatibilité WebRTC
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showNotification(
+                    'Navigateur incompatible',
+                    'Votre navigateur ne supporte pas les appels vidéo. Utilisez Chrome, Firefox ou Edge.',
+                    'error'
+                );
+                disableVideoFeatures();
+            }
+            
+            // Initialiser les gestionnaires
+            initializeManagers();
+            
+            // Démarrer le timer de session
+            startSessionTimer();
+            
+            // Simuler le ping réseau
+            startPingSimulation();
+            
+            // Configurer les événements
+            setupEventListeners();
+            
+            // Charger les données de session depuis l'URL
+            loadSessionFromURL();
+            
+            // Démarrer la session
+            startTutoringSession();
+            
+            console.log('Salle de tutorat initialisée avec succès');
+        });
+        
+        function initializeManagers() {
+            // Initialiser Firebase si disponible
+            if (typeof FirebaseManager !== 'undefined') {
+                window.firebaseManager = new FirebaseManager();
+            } else {
+                console.warn('FirebaseManager non disponible - mode hors ligne');
+            }
+            
+            // Initialiser la salle de tutorat
+            if (typeof TutoringRoomManager !== 'undefined') {
+                window.tutoringRoomManager = new TutoringRoomManager();
+                isSessionActive = true;
+            } else {
+                console.error('TutoringRoomManager non disponible');
+                showNotification('Erreur', 'Impossible de charger la salle de tutorat', 'error');
+            }
+            
+            // Le WhiteboardManager sera initialisé quand le modal s'ouvre
+        }
+        
+        function loadSessionFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tutorId = urlParams.get('tutor');
+            const subject = urlParams.get('subject');
+            
+            if (tutorId) {
+                // Charger les infos du tuteur
+                document.getElementById('tutor-name').textContent = 'Chargement...';
+                document.getElementById('tutor-name-display').textContent = 'Chargement...';
+                document.getElementById('placeholder-tutor-name').textContent = 'Chargement...';
+                
+                // Simuler le chargement
+                setTimeout(() => {
+                    document.getElementById('tutor-name').textContent = 'Dr. Marie Curie';
+                    document.getElementById('tutor-name-display').textContent = 'Dr. Marie Curie';
+                    document.getElementById('placeholder-tutor-name').textContent = 'Dr. Marie Curie';
+                }, 1000);
+            }
+            
+            if (subject) {
+                document.getElementById('subject-badge').textContent = subject;
+                document.getElementById('placeholder-tutor-subject').textContent = `Tuteur en ${subject}`;
+            }
+        }
+        
+        function startTutoringSession() {
+            showNotification('Session démarrée', 'Connexion au tuteur en cours...', 'info');
+            
+            // Simuler la connexion
+            setTimeout(() => {
+                hideLoading();
+                showNotification('Connecté', 'Vous êtes maintenant connecté avec le tuteur', 'success');
+            }, 2000);
+        }
+        
+        function hideLoading() {
+            const loadingElement = document.getElementById('video-loading');
+            if (loadingElement) {
+                loadingElement.classList.add('hidden');
+            }
+        }
+        
+        function startSessionTimer() {
+            let sessionSeconds = 0;
+            const timerElement = document.getElementById('session-timer');
+            
+            sessionTimerInterval = setInterval(() => {
+                sessionSeconds++;
+                const hours = Math.floor(sessionSeconds / 3600);
+                const minutes = Math.floor((sessionSeconds % 3600) / 60);
+                const seconds = sessionSeconds % 60;
+                
+                if (timerElement) {
+                    timerElement.textContent = 
+                        `${hours.toString().padStart(2, '0')}:` +
+                        `${minutes.toString().padStart(2, '0')}:` +
+                        `${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+        
+        function startPingSimulation() {
+            pingInterval = setInterval(() => {
+                const ping = Math.floor(Math.random() * 50) + 10;
+                const pingElement = document.getElementById('ping-value');
+                const qualityElement = document.getElementById('connection-quality');
+                
+                if (pingElement) {
+                    pingElement.textContent = `${ping}ms`;
+                }
+                
+                if (qualityElement) {
+                    if (ping < 30) {
+                        qualityElement.textContent = 'Excellente';
+                        qualityElement.className = 'text-green-400';
+                    } else if (ping < 60) {
+                        qualityElement.textContent = 'Bonne';
+                        qualityElement.className = 'text-yellow-400';
+                    } else {
+                        qualityElement.textContent = 'Moyenne';
+                        qualityElement.className = 'text-orange-400';
+                    }
+                }
+            }, 3000);
+        }
+        
+        function setupEventListeners() {
+            // Quitter la session
+            document.getElementById('leave-session')?.addEventListener('click', leaveSession);
+            
+            // Contrôles audio/vidéo
+            document.getElementById('toggle-audio')?.addEventListener('click', toggleAudio);
+            document.getElementById('toggle-video')?.addEventListener('click', toggleVideo);
+            document.getElementById('toggle-audio-btn')?.addEventListener('click', toggleAudio);
+            document.getElementById('toggle-video-btn')?.addEventListener('click', toggleVideo);
+            
+            // Tableau blanc
+            document.getElementById('open-whiteboard')?.addEventListener('click', openWhiteboard);
+            
+            // Partage d'écran
+            document.getElementById('share-screen-btn')?.addEventListener('click', shareScreen);
+            
+            // Enregistrement
+            document.getElementById('record-btn')?.addEventListener('click', toggleRecording);
+            
+            // Chat
+            document.getElementById('send-btn')?.addEventListener('click', sendChatMessage);
+            document.getElementById('chat-input')?.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendChatMessage();
+                }
+            });
+            
+            // Volume et qualité
+            document.getElementById('tutor-volume')?.addEventListener('input', updateTutorVolume);
+            document.getElementById('video-quality')?.addEventListener('change', updateVideoQuality);
+            
+            // Raccourcis clavier
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+            
+            // Fermer la session quand l'onglet se ferme
+            window.addEventListener('beforeunload', confirmLeaveSession);
+        }
+        
+        function toggleAudio() {
+            const audioBtn = document.getElementById('toggle-audio');
+            const audioBtn2 = document.getElementById('toggle-audio-btn');
+            const isActive = audioBtn.classList.contains('active');
+            
+            if (isActive) {
+                audioBtn.classList.remove('active');
+                audioBtn2.classList.remove('active');
+                audioBtn.setAttribute('aria-pressed', 'false');
+                audioBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+                showNotification('Audio désactivé', 'Votre microphone est maintenant désactivé', 'info');
+            } else {
+                audioBtn.classList.add('active');
+                audioBtn2.classList.add('active');
+                audioBtn.setAttribute('aria-pressed', 'true');
+                audioBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                showNotification('Audio activé', 'Votre microphone est maintenant activé', 'success');
+            }
+            
+            // Ici, appeler la méthode pour désactiver/activer le stream audio
+            if (window.tutoringRoomManager) {
+                window.tutoringRoomManager.toggleAudio(!isActive);
+            }
+        }
+        
+        function toggleVideo() {
+            const videoBtn = document.getElementById('toggle-video');
+            const videoBtn2 = document.getElementById('toggle-video-btn');
+            const isActive = videoBtn.classList.contains('active');
+            
+            if (isActive) {
+                videoBtn.classList.remove('active');
+                videoBtn2.classList.remove('active');
+                videoBtn.setAttribute('aria-pressed', 'false');
+                videoBtn.innerHTML = '<i class="fas fa-video-slash"></i>';
+                showNotification('Vidéo désactivée', 'Votre caméra est maintenant désactivée', 'info');
+            } else {
+                videoBtn.classList.add('active');
+                videoBtn2.classList.add('active');
+                videoBtn.setAttribute('aria-pressed', 'true');
+                videoBtn.innerHTML = '<i class="fas fa-video"></i>';
+                showNotification('Vidéo activée', 'Votre caméra est maintenant activée', 'success');
+            }
+            
+            // Ici, appeler la méthode pour désactiver/activer le stream vidéo
+            if (window.tutoringRoomManager) {
+                window.tutoringRoomManager.toggleVideo(!isActive);
+            }
+        }
+        
+        function openWhiteboard() {
+            const modal = document.getElementById('whiteboard-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                
+                // Initialiser le tableau blanc
+                if (!window.whiteboardManager) {
+                    window.whiteboardManager = new WhiteboardManager();
+                } else {
+                    // Redimensionner si nécessaire
+                    setTimeout(() => {
+                        window.whiteboardManager.resizeCanvas();
+                    }, 100);
+                }
+                
+                showNotification('Tableau blanc', 'Tableau blanc collaboratif ouvert', 'info');
+            }
+        }
+        
+        function shareScreen() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+                showNotification('Partage d\'écran', 'Votre navigateur ne supporte pas le partage d\'écran', 'error');
+                return;
+            }
+            
+            showNotification('Partage d\'écran', 'Sélectionnez l\'écran ou l\'application à partager', 'info');
+            
+            // Ici, intégrer avec PeerManager pour le partage d'écran
+            if (window.tutoringRoomManager?.peerManager) {
+                window.tutoringRoomManager.peerManager.shareScreen();
+            }
+        }
+        
+        function toggleRecording() {
+            const recordBtn = document.getElementById('record-btn');
+            const isRecording = recordBtn.classList.contains('recording');
+            
+            if (isRecording) {
+                recordBtn.classList.remove('recording');
+                recordBtn.innerHTML = '<i class="fas fa-circle"></i><span>Enregistrer</span>';
+                showNotification('Enregistrement', 'Enregistrement arrêté', 'info');
+            } else {
+                recordBtn.classList.add('recording');
+                recordBtn.innerHTML = '<i class="fas fa-stop-circle"></i><span>Arrêter</span>';
+                showNotification('Enregistrement', 'Enregistrement démarré', 'success');
+            }
+        }
+        
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Ajouter le message au chat
+            const chatMessages = document.getElementById('chat-messages');
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message student-message';
+            messageElement.innerHTML = `
+                <div class="message-header">
+                    <strong>Vous</strong> • <span class="message-time">${getCurrentTime()}</span>
+                </div>
+                <div class="message-content">${escapeHtml(message)}</div>
+            `;
+            
+            chatMessages.appendChild(messageElement);
+            
+            // Scroll vers le bas
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Envoyer via Firebase si disponible
+            if (window.firebaseManager && window.tutoringRoomManager?.currentSessionId) {
+                window.firebaseManager.sendChatMessage(
+                    window.tutoringRoomManager.currentSessionId,
+                    {
+                        content: message,
+                        type: 'text',
+                        senderName: 'Vous'
+                    }
+                );
+            }
+            
+            // Effacer l'input
+            input.value = '';
+            input.focus();
+        }
+        
+        function updateTutorVolume() {
+            const volume = document.getElementById('tutor-volume').value;
+            const tutorVideo = document.getElementById('tutor-video');
+            
+            if (tutorVideo) {
+                tutorVideo.volume = volume / 100;
+            }
+        }
+        
+        function updateVideoQuality() {
+            const quality = document.getElementById('video-quality').value;
+            showNotification('Qualité vidéo', `Qualité définie sur: ${quality}`, 'info');
+            
+            // Ici, mettre à jour les contraintes des streams
+        }
+        
+        function handleKeyboardShortcuts(e) {
+            // Ctrl+Alt+M: Activer/désactiver microphone
+            if (e.ctrlKey && e.altKey && e.key === 'm') {
+                e.preventDefault();
+                toggleAudio();
+            }
+            
+            // Ctrl+Alt+V: Activer/désactiver caméra
+            if (e.ctrlKey && e.altKey && e.key === 'v') {
+                e.preventDefault();
+                toggleVideo();
+            }
+            
+            // Ctrl+Alt+S: Partager l'écran
+            if (e.ctrlKey && e.altKey && e.key === 's') {
+                e.preventDefault();
+                shareScreen();
+            }
+            
+            // Ctrl+Alt+W: Ouvrir tableau blanc
+            if (e.ctrlKey && e.altKey && e.key === 'w') {
+                e.preventDefault();
+                openWhiteboard();
+            }
+            
+            // Escape: Fermer tableau blanc
+            if (e.key === 'Escape') {
+                closeWhiteboard();
+            }
+        }
+        
+        function leaveSession() {
+            if (confirm('Êtes-vous sûr de vouloir quitter la session ?')) {
+                showNotification('Session terminée', 'Retour à la liste des tuteurs...', 'info');
+                
+                // Nettoyer les intervalles
+                if (sessionTimerInterval) clearInterval(sessionTimerInterval);
+                if (pingInterval) clearInterval(pingInterval);
+                
+                // Fermer les connexions
+                if (window.tutoringRoomManager) {
+                    window.tutoringRoomManager.cleanup();
+                }
+                
+                // Redirection
+                setTimeout(() => {
+                    window.location.href = 'tutor-list.html';
+                }, 1500);
+            }
+        }
+        
+        function confirmLeaveSession(e) {
+            if (isSessionActive) {
+                e.preventDefault();
+                e.returnValue = 'Êtes-vous sûr de vouloir quitter la session ?';
+                return e.returnValue;
+            }
+        }
+        
+        function disableVideoFeatures() {
+            // Désactiver les boutons vidéo
+            const videoButtons = [
+                'toggle-video', 'toggle-video-btn', 
+                'share-screen-btn', 'record-btn'
+            ];
+            
+            videoButtons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            });
+        }
+        
+        // Fonctions utilitaires
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString('fr-FR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Fonctions globales
+        window.showNotification = function(title, message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const titleEl = document.getElementById('notification-title');
+            const messageEl = document.getElementById('notification-message');
+            
+            if (notification && titleEl && messageEl) {
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                
+                // Appliquer la couleur selon le type
+                const colors = {
+                    'success': '#10B981',
+                    'error': '#EF4444',
+                    'warning': '#F59E0B',
+                    'info': '#3B82F6'
+                };
+                
+                notification.style.borderLeftColor = colors[type] || colors.info;
+                notification.classList.remove('hidden');
+                
+                // Auto-hide après 5 secondes
+                if (notificationTimeout) clearTimeout(notificationTimeout);
+                notificationTimeout = setTimeout(hideNotification, 5000);
+            }
+        };
+        
+        window.hideNotification = function() {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.classList.add('hidden');
+            }
+        };
+        
+        // Fonctions tableau blanc (définies dans whiteboard.js mais accessibles ici)
+        window.clearWhiteboard = clearWhiteboard;
+        window.saveWhiteboard = saveWhiteboard;
+        window.toggleGrid = toggleGrid;
+        window.openWhiteboard = openWhiteboard;
+        window.closeWhiteboard = closeWhiteboard;
+        window.undoWhiteboard = undoWhiteboard;
+        window.redoWhiteboard = redoWhiteboard;
+                // ============================
+        // SYSTÈME IA AMÉLIORÉ
+        // ============================
+        
+        // Variables IA
+        let chatAI = null;
+        let isAIEnabled = false;
+        let aiPanelOpen = false;
+        let aiResponsesHistory = [];
+        let currentAIResponseType = null;
+        
+        // Initialiser l'IA de manière complète
+        async function initializeEnhancedAI() {
+            try {
+                console.log('🚀 Initialisation du système IA amélioré...');
+                
+                // Détecter automatiquement le type d'utilisateur
+                const userType = detectUserType();
+                const subject = window.currentTutor?.subject || 'Général';
+                const userName = userType === 'tutor' ? 'Tuteur' : 'Étudiant';
+                
+                // Créer l'instance ChatAI améliorée
+                chatAI = new ChatAI({
+                    userType: userType,
+                    subject: subject,
+                    name: `${userName} Assistant`,
+                    model: 'gpt-3.5-turbo',
+                    temperature: 0.7,
+                    maxTokens: 300
+                });
+                
+                // Charger l'état
+                isAIEnabled = localStorage.getItem('chat_ai_enabled') === 'true';
+                
+                // Configurer l'interface
+                setupAIInterface();
+                
+                // Écouter les messages du chat pour suggestions automatiques
+                setupAIAutoSuggest();
+                
+                // Vérifier la clé API
+                checkAPIKey();
+                
+                console.log(`✅ IA initialisée pour: ${userType} en ${subject}`);
+                
+                // Afficher une notification de bienvenue
+                if (isAIEnabled) {
+                    showAINotification(`Assistant IA activé pour ${userType === 'tutor' ? 'le tuteur' : "l'étudiant"}`, 'success');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erreur d\'initialisation IA:', error);
+                showAINotification('Assistant IA temporairement indisponible', 'warning');
+            }
+        }
+        
+        // Détecter automatiquement le type d'utilisateur
+        function detectUserType() {
+            // Pour l'instant, on détecte par l'URL ou le contexte
+            // Vous pourriez améliorer cette détection avec Firebase plus tard
+            const urlParams = new URLSearchParams(window.location.search);
+            const isTutor = urlParams.has('tutor') && urlParams.get('tutor').startsWith('tutor_');
+            
+            // Ou par la structure de la page
+            const hasTutorControls = document.getElementById('tutor-controls');
+            
+            return (isTutor || hasTutorControls) ? 'tutor' : 'student';
+        }
+        
+        // Configurer l'interface IA
+        function setupAIInterface() {
+            // Bouton flottant
+            const floatingBtn = document.getElementById('ai-floating-btn');
+            if (floatingBtn) {
+                floatingBtn.addEventListener('click', toggleAIPanel);
+                floatingBtn.title = `Assistant IA (${chatAI.userType === 'tutor' ? 'Mode Tuteur' : 'Mode Étudiant'})`;
+            }
+            
+            // Fermeture du panel
+            document.getElementById('ai-close')?.addEventListener('click', closeAIPanel);
+            
+            // Tabs
+            document.querySelectorAll('.ai-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    switchAITab(tabId);
+                });
+            });
+            
+            // Actions rapides
+            document.querySelectorAll('.ai-action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    handleAIAction(action);
+                });
+            });
+            
+            // Envoi de message
+            document.getElementById('ai-send')?.addEventListener('click', sendAIMessage);
+            
+            document.getElementById('ai-input')?.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendAIMessage();
+                }
+            });
+            
+            // Support personnalisé
+            document.getElementById('ai-get-support')?.addEventListener('click', getPersonalizedSupport);
+            
+            // Mettre à jour l'interface
+            updateAIInterface();
+        }
+        
+        // Basculer l'ouverture du panel IA
+        function toggleAIPanel() {
+            aiPanelOpen = !aiPanelOpen;
+            const panel = document.getElementById('ai-panel');
+            const btn = document.getElementById('ai-floating-btn');
+            
+            if (panel && btn) {
+                if (aiPanelOpen) {
+                    panel.classList.remove('hidden');
+                    btn.classList.add('active');
+                    document.getElementById('ai-input')?.focus();
+                } else {
+                    panel.classList.add('hidden');
+                    btn.classList.remove('active');
+                }
+            }
+        }
+        
+        function closeAIPanel() {
+            aiPanelOpen = false;
+            document.getElementById('ai-panel').classList.add('hidden');
+            document.getElementById('ai-floating-btn').classList.remove('active');
+        }
+        
+        // Changer d'onglet IA
+        function switchAITab(tabId) {
+            // Mettre à jour les tabs
+            document.querySelectorAll('.ai-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabId);
+            });
+            
+            // Afficher le contenu correspondant
+            document.querySelectorAll('.ai-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            const activeContent = document.getElementById(`ai-tab-${tabId}`);
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+            }
+        }
+        
+        // Gérer les actions IA
+        function handleAIAction(action) {
+            currentAIResponseType = action;
+            
+            // Mettre à jour les boutons actifs
+            document.querySelectorAll('.ai-action-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.action === action) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Définir les placeholders selon l'action
+            const placeholders = {
+                'explain': 'Quel concept souhaitez-vous que j\'explique ?',
+                'exercise': 'Sur quel sujet voulez-vous un exercice ?',
+                'questions': 'Sur quel sujet voulez-vous des questions ?',
+                'correct': 'Collez le texte à corriger ici...',
+                'summarize': 'Quel sujet souhaitez-vous résumer ?',
+                'resources': 'Quel type de ressources cherchez-vous ?'
+            };
+            
+            const aiInput = document.getElementById('ai-input');
+            if (aiInput) {
+                aiInput.placeholder = placeholders[action] || 'Posez votre question...';
+                aiInput.focus();
+            }
+            
+            // Afficher un message d'aide
+            showAIHelpMessage(action);
+        }
+        
+        // Envoyer un message à l'IA
+        async function sendAIMessage() {
+            const input = document.getElementById('ai-input');
+            const message = input?.value.trim();
+            
+            if (!message || !chatAI || !isAIEnabled) {
+                if (!isAIEnabled) {
+                    showAINotification('Activez d\'abord l\'assistant IA', 'warning');
+                }
+                return;
+            }
+            
+            // Afficher l'indicateur de chargement
+            showAILoading();
+            
+            try {
+                let response;
+                
+                // Utiliser le type de réponse spécifique si sélectionné
+                if (currentAIResponseType && currentAIResponseType !== 'general') {
+                    response = await chatAI.generateResponse(
+                        message,
+                        getResponseTypeFromAction(currentAIResponseType)
+                    );
+                } else {
+                    response = await chatAI.generateResponse(message);
+                }
+                
+                // Afficher la réponse
+                if (response.success) {
+                    displayAIResponse(response.message);
+                    
+                    // Ajouter à l'historique
+                    aiResponsesHistory.push({
+                        question: message,
+                        answer: response.message,
+                        type: currentAIResponseType,
+                        timestamp: Date.now()
+                    });
+                    
+                    // Sauvegarder l'historique
+                    saveAIHistory();
+                    
+                    // Proposer d'envoyer dans le chat
+                    if (shouldSuggestChatPost(response.message)) {
+                        suggestPostToChat(response.message);
+                    }
+                } else {
+                    displayAIError(response.error || response.fallback);
+                }
+                
+            } catch (error) {
+                console.error('Erreur IA:', error);
+                displayAIError('Erreur de connexion avec l\'assistant IA');
+            } finally {
+                // Effacer l'input
+                if (input) input.value = '';
+                currentAIResponseType = null;
+            }
+        }
+        
+        // Obtenir le type de réponse formaté
+        function getResponseTypeFromAction(action) {
+            const actionMap = {
+                'explain': 'explication',
+                'exercise': 'exercice',
+                'questions': 'question',
+                'correct': 'correction',
+                'summarize': 'explication',
+                'resources': 'support'
+            };
+            return actionMap[action] || null;
+        }
+        
+        // Afficher une réponse de l'IA
+               // Afficher une réponse de l'IA - VERSION CORRIGÉE
+        function displayAIResponse(response) {
+            const responseContainer = document.getElementById('ai-response');
+            if (!responseContainer) return;
+            
+            // Formater la réponse
+            let formattedResponse = response
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong style="color: var(--primary-blue);">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Ajouter des classes pour les listes
+            formattedResponse = formattedResponse.replace(/^(\d+)\./gm, '<span style="color: var(--primary-teal); font-weight: bold; margin-right: 8px;">$1.</span>');
+            formattedResponse = formattedResponse.replace(/^[•\-]/gm, '<span style="color: var(--primary-blue); margin-right: 8px;">•</span>');
+            
+            // Ajouter des titres
+            formattedResponse = formattedResponse.replace(/^(#+)\s*(.*?)$/gm, function(match, hashes, title) {
+                const level = hashes.length;
+                const color = level === 1 ? 'var(--primary-blue)' : level === 2 ? 'var(--primary-teal)' : 'var(--gray-800)';
+                return `<h${level} style="color: ${color}; margin: 15px 0 10px 0; font-size: ${level === 1 ? '1.2rem' : '1rem'}">${title}</h${level}>`;
+            });
+            
+            responseContainer.innerHTML = `
+                <h5><i class="fas fa-robot" style="color: var(--primary-teal);"></i> Réponse de l'assistant :</h5>
+                <div style="color: var(--gray-700); line-height: 1.6; font-size: 0.95rem;">
+                    ${formattedResponse}
+                </div>
+                <div class="ai-response-actions">
+                    <button onclick="copyAIResponse()">
+                        <i class="fas fa-copy"></i> Copier
+                    </button>
+                    <button onclick="postToChat('${encodeURIComponent(response.replace(/'/g, "\\'").replace(/"/g, '\\"'))}')">
+                        <i class="fas fa-share"></i> Partager
+                    </button>
+                </div>
+            `;
+            
+            responseContainer.classList.remove('hidden');
+            responseContainer.classList.remove('loading');
+            responseContainer.classList.add('ai-message');
+            
+            // Scroll vers la réponse
+            setTimeout(() => {
+                responseContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 100);
+        }
+        
+        // Afficher un message d'erreur IA
+        function displayAIError(error) {
+            const responseContainer = document.getElementById('ai-response');
+            if (!responseContainer) return;
+            
+            responseContainer.innerHTML = `
+                <h5><i class="fas fa-exclamation-triangle"></i> Problème avec l'assistant :</h5>
+                <p>${error}</p>
+                <div style="margin-top: 10px;">
+                    <button onclick="checkAPIKey()" class="ai-action-btn">
+                        <i class="fas fa-key"></i> Vérifier la clé API
+                    </button>
+                </div>
+            `;
+            
+            responseContainer.classList.remove('hidden');
+        }
+        
+        // Afficher l'indicateur de chargement
+        function showAILoading() {
+            const responseContainer = document.getElementById('ai-response');
+            if (!responseContainer) return;
+            
+            responseContainer.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner-small"></div>
+                    <p>L'assistant IA réfléchit...</p>
+                </div>
+            `;
+            
+            responseContainer.classList.remove('hidden');
+        }
+        
+        // Obtenir un support personnalisé
+        async function getPersonalizedSupport() {
+            if (!chatAI || !isAIEnabled) {
+                showAINotification('Activez d\'abord l\'assistant IA', 'warning');
+                return;
+            }
+            
+            showAILoading();
+            
+            const response = await chatAI.getLearningSupport();
+            
+            if (response.success) {
+                displayAIResponse(response.message);
+                
+                // Ajouter au support content
+                const supportContent = document.getElementById('support-content');
+                if (supportContent) {
+                    supportContent.innerHTML += `
+                        <div class="ai-response" style="margin-top: 15px;">
+                            <h6><i class="fas fa-magic"></i> Conseils personnalisés :</h6>
+                            <p>${response.message}</p>
+                        </div>
+                    `;
+                }
+            } else {
+                displayAIError(response.error || response.fallback);
+            }
+        }
+        
+        // Vérifier et configurer la clé API
+        function checkAPIKey() {
+            const currentKey = localStorage.getItem('openai_api_key');
+            
+            if (!currentKey) {
+                showAPIKeyPrompt();
+            } else {
+                chatAI.setApiKey(currentKey);
+                isAIEnabled = true;
+                updateAIInterface();
+                showAINotification('Clé API configurée avec succès', 'success');
+            }
+        }
+        
+        // Demander la clé API
+        function showAPIKeyPrompt() {
+            const key = prompt(`Configuration de l'assistant IA :
+            
+Entrez votre clé API OpenAI pour activer l'assistant intelligent.
+
+Pour obtenir une clé :
+1. Visitez https://platform.openai.com/api-keys
+2. Créez un compte (gratuit avec crédits initiaux)
+3. Générez une nouvelle clé API
+4. Copiez-la ici
+
+Votre clé reste locale et sécurisée.`, '');
+            
+            if (key && key.trim()) {
+                localStorage.setItem('openai_api_key', key.trim());
+                chatAI.setApiKey(key.trim());
+                isAIEnabled = true;
+                updateAIInterface();
+                showAINotification('Assistant IA activé avec succès !', 'success');
+            } else {
+                showAINotification('Assistant IA désactivé sans clé API', 'warning');
+            }
+        }
+        
+        // Mettre à jour l'interface IA
+        function updateAIInterface() {
+            const floatingBtn = document.getElementById('ai-floating-btn');
+            const badge = document.getElementById('ai-badge');
+            
+            if (floatingBtn) {
+                floatingBtn.style.background = isAIEnabled 
+                    ? 'linear-gradient(135deg, #1A3B52 0%, #3B82F6 100%)'
+                    : 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)';
+                
+                floatingBtn.title = isAIEnabled 
+                    ? `Assistant IA activé (${chatAI.userType === 'tutor' ? 'Mode Tuteur' : 'Mode Étudiant'})`
+                    : 'Cliquez pour configurer l\'assistant IA';
+            }
+            
+            if (badge) {
+                badge.style.display = !isAIEnabled ? 'flex' : 'none';
+            }
+            
+            // Mettre à jour les statistiques dans l'interface si nécessaire
+            updateAIStats();
+        }
+        
+        // Mettre à jour les statistiques IA
+        function updateAIStats() {
+            if (!chatAI) return;
+            
+            const stats = chatAI.getStats();
+            console.log('Statistiques IA:', stats);
+            
+            // Vous pourriez afficher ces stats dans l'interface
+            // Par exemple, dans un badge ou un panneau d'info
+        }
+        
+        // Copier la réponse IA dans le presse-papier
+        function copyAIResponse() {
+            const responseText = document.querySelector('#ai-response p')?.innerText;
+            if (responseText) {
+                navigator.clipboard.writeText(responseText).then(() => {
+                    showAINotification('Réponse copiée dans le presse-papier', 'success');
+                });
+            }
+        }
+        
+        // Poster la réponse dans le chat
+        function postToChat(response) {
+            const decodedResponse = decodeURIComponent(response);
+            const chatInput = document.getElementById('chat-input');
+            
+            if (chatInput) {
+                chatInput.value = decodedResponse;
+                chatInput.focus();
+                
+                // Afficher une suggestion de modification
+                showAINotification('Réponse prête à envoyer. Modifiez si nécessaire.', 'info');
+            }
+        }
+        
+        // Afficher une notification IA
+        function showAINotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `ai-notification ${type}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: start; gap: 10px;">
+                    <i class="fas fa-robot" style="color: #3B82F6; font-size: 1.2rem;"></i>
+                    <div style="flex: 1;">
+                        <strong>Assistant IA</strong>
+                        <p style="margin: 5px 0 0 0; font-size: 0.9rem;">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: #64748b; cursor: pointer;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Suggestions automatiques dans le chat
+        function setupAIAutoSuggest() {
+            const chatInput = document.getElementById('chat-input');
+            if (!chatInput) return;
+            
+            let timeoutId;
+            
+            chatInput.addEventListener('input', function() {
+                clearTimeout(timeoutId);
+                
+                // Si l'utilisateur tape quelque chose d'assez long
+                if (this.value.length > 20 && isAIEnabled) {
+                    timeoutId = setTimeout(async () => {
+                        // Demander une suggestion à l'IA
+                        const response = await chatAI.generateResponse(
+                            `L'utilisateur écrit: "${this.value}". 
+                            Donne une suggestion pour améliorer ou compléter ce message.`,
+                            'support'
+                        );
+                        
+                        if (response.success) {
+                            showAIAutoSuggestion(response.message);
+                        }
+                    }, 2000);
+                }
+            });
+        }
+        
+        // Afficher une suggestion automatique
+        function showAIAutoSuggestion(suggestion) {
+            // Créer un élément de suggestion
+            const suggestionEl = document.createElement('div');
+            suggestionEl.className = 'chat-ai-suggestion';
+            suggestionEl.style.cssText = `
+                background: #f0f9ff;
+                border: 1px solid #bae6fd;
+                border-radius: 8px;
+                padding: 10px;
+                margin: 5px 0;
+                font-size: 0.9rem;
+            `;
+            
+            suggestionEl.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 5px;">
+                    <small style="color: #0369a1; font-weight: bold;">
+                        <i class="fas fa-robot"></i> Suggestion IA
+                    </small>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 0.8rem;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p style="margin: 0; color: #0c4a6e;">${suggestion}</p>
+                <div style="margin-top: 8px; display: flex; gap: 5px;">
+                    <button onclick="useAISuggestion('${encodeURIComponent(suggestion.replace(/'/g, "\\'"))}')" 
+                            style="flex: 1; padding: 5px; background: #0ea5e9; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                        <i class="fas fa-check"></i> Utiliser
+                    </button>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="padding: 5px 10px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                        Ignorer
+                    </button>
+                </div>
+            `;
+            
+            // Insérer avant le champ de chat
+            const chatContainer = document.querySelector('.chat-input-container');
+            if (chatContainer) {
+                const existing = document.querySelector('.chat-ai-suggestion');
+                if (existing) existing.remove();
+                chatContainer.parentNode.insertBefore(suggestionEl, chatContainer);
+            }
+        }
+        
+        // Utiliser une suggestion IA
+        window.useAISuggestion = function(suggestion) {
+            const decoded = decodeURIComponent(suggestion);
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                chatInput.value = decoded;
+                chatInput.focus();
+                
+                // Supprimer la suggestion
+                const suggestionEl = document.querySelector('.chat-ai-suggestion');
+                if (suggestionEl) suggestionEl.remove();
+            }
+        };
+        
+        // Afficher un message d'aide pour l'action
+        function showAIHelpMessage(action) {
+            const helpMessages = {
+                'explain': 'Décrivez le concept que vous voulez comprendre. Ex: "loi de Newton", "photosynthèse"...',
+                'exercise': 'Précisez le sujet et le niveau. Ex: "équations du 2nd degré, niveau lycée"...',
+                'questions': 'Indiquez le nombre et le type de questions souhaitées.',
+                'correct': 'Collez votre texte pour obtenir des corrections et améliorations.',
+                'summarize': 'Décrivez le sujet à résumer en quelques points clés.',
+                'resources': 'Précisez le type de ressources: vidéos, articles, exercices...'
+            };
+            
+            if (helpMessages[action]) {
+                showAINotification(helpMessages[action], 'info');
+            }
+        }
+        
+        // Déterminer si on doit suggérer de poster dans le chat
+        function shouldSuggestChatPost(response) {
+            return response.length < 500; // Seulement pour les réponses courtes
+        }
+        
+        // Suggérer de poster dans le chat
+        function suggestPostToChat(response) {
+            const suggestion = confirm(`Voulez-vous partager cette réponse dans le chat ?
+            
+"${response.substring(0, 100)}..."`);
+            
+            if (suggestion) {
+                postToChat(encodeURIComponent(response));
+            }
+        }
+        
+        // Sauvegarder l'historique IA
+        function saveAIHistory() {
+            try {
+                localStorage.setItem('ai_responses_history', JSON.stringify(aiResponsesHistory));
+            } catch (error) {
+                console.warn('Impossible de sauvegarder l\'historique IA:', error);
+            }
+        }
+        
+        // Charger l'historique IA
+        function loadAIHistory() {
+            try {
+                const saved = localStorage.getItem('ai_responses_history');
+                if (saved) {
+                    aiResponsesHistory = JSON.parse(saved);
+                }
+            } catch (error) {
+                console.warn('Impossible de charger l\'historique IA:', error);
+            }
+        }
+        
+        // Exposer les fonctions globalement
+        window.copyAIResponse = copyAIResponse;
+        window.postToChat = postToChat;
+        window.checkAPIKey = checkAPIKey;
+        
+        // Initialiser au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... code existant ...
+            
+            // Initialiser l'IA améliorée
+            setTimeout(() => {
+                initializeEnhancedAI();
+                loadAIHistory();
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
