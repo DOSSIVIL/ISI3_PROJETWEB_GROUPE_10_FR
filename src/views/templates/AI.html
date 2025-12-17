@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect Africa IA</title>
+    <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        africa: {
+                            green: '#27ae60',
+                            yellow: '#f1c40f',
+                            orange: '#e67e22',
+                            red: '#e74c3c',
+                            blue: '#3498db',
+                            purple: '#9b59b6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .logo-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .navbar-dropdown {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: top right;
+        }
+        
+        .dropdown-open {
+            opacity: 1;
+            transform: scale(1);
+            visibility: visible;
+        }
+        
+        .dropdown-closed {
+            opacity: 0;
+            transform: scale(0.95);
+            visibility: hidden;
+        }
+        
+        .sidebar-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .chat-container {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #ffffff;
+        }
+        
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: #ffffff;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+        
+        .message-bubble-user {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+        }
+        
+        .message-bubble-ai {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .category-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .category-card:hover {
+            transform: translateX(5px);
+            border-left-color: currentColor;
+        }
+        
+        .category-card.active {
+            border-left-color: currentColor;
+            background: rgba(14, 165, 233, 0.05);
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            float: left;
+            margin: 0 1px;
+            background-color: #94a3b8;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+        
+        .typing-indicator span:nth-of-type(1) {
+            animation: 1s blink infinite 0.3333s;
+        }
+        
+        .typing-indicator span:nth-of-type(2) {
+            animation: 1s blink infinite 0.6666s;
+        }
+        
+        .typing-indicator span:nth-of-type(3) {
+            animation: 1s blink infinite 0.9999s;
+        }
+        
+        @keyframes blink {
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .pulse-ring {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800 h-screen flex flex-col overflow-hidden">
+    <!-- Header avec navbar déroulant -->
+    <header class="bg-linear-to-r from-gray-50 to-white border-b border-gray-200 p-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center space-x-4">
+            <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-lg transition">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <div class="w-10 h-10 bg-linear-to-br from-africa-orange to-africa-yellow rounded-xl flex items-center justify-center shadow">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-white"></div>
+                </div>
+                
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 logo-font">
+                        <span class="bg-linear-to-r from-africa-orange to-africa-yellow bg-clip-text text-transparent">
+                            EduConnect
+                        </span>
+                        <span class="text-gray-900"> Africa IA</span>
+                    </h1>
+                    <p class="text-xs text-gray-500">Éducation Intelligente pour l'Afrique</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            <!-- Indicateur de langue -->
+            <div class="hidden md:flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">
+                <i class="fas fa-language text-gray-500"></i>
+                <div id="langIndicator" class="flex items-center space-x-1">
+                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-medium">FR</span>
+                </div>
+            </div>
+            
+            <!-- Bouton navbar déroulant -->
+            <div class="relative">
+                <button id="navbarDropdownBtn" class="flex items-center space-x-3 px-4 py-2.5 bg-linear-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl transition-all duration-300 shadow group">
+                    <div class="relative">
+                        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-comments text-africa-orange"></i>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-africa-green rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-sm font-semibold text-white">Discussions</p>
+                        <p class="text-xs text-white/90">Historique & Profil</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-white/90 text-sm transition-transform duration-300 group-hover:rotate-180"></i>
+                </button>
+                
+                <!-- Navbar déroulant -->
+                <div id="navbarDropdown" class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl navbar-dropdown dropdown-closed z-50 overflow-hidden">
+                    <!-- En-tête du dropdown -->
+                    <div class="p-4 border-b border-gray-100 bg-linear-to-r from-gray-50 to-white">
+                        <h3 class="font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-history mr-2 text-africa-orange"></i>
+                            Discussions Récentes
+                        </h3>
+                        <p class="text-xs text-gray-500 mt-1">Vos dernières conversations</p>
+                    </div>
+                    
+                    <!-- Liste des discussions -->
+                    <div id="recentDiscussions" class="max-h-64 overflow-y-auto p-2 space-y-1">
+                        <!-- Les discussions récentes seront chargées ici -->
+                        <div class="p-4 text-center text-gray-500 text-sm">
+                            <i class="fas fa-comment-slash text-2xl mb-2 text-gray-400"></i>
+                            <p>Aucune discussion récente</p>
+                            <p class="text-xs mt-1">Commencez une nouvelle conversation</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Profil utilisateur -->
+                    <div class="p-4 border-t border-gray-100 bg-gray-50">
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <div class="w-12 h-12 rounded-full bg-linear-to-br from-africa-blue to-africa-purple flex items-center justify-center shadow">
+                                    <span class="text-white font-semibold">JD</span>
+                                </div>
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-africa-green rounded-full border-2 border-white pulse-ring"></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-semibold text-gray-900">Jean Dupont</p>
+                                        <p class="text-xs text-gray-500">Étudiant - Terminale</p>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-gray-100 text-xs rounded-full text-gray-700 border border-gray-200">
+                                        <i class="fas fa-user-graduate mr-1"></i>Étudiant
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between mt-2">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs px-2 py-0.5 bg-gray-100 rounded-full flex items-center border border-gray-200">
+                                            <i class="fas fa-globe-africa mr-1 text-africa-green"></i>
+                                            <span id="profileLang">Français</span>
+                                        </span>
+                                        <span class="text-xs px-2 py-0.5 bg-gray-100 rounded-full border border-gray-200">
+                                            <i class="fas fa-messages mr-1 text-africa-blue"></i>
+                                            <span id="totalDiscussions">0</span> discussions
+                                        </span>
+                                    </div>
+                                    <button class="text-xs text-africa-orange hover:text-africa-orange/80 transition">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar gauche - Catégories -->
+        <aside id="sidebar" class="bg-linear-to-b from-gray-50 to-white border-r border-gray-200 w-64 shrink-0 sidebar-transition lg:block hidden">
+            <div class="p-5">
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-book-open mr-2 text-africa-orange"></i>
+                        Catégories
+                    </h2>
+                    <div class="space-y-1">
+                        <button data-category="math" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-blue-50">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center group-hover:from-blue-100 group-hover:to-blue-200 transition border border-blue-100">
+                                <i class="fas fa-calculator text-blue-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-900">Mathématiques</span>
+                                <p class="text-xs text-gray-600">Algèbre, géométrie, calcul</p>
+                            </div>
+                        </button>
+                        
+                        <button data-category="physics" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-green-50">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-green-50 to-green-100 flex items-center justify-center group-hover:from-green-100 group-hover:to-green-200 transition border border-green-100">
+                                <i class="fas fa-atom text-green-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-900">Physique</span>
+                                <p class="text-xs text-gray-600">Mécanique, électricité, optique</p>
+                            </div>
+                        </button>
+                        
+                        <button data-category="earth" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-yellow-50">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-yellow-50 to-yellow-100 flex items-center justify-center group-hover:from-yellow-100 group-hover:to-yellow-200 transition border border-yellow-100">
+                                <i class="fas fa-globe-africa text-yellow-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-900">Sciences de la Terre</span>
+                                <p class="text-xs text-gray-600">Géologie, climat, ressources</p>
+                            </div>
+                        </button>
+                        
+                        <button data-category="literature" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-purple-50">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-purple-50 to-purple-100 flex items-center justify-center group-hover:from-purple-100 group-hover:to-purple-200 transition border border-purple-100">
+                                <i class="fas fa-book text-purple-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-900">Littérature camerounaise</span>
+                                <p class="text-xs text-gray-600">Auteurs, œuvres, histoire</p>
+                            </div>
+                        </button>
+                        
+                        <button data-category="computer" class="category-card flex items-center space-x-3 w-full p-3 rounded-lg transition text-left group hover:bg-red-50">
+                            <div class="w-10 h-10 rounded-lg bg-linear-to-br from-red-50 to-red-100 flex items-center justify-center group-hover:from-red-100 group-hover:to-red-200 transition border border-red-100">
+                                <i class="fas fa-laptop-code text-red-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-900">Informatique</span>
+                                <p class="text-xs text-gray-600">Programmation, réseaux, IA</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-wifi-slash mr-2 text-gray-500"></i>
+                        Mode hors ligne
+                    </h3>
+                    <div class="bg-linear-to-r from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-900">Historique disponible</span>
+                            <div class="w-3 h-3 bg-africa-green rounded-full animate-pulse"></div>
+                        </div>
+                        <p class="text-xs text-gray-600">Consultez vos anciennes discussions sans connexion</p>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-xs text-gray-500">
+                                <i class="fas fa-database mr-1"></i>
+                                <span id="offlineCount">0</span> conversations
+                            </span>
+                            <button class="text-xs bg-white hover:bg-gray-50 px-3 py-1 rounded-lg transition border border-gray-300 text-gray-700">
+                                <i class="fas fa-sync mr-1"></i>Synchroniser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistiques -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h3 class="text-sm font-medium text-gray-700 mb-3">Statistiques du jour</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-gray-50 rounded-lg p-3 text-center border border-gray-200">
+                            <div class="text-2xl font-bold text-africa-orange" id="dailyMessages">0</div>
+                            <div class="text-xs text-gray-600">Messages</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-3 text-center border border-gray-200">
+                            <div class="text-2xl font-bold text-africa-green" id="dailyTime">0</div>
+                            <div class="text-xs text-gray-600">Minutes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Contenu principal - Chat -->
+        <main class="flex-1 flex flex-col">
+            <!-- En-tête du chat -->
+            <div class="bg-linear-to-r from-gray-50 to-white border-b border-gray-200 p-5">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center space-x-3">
+                            <div id="categoryIcon" class="w-12 h-12 rounded-xl bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center border border-blue-100">
+                                <i class="fas fa-robot text-2xl text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h2 id="currentCategory" class="text-2xl font-bold text-gray-900">Assistant Pédagogique</h2>
+                                <p id="categoryDescription" class="text-sm text-gray-600">
+                                    Sélectionnez une matière pour commencer
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="px-4 py-2 bg-white rounded-xl border border-gray-300 shadow-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-message text-africa-blue"></i>
+                                <span class="text-sm font-medium text-gray-700">
+                                    <span id="messageCount">0</span> messages
+                                </span>
+                            </div>
+                        </div>
+                        <button id="clearChat" class="p-3 bg-white hover:bg-gray-50 rounded-xl border border-gray-300 text-gray-600 hover:text-gray-900 transition-all duration-300 group shadow-sm">
+                            <i class="fas fa-trash-alt group-hover:rotate-12 transition-transform"></i>
+                        </button>
+                        <button id="newChat" class="p-3 bg-linear-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white transition-all duration-300 shadow group">
+                            <i class="fas fa-plus group-hover:rotate-90 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone de messages -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-6 chat-container bg-white">
+                <!-- Message de bienvenue -->
+                <div class="text-center py-12 px-4">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center shadow-lg border border-gray-200">
+                        <i class="fas fa-robot text-4xl text-africa-orange"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Bienvenue sur EduConnect Africa IA</h3>
+                    <p class="text-gray-600 max-w-2xl mx-auto mb-8">
+                        Votre assistant pédagogique intelligent pour l'éducation en Afrique. Sélectionnez une matière à gauche pour commencer votre apprentissage personnalisé.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+                        <div class="bg-linear-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                            <i class="fas fa-brain text-2xl text-africa-blue mb-3"></i>
+                            <h4 class="font-semibold text-gray-900 mb-2">IA Adaptative</h4>
+                            <p class="text-xs text-gray-600">Répond dans votre langue et s'adapte à votre niveau</p>
+                        </div>
+                        <div class="bg-linear-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                            <i class="fas fa-book-open text-2xl text-africa-green mb-3"></i>
+                            <h4 class="font-semibold text-gray-900 mb-2">5 Matières</h4>
+                            <p class="text-xs text-gray-600">Mathématiques, Physique, Sciences, Littérature, Informatique</p>
+                        </div>
+                        <div class="bg-linear-to-br from-gray-50 to-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                            <i class="fas fa-wifi-slash text-2xl text-africa-orange mb-3"></i>
+                            <h4 class="font-semibold text-gray-900 mb-2">Hors Ligne</h4>
+                            <p class="text-xs text-gray-600">Consultez votre historique sans connexion Internet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone de saisie -->
+            <div class="bg-linear-to-r from-gray-50 to-white border-t border-gray-200 p-5">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-end space-x-4">
+                        <div class="flex space-x-2">
+                            <button id="attachBtn" class="p-3 bg-white hover:bg-gray-50 rounded-xl border border-gray-300 text-gray-600 hover:text-gray-900 transition-all duration-300 group shadow-sm">
+                                <i class="fas fa-paperclip group-hover:rotate-12 transition-transform"></i>
+                            </button>
+                            <button id="micBtn" class="p-3 bg-white hover:bg-gray-50 rounded-xl border border-gray-300 text-gray-600 hover:text-gray-900 transition-all duration-300 group shadow-sm">
+                                <i class="fas fa-microphone group-hover:scale-110 transition-transform"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="flex-1 relative">
+                            <div class="relative">
+                                <textarea 
+                                    id="messageInput" 
+                                    rows="1" 
+                                    placeholder="Posez votre question ici en français ou en anglais..." 
+                                    class="w-full bg-white border border-gray-300 rounded-2xl p-4 pr-24 text-gray-900 placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-africa-orange focus:border-transparent shadow-sm disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                                    disabled
+                                ></textarea>
+                                
+                                <div class="absolute right-3 bottom-3 flex items-center space-x-2">
+                                    <span id="charCount" class="text-xs text-gray-500">0/2000</span>
+                                    <button id="sendBtn" class="p-3 bg-linear-to-r from-africa-orange to-africa-yellow hover:from-africa-orange/90 hover:to-africa-yellow/90 rounded-xl text-white shadow disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 group" disabled>
+                                        <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-3 px-2">
+                                <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-language"></i>
+                                        <span>Langue auto-détectée</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-lightbulb"></i>
+                                        <span>Appuyez sur <kbd class="px-2 py-1 bg-gray-100 rounded-lg border border-gray-300">Enter</kbd> pour envoyer</span>
+                                    </div>
+                                </div>
+                                <div id="inputStatus" class="text-xs px-3 py-1 bg-gray-100 rounded-full text-gray-600 border border-gray-200">
+                                    <i class="fas fa-info-circle mr-1"></i>Sélectionnez une matière
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Overlay pour mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden hidden transition-opacity"></div>
+
+    <script src="../components/AI.js"></script>
+</body>
+</html>

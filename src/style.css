@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+.logo {
+    width: 1020px;   /* augmente la valeur pour agrandir */
+    height: 20000px;   /* garde les proportions */
+}
