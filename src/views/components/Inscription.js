@@ -1,4 +1,93 @@
 
+// Navigation entre les étapes
+document.getElementById('nextBtn').addEventListener('click', function() {
+    // Valider l'étape 1 d'abord
+    const step1Valid = validateStep1();
+    if (step1Valid) {
+        // Cacher l'étape 1
+        document.querySelector('[data-step="1"]').classList.add('hidden');
+        // Afficher l'étape 2
+        document.querySelector('[data-step="2"]').classList.remove('hidden');
+        
+        // Mettre à jour l'indicateur d'étape
+        document.querySelectorAll('.step').forEach((step, index) => {
+            if (index === 0) {
+                step.querySelector('div').classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-blue-700');
+                step.querySelector('div').classList.add('bg-gradient-to-r', 'from-green-600', 'to-green-700');
+                step.querySelector('span').classList.remove('text-gray-700', 'dark:text-gray-300');
+                step.querySelector('span').classList.add('text-green-700', 'dark:text-green-400');
+            } else {
+                step.querySelector('div').classList.remove('bg-gray-300', 'dark:bg-gray-600');
+                step.querySelector('div').classList.add('bg-gradient-to-r', 'from-blue-600', 'to-blue-700');
+                step.querySelector('div').classList.remove('text-gray-500', 'dark:text-gray-400');
+                step.querySelector('div').classList.add('text-white');
+                step.querySelector('span').classList.remove('text-gray-500', 'dark:text-gray-500');
+                step.querySelector('span').classList.add('text-gray-700', 'dark:text-gray-300');
+            }
+        });
+    }
+});
+
+document.getElementById('backBtn').addEventListener('click', function() {
+    // Cacher l'étape 2
+    document.querySelector('[data-step="2"]').classList.add('hidden');
+    // Afficher l'étape 1
+    document.querySelector('[data-step="1"]').classList.remove('hidden');
+    
+    // Mettre à jour l'indicateur d'étape
+    document.querySelectorAll('.step').forEach((step, index) => {
+        if (index === 0) {
+            step.querySelector('div').classList.remove('bg-gradient-to-r', 'from-green-600', 'to-green-700');
+            step.querySelector('div').classList.add('bg-gradient-to-r', 'from-blue-600', 'to-blue-700');
+            step.querySelector('span').classList.remove('text-green-700', 'dark:text-green-400');
+            step.querySelector('span').classList.add('text-gray-700', 'dark:text-gray-300');
+        } else {
+            step.querySelector('div').classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-blue-700');
+            step.querySelector('div').classList.add('bg-gray-300', 'dark:bg-gray-600');
+            step.querySelector('div').classList.remove('text-white');
+            step.querySelector('div').classList.add('text-gray-500', 'dark:text-gray-400');
+            step.querySelector('span').classList.remove('text-gray-700', 'dark:text-gray-300');
+            step.querySelector('span').classList.add('text-gray-500', 'dark:text-gray-500');
+        }
+    });
+});
+
+function validateStep1() {
+    // Validation simple pour l'exemple
+    const requiredFields = ['nom', 'prenom', 'email', 'password', 'confirmPassword'];
+    let isValid = true;
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+            isValid = false;
+            field.classList.add('border-red-500');
+        } else {
+            field.classList.remove('border-red-500');
+        }
+    });
+    
+    // Vérifier si un sexe est sélectionné
+    const sexeSelected = document.querySelector('input[name="sexe"]:checked');
+    if (!sexeSelected) {
+        isValid = false;
+    }
+    
+    // Vérifier la correspondance des mots de passe
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    if (password !== confirmPassword) {
+        isValid = false;
+        document.getElementById('confirmPassword').classList.add('border-red-500');
+    }
+    
+    return isValid;
+}
+
+// Ajouter le support dark mode pour les éléments restants
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+}
 // Configuration API
 const API_TOKEN = '2ad1ffe2de6acb841251b8f5694ec531e074f130';
 const API_BASE_URL = 'https://aaapis.com/api/v1';

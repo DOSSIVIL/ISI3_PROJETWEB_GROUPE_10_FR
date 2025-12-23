@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
+ <style>
     @keyframes fadeInScale {
       0% {
         opacity: 0;
@@ -25,27 +25,599 @@
         transform: scale(0.95) translateY(-10px);
       }
     }
+    
+    @keyframes slideInFromTop {
+      0% {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Styles pour la navigation active */
+    .nav-item.active .active-indicator {
+      width: 80%;
+    }
+    
+    .nav-item.active .nav-text {
+      font-weight: 600;
+    }
+    
+    .nav-item.active .nav-icon {
+      transform: scale(1.1);
+    }
+    
+    /* Animation des boutons */
+    .hover-animation {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .hover-animation:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    /* Styles pour dark mode */
+    .dark .header-dark {
+      background-color: rgba(15, 23, 42, 0.95) !important;
+      border-color: rgba(30, 41, 59, 0.5) !important;
+    }
+    
+    .dark .text-gray-700 {
+      color: #e5e7eb !important;
+    }
+    
+    .dark .text-gray-800 {
+      color: #f1f5f9 !important;
+    }
+    
+    .dark .text-gray-900 {
+      color: #f8fafc !important;
+    }
+    
+    .dark .text-gray-600 {
+      color: #cbd5e1 !important;
+    }
+    
+    .dark .bg-white {
+      background-color: #1e293b !important;
+    }
+    
+    .dark .bg-gray-50 {
+      background-color: #334155 !important;
+    }
+    
+    .dark .bg-gray-100 {
+      background-color: #475569 !important;
+    }
+    
+    .dark .border-gray-200 {
+      border-color: #475569 !important;
+    }
+    
+    .dark .hover\:bg-gray-50:hover {
+      background-color: #334155 !important;
+    }
+    
+    .dark .hover\:text-gray-800:hover {
+      color: #f1f5f9 !important;
+    }
+    
+    .dark .bg-slate-800 {
+      background-color: #0f172a !important;
+    }
+    
+    .dark .border-slate-700 {
+      border-color: #334155 !important;
+    }
+    
+    .dark .text-slate-300 {
+      color: #cbd5e1 !important;
+    }
+    
+    .dark .bg-blue-50 {
+      background-color: #1e3a8a !important;
+    }
+    
+    .dark .bg-emerald-50 {
+      background-color: #064e3b !important;
+    }
+    
+    .dark .hover\:bg-blue-50:hover {
+      background-color: #1e40af !important;
+    }
+    
+    .dark .hover\:bg-emerald-50:hover {
+      background-color: #065f46 !important;
+    }
+    
+    /* Menu de connexion en dark mode */
+    .dark #register-menu {
+      background-color: #1e293b !important;
+      border-color: #475569 !important;
+    }
+    
+    .dark #register-menu .text-gray-700 {
+      color: #e5e7eb !important;
+    }
+    
+    .dark #register-menu .text-gray-900 {
+      color: #f8fafc !important;
+    }
+    
+    .dark #register-menu .text-gray-500 {
+      color: #94a3b8 !important;
+    }
+    
+    .dark #register-menu .border-gray-200 {
+      border-color: #475569 !important;
+    }
+    
+    .dark #register-menu .bg-linear-to-r.from-gray-50.to-gray-100 {
+      background: linear-gradient(to right, #334155, #475569) !important;
+    }
+    
+    /* Spécifique pour la recherche mobile en dark mode */
+    .dark #mobile-search-input {
+      color: #f1f5f9 !important;
+      background-color: transparent !important;
+    }
+    
+    .dark #mobile-search-input::placeholder {
+      color: #94a3b8 !important;
+    }
+    
+    .dark .mobile-search-container {
+      background: linear-gradient(135deg, #1e293b, #334155) !important;
+      border-color: #475569 !important;
+    }
+    
+    /* Menu mobile en dark mode */
+    .dark #mobile-menu-content {
+      background-color: #1e293b !important;
+    }
+    
+    .dark #mobile-menu-content .text-gray-700 {
+      color: #e5e7eb !important;
+    }
+    
+    .dark #mobile-menu-content .text-gray-900 {
+      color: #f8fafc !important;
+    }
+    
+    .dark #mobile-menu-content .text-gray-500 {
+      color: #94a3b8 !important;
+    }
+    
+    .dark #mobile-menu-content .border-gray-200 {
+      border-color: #475569 !important;
+    }
+    
+    .dark #mobile-menu-content .hover\:bg-gray-50:hover {
+      background-color: #334155 !important;
+    }
+    
+    .dark #mobile-menu-content .hover\:bg-white:hover {
+      background-color: #334155 !important;
+    }
+    
+    .dark #mobile-menu-content .bg-linear-to-br {
+      background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+    }
+    
+    .dark #mobile-menu-content .from-blue-50 {
+      --tw-gradient-from: #1e3a8a !important;
+    }
+    
+    .dark #mobile-menu-content .to-blue-100 {
+      --tw-gradient-to: #1e40af !important;
+    }
+    
+    .dark #mobile-menu-content .from-emerald-50 {
+      --tw-gradient-from: #064e3b !important;
+    }
+    
+    .dark #mobile-menu-content .to-emerald-100 {
+      --tw-gradient-to: #065f46 !important;
+    }
+    
+    /* Animation pour les éléments au survol */
+    .nav-link-hover {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .nav-link-hover::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    
+    .nav-link-hover:hover::after {
+      width: 80%;
+    }
+    
+    /* Styles pour améliorer la visibilité de la recherche mobile */
+    .mobile-search-container {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border: 1px solid #e2e8f0;
+    }
+    
+    #mobile-search-input {
+      color: #1e293b;
+      background: transparent;
+    }
+    
+    #mobile-search-input::placeholder {
+      color: #64748b;
+    }
+    
+    /* Correction pour le texte noir par défaut */
+    .nav-text, .mobile-nav-item span {
+      color: #1f2937 !important;
+    }
+    
+    .dark .nav-text, .dark .mobile-nav-item span {
+      color: #f1f5f9 !important;
+    }
+    
+    .dark .nav-item.active .nav-text {
+      color: #f1f5f9 !important;
+    }
+    
+    .dark .mobile-nav-item.active span {
+      color: #f1f5f9 !important;
+    }
+    
+    /* === STYLES SPÉCIFIQUES POUR LE MENU LANGUE EN DARK MODE === */
+
+/* Bouton langue principal */
+.lang-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+/* Dark mode pour le bouton */
+.dark .lang-dropdown-btn {
+  background: #334155;
+  border-color: #475569;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.lang-dropdown-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dark .lang-dropdown-btn:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+.lang-flag {
+  font-size: 1.25rem;
+}
+
+.lang-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Dark mode pour le texte du bouton */
+.dark .lang-name {
+  color: #e5e7eb;
+}
+
+.lang-arrow {
+  font-size: 0.75rem;
+  color: #6b7280;
+  transition: transform 0.3s ease;
+}
+
+.dark .lang-arrow {
+  color: #9ca3af;
+}
+
+.lang-dropdown-btn.active .lang-arrow {
+  transform: rotate(180deg);
+}
+
+/* Menu déroulant des langues */
+.lang-menu {
+  position: absolute;
+  right: 0;
+  top: 3.5rem;
+  width: 200px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  z-index: 100;
+  animation: fadeInScale 0.2s ease-out;
+}
+
+/* Dark mode pour le menu déroulant */
+.dark .lang-menu {
+  background-color: #1e293b;
+  border-color: #475569;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* En-tête du menu */
+.lang-menu-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(to right, #f9fafb, #f3f4f6);
+}
+
+/* Dark mode pour l'en-tête */
+.dark .lang-menu-header {
+  background: linear-gradient(to right, #334155, #475569);
+  border-color: #475569;
+}
+
+.lang-menu-header p {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4b5563;
+}
+
+.dark .lang-menu-header p {
+  color: #cbd5e1;
+}
+
+/* Options du menu */
+.lang-option {
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Dark mode pour les options */
+.lang-option:hover {
+  background-color: #f9fafb;
+}
+
+.dark .lang-option:hover {
+  background-color: #334155;
+}
+
+.lang-option-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.lang-option-flag {
+  font-size: 1.25rem;
+}
+
+.lang-option-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.dark .lang-option-text {
+  color: #e5e7eb;
+}
+
+.lang-option-check {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.dark .lang-option-check {
+  color: #60a5fa;
+}
+
+.lang-option.selected .lang-option-check {
+  opacity: 1;
+}
+
+/* Version mobile */
+.lang-option-mobile {
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Dark mode pour le mobile */
+.lang-option-mobile:hover {
+  background-color: #f9fafb;
+}
+
+.dark .lang-option-mobile:hover {
+  background-color: #334155;
+}
+
+/* Sous-menu des langues mobile */
+#lang-submenu-mobile {
+  background-color: white;
+  border-radius: 8px;
+  margin-top: 4px;
+  padding: 4px;
+}
+
+.dark #lang-submenu-mobile {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+}
+    
+    /* Cache le widget Google Translate */
+    .goog-te-banner-frame {
+      display: none !important;
+    }
+    
+    .goog-te-gadget {
+      font-size: 0 !important;
+    }
+    
+    .goog-te-gadget-simple {
+      background-color: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+    }
+    
+    .goog-te-menu-value {
+      display: none !important;
+    }
+    
+    #google_translate_element {
+      display: none !important;
+    }
+    
+    /* Styles pour la barre de recherche originale */
+    .search-3d-original {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .search-3d-original::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+      border-radius: 16px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .search-3d-original:hover::before {
+      opacity: 0.5;
+    }
+    
+    .search-box-original {
+      background: linear-gradient(135deg, #ffffff, #f9fafb);
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 200px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark .search-box-original {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border-color: #475569;
+    }
+    
+    .search-box-original:focus-within {
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+      border-color: #3b82f6;
+    }
+    
+    .search-input-original {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #1f2937;
+      font-size: 0.875rem;
+      width: 100%;
+    }
+    
+    .dark .search-input-original {
+      color: #f9fafb;
+    }
+    
+    .search-input-original::placeholder {
+      color: #9ca3af;
+    }
+    
+    .dark .search-input-original::placeholder {
+      color: #94a3b8;
+    }
+    
+    .search-icon-original {
+      color: #6b7280;
+      width: 18px;
+      height: 18px;
+    }
+    
+    .dark .search-icon-original {
+      color: #9ca3af;
+    }
   </style>
 </head>
-<body>
+<body data-current-page="home" class="bg-white text-gray-700 transition-colors duration-300">
 
-<header 
+  <header 
   id="main-header"
-  class="fixed top-0 left-0 right-0 bg-white/90 border-gray-200/50 backdrop-blur-lg shadow-xl border-b z-50 transition-all duration-300"
+  class="fixed top-0 left-0 right-0 bg-white/10 border-white/20 backdrop-blur-md shadow-2xl border-b z-50 transition-all duration-300"
+  style="backdrop-filter: blur(12px) saturate(180%);"
   aria-label="En-tête de navigation principale"
 >
   <!-- Gradient Background -->
   <div class="pointer-events-none absolute inset-0 bg-linear-to-r from-blue-50/10 via-purple-50/5 to-pink-50/10 opacity-40"></div>
 
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
+    <div class="flex items-center justify-between h-16 lg:h-20">
 
-      <!-- Logo and Title -->
-      <a href="#" class="flex items-center space-x-1 shrink-0 min-w-0 md:-ml-16 sm:md:-ml-10" aria-label="Accueil EduConnect Africa">
-        <img src="../../../Images/Logo.png" alt="Logo EduConnect Africa" class="h-12 w-12 md:h-16 md:w-16 sm:md:h-28 sm:md:w-28 drop-shadow-lg" onerror="this.style.display='none'" />
+      <!-- Logo and Title - Responsive -->
+      <a href="/" class="flex items-center space-x-2 sm:space-x-3 shrink-0 min-w-0 -ml-1 sm:-ml-2" aria-label="Accueil EduConnect Africa">
+        <img src="../../../Images/Logo.png" alt="Logo EduConnect Africa" class="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 drop-shadow-lg hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'" />
         
         <div class="leading-tight">
-          <h1 class="text-sm md:text-xl font-bold whitespace-nowrap">
+          <h1 class="text-lg sm:text-xl lg:text-2xl font-bold whitespace-nowrap">
             <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
             <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
           </h1>
@@ -53,208 +625,190 @@
       </a>
 
       <!-- Navigation (Desktop) -->
-      <nav class="hidden lg:flex space-x-2 max-w-3xl flex-1 justify-center" aria-label="Navigation principale">
-  
+      <nav class="hidden lg:flex space-x-1 max-w-3xl flex-1 justify-center mx-4" aria-label="Navigation principale">
         <!-- Home Link -->
         <a href="#home" 
-           class="group flex items-center px-4 py-2.5 rounded-xl font-medium text-gray-700 transition-all duration-300 relative overflow-hidden">
-          
-          <!-- Animated Background -->
+           class="nav-item nav-link-hover group flex items-center px-4 py-3 rounded-xl font-medium text-gray-700 transition-all duration-300 relative overflow-hidden hover-animation"
+           data-page="home">
           <div class="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-          
-          <!-- Content -->
-          <div class="relative flex items-center space-x-2">
-            <!-- Icon -->
-            <svg class="h-5 w-5 text-gray-600 group-hover:text-blue-600 transition-colors duration-300" 
+          <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300 rounded-full active-indicator"></div>
+          <div class="relative flex items-center space-x-3">
+            <svg class="nav-icon h-5 w-5 text-gray-600 group-hover:text-blue-600 transition-all duration-300 group-hover:scale-110" 
                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
               <path d="M9 22V12h6v10"/>
             </svg>
-            
-            <!-- Text -->
-            <span class="group-hover:text-blue-700 transition-colors duration-300">Home</span>
-            
-            <!-- Underline Animation -->
-            <div class="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></div>
+            <span class="nav-text group-hover:text-blue-700 transition-colors duration-300">Home</span>
           </div>
         </a>
       
         <!-- About Link -->
         <a href="#about" 
-           class="group flex items-center px-4 py-2.5 rounded-xl font-medium text-gray-700 transition-all duration-300 relative overflow-hidden">
-          
-          <!-- Animated Background -->
+           class="nav-item group flex items-center px-4 py-3 rounded-xl font-medium text-gray-700 transition-all duration-300 relative overflow-hidden hover-animation"
+           data-page="about">
           <div class="absolute inset-0 bg-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-          
-          <!-- Content -->
-          <div class="relative flex items-center space-x-2">
-            <!-- Icon -->
-            <svg class="h-5 w-5 text-gray-600 group-hover:text-emerald-600 transition-colors duration-300" 
+          <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600 transition-all duration-300 rounded-full active-indicator"></div>
+          <div class="relative flex items-center space-x-3">
+            <svg class="nav-icon h-5 w-5 text-gray-600 group-hover:text-emerald-600 transition-all duration-300 group-hover:scale-110" 
                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke-width="2"/>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01"/>
             </svg>
-            
-            <!-- Text -->
-            <span class="group-hover:text-emerald-700 transition-colors duration-300">About Us</span>
-            
-            <!-- Underline Animation -->
-            <div class="absolute -bottom-1 left-0 right-0 h-0.5 bg-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></div>
+            <span class="nav-text group-hover:text-emerald-700 transition-colors duration-300">About</span>
           </div>
         </a>
-      
       </nav>
 
       <!-- Right Section -->
-      <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+      <div class="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 shrink-0">
 
-        <!-- 3D Search Box (Desktop) -->
-        <div id="search-container" class="hidden md:flex relative w-40 lg:w-48 xl:w-56 transition-all duration-500">
-          <div class="relative flex items-center w-full search-3d">
-            <div class="absolute -inset-1 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl opacity-0 blur-lg transition-all duration-300" id="search-glow"></div>
-            <div id="search-box" class="relative bg-linear-to-br from-gray-50 to-gray-100 backdrop-blur-sm rounded-2xl px-4 py-2.5 w-full shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center border border-gray-200">
-              <svg class="h-5 w-5 mr-2 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="search" placeholder="Rechercher..." aria-label="Recherche sur le site" class="bg-transparent outline-none text-sm flex-1 text-gray-900 placeholder-gray-400" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Language Toggle (Desktop) -->
-        <div class="relative hidden md:block">
-          <button 
-            id="lang-toggle" 
-            aria-label="Changer la langue" 
-            class="flex items-center space-x-2 px-3 py-2 rounded-xl bg-gray-100/80 text-gray-700 hover:bg-gray-200/80 hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/70"
-          >
-            <i class="fas fa-globe h-4 w-4"></i>
-            <span class="text-sm font-medium hidden sm:inline flex items-center gap-1" id="current-lang">
-              <span class="text-base">🇫🇷</span>
-              <span>FR</span>
-            </span>
-            <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </button>
-          
-          <div 
-            id="lang-menu" 
-            class="hidden absolute right-0 top-12 w-40 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-50 animate-fade-in-up"
-          >
-            <button 
-              class="lang-option w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors flex items-center gap-2" 
-              data-lang="FR"
-            >
-              <span class="text-base">🇫🇷</span>
-              <span>Français</span>
-            </button>
-            
-            <button 
-              class="lang-option w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 transition-colors flex items-center gap-2" 
-              data-lang="EN"
-            >
-              <span class="text-base">🇬🇧</span>
-              <span>English</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Dark Mode Toggle (Desktop) -->
-        <button id="dark-mode-toggle" aria-label="Activer le mode sombre" class="hidden md:flex relative items-center justify-center p-2.5 rounded-xl bg-gray-100/80 text-gray-700 hover:bg-gray-200/80 hover:scale-110 transition-all duration-300 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70">
-          <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 0021 12.79z"/></svg>
-          <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M16.95 16.95l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M16.95 7.05l1.42-1.42"/></svg>
+        <!-- Search Button (Mobile) -->
+        <button id="mobile-search-toggle" aria-label="Rechercher" class="md:hidden p-2.5 text-gray-600 hover:text-gray-800 hover:bg-gray-50/80 rounded-xl transition-all duration-300 hover-animation mr-1">
+          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
         </button>
-        
-        <!-- Connexion Button (Desktop) -->
-        <a href="src/views/templates/Connexion.html" class="hidden sm:flex px-4 py-2 text-sm font-medium rounded-xl bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
-          Se connecter
-        </a>
 
-        <!-- Inscription Button with Dropdown (Desktop) -->
-        <div class="relative hidden sm:block -mr-15">
-          <button id="register-toggle" class="px-4 py-2 text-sm font-medium rounded-xl bg-linear-to-r from-blue-600 to-blue-700 text-white border border-blue-500 hover:from-blue-700 hover:to-blue-800 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-xl">
-            S'inscrire
-          </button>
-          <div id="register-menu" class="hidden absolute right-0 top-12 w-64 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-sm overflow-hidden z-50 animate-fade-in-up">
-            <div class="px-4 py-3 border-b border-slate-700 bg-linear-to-r from-slate-800 to-slate-700">
-              <p class="text-sm font-medium text-slate-300">Créer un compte</p>
-            </div>
-            <div class="p-2">
-              <a href="src/views/templates/Inscription_et.html" class="block w-full">
-                <button class="w-full flex items-center justify-between px-3 py-3 rounded-lg hover:bg-slate-700/50 transition-all duration-200 hover:scale-[1.02] group">
-                  <div class="text-left">
-                    <p class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors">Étudiant</p>
-                    <p class="text-xs text-slate-400">Accéder aux formations</p>
-                  </div>
-                  <i class="fas fa-user-graduate text-blue-400 text-lg"></i>
-                </button>
-              </a>
-              <a href="inscription-enseignant.html" class="block w-full mt-1">
-                <button class="w-full flex items-center justify-between px-3 py-3 rounded-lg hover:bg-slate-700/50 transition-all duration-200 hover:scale-[1.02] group">
-                  <div class="text-left">
-                    <p class="text-sm font-medium text-white group-hover:text-emerald-300 transition-colors">Enseignant</p>
-                    <p class="text-xs text-slate-400">Proposer des cours</p>
-                  </div>
-                  <i class="fas fa-chalkboard-teacher text-emerald-400 text-lg"></i>
-                </button>
-              </a>
+        <!-- Barre de recherche originale (Desktop) -->
+        <div id="search-container" class="hidden md:flex relative transition-all duration-500 mr-4">
+          <div class="search-3d-original">
+            <div class="search-box-original">
+              <svg class="search-icon-original" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="search" placeholder="Rechercher..." aria-label="Recherche sur le site" class="search-input-original" id="desktop-search-input" />
             </div>
           </div>
         </div>
 
+        <!-- Buttons Group -->
+        <div class="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
 
-        <!-- Settings Button (Mobile) -->
-        <div class="relative md:hidden">
-          <button id="settings-toggle-mobile" aria-label="Paramètres" class="p-2.5 text-gray-600 hover:text-gray-800 hover:bg-gray-50/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70 transition-all duration-300 shadow-md">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-          </button>
-          
-          <div id="settings-menu-mobile" class="hidden absolute right-0 top-12 w-56 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-50 animate-fade-in-up">
-            <button id="lang-toggle-mobile-btn" class="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-all duration-200 group border-b border-gray-100">
-              <div class="flex items-center space-x-3">
-                <i class="fas fa-globe text-gray-600"></i>
-                <span id="current-lang-mobile" class="text-sm font-medium text-gray-700">Français 🇫🇷</span>
-              </div>
-              <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          <!-- === VERSION DESKTOP === -->
+          <div class="relative hidden sm:block">
+            <button 
+              id="lang-toggle" 
+              aria-label="Changer la langue" 
+              aria-expanded="false"
+              class="lang-dropdown-btn hover-animation"
+            >
+              <span class="lang-flag" id="current-lang-flag">🇫🇷</span>
+              <span class="lang-name hidden sm:inline" id="current-lang-name">Français</span>
+              <span class="lang-arrow">▼</span>
             </button>
             
-            <div id="lang-submenu-mobile" class="hidden bg-gray-50">
-              <button class="lang-option-mobile w-full px-6 py-2.5 text-left text-sm hover:bg-gray-100 transition-colors flex items-center gap-2" data-lang="FR">
-                <span class="text-base">🇫🇷</span>
-                <span>Français</span>
+            <div 
+              id="lang-menu" 
+              class="lang-menu hidden"
+              role="menu"
+              aria-labelledby="lang-toggle"
+            >
+              <div class="lang-menu-header">
+                <p>Sélectionner la langue</p>
+              </div>
+              <button 
+                class="lang-option"
+                role="menuitem"
+                data-lang="FR"
+                data-lang-name="Français"
+                data-lang-flag="🇫🇷"
+              >
+                <div class="lang-option-content">
+                  <span class="lang-option-flag">🇫🇷</span>
+                  <span class="lang-option-text">Français</span>
+                </div>
+                <div class="lang-option-check">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
               </button>
-              <button class="lang-option-mobile w-full px-6 py-2.5 text-left text-sm hover:bg-gray-100 transition-colors flex items-center gap-2" data-lang="EN">
-                <span class="text-base">🇬🇧</span>
-                <span>English</span>
+              
+              <button 
+                class="lang-option"
+                role="menuitem"
+                data-lang="EN"
+                data-lang-name="English"
+                data-lang-flag="🇬🇧"
+              >
+                <div class="lang-option-content">
+                  <span class="lang-option-flag">🇬🇧</span>
+                  <span class="lang-option-text">English</span>
+                </div>
+                <div class="lang-option-check">
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
               </button>
             </div>
-            
-            <button id="dark-mode-toggle-mobile" class="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-all duration-200 group">
-              <div class="flex items-center space-x-3">
-                <svg id="moon-icon-mobile" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 0021 12.79z"/></svg>
-                <span id="dark-mode-text-mobile" class="text-sm font-medium text-gray-700">Mode Sombre</span>
-              </div>
-            </button>
           </div>
+
+          <!-- Dark Mode Toggle (Desktop) -->
+          <button id="dark-mode-toggle" aria-label="Activer le mode sombre" class="hidden md:flex relative items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gray-100/80 text-gray-700 hover:bg-gray-200/80 transition-all duration-300 shadow-md hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70 hover-animation">
+            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 lg:h-5 lg:w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 0021 12.79z"/></svg>
+            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 lg:h-5 lg:w-5 hidden text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M16.95 16.95l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M16.95 7.05l1.42-1.42"/></svg>
+          </button>
+          
+          <!-- Auth Buttons (Desktop) -->
+          <div class="hidden md:flex items-center space-x-3 lg:space-x-4">
+            <!-- Connexion Button -->
+            <a href="src/views/templates/Connexion.html" class="flex items-center justify-center w-24 h-10 lg:w-28 lg:h-12 text-sm font-medium rounded-xl bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all duration-200 shadow-md hover:shadow-lg hover-animation">
+              <span class="whitespace-nowrap">Se connecter</span>
+            </a>
+
+            <!-- Inscription Button with Dropdown -->
+            <div class="relative">
+              <button id="register-toggle" class="flex items-center justify-center w-24 h-10 lg:w-28 lg:h-12 text-sm font-medium rounded-xl bg-linear-to-r from-blue-600 to-blue-700 text-white border border-blue-500 hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg hover-animation">
+                <span class="whitespace-nowrap">S'inscrire</span>
+              </button>
+              <div id="register-menu" class="register-menu-dark hidden absolute right-0 top-14 w-64 bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
+                <div class="px-4 py-3 border-b border-gray-200 bg-linear-to-r from-gray-50 to-gray-100">
+                  <p class="text-sm font-medium text-gray-700">Créer un compte</p>
+                </div>
+                <div class="p-2">
+                  <a href="src/views/templates/Inscription_et.html" class="block w-full">
+                    <button class="w-full flex items-center justify-between px-3 py-3 rounded-lg hover:bg-blue-50/50 transition-all duration-200 hover:scale-[1.02] group hover-animation">
+                      <div class="text-left">
+                        <p class="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">Étudiant</p>
+                        <p class="text-xs text-gray-500">Accéder aux formations</p>
+                      </div>
+                      <i class="fas fa-user-graduate text-blue-500 text-lg"></i>
+                    </button>
+                  </a>
+                  <a href="src/views/templates/Inscription_tu.html" class="block w-full mt-1">
+                    <button class="w-full flex items-center justify-between px-3 py-3 rounded-lg hover:bg-emerald-50/50 transition-all duration-200 hover:scale-[1.02] group hover-animation">
+                      <div class="text-left">
+                        <p class="text-sm font-medium text-gray-900 group-hover:text-emerald-600 transition-colors">Enseignant</p>
+                        <p class="text-xs text-gray-500">Proposer des cours</p>
+                      </div>
+                      <i class="fas fa-chalkboard-teacher text-emerald-500 text-lg"></i>
+                    </button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- User Account Button (Mobile) -->
-        <div class="relative md:hidden">
-          <button id="user-toggle-mobile" aria-label="Compte utilisateur" class="p-2.5 text-gray-600 hover:text-gray-800 hover:bg-linear-to-br hover:from-blue-50 hover:to-purple-50 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/70 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-110">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 hover:rotate-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <div class="relative md:hidden ml-2">
+          <button id="user-toggle-mobile" aria-label="Compte utilisateur" class="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-800 hover:bg-linear-to-br hover:from-blue-50 hover:to-purple-50 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/70 transition-all duration-300 shadow-md hover:shadow-lg hover-animation">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
               <circle cx="12" cy="7" r="4"/>
             </svg>
           </button>
           
-          <div id="user-menu-mobile" class="hidden absolute right-0 top-14 w-64 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-2xl overflow-hidden z-50 transform origin-top-right">
+          <div id="user-menu-mobile" class="user-menu-dark hidden absolute right-0 top-14 w-64 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-2xl overflow-hidden z-50 transform origin-top-right">
             <!-- Se connecter -->
             <a href="src/views/templates/Connexion.html" class="block w-full">
-              <button class="w-full flex items-center justify-between px-5 py-4 hover:bg-linear-to-r hover:from-blue-50 hover:to-blue-100/50 transition-all duration-300 group border-b border-gray-100">
+              <button class="w-full flex items-center justify-between px-5 py-4 hover:bg-linear-to-r hover:from-blue-50 hover:to-blue-100/50 transition-all duration-300 group border-b border-gray-100 hover-animation">
                 <div class="text-left flex items-center space-x-3">
-                  <div class="p-2 rounded-lg bg-blue-100/50 group-hover:bg-blue-200/70 transition-all duration-300 group-hover:scale-110">
+                  <div class="p-2 rounded-lg bg-blue-100/50 group-hover:bg-blue-200/70 transition-all duration-300">
                     <i class="fas fa-sign-in-alt text-blue-600 text-sm"></i>
                   </div>
                   <div>
@@ -271,45 +825,47 @@
             <div class="bg-linear-to-br from-gray-50/50 to-blue-50/30 p-3">
               <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide px-2 mb-2">S'inscrire</p>
               
-                <!-- Étudiant -->
+              <!-- Étudiant -->
               <a href="src/views/templates/Inscription_et.html" class="block w-full">
-                <button class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 group mb-2">
+                <button class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 group mb-2 hover-animation">
                   <div class="text-left flex items-center space-x-3">
-                    <div class="p-2 rounded-lg bg-linear-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                    <div class="p-2 rounded-lg bg-linear-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-300">
                       <i class="fas fa-user-graduate text-blue-600 text-base"></i>
                     </div>
                     <div>
                       <p class="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors duration-300">Étudiant</p>
-                      <p class="text-xs text-gray-500">Accéder aux formations</p>
+                      <p class="text-xs text-gray-900">Accéder aux formations</p>
                     </div>
                   </div>
                   <svg class="h-4 w-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <polyline points="9 18 15 12 9 6"/>
                   </svg>
                 </button>
-            </a>
+              </a>
               
               <!-- Enseignant -->
-              <button class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 group">
-                <div class="text-left flex items-center space-x-3">
-                  <div class="p-2 rounded-lg bg-linear-to-br from-emerald-100 to-emerald-200 group-hover:from-emerald-200 group-hover:to-emerald-300 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                    <i class="fas fa-chalkboard-teacher text-emerald-600 text-base"></i>
+              <a href="src/views/templates/Inscription_tu.html" class="block w-full">
+                <button class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 group hover-animation">
+                  <div class="text-left flex items-center space-x-3">
+                    <div class="p-2 rounded-lg bg-linear-to-br from-emerald-100 to-emerald-200 group-hover:from-emerald-200 group-hover:to-emerald-300 transition-all duration-300">
+                      <i class="fas fa-chalkboard-teacher text-emerald-600 text-base"></i>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors duration-300">Enseignant</p>
+                      <p class="text-xs text-gray-900">Proposer des cours</p>
+                    </div>
                   </div>
-                  <div>
-                    <p class="text-sm font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors duration-300">Enseignant</p>
-                    <p class="text-xs text-gray-500">Proposer des cours</p>
-                  </div>
-                </div>
-                <svg class="h-4 w-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <polyline points="9 18 15 12 9 6"/>
-                </svg>
-              </button>
+                  <svg class="h-4 w-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </button>
+              </a>
             </div>
           </div>
         </div>
 
         <!-- Mobile Menu Button -->
-        <button id="mobile-menu-toggle" aria-label="Ouvrir le menu mobile" class="md:hidden p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70 transition-all duration-300">
+        <button id="mobile-menu-toggle" aria-label="Ouvrir le menu mobile" class="md:hidden flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-800 hover:bg-gray-50/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/70 transition-all duration-300 hover-animation ml-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
 
@@ -323,294 +879,154 @@
 <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
   <div id="mobile-menu-overlay" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
 
-  <div id="mobile-menu-content" class="absolute right-0 top-0 h-full w-80 max-w-[90vw] bg-white/95 backdrop-blur-xl shadow-2xl transition-transform duration-500 ease-in-out transform translate-x-full">
+  <div id="mobile-menu-content" class="absolute right-0 top-0 h-full w-full max-w-xs sm:max-w-sm bg-white/95 backdrop-blur-xl shadow-2xl transition-transform duration-500 ease-in-out transform translate-x-full">
     <div class="flex items-center justify-between p-4 border-b border-gray-200/20">
       <div class="flex items-center space-x-2">
-        <img src="../../../Images/Logo.png" alt="Logo" class="h-8 w-8" onerror="this.style.display='none'" />
+        <img src="../../../Images/Logo.png" alt="Logo" class="h-10 w-10" onerror="this.style.display='none'" />
         <h3 class="text-lg font-bold">
           <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
           <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
         </h3>
       </div>
-      <button id="mobile-menu-close" aria-label="Fermer le menu mobile" class="p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/70">
+      <button id="mobile-menu-close" aria-label="Fermer le menu mobile" class="p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/70 hover-animation">
         <svg class="h-6 w-6 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     
-    <nav class="p-4 space-y-2">
-      <a href="#home" class="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-300">
-        <i class="fas fa-home"></i>
-        <span>Home</span>
+    <!-- Navigation mobile -->
+    <nav class="p-4 space-y-1">
+      <a href="#home" class="mobile-nav-item flex items-center space-x-3 px-4 py-3.5 rounded-xl font-medium text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-300 hover-animation" data-page="home">
+        <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
+          <path d="M9 22V12h6v10"/>
+        </svg>
+        <span class="font-medium">Home</span>
       </a>
-      <a href="#about" class="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-300">
-        <i class="fas fa-info-circle"></i>
-        <span>About Us</span>
+      <a href="#about" class="mobile-nav-item flex items-center space-x-3 px-4 py-3.5 rounded-xl font-medium text-gray-700 hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-300 hover-animation" data-page="about">
+        <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke-width="2"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01"/>
+        </svg>
+        <span class="font-medium">About Us</span>
       </a>
     </nav>
     
+    <!-- Paramètres dans le menu mobile -->
     <div class="p-4 border-t border-gray-200/20">
-      <div class="relative search-3d">
-        <div class="flex items-center bg-linear-to-br from-gray-50 to-gray-100 rounded-2xl px-4 py-3 shadow-lg border border-gray-200">
-          <svg class="h-5 w-5 mr-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="search" placeholder="Rechercher..." aria-label="Recherche mobile" class="bg-transparent outline-none text-base flex-1 text-gray-900 placeholder-gray-400" />
+      <div class="space-y-2">
+        <!-- Bouton Langue amélioré (Mobile) -->
+        <button id="lang-toggle-mobile-btn" class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-gray-50/80 transition-all duration-200 group hover-animation lang-dropdown-btn">
+          <div class="flex items-center space-x-3">
+            <span class="lang-flag text-lg" id="current-lang-mobile-flag">🇫🇷</span>
+            <div class="text-left">
+              <span class="text-sm font-medium text-gray-700">Langue</span>
+              <span id="current-lang-mobile-display" class="text-xs text-gray-500 block">Français</span>
+            </div>
+          </div>
+          <span class="lang-arrow">▼</span>
+        </button>
+        
+        <!-- Sous-menu des langues -->
+        <div id="lang-submenu-mobile" class="hidden space-y-1 pl-10">
+          <button class="lang-option-mobile w-full px-3 py-2.5 text-left text-sm hover:bg-gray-100 transition-colors rounded-lg flex items-center justify-between gap-2 hover-animation" 
+                  data-lang="FR"
+                  data-lang-name="Français"
+                  data-lang-flag="🇫🇷">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🇫🇷</span>
+              <span>Français</span>
+            </div>
+            <span id="current-lang-mobile-indicator-fr" class="hidden text-blue-600">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+          </button>
+          <button class="lang-option-mobile w-full px-3 py-2.5 text-left text-sm hover:bg-gray-100 transition-colors rounded-lg flex items-center justify-between gap-2 hover-animation" 
+                  data-lang="EN"
+                  data-lang-name="English"
+                  data-lang-flag="🇬🇧">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🇬🇧</span>
+              <span>English</span>
+            </div>
+            <span id="current-lang-mobile-indicator-en" class="hidden text-blue-600">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+        
+        <!-- Dark Mode -->
+        <button id="dark-mode-toggle-mobile" class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl hover:bg-gray-50/80 transition-all duration-200 group hover-animation">
+          <div class="flex items-center space-x-3">
+            <svg id="moon-icon-mobile" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 0021 12.79z"/></svg>
+            <div class="text-left">
+              <span id="dark-mode-text-mobile" class="text-sm font-medium text-gray-700">Mode Sombre</span>
+              <span id="dark-mode-status-mobile" class="text-xs text-gray-500 block">Désactivé</span>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Boutons de connexion mobile -->
+    <div class="p-4 border-t border-gray-200/20">
+      <div class="space-y-3">
+        <a href="src/views/templates/Connexion.html" class="block w-full">
+          <button class="w-full flex items-center justify-center px-4 py-3 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all duration-200 shadow-md hover-animation">
+            <span class="font-medium">Se connecter</span>
+          </button>
+        </a>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <a href="src/views/templates/Inscription_et.html" class="block w-full">
+            <button class="w-full flex flex-col items-center justify-center px-3 py-3 rounded-xl bg-linear-to-br from-blue-50 to-blue-100 border border-blue-200 hover:from-blue-100 hover:to-blue-200 transition-all duration-200 hover-animation">
+              <i class="fas fa-user-graduate text-blue-600 text-lg mb-1"></i>
+              <span class="text-xs font-medium text-gray-900">Étudiant</span>
+            </button>
+          </a>
+          
+          <a href="src/views/templates/Inscription_tu.html" class="block w-full">
+            <button class="w-full flex flex-col items-center justify-center px-3 py-3 rounded-xl bg-linear-to-br from-emerald-50 to-emerald-100 border border-emerald-200 hover:from-emerald-100 hover:to-emerald-200 transition-all duration-200 hover-animation">
+              <i class="fas fa-chalkboard-teacher text-emerald-600 text-lg mb-1"></i>
+              <span class="text-xs font-medium text-gray-900">Enseignant</span>
+            </button>
+          </a>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<script>
-  // Dark mode toggle
-  const darkModeToggle = document.getElementById('dark-mode-toggle');
-  const darkModeToggleMobile = document.getElementById('dark-mode-toggle-mobile');
-  const darkModeTextMobile = document.getElementById('dark-mode-text-mobile');
-  const moonIcon = document.getElementById('moon-icon');
-  const sunIcon = document.getElementById('sun-icon');
-  const moonIconMobile = document.getElementById('moon-icon-mobile');
-  let isDarkMode = false;
+<!-- Search Overlay Mobile -->
+<div id="mobile-search-overlay" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
+  <div class="absolute top-0 left-0 right-0 bg-white/95 backdrop-blur-xl p-4 transform -translate-y-full transition-transform duration-300">
+    <div class="relative max-w-2xl mx-auto">
+      <div class="flex items-center space-x-2">
+        <div class="flex-1 relative">
+          <div class="absolute inset-0 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl opacity-0 blur-lg transition-all duration-300" id="mobile-search-glow"></div>
+          <div class="relative mobile-search-container backdrop-blur-sm rounded-2xl px-4 py-3 w-full shadow-lg border flex items-center">
+            <svg class="h-5 w-5 mr-3 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" placeholder="Rechercher..." aria-label="Recherche mobile" class="bg-transparent outline-none text-base flex-1 placeholder-gray-400" id="mobile-search-input" />
+          </div>
+        </div>
+        <button id="mobile-search-close" class="p-2 text-gray-600 hover:text-gray-800 hover-animation">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  function setDarkMode(enabled) {
-    isDarkMode = enabled;
-    if(enabled) {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('bg-slate-900', 'text-gray-300');
-      document.body.classList.remove('bg-white', 'text-gray-700');
-      if(moonIcon) moonIcon.classList.add('hidden');
-      if(sunIcon) sunIcon.classList.remove('hidden');
-      if(moonIconMobile) moonIconMobile.classList.add('hidden');
-      if(darkModeTextMobile) darkModeTextMobile.textContent = 'Mode Clair';
-      if(darkModeToggle) {
-        darkModeToggle.classList.add('bg-slate-800/50', 'text-yellow-400');
-        darkModeToggle.classList.remove('bg-gray-100/80', 'text-gray-700');
-      }
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('bg-slate-900', 'text-gray-300');
-      document.body.classList.add('bg-white', 'text-gray-700');
-      if(moonIcon) moonIcon.classList.remove('hidden');
-      if(sunIcon) sunIcon.classList.add('hidden');
-      if(moonIconMobile) moonIconMobile.classList.remove('hidden');
-      if(darkModeTextMobile) darkModeTextMobile.textContent = 'Mode Sombre';
-      if(darkModeToggle) {
-        darkModeToggle.classList.remove('bg-slate-800/50', 'text-yellow-400');
-        darkModeToggle.classList.add('bg-gray-100/80', 'text-gray-700');
-      }
-    }
-  }
+<!-- Google Translate Element (caché) -->
+<div id="google_translate_element" style="display: none;"></div>
 
-  if(darkModeToggle) {
-    darkModeToggle.addEventListener('click', () => setDarkMode(!isDarkMode));
-  }
-  if(darkModeToggleMobile) {
-    darkModeToggleMobile.addEventListener('click', () => setDarkMode(!isDarkMode));
-  }
-
-  // Language toggle
-  const langToggle = document.getElementById('lang-toggle');
-  const langMenu = document.getElementById('lang-menu');
-  const currentLang = document.getElementById('current-lang');
-  const langOptions = document.querySelectorAll('.lang-option');
-
-  // Fonction pour obtenir le drapeau selon la langue
-  function getFlagForLang(lang) {
-    switch(lang) {
-      case 'FR': return '🇫🇷';
-      case 'EN': return '🇬🇧';
-      default: return '🌐';
-    }
-  }
-
-  // Fonction pour mettre à jour l'affichage de la langue
-  function updateLanguageDisplay(lang) {
-    const flag = getFlagForLang(lang);
-    
-    // Mettre à jour l'affichage avec le drapeau et le code
-    if(currentLang) {
-      currentLang.innerHTML = `
-        <span class="text-base">${flag}</span>
-        <span>${lang}</span>
-      `;
-    }
-    
-    // Sauvegarder la préférence (optionnel)
-    localStorage.setItem('preferredLanguage', lang);
-  }
-
-  // Récupérer la langue sauvegardée au démarrage
-  document.addEventListener('DOMContentLoaded', function() {
-    const savedLang = localStorage.getItem('preferredLanguage');
-    if (savedLang && (savedLang === 'FR' || savedLang === 'EN')) {
-      updateLanguageDisplay(savedLang);
-    }
-  });
-
-  // Ouvrir/fermer le menu (Desktop)
-  if(langToggle) {
-    langToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if(langMenu) langMenu.classList.toggle('hidden');
-    });
-  }
-
-  // Changer de langue (Desktop)
-  langOptions.forEach(option => {
-    option.addEventListener('click', () => {
-      const lang = option.getAttribute('data-lang');
-      updateLanguageDisplay(lang);
-      if(langMenu) langMenu.classList.add('hidden');
-    });
-  });
-
-  // Settings menu toggle (Mobile)
-  const settingsToggleMobile = document.getElementById('settings-toggle-mobile');
-  const settingsMenuMobile = document.getElementById('settings-menu-mobile');
-  const langToggleMobileBtn = document.getElementById('lang-toggle-mobile-btn');
-  const langSubmenuMobile = document.getElementById('lang-submenu-mobile');
-  const currentLangMobile = document.getElementById('current-lang-mobile');
-  const langOptionsMobile = document.querySelectorAll('.lang-option-mobile');
-
-  if(settingsToggleMobile) {
-    settingsToggleMobile.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if(settingsMenuMobile) settingsMenuMobile.classList.toggle('hidden');
-      if(langSubmenuMobile) langSubmenuMobile.classList.add('hidden');
-    });
-  }
-
-  if(langToggleMobileBtn) {
-    langToggleMobileBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if(langSubmenuMobile) langSubmenuMobile.classList.toggle('hidden');
-    });
-  }
-
-  langOptionsMobile.forEach(option => {
-    option.addEventListener('click', () => {
-      const lang = option.getAttribute('data-lang');
-      const flag = getFlagForLang(lang);
-      if(currentLangMobile) {
-        currentLangMobile.innerHTML = `${option.textContent}`;
-      }
-      if(langSubmenuMobile) langSubmenuMobile.classList.add('hidden');
-      if(settingsMenuMobile) settingsMenuMobile.classList.add('hidden');
-      
-      // Mettre à jour aussi le bouton desktop
-      updateLanguageDisplay(lang);
-    });
-  });
-
-  // User menu toggle (Mobile)
-  const userToggleMobile = document.getElementById('user-toggle-mobile');
-  const userMenuMobile = document.getElementById('user-menu-mobile');
-
-  if(userToggleMobile) {
-    userToggleMobile.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if(userMenuMobile) {
-        const isHidden = userMenuMobile.classList.contains('hidden');
-        
-        if(isHidden) {
-          // Ouvrir avec animation
-          userMenuMobile.classList.remove('hidden');
-          userMenuMobile.style.transformOrigin = 'top right';
-          userMenuMobile.style.animation = 'fadeInScale 0.3s ease-out forwards';
-        } else {
-          // Fermer avec animation
-          userMenuMobile.style.animation = 'fadeOutScale 0.2s ease-in forwards';
-          setTimeout(() => {
-            userMenuMobile.classList.add('hidden');
-          }, 200);
-        }
-      }
-    });
-  }
-
-  // Register menu toggle (Desktop)
-  const registerToggle = document.getElementById('register-toggle');
-  const registerMenu = document.getElementById('register-menu');
-
-  if(registerToggle) {
-    registerToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if(registerMenu) registerMenu.classList.toggle('hidden');
-    });
-  }
-
-  // Close dropdowns when clicking outside
-  document.addEventListener('click', () => {
-    if(langMenu) langMenu.classList.add('hidden');
-    if(registerMenu) registerMenu.classList.add('hidden');
-    if(settingsMenuMobile) settingsMenuMobile.classList.add('hidden');
-    if(userMenuMobile) userMenuMobile.classList.add('hidden');
-  });
-
-  // Fermer avec la touche Échap
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if(langMenu) langMenu.classList.add('hidden');
-      if(registerMenu) registerMenu.classList.add('hidden');
-      if(settingsMenuMobile) settingsMenuMobile.classList.add('hidden');
-      if(userMenuMobile) userMenuMobile.classList.add('hidden');
-    }
-  });
-
-  // Mobile menu toggle
-  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-  const mobileMenuContent = document.getElementById('mobile-menu-content');
-  const mobileMenuClose = document.getElementById('mobile-menu-close');
-
-  function openMobileMenu() {
-    if(mobileMenu) mobileMenu.classList.remove('hidden');
-    setTimeout(() => {
-      if(mobileMenuContent) {
-        mobileMenuContent.classList.remove('translate-x-full');
-        mobileMenuContent.classList.add('translate-x-0');
-      }
-    }, 10);
-  }
-  
-  function closeMobileMenu() {
-    if(mobileMenuContent) {
-      mobileMenuContent.classList.remove('translate-x-0');
-      mobileMenuContent.classList.add('translate-x-full');
-    }
-    setTimeout(() => {
-      if(mobileMenu) mobileMenu.classList.add('hidden');
-    }, 300);
-  }
-
-  if(mobileMenuToggle) mobileMenuToggle.addEventListener('click', openMobileMenu);
-  if(mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-  if(mobileMenuClose) mobileMenuClose.addEventListener('click', closeMobileMenu);
-
-  // 3D Search effect
-  const searchContainer = document.getElementById('search-container');
-  const searchBox = document.getElementById('search-box');
-  const searchInput = searchBox ? searchBox.querySelector('input[type="search"]') : null;
-  const searchGlow = document.getElementById('search-glow');
-
-  if(searchInput) {
-    searchInput.addEventListener('focus', () => {
-      if(searchContainer) {
-        searchContainer.classList.add('w-64', 'xl:w-72');
-        searchContainer.classList.remove('w-40', 'lg:w-48', 'xl:w-56');
-      }
-      if(searchBox) searchBox.classList.add('ring-2', 'ring-blue-500/50', 'shadow-2xl');
-      if(searchGlow) searchGlow.style.opacity = '0.3';
-    });
-
-    searchInput.addEventListener('blur', () => {
-      if(searchContainer) {
-        searchContainer.classList.remove('w-64', 'xl:w-72');
-        searchContainer.classList.add('w-40', 'lg:w-48', 'xl:w-56');
-      }
-      if(searchBox) searchBox.classList.remove('ring-2', 'ring-blue-500/50', 'shadow-2xl');
-      if(searchGlow) searchGlow.style.opacity = '0';
-    });
-  }
-</script>
+<script src="/src/views/components/header.js"></script>
 
 </body>
 </html>

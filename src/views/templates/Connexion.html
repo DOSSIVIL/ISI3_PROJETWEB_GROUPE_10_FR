@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - EduConnect Africa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS local -->
+    <link rel="stylesheet" href="/src/style.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
         * {
             font-family: 'Poppins', sans-serif;
         }
@@ -117,7 +120,6 @@
             color: #f59e0b;
         }
         
-        /* Animation pour "Mot de passe oublié" */
         .forgot-password {
             position: relative;
             display: inline-block;
@@ -147,12 +149,12 @@
             width: 100%;
         }
         
-        .forgot-password i {
-            transition: transform 0.3s ease;
-        }
-        
         .forgot-password:hover i {
             transform: translateX(3px);
+        }
+        
+        .forgot-password i {
+            transition: transform 0.3s ease;
         }
         
         .success-pulse {
@@ -188,12 +190,159 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        /* Styles pour les boutons sociaux */
+        .social-btn {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .social-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .social-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Styles pour le bouton retour - MÊME QUE LE CODE D'INSCRIPTION */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Améliorations de positionnement - MÊME QUE LE CODE D'INSCRIPTION */
+        .form-section {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-title {
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .login-link {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* MODIFICATION POUR LES BOUTONS SOCIAUX SUR MOBILE */
+        .social-buttons-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .social-button.facebook {
+            background-color: #1877f2;
+            color: white;
+        }
+        
+        .social-button.linkedin {
+            background-color: #0a66c2;
+            color: white;
+        }
+        
+        .social-button.github {
+            background-color: #333333;
+            color: white;
+        }
+        
+        .social-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .social-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Sur desktop, on revient à 3 colonnes */
+        @media (min-width: 640px) {
+            .social-buttons-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .social-button {
+                padding: 14px 12px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Sur très petits écrans, ajustement */
+        @media (max-width: 360px) {
+            .social-buttons-container {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-section {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
     <div class="flex min-h-screen">
         <!-- Section Image avec dégradé -->
         <div class="hidden lg:flex lg:w-1/2 gradient-bg items-center justify-center p-12 relative">
+            <!-- Bouton retour - MÊME POSITION QUE LE CODE D'INSCRIPTION -->
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+            
             <div class="text-center text-white z-10 relative">
                 <!-- Icônes flottantes décoratives -->
                 <i class="fas fa-book floating-icon text-yellow-500 text-3xl" style="top: 10%; left: 15%; animation-delay: 0s;"></i>
@@ -204,9 +353,9 @@
                 <div class="mb-1 welcome-text">
                     <div class="inline-block mb-6">
                         <img 
-                            src="../../../Images/Logo.png" 
+                            src="/public/Images/Logo.png" 
                             alt="Logo EduConnect Africa"
-                            class="w-25 h-25 object-contain mx-auto"
+                            class="w-35 h-35 object-contain mx-auto"
                         />
                     </div>
                 </div>
@@ -218,19 +367,19 @@
                 
                 <div class="grid grid-cols-3 gap-8 mt-16">
                     <div class="text-center group cursor-pointer">
-                        <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:bg-opacity-20 group-hover:scale-110">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
                             <i class="fas fa-book-open text-5xl mb-3 text-yellow-400"></i>
                             <p class="text-sm font-medium">Cours en ligne</p>
                         </div>
                     </div>
                     <div class="text-center group cursor-pointer">
-                        <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:bg-opacity-20 group-hover:scale-110">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
                             <i class="fas fa-users text-5xl mb-3 text-pink-400"></i>
-                            <p class="text-sm font-medium">Communauté</p>
+                            <p class="text-sm font-medium">TuTeur</p>
                         </div>
                     </div>
                     <div class="text-center group cursor-pointer">
-                        <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:bg-opacity-20 group-hover:scale-110">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
                             <i class="fas fa-brain text-5xl mb-3 text-cyan-300 drop-shadow-lg"></i>
                             <p class="text-sm font-medium">Assistant IA</p>
                         </div>
@@ -240,13 +389,13 @@
         </div>
 
         <!-- Section Formulaire -->
-        <div class="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
-            <div class="max-w-md w-full login-card">
+        <div class="w-full lg:w-1/2 form-section">
+            <div class="form-container">
                 <!-- En-tête -->
-                <div class="text-center mb-10">
+                <div class="text-center form-title">
                     <div class="inline-block mb-6 lg:hidden">
                         <img 
-                            src="../../../Images/Logo.png" 
+                            src="/public/Images/Logo.png" 
                             alt="Logo EduConnect Africa"
                             class="w-20 h-20 object-contain mx-auto"
                         />
@@ -258,7 +407,7 @@
                 </div>
 
                 <!-- Formulaire -->
-                <form id="loginForm" class="space-y-6">
+                <form id="loginForm" class="form-grid">
                     <!-- Email -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -290,13 +439,12 @@
                     <!-- Mot de passe oublié -->
                     <div class="flex justify-end">
                         <a href="#" class="forgot-password text-sm font-medium">
-                            Mot de passe oublié ? </i>
+                            Mot de passe oublié ? <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
 
-                    <!-- Bouton Connexion -->
                     <button type="submit" id="submitBtn"
-                        class="w-full btn-gradient text-white py-4 rounded-xl font-bold text-lg">
+                        class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] active:translate-y-[0px] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         <span id="btnText">
                             <i class="fas fa-sign-in-alt mr-2"></i> Se connecter
                         </span>
@@ -306,38 +454,75 @@
                     </button>
                 </form>
 
+                <!-- Ligne de séparation "OU" -->
+                <div class="flex items-center my-4 sm:my-6">
+                    <div class="flex-1 h-px bg-gray-300"></div>
+                    <span class="px-3 sm:px-4 text-xs sm:text-sm font-semibold text-gray-500 uppercase">OU</span>
+                    <div class="flex-1 h-px bg-gray-300"></div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Connexion Google -->
+                    <button
+                        type="button"
+                        class="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-xl bg-white text-gray-800 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow active:scale-[0.98] font-medium"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 4.5c1.67 0 3.17.59 4.35 1.57l3.23-3.23C17.88.96 15.1 0 12 0 7.29 0 3.22 2.69 1.28 6.65l3.76 2.92C6 6.34 8.77 4.5 12 4.5Z" fill="#EA4335"/>
+                            <path d="M23.64 12.27c0-.82-.07-1.42-.22-2.04H12v3.87h6.68c-.13 1.02-.84 2.56-2.42 3.59l3.75 2.9c2.2-2.03 3.63-5.03 3.63-8.32Z" fill="#4285F4"/>
+                            <path d="M5.04 14.73A7.46 7.46 0 0 1 4.5 12c0-.95.17-1.87.53-2.73L1.28 6.65C.46 8.32 0 10.17 0 12c0 1.83.46 3.68 1.28 5.35l3.76-2.92Z" fill="#FBBC05"/>
+                            <path d="M12 24c3.1 0 5.88-1.02 7.84-2.75l-3.75-2.9c-1.01.68-2.33 1.15-4.09 1.15-3.23 0-6-1.84-7.23-4.42l-3.76 2.92C3.22 21.31 7.29 24 12 24Z" fill="#34A853"/>
+                        </svg>
+                        <span class="font-medium text-sm">Continuer avec Google</span>
+                    </button>
+                
+                    <!-- Boutons sociaux -->
+                    <div class="grid grid-cols-2 gap-3 w-full">
+                        <!-- Facebook -->
+                        <button type="button" 
+                            class="social-btn flex items-center justify-center gap-2 px-3 py-2.5 bg-[#1877F2] text-white rounded-xl font-medium transition-all duration-300 active:scale-[0.98] text-sm">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Facebook</span>
+                        </button>
+                        
+                        <!-- LinkedIn -->
+                        <button type="button" 
+                            class="social-btn flex items-center justify-center gap-2 px-3 py-2.5 bg-[#0077B5] text-white rounded-xl font-medium transition-all duration-300 active:scale-[0.98] text-sm">
+                            <i class="fab fa-linkedin-in"></i>
+                            <span>LinkedIn</span>
+                        </button>
+                        
+                        <!-- GitHub -->
+                        <button type="button" 
+                            class="social-btn flex items-center justify-center gap-2 px-3 py-2.5 bg-[#333] text-white rounded-xl font-medium transition-all duration-300 active:scale-[0.98] text-sm">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </button>
+                        
+                        <!-- Apple -->
+                        <button type="button" 
+                            class="social-btn flex items-center justify-center gap-2 px-3 py-2.5 bg-black text-white rounded-xl font-medium transition-all duration-300 active:scale-[0.98] text-sm">
+                            <i class="fab fa-apple"></i>
+                            <span>Apple</span>
+                        </button>
+                    </div>
+                </div>
                 <!-- Lien d'inscription -->
-                <div class="mt-8 text-center">
-                    <p class="text-gray-600 text-sm lg:text-base">
+                <div class="login-link text-center">
+                    <p class="text-gray-600 text-base">
                         Pas encore de compte ?
-                        <a href="../templates/Inscription_et.html" class="font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent hover:from-yellow-700 hover:to-pink-700 transition-all">
+                        <a href="../templates/Inscription_et.html" 
+                           class="font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent hover:from-yellow-700 hover:to-pink-700 transition-all">
                             Inscrivez-vous ici
                         </a>
                     </p>
                 </div>
-
-                <!-- Séparateur 
-                <div class="mt-8 flex items-center">
-                    <div class="flex-1 border-t-2 border-gray-200"></div>
-                    <span class="px-4 text-gray-500 text-sm font-medium">OU</span>
-                    <div class="flex-1 border-t-2 border-gray-200"></div>
-                </div>
-
-                <!-- Connexion sociale 
-                <div class="mt-6 space-y-3">
-                    <button class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-yellow-500 hover:bg-yellow-50 transition-all duration-300 group">
-                        <i class="fab fa-google text-xl text-red-500"></i>
-                        <span class="font-medium text-gray-700 group-hover:text-yellow-600">Continuer avec Google</span>
-                    </button>
-                    <button class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-pink-500 hover:bg-pink-50 transition-all duration-300 group">
-                        <i class="fab fa-facebook text-xl text-blue-600"></i>
-                        <span class="font-medium text-gray-700 group-hover:text-pink-600">Continuer avec Facebook</span>
-                    </button>
-                </div>-->
             </div>
         </div>
     </div>
 
-    <script src="../components/Connexion.js"></script>
+    <!-- Script local -->
+    <script src="/src/views/components/Connexion.js"></script>
+    
 </body>
 </html>

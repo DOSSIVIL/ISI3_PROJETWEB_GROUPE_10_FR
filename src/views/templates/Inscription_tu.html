@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Tuteur - EduConnect Africa</title>
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gradient-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        .gradient-bg::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.2) translate(10%, 10%); }
+        }
+        
+        .input-focus:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .input-field:hover {
+            border-color: #f59e0b;
+        }
+        
+        .error-shake {
+            animation: shake 0.4s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+        
+        .btn-gradient:active {
+            transform: translateY(-1px);
+        }
+        
+        .radio-custom {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-custom:checked {
+            border-color: #f59e0b;
+            background: #f59e0b;
+        }
+        
+        .radio-custom:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .label-icon {
+            color: #f59e0b;
+            margin-right: 8px;
+            font-size: 16px;
+        }
+        
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+        
+        .success-pulse {
+            animation: successPulse 0.5s ease;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(0.95); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .password-strength-container {
+            margin-top: 8px;
+        }
+        
+        .password-strength-bar-container {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background-color: #ef4444;
+        }
+        
+        .password-strength-bar.strength-weak {
+            background-color: #ef4444;
+        }
+        
+        .password-strength-bar.strength-medium {
+            background-color: #f59e0b;
+        }
+        
+        .password-strength-bar.strength-strong {
+            background-color: #10b981;
+        }
+        
+        .strength-weak { 
+            color: #ef4444; 
+        }
+        
+        .strength-medium { 
+            color: #f59e0b; 
+        }
+        
+        .strength-strong { 
+            color: #10b981; 
+        }
+        
+        .password-requirements {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 11px;
+            transition: all 0.3s ease;
+        }
+        
+        .requirement:last-child {
+            margin-bottom: 0;
+        }
+        
+        .requirement-met {
+            color: #10b981;
+        }
+        
+        .requirement-not-met {
+            color: #9ca3af;
+        }
+        
+        .requirement-icon {
+            margin-right: 6px;
+            font-size: 10px;
+        }
+        
+        .eye-toggle {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .eye-toggle:hover {
+            color: #f59e0b;
+        }
+        
+        /* Styles pour les boutons de matières */
+        .matiere-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #374151;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .matiere-btn:hover {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+        
+        .matiere-btn.hidden {
+            display: none !important;
+        }
+        
+        /* Styles pour les matières sélectionnées */
+        .matiere-selected {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: white;
+            border: 2px solid #f59e0b;
+            color: #374151;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .matiere-selected .remove-btn {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            background: #fee2e2;
+            color: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: all 0.2s ease;
+            font-weight: bold;
+        }
+        
+        .matiere-selected .remove-btn:hover {
+            background: #ef4444;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        #selectedMatieresContainer {
+            min-height: 50px;
+            cursor: default;
+        }
+        
+        #placeholderText {
+            pointer-events: none;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-section {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+
+
+        @media (max-width: 768px) {
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Section Image avec dégradé -->
+        <div class="hidden lg:flex lg:w-1/2 gradient-bg items-center justify-center p-12 relative">
+            <!-- Bouton retour -->
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+            
+            <div class="text-center text-white z-10 relative">
+                <!-- Icônes flottantes décoratives -->
+                <i class="fas fa-chalkboard-teacher floating-icon text-yellow-500 text-4xl" style="top: 10%; left: 15%; animation-delay: 0s;"></i>
+                <i class="fas fa-graduation-cap floating-icon text-pink-500 text-5xl" style="top: 20%; right: 20%; animation-delay: 1s;"></i>
+                <i class="fas fa-award floating-icon text-yellow-400 text-3xl" style="bottom: 25%; left: 10%; animation-delay: 2s;"></i>
+                <i class="fas fa-user-graduate floating-icon text-pink-400 text-4xl" style="bottom: 15%; right: 15%; animation-delay: 1.5s;"></i>
+                
+                <div class="mb-8">
+                  <!--  <i class="fas fa-user-tie text-8xl mb-4 text-yellow-400 drop-shadow-2xl"></i>-->
+                    <img 
+                            src="../../../Images/Logo.png" 
+                            alt="Logo EduConnect Africa"
+                            class="w-85 h-34 object-contain mx-auto"
+                        />
+                </div>
+                
+                <h1 class="text-5xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">
+                    Devenez Tuteur sur <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                    <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                </h1>
+                <p class="text-2xl mb-12 text-gray-200">Partagez vos connaissances et inspirez la prochaine génération</p>
+                
+                <div class="grid grid-cols-3 gap-8 mt-16">
+                    <div class="text-center group cursor-pointer">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
+                            <i class="fas fa-chalkboard-teacher text-5xl mb-3 text-yellow-400"></i>
+                            <p class="text-sm font-medium">Enseignement</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center group cursor-pointer">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
+                            <i class="fas fa-handshake text-5xl mb-3 text-pink-400"></i>
+                            <p class="text-sm font-medium">Mentorat</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center group cursor-pointer">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
+                            <i class="fas fa-brain text-5xl mb-3 text-cyan-300 drop-shadow-lg"></i>
+                            <p class="text-sm font-medium">Expertise</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Formulaire Responsive -->
+        <div class="w-full lg:w-1/2 form-section px-4 sm:px-6 lg:px-8">
+            <div class="form-container max-w-2xl mx-auto">
+                <!-- Logo et titre -->
+                <div class="text-center mb-6 sm:mb-8">
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+                        Inscription Tuteur
+                    </h2>
+                    <p class="text-gray-600 text-base sm:text-lg mb-2">
+                        Rejoignez notre équipe d'experts
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-1 text-lg sm:text-xl">
+                        <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span>
+                        <span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                        <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                    </div>
+                </div>
+
+                <!-- Formulaire -->
+                <form id="tutorRegistrationForm" class="space-y-4 sm:space-y-5">
+                    <!-- Nom et Prénom -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-user label-icon"></i>Nom
+                            </label>
+                            <input type="text" id="nom" name="nom" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white text-sm sm:text-base"
+                                placeholder="Votre nom">
+                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        </div>
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-user label-icon"></i>Prénom
+                            </label>
+                            <input type="text" id="prenom" name="prenom" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white text-sm sm:text-base"
+                                placeholder="Votre prénom">
+                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        </div>
+                    </div>
+
+                    <!-- Sexe -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-venus-mars label-icon"></i>Sexe
+                        </label>
+                        <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
+                            <label class="flex items-center cursor-pointer group">
+                                <input type="radio" name="sexe" value="masculin" required class="radio-custom">
+                                <span class="ml-3 text-sm sm:text-base text-gray-700 font-medium group-hover:text-yellow-600 transition">Masculin</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer group">
+                                <input type="radio" name="sexe" value="feminin" required class="radio-custom">
+                                <span class="ml-3 text-sm sm:text-base text-gray-700 font-medium group-hover:text-pink-600 transition">Féminin</span>
+                            </label>
+                        </div>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                    </div>
+
+                    <!-- Niveau d'études / Diplôme -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-graduation-cap label-icon"></i>Niveau d'études / Diplôme
+                        </label>
+                        <select id="diplome" name="diplome" required
+                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white appearance-none cursor-pointer text-sm sm:text-base">
+                            <option value="">Sélectionnez votre niveau</option>
+                            <option value="bac+5">Bac+5 (Master)</option>
+                            <option value="ingenieur">Ingénieur</option>
+                            <option value="phd">PhD / Doctorat</option>
+                            <option value="professeur">Professeur</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                    </div>
+
+                    <!-- Matières enseignées -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-book label-icon"></i>Matières enseignées
+                        </label>
+                        
+                        <!-- Champ avec matières sélectionnées -->
+                        <div id="selectedMatieresContainer" class="w-full min-h-[50px] px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl bg-white text-sm sm:text-base flex flex-wrap gap-2 items-center">
+                            <span id="placeholderText" class="text-gray-400">Sélectionnez vos matières ci-dessous...</span>
+                        </div>
+                        
+                        <!-- Liste des matières disponibles -->
+                        <div class="mt-3 flex flex-wrap gap-2" id="matieresDisponibles">
+                            <button type="button" class="matiere-btn" data-matiere="mathematiques" data-icon="📐">
+                                <i class="fas fa-square-root-alt mr-1"></i> Mathématiques
+                            </button>
+                            <button type="button" class="matiere-btn" data-matiere="physique" data-icon="⚛️">
+                                <i class="fas fa-atom mr-1"></i> Physique
+                            </button>
+                            <button type="button" class="matiere-btn" data-matiere="sciences-terre" data-icon="🌍">
+                                <i class="fas fa-globe mr-1"></i> Sciences de la Terre
+                            </button>
+                            <button type="button" class="matiere-btn" data-matiere="litterature" data-icon="📚">
+                                <i class="fas fa-book-open mr-1"></i> Littérature camerounaise
+                            </button>
+                            <button type="button" class="matiere-btn" data-matiere="informatique" data-icon="💻">
+                                <i class="fas fa-laptop-code mr-1"></i> Informatique
+                            </button>
+                        </div>
+                        
+                        <input type="hidden" id="matieres" name="matieres" required>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                    </div>
+
+                    <!-- Langue -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-language label-icon"></i>Langue
+                        </label>
+                        <select id="langue" name="langue" required
+                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white appearance-none cursor-pointer text-sm sm:text-base">
+                            <option value="">Sélectionnez une langue</option>
+                            <option value="francais">🇫🇷 Français</option>
+                            <option value="anglais">🇬🇧 Anglais</option>
+                        </select>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-envelope label-icon"></i>Email
+                        </label>
+                        <div class="relative">
+                            <input type="email" id="email" name="email" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white pr-10 sm:pr-12 text-sm sm:text-base"
+                                placeholder="exemple@email.com">
+                            <i class="fas fa-at absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 text-sm sm:text-base"></i>
+                        </div>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        <p class="success-message text-green-600 text-xs mt-2 hidden font-medium success-pulse">
+                            <i class="fas fa-check-circle"></i> Email valide et vérifié
+                        </p>
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-lock label-icon"></i>Mot de passe
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white pr-10 sm:pr-12 text-sm sm:text-base"
+                                placeholder="Créez un mot de passe sécurisé">
+                            <i class="fas fa-eye eye-toggle absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 cursor-pointer text-sm sm:text-base"></i>
+                        </div>
+                        
+                        <!-- Barre de force du mot de passe -->
+                        <div class="password-strength-container mt-3">
+                            <div class="password-strength-bar-container">
+                                <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-xs sm:text-sm" id="passwordStrengthText">Force du mot de passe</span>
+                                <span class="text-xs sm:text-sm font-bold" id="passwordScore"></span>
+                            </div>
+                            
+                            <!-- Exigences du mot de passe -->
+                            <div class="password-requirements mt-3 space-y-1.5">
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqLength"></i>
+                                    <span class="text-xs sm:text-sm">Au moins 8 caractères</span>
+                                </div>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqUppercase"></i>
+                                    <span class="text-xs sm:text-sm">Une lettre majuscule</span>
+                                </div>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqLowercase"></i>
+                                    <span class="text-xs sm:text-sm">Une lettre minuscule</span>
+                                </div>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqNumber"></i>
+                                    <span class="text-xs sm:text-sm">Un chiffre</span>
+                                </div>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqSpecial"></i>
+                                    <span class="text-xs sm:text-sm">Un caractère spécial (!@#$%^&*)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation du mot de passe -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-lock label-icon"></i>Confirmer le mot de passe
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="confirmPassword" name="confirmPassword" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white pr-10 sm:pr-12 text-sm sm:text-base"
+                                placeholder="Répétez votre mot de passe">
+                            <i class="fas fa-eye eye-toggle absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 cursor-pointer text-sm sm:text-base"></i>
+                        </div>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        
+                        <!-- Message de correspondance des mots de passe -->
+                        <div class="mt-2" id="passwordMatchMessage"></div>
+                    </div>
+
+                    <!-- Bouton Submit -->
+                    <div class="pt-2">
+                        <button type="submit" id="submitBtn"
+                            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all hover:from-blue-700 hover:to-blue-800 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <span id="btnText">
+                                <i class="fas fa-user-tie mr-2"></i> Devenir Tuteur
+                            </span>
+                            <span id="btnLoader" class="hidden">
+                                <i class="fas fa-spinner fa-spin mr-2"></i> Inscription en cours...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Lien de connexion -->
+                <div class="text-center mt-6 sm:mt-8 pb-6 pt-4 border-t border-gray-200">
+                    <p class="text-gray-600 text-sm sm:text-base">
+                        Déjà inscrit comme tuteur ?
+                        <a href="../templates/Connexion.html" class="font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent hover:from-yellow-700 hover:to-pink-700 transition-all">
+                            Connectez-vous ici
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        document.querySelectorAll('.eye-toggle').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                }
+            });
+        });
+
+        // Gestion des matières
+        const selectedMatieresContainer = document.getElementById('selectedMatieresContainer');
+        const placeholderText = document.getElementById('placeholderText');
+        const matieresInput = document.getElementById('matieres');
+        const matieresDisponibles = document.getElementById('matieresDisponibles');
+        let selectedMatieres = [];
+
+        // Fonction pour mettre à jour l'affichage
+        function updateMatieresDisplay() {
+            // Masquer ou afficher le placeholder
+            if (selectedMatieres.length > 0) {
+                placeholderText.style.display = 'none';
+            } else {
+                placeholderText.style.display = 'block';
+            }
+
+            // Mettre à jour l'input caché
+            matieresInput.value = selectedMatieres.join(',');
+
+            // Afficher les matières sélectionnées
+            const existingTags = selectedMatieresContainer.querySelectorAll('.matiere-selected');
+            existingTags.forEach(tag => tag.remove());
+
+            selectedMatieres.forEach(matiere => {
+                const btn = document.querySelector(`[data-matiere="${matiere}"]`);
+                const icon = btn ? btn.getAttribute('data-icon') : '';
+                const text = btn ? btn.textContent.trim() : matiere;
+
+                const tag = document.createElement('div');
+                tag.className = 'matiere-selected';
+                tag.innerHTML = `
+                    <span>${text}</span>
+                    <span class="remove-btn" data-matiere="${matiere}">
+                        <i class="fas fa-times"></i>
+                    </span>
+                `;
+                selectedMatieresContainer.appendChild(tag);
+            });
+
+            // Ajouter les écouteurs pour les boutons de suppression
+            document.querySelectorAll('.remove-btn').forEach(removeBtn => {
+                removeBtn.addEventListener('click', function() {
+                    const matiere = this.getAttribute('data-matiere');
+                    removeMatiere(matiere);
+                });
+            });
+        }
+
+        // Fonction pour ajouter une matière
+        function addMatiere(matiere) {
+            if (!selectedMatieres.includes(matiere)) {
+                selectedMatieres.push(matiere);
+                const btn = document.querySelector(`[data-matiere="${matiere}"]`);
+                if (btn) {
+                    btn.style.display = 'none';
+                }
+                updateMatieresDisplay();
+            }
+        }
+
+        // Fonction pour retirer une matière
+        function removeMatiere(matiere) {
+            selectedMatieres = selectedMatieres.filter(m => m !== matiere);
+            const btn = document.querySelector(`[data-matiere="${matiere}"]`);
+            if (btn) {
+                btn.style.display = 'inline-flex';
+                // Animation de réapparition
+                btn.style.animation = 'slideIn 0.3s ease';
+            }
+            updateMatieresDisplay();
+        }
+
+        // Écouteurs pour les boutons de matières
+        document.querySelectorAll('.matiere-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const matiere = this.getAttribute('data-matiere');
+                addMatiere(matiere);
+            });
+        });
+
+        // Password strength checker
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const strengthBar = document.getElementById('passwordStrengthBar');
+        const strengthText = document.getElementById('passwordStrengthText');
+        const strengthScore = document.getElementById('passwordScore');
+        const passwordMatchMessage = document.getElementById('passwordMatchMessage');
+
+        // Requirements elements
+        const reqLength = document.getElementById('reqLength');
+        const reqUppercase = document.getElementById('reqUppercase');
+        const reqLowercase = document.getElementById('reqLowercase');
+        const reqNumber = document.getElementById('reqNumber');
+        const reqSpecial = document.getElementById('reqSpecial');
+
+        password.addEventListener('input', function() {
+            const value = this.value;
+            let strength = 0;
+            
+            // Check length
+            if (value.length >= 8) {
+                strength++;
+                reqLength.classList.remove('requirement-not-met');
+                reqLength.classList.add('requirement-met');
+            } else {
+                reqLength.classList.remove('requirement-met');
+                reqLength.classList.add('requirement-not-met');
+            }
+            
+            // Check uppercase
+            if (/[A-Z]/.test(value)) {
+                strength++;
+                reqUppercase.classList.remove('requirement-not-met');
+                reqUppercase.classList.add('requirement-met');
+            } else {
+                reqUppercase.classList.remove('requirement-met');
+                reqUppercase.classList.add('requirement-not-met');
+            }
+            
+            // Check lowercase
+            if (/[a-z]/.test(value)) {
+                strength++;
+                reqLowercase.classList.remove('requirement-not-met');
+                reqLowercase.classList.add('requirement-met');
+            } else {
+                reqLowercase.classList.remove('requirement-met');
+                reqLowercase.classList.add('requirement-not-met');
+            }
+            
+            // Check number
+            if (/[0-9]/.test(value)) {
+                strength++;
+                reqNumber.classList.remove('requirement-not-met');
+                reqNumber.classList.add('requirement-met');
+            } else {
+                reqNumber.classList.remove('requirement-met');
+                reqNumber.classList.add('requirement-not-met');
+            }
+            
+            // Check special character
+            if (/[!@#$%^&*]/.test(value)) {
+                strength++;
+                reqSpecial.classList.remove('requirement-not-met');
+                reqSpecial.classList.add('requirement-met');
+            } else {
+                reqSpecial.classList.remove('requirement-met');
+                reqSpecial.classList.add('requirement-not-met');
+            }
+            
+            // Update strength bar
+            const percentage = (strength / 5) * 100;
+            strengthBar.style.width = percentage + '%';
+            
+            // Remove all strength classes
+            strengthBar.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+            strengthText.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+            
+            if (strength <= 2) {
+                strengthBar.classList.add('strength-weak');
+                strengthText.classList.add('strength-weak');
+                strengthText.textContent = 'Faible';
+                strengthScore.textContent = strength + '/5';
+                strengthScore.className = 'text-xs sm:text-sm font-bold strength-weak';
+            } else if (strength <= 4) {
+                strengthBar.classList.add('strength-medium');
+                strengthText.classList.add('strength-medium');
+                strengthText.textContent = 'Moyen';
+                strengthScore.textContent = strength + '/5';
+                strengthScore.className = 'text-xs sm:text-sm font-bold strength-medium';
+            } else {
+                strengthBar.classList.add('strength-strong');
+                strengthText.classList.add('strength-strong');
+                strengthText.textContent = 'Fort';
+                strengthScore.textContent = strength + '/5';
+                strengthScore.className = 'text-xs sm:text-sm font-bold strength-strong';
+            }
+            
+            checkPasswordMatch();
+        });
+
+        // Check password match
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+
+        function checkPasswordMatch() {
+            const pass = password.value;
+            const confirmPass = confirmPassword.value;
+            
+            if (confirmPass === '') {
+                passwordMatchMessage.innerHTML = '';
+                return;
+            }
+            
+            if (pass === confirmPass) {
+                passwordMatchMessage.innerHTML = '<span class="text-green-600 text-xs flex items-center gap-1"><i class="fas fa-check-circle"></i> Les mots de passe correspondent</span>';
+            } else {
+                passwordMatchMessage.innerHTML = '<span class="text-red-500 text-xs flex items-center gap-1"><i class="fas fa-times-circle"></i> Les mots de passe ne correspondent pas</span>';
+            }
+        }
+
+        // Form validation
+        const form = document.getElementById('tutorRegistrationForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate all fields
+            let isValid = true;
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(msg => msg.classList.add('hidden'));
+            
+            // Check if password matches
+            if (password.value !== confirmPassword.value) {
+                isValid = false;
+                confirmPassword.nextElementSibling.textContent = 'Les mots de passe ne correspondent pas';
+                confirmPassword.nextElementSibling.classList.remove('hidden');
+            }
+            
+            // Check password strength
+            if (password.value.length < 8) {
+                isValid = false;
+            }
+            
+            // Check if at least one matiere is selected
+            if (selectedMatieres.length === 0) {
+                isValid = false;
+                const matiereError = document.querySelector('#matieres').nextElementSibling;
+                matiereError.textContent = 'Veuillez sélectionner au moins une matière';
+                matiereError.classList.remove('hidden');
+            }
+            
+            if (isValid) {
+                // Show loading state
+                document.getElementById('btnText').classList.add('hidden');
+                document.getElementById('btnLoader').classList.remove('hidden');
+                document.getElementById('submitBtn').disabled = true;
+                
+                // Simulate form submission
+                setTimeout(() => {
+                    alert('Inscription réussie ! Bienvenue dans l\'équipe des tuteurs EduConnect Africa.');
+                    form.reset();
+                    selectedMatieres = [];
+                    updateMatieresDisplay();
+                    
+                    // Réafficher tous les boutons de matières
+                    document.querySelectorAll('.matiere-btn').forEach(btn => {
+                        btn.style.display = 'inline-flex';
+                    });
+                    
+                    document.getElementById('btnText').classList.remove('hidden');
+                    document.getElementById('btnLoader').classList.add('hidden');
+                    document.getElementById('submitBtn').disabled = false;
+                    
+                    // Reset password strength
+                    strengthBar.style.width = '0%';
+                    strengthText.textContent = 'Force du mot de passe';
+                    strengthScore.textContent = '';
+                    
+                    // Reset requirements
+                    document.querySelectorAll('.requirement-icon').forEach(icon => {
+                        icon.classList.remove('requirement-met');
+                        icon.classList.add('requirement-not-met');
+                    });
+                }, 2000);
+            }
+        });
+
+        // Email validation
+        const email = document.getElementById('email');
+        email.addEventListener('blur', function() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(this.value)) {
+                this.nextElementSibling.classList.add('hidden');
+                this.nextElementSibling.nextElementSibling.classList.remove('hidden');
+            } else if (this.value) {
+                this.nextElementSibling.textContent = 'Veuillez entrer une adresse email valide';
+                this.nextElementSibling.classList.remove('hidden');
+                this.nextElementSibling.nextElementSibling.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
