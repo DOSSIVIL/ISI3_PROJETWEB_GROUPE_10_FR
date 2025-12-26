@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription Tuteur - EduConnect Africa</title>
-    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="/src/style.css">
+    
+    <!-- CDN nécessaires -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
@@ -351,8 +359,6 @@
             margin: 0 auto;
         }
 
-
-
         @media (max-width: 768px) {
             .back-btn {
                 top: 10px;
@@ -360,6 +366,32 @@
                 padding: 8px 16px;
                 font-size: 14px;
             }
+        }
+        
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 300px;
+            max-width: 400px;
+        }
+        
+        .notification-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .notification-error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        
+        .notification-info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
         }
     </style>
 </head>
@@ -381,12 +413,11 @@
                 <i class="fas fa-user-graduate floating-icon text-pink-400 text-4xl" style="bottom: 15%; right: 15%; animation-delay: 1.5s;"></i>
                 
                 <div class="mb-8">
-                  <!--  <i class="fas fa-user-tie text-8xl mb-4 text-yellow-400 drop-shadow-2xl"></i>-->
                     <img 
-                            src="../../../Images/Logo.png" 
-                            alt="Logo EduConnect Africa"
-                            class="w-85 h-34 object-contain mx-auto"
-                        />
+                        src="../../../Images/Logo.png" 
+                        alt="Logo EduConnect Africa"
+                        class="w-85 h-34 object-contain mx-auto"
+                    />
                 </div>
                 
                 <h1 class="text-5xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">
@@ -655,299 +686,647 @@
     </div>
 
     <script>
-        // Toggle password visibility
-        document.querySelectorAll('.eye-toggle').forEach(icon => {
-            icon.addEventListener('click', function() {
-                const input = this.previousElementSibling;
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.classList.remove('fa-eye');
-                    this.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    this.classList.remove('fa-eye-slash');
-                    this.classList.add('fa-eye');
+        // ==================== INITIALISATION FIREBASE ====================
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
+            authDomain: "achitectureweb-groupe-10.firebaseapp.com",
+            projectId: "achitectureweb-groupe-10",
+            storageBucket: "achitectureweb-groupe-10.firebasestorage.app",
+            messagingSenderId: "646899550480",
+            appId: "1:646899550480:web:687fd4f4b2e0ca646efd95"
+        };
+        
+        // Initialiser Firebase
+        let app, db, auth;
+        try {
+            app = firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            auth = firebase.auth();
+            console.log("Firebase initialisé avec succès");
+        } catch (error) {
+            console.error("Erreur d'initialisation Firebase:", error);
+        }
+        
+        // ==================== VARIABLES GLOBALES ====================
+        let selectedMatieres = [];
+        let selectedMatieresText = [];
+        
+        // ==================== FONCTIONS UTILITAIRES ====================
+        function showNotification(message, type = 'info') {
+            // Supprimer les notifications existantes
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification animate__animated animate__fadeInRight ${type === 'success' ? 'notification-success' : type === 'error' ? 'notification-error' : 'notification-info'}`;
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-circle' : 
+                        'fa-info-circle';
+            
+            notification.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas ${icon} text-xl"></i>
+                    <div class="flex-1">
+                        <p class="font-bold">${type === 'success' ? 'Succès !' : type === 'error' ? 'Erreur !' : 'Information'}</p>
+                        <p class="text-sm opacity-90">${message}</p>
+                    </div>
+                    <button class="text-white opacity-70 hover:opacity-100" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Supprimer automatiquement après 5 secondes
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.classList.add('animate__fadeOutRight');
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 5000);
+        }
+        
+        function resetFormErrors() {
+            // Réinitialiser les messages d'erreur
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+            
+            // Réinitialiser les styles des champs
+            document.querySelectorAll('.input-field').forEach(field => {
+                field.classList.remove('border-red-500', 'error-shake');
+                field.classList.add('border-gray-300');
+            });
+            
+            // Réinitialiser le message de succès email
+            const successMsg = document.querySelector('.success-message');
+            if (successMsg) successMsg.classList.add('hidden');
+        }
+        
+        function validateForm() {
+            const errors = [];
+            
+            // Validation des champs requis
+            const requiredFields = [
+                { id: 'nom', name: 'Nom' },
+                { id: 'prenom', name: 'Prénom' },
+                { id: 'email', name: 'Email' },
+                { id: 'password', name: 'Mot de passe' },
+                { id: 'confirmPassword', name: 'Confirmation mot de passe' }
+            ];
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                if (element && !element.value.trim()) {
+                    errors.push({
+                        field: field.id,
+                        message: `${field.name} est requis`
+                    });
                 }
             });
-        });
-
-        // Gestion des matières
-        const selectedMatieresContainer = document.getElementById('selectedMatieresContainer');
-        const placeholderText = document.getElementById('placeholderText');
-        const matieresInput = document.getElementById('matieres');
-        const matieresDisponibles = document.getElementById('matieresDisponibles');
-        let selectedMatieres = [];
-
-        // Fonction pour mettre à jour l'affichage
-        function updateMatieresDisplay() {
-            // Masquer ou afficher le placeholder
-            if (selectedMatieres.length > 0) {
-                placeholderText.style.display = 'none';
-            } else {
-                placeholderText.style.display = 'block';
+            
+            // Validation du sexe
+            const sexeSelected = document.querySelector('input[name="sexe"]:checked');
+            if (!sexeSelected) {
+                errors.push({
+                    field: 'sexe',
+                    message: 'Veuillez sélectionner votre sexe'
+                });
             }
-
-            // Mettre à jour l'input caché
-            matieresInput.value = selectedMatieres.join(',');
-
-            // Afficher les matières sélectionnées
-            const existingTags = selectedMatieresContainer.querySelectorAll('.matiere-selected');
-            existingTags.forEach(tag => tag.remove());
-
-            selectedMatieres.forEach(matiere => {
-                const btn = document.querySelector(`[data-matiere="${matiere}"]`);
-                const icon = btn ? btn.getAttribute('data-icon') : '';
-                const text = btn ? btn.textContent.trim() : matiere;
-
+            
+            // Validation du diplôme
+            const diplome = document.getElementById('diplome');
+            if (diplome && !diplome.value) {
+                errors.push({
+                    field: 'diplome',
+                    message: 'Veuillez sélectionner votre diplôme'
+                });
+            }
+            
+            // Validation de la langue
+            const langue = document.getElementById('langue');
+            if (langue && !langue.value) {
+                errors.push({
+                    field: 'langue',
+                    message: 'Veuillez sélectionner une langue'
+                });
+            }
+            
+            // Validation des matières
+            if (selectedMatieres.length === 0) {
+                errors.push({
+                    field: 'matieres',
+                    message: 'Veuillez sélectionner au moins une matière'
+                });
+            }
+            
+            // Validation de l'email format
+            const email = document.getElementById('email');
+            if (email && email.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    errors.push({
+                        field: 'email',
+                        message: 'Format d\'email invalide'
+                    });
+                }
+            }
+            
+            // Validation du mot de passe
+            const password = document.getElementById('password');
+            if (password && password.value.length < 6) {
+                errors.push({
+                    field: 'password',
+                    message: 'Le mot de passe doit contenir au moins 6 caractères'
+                });
+            }
+            
+            // Validation de la confirmation du mot de passe
+            const confirmPassword = document.getElementById('confirmPassword');
+            if (password && confirmPassword && password.value !== confirmPassword.value) {
+                errors.push({
+                    field: 'confirmPassword',
+                    message: 'Les mots de passe ne correspondent pas'
+                });
+            }
+            
+            return errors;
+        }
+        
+        function displayFormErrors(errors) {
+            errors.forEach(error => {
+                let fieldElement;
+                let errorElement;
+                
+                // Cas spécial pour les boutons radio
+                if (error.field === 'sexe') {
+                    const sexeField = document.querySelector('.form-field:has(input[name="sexe"])');
+                    if (sexeField) {
+                        errorElement = sexeField.querySelector('.error-message');
+                    }
+                } 
+                // Cas spécial pour les matières
+                else if (error.field === 'matieres') {
+                    const matieresContainer = document.getElementById('selectedMatieresContainer');
+                    const matiereError = document.querySelector('#matieres').nextElementSibling;
+                    
+                    if (matiereError) {
+                        errorElement = matiereError;
+                        errorElement.textContent = error.message;
+                        errorElement.classList.remove('hidden');
+                    }
+                    
+                    if (matieresContainer) {
+                        matieresContainer.classList.add('error-shake', 'border-red-500');
+                        setTimeout(() => matieresContainer.classList.remove('error-shake'), 400);
+                    }
+                    return;
+                }
+                // Pour les autres champs
+                else {
+                    fieldElement = document.getElementById(error.field);
+                    if (fieldElement) {
+                        errorElement = fieldElement.parentElement.querySelector('.error-message');
+                    }
+                }
+                
+                if (errorElement) {
+                    errorElement.textContent = error.message;
+                    errorElement.classList.remove('hidden');
+                }
+                
+                if (fieldElement) {
+                    fieldElement.classList.add('error-shake', 'border-red-500');
+                    setTimeout(() => fieldElement.classList.remove('error-shake'), 400);
+                }
+            });
+        }
+        
+        // ==================== GESTION DES MATIÈRES ====================
+        function updateMatieresDisplay() {
+            const container = document.getElementById('selectedMatieresContainer');
+            const placeholder = document.getElementById('placeholderText');
+            const input = document.getElementById('matieres');
+            
+            if (!container || !placeholder || !input) return;
+            
+            placeholder.style.display = selectedMatieres.length > 0 ? 'none' : 'block';
+            input.value = selectedMatieres.join(',');
+            
+            // Supprimer les anciens tags
+            const oldTags = container.querySelectorAll('.matiere-selected');
+            oldTags.forEach(tag => tag.remove());
+            
+            // Ajouter les nouveaux tags
+            selectedMatieres.forEach((matiere, index) => {
                 const tag = document.createElement('div');
                 tag.className = 'matiere-selected';
                 tag.innerHTML = `
-                    <span>${text}</span>
+                    <span>${selectedMatieresText[index] || matiere}</span>
                     <span class="remove-btn" data-matiere="${matiere}">
                         <i class="fas fa-times"></i>
                     </span>
                 `;
-                selectedMatieresContainer.appendChild(tag);
-            });
-
-            // Ajouter les écouteurs pour les boutons de suppression
-            document.querySelectorAll('.remove-btn').forEach(removeBtn => {
-                removeBtn.addEventListener('click', function() {
-                    const matiere = this.getAttribute('data-matiere');
-                    removeMatiere(matiere);
+                container.appendChild(tag);
+                
+                // Ajouter l'événement de suppression
+                tag.querySelector('.remove-btn').addEventListener('click', function() {
+                    const matiereToRemove = this.getAttribute('data-matiere');
+                    removeMatiere(matiereToRemove);
                 });
             });
         }
-
-        // Fonction pour ajouter une matière
+        
         function addMatiere(matiere) {
             if (!selectedMatieres.includes(matiere)) {
                 selectedMatieres.push(matiere);
                 const btn = document.querySelector(`[data-matiere="${matiere}"]`);
                 if (btn) {
+                    selectedMatieresText.push(btn.textContent.trim());
                     btn.style.display = 'none';
                 }
                 updateMatieresDisplay();
             }
         }
-
-        // Fonction pour retirer une matière
+        
         function removeMatiere(matiere) {
-            selectedMatieres = selectedMatieres.filter(m => m !== matiere);
-            const btn = document.querySelector(`[data-matiere="${matiere}"]`);
-            if (btn) {
-                btn.style.display = 'inline-flex';
-                // Animation de réapparition
-                btn.style.animation = 'slideIn 0.3s ease';
+            const index = selectedMatieres.indexOf(matiere);
+            if (index > -1) {
+                selectedMatieres.splice(index, 1);
+                selectedMatieresText.splice(index, 1);
+                const btn = document.querySelector(`[data-matiere="${matiere}"]`);
+                if (btn) {
+                    btn.style.display = 'inline-flex';
+                }
+                updateMatieresDisplay();
             }
-            updateMatieresDisplay();
         }
-
-        // Écouteurs pour les boutons de matières
-        document.querySelectorAll('.matiere-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const matiere = this.getAttribute('data-matiere');
-                addMatiere(matiere);
-            });
-        });
-
-        // Password strength checker
-        const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirmPassword');
-        const strengthBar = document.getElementById('passwordStrengthBar');
-        const strengthText = document.getElementById('passwordStrengthText');
-        const strengthScore = document.getElementById('passwordScore');
-        const passwordMatchMessage = document.getElementById('passwordMatchMessage');
-
-        // Requirements elements
-        const reqLength = document.getElementById('reqLength');
-        const reqUppercase = document.getElementById('reqUppercase');
-        const reqLowercase = document.getElementById('reqLowercase');
-        const reqNumber = document.getElementById('reqNumber');
-        const reqSpecial = document.getElementById('reqSpecial');
-
-        password.addEventListener('input', function() {
-            const value = this.value;
+        
+        // ==================== GESTION DES MOTS DE PASSE ====================
+        function setupPasswordHandlers() {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            if (password) {
+                password.addEventListener('input', updatePasswordStrength);
+            }
+            
+            if (confirmPassword) {
+                confirmPassword.addEventListener('input', checkPasswordMatch);
+            }
+        }
+        
+        function updatePasswordStrength() {
+            const password = document.getElementById('password');
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrengthText');
+            const strengthScore = document.getElementById('passwordScore');
+            
+            if (!password || !strengthBar || !strengthText) return;
+            
+            const value = password.value;
             let strength = 0;
             
-            // Check length
+            // Vérifier les critères
             if (value.length >= 8) {
                 strength++;
-                reqLength.classList.remove('requirement-not-met');
-                reqLength.classList.add('requirement-met');
+                document.getElementById('reqLength').classList.replace('requirement-not-met', 'requirement-met');
             } else {
-                reqLength.classList.remove('requirement-met');
-                reqLength.classList.add('requirement-not-met');
+                document.getElementById('reqLength').classList.replace('requirement-met', 'requirement-not-met');
             }
             
-            // Check uppercase
             if (/[A-Z]/.test(value)) {
                 strength++;
-                reqUppercase.classList.remove('requirement-not-met');
-                reqUppercase.classList.add('requirement-met');
+                document.getElementById('reqUppercase').classList.replace('requirement-not-met', 'requirement-met');
             } else {
-                reqUppercase.classList.remove('requirement-met');
-                reqUppercase.classList.add('requirement-not-met');
+                document.getElementById('reqUppercase').classList.replace('requirement-met', 'requirement-not-met');
             }
             
-            // Check lowercase
             if (/[a-z]/.test(value)) {
                 strength++;
-                reqLowercase.classList.remove('requirement-not-met');
-                reqLowercase.classList.add('requirement-met');
+                document.getElementById('reqLowercase').classList.replace('requirement-not-met', 'requirement-met');
             } else {
-                reqLowercase.classList.remove('requirement-met');
-                reqLowercase.classList.add('requirement-not-met');
+                document.getElementById('reqLowercase').classList.replace('requirement-met', 'requirement-not-met');
             }
             
-            // Check number
             if (/[0-9]/.test(value)) {
                 strength++;
-                reqNumber.classList.remove('requirement-not-met');
-                reqNumber.classList.add('requirement-met');
+                document.getElementById('reqNumber').classList.replace('requirement-not-met', 'requirement-met');
             } else {
-                reqNumber.classList.remove('requirement-met');
-                reqNumber.classList.add('requirement-not-met');
+                document.getElementById('reqNumber').classList.replace('requirement-met', 'requirement-not-met');
             }
             
-            // Check special character
             if (/[!@#$%^&*]/.test(value)) {
                 strength++;
-                reqSpecial.classList.remove('requirement-not-met');
-                reqSpecial.classList.add('requirement-met');
+                document.getElementById('reqSpecial').classList.replace('requirement-not-met', 'requirement-met');
             } else {
-                reqSpecial.classList.remove('requirement-met');
-                reqSpecial.classList.add('requirement-not-met');
+                document.getElementById('reqSpecial').classList.replace('requirement-met', 'requirement-not-met');
             }
             
-            // Update strength bar
+            // Mettre à jour la barre
             const percentage = (strength / 5) * 100;
             strengthBar.style.width = percentage + '%';
             
-            // Remove all strength classes
-            strengthBar.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
-            strengthText.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+            // Mettre à jour le texte et la couleur
+            strengthBar.className = 'password-strength-bar';
+            strengthText.className = '';
             
             if (strength <= 2) {
                 strengthBar.classList.add('strength-weak');
                 strengthText.classList.add('strength-weak');
                 strengthText.textContent = 'Faible';
-                strengthScore.textContent = strength + '/5';
-                strengthScore.className = 'text-xs sm:text-sm font-bold strength-weak';
+                if (strengthScore) {
+                    strengthScore.textContent = strength + '/5';
+                    strengthScore.className = 'text-xs sm:text-sm font-bold strength-weak';
+                }
             } else if (strength <= 4) {
                 strengthBar.classList.add('strength-medium');
                 strengthText.classList.add('strength-medium');
                 strengthText.textContent = 'Moyen';
-                strengthScore.textContent = strength + '/5';
-                strengthScore.className = 'text-xs sm:text-sm font-bold strength-medium';
+                if (strengthScore) {
+                    strengthScore.textContent = strength + '/5';
+                    strengthScore.className = 'text-xs sm:text-sm font-bold strength-medium';
+                }
             } else {
                 strengthBar.classList.add('strength-strong');
                 strengthText.classList.add('strength-strong');
                 strengthText.textContent = 'Fort';
-                strengthScore.textContent = strength + '/5';
-                strengthScore.className = 'text-xs sm:text-sm font-bold strength-strong';
+                if (strengthScore) {
+                    strengthScore.textContent = strength + '/5';
+                    strengthScore.className = 'text-xs sm:text-sm font-bold strength-strong';
+                }
             }
-            
-            checkPasswordMatch();
-        });
-
-        // Check password match
-        confirmPassword.addEventListener('input', checkPasswordMatch);
-
+        }
+        
         function checkPasswordMatch() {
-            const pass = password.value;
-            const confirmPass = confirmPassword.value;
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const matchMessage = document.getElementById('passwordMatchMessage');
             
-            if (confirmPass === '') {
-                passwordMatchMessage.innerHTML = '';
+            if (!password || !confirmPassword || !matchMessage) return;
+            
+            if (confirmPassword.value === '') {
+                matchMessage.innerHTML = '';
                 return;
             }
             
-            if (pass === confirmPass) {
-                passwordMatchMessage.innerHTML = '<span class="text-green-600 text-xs flex items-center gap-1"><i class="fas fa-check-circle"></i> Les mots de passe correspondent</span>';
+            if (password.value === confirmPassword.value) {
+                matchMessage.innerHTML = '<span class="text-green-600 text-xs flex items-center gap-1"><i class="fas fa-check-circle"></i> Les mots de passe correspondent</span>';
             } else {
-                passwordMatchMessage.innerHTML = '<span class="text-red-500 text-xs flex items-center gap-1"><i class="fas fa-times-circle"></i> Les mots de passe ne correspondent pas</span>';
+                matchMessage.innerHTML = '<span class="text-red-500 text-xs flex items-center gap-1"><i class="fas fa-times-circle"></i> Les mots de passe ne correspondent pas</span>';
             }
         }
-
-        // Form validation
-        const form = document.getElementById('tutorRegistrationForm');
-        form.addEventListener('submit', function(e) {
+        
+        // ==================== TOGGLE VISIBILITÉ MOT DE PASSE ====================
+        function setupPasswordToggles() {
+            document.querySelectorAll('.eye-toggle').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    if (!input) return;
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.classList.replace('fa-eye', 'fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        this.classList.replace('fa-eye-slash', 'fa-eye');
+                    }
+                });
+            });
+        }
+        
+        // ==================== VALIDATION EMAIL ====================
+        function setupEmailValidation() {
+            const email = document.getElementById('email');
+            if (!email) return;
+            
+            email.addEventListener('blur', function() {
+                const errorMsg = this.nextElementSibling;
+                const successMsg = errorMsg.nextElementSibling;
+                
+                if (!errorMsg || !successMsg) return;
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (emailRegex.test(this.value)) {
+                    errorMsg.classList.add('hidden');
+                    successMsg.classList.remove('hidden');
+                    this.classList.remove('border-red-500');
+                } else if (this.value) {
+                    errorMsg.textContent = 'Veuillez entrer une adresse email valide';
+                    errorMsg.classList.remove('hidden');
+                    successMsg.classList.add('hidden');
+                    this.classList.add('border-red-500', 'error-shake');
+                    setTimeout(() => this.classList.remove('error-shake'), 400);
+                }
+            });
+        }
+        
+        // ==================== SOUMISSION DU FORMULAIRE ====================
+        async function handleFormSubmit(e) {
             e.preventDefault();
             
-            // Validate all fields
-            let isValid = true;
-            const errorMessages = document.querySelectorAll('.error-message');
-            errorMessages.forEach(msg => msg.classList.add('hidden'));
+            // Réinitialiser les erreurs
+            resetFormErrors();
             
-            // Check if password matches
-            if (password.value !== confirmPassword.value) {
-                isValid = false;
-                confirmPassword.nextElementSibling.textContent = 'Les mots de passe ne correspondent pas';
-                confirmPassword.nextElementSibling.classList.remove('hidden');
+            // Valider le formulaire
+            const errors = validateForm();
+            
+            if (errors.length > 0) {
+                displayFormErrors(errors);
+                showNotification('Veuillez corriger les erreurs dans le formulaire', 'error');
+                return;
             }
             
-            // Check password strength
-            if (password.value.length < 8) {
-                isValid = false;
+            // Vérifier que Firebase est initialisé
+            if (!db || !auth) {
+                showNotification('Erreur de connexion à la base de données. Veuillez rafraîchir la page.', 'error');
+                return;
             }
             
-            // Check if at least one matiere is selected
-            if (selectedMatieres.length === 0) {
-                isValid = false;
-                const matiereError = document.querySelector('#matieres').nextElementSibling;
-                matiereError.textContent = 'Veuillez sélectionner au moins une matière';
-                matiereError.classList.remove('hidden');
+            // Activer l'état de chargement
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            
+            if (submitBtn && btnText && btnLoader) {
+                submitBtn.disabled = true;
+                btnText.classList.add('hidden');
+                btnLoader.classList.remove('hidden');
             }
             
-            if (isValid) {
-                // Show loading state
-                document.getElementById('btnText').classList.add('hidden');
-                document.getElementById('btnLoader').classList.remove('hidden');
-                document.getElementById('submitBtn').disabled = true;
+            try {
+                // Récupérer les données du formulaire
+                const formData = {
+                    nom: document.getElementById('nom').value.trim(),
+                    prenom: document.getElementById('prenom').value.trim(),
+                    sexe: document.querySelector('input[name="sexe"]:checked').value,
+                    diplome: document.getElementById('diplome').value,
+                    matieres: selectedMatieres,
+                    matieresText: selectedMatieresText,
+                    langue: document.getElementById('langue').value,
+                    email: document.getElementById('email').value.trim()
+                };
                 
-                // Simulate form submission
+                const password = document.getElementById('password').value;
+                
+                // 1. Créer l'utilisateur dans Firebase Authentication
+                const userCredential = await auth.createUserWithEmailAndPassword(formData.email, password);
+                const user = userCredential.user;
+                
+                // 2. Mettre à jour le profil
+                await user.updateProfile({
+                    displayName: `${formData.prenom} ${formData.nom}`
+                });
+                
+                // 3. Préparer les données pour Firestore
+                const enseignantData = {
+                    uid: user.uid,
+                    email: formData.email,
+                    nom: formData.nom,
+                    prenom: formData.prenom,
+                    nomComplet: `${formData.prenom} ${formData.nom}`,
+                    sexe: formData.sexe,
+                    diplome: formData.diplome,
+                    matieres: formData.matieres,
+                    matieresText: formData.matieresText,
+                    langue: formData.langue,
+                    role: 'enseignant',
+                    statut: 'actif',
+                    dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
+                    dateCreation: new Date().toISOString(),
+                    photoURL: '',
+                    telephone: '',
+                    bio: '',
+                    experience: 0,
+                    noteMoyenne: 0,
+                    nombreCours: 0,
+                    verifie: false,
+                    preferences: {
+                        notifications: true,
+                        emails: true,
+                        visibilite: 'public'
+                    }
+                };
+                
+                // 4. Ajouter à la collection "enseignants"
+                const docRef = await db.collection("enseignants").add(enseignantData);
+                
+                // 5. Créer un document dans "users"
+                const userGeneralData = {
+                    uid: user.uid,
+                    email: formData.email,
+                    nom: formData.nom,
+                    prenom: formData.prenom,
+                    role: 'enseignant',
+                    dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
+                    derniereConnexion: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection("users").add(userGeneralData);
+                
+                // Succès
+                showNotification('Inscription réussie ! Redirection vers la page de connexion...', 'success');
+                
+                // Réinitialiser le formulaire
+                document.getElementById('tutorRegistrationForm').reset();
+                selectedMatieres = [];
+                selectedMatieresText = [];
+                updateMatieresDisplay();
+                
+                // Réafficher les boutons de matières
+                document.querySelectorAll('.matiere-btn').forEach(btn => {
+                    btn.style.display = 'inline-flex';
+                });
+                
+                // Réinitialiser la force du mot de passe
+                const strengthBar = document.getElementById('passwordStrengthBar');
+                const strengthText = document.getElementById('passwordStrengthText');
+                const strengthScore = document.getElementById('passwordScore');
+                if (strengthBar) strengthBar.style.width = '0%';
+                if (strengthText) strengthText.textContent = 'Force du mot de passe';
+                if (strengthScore) strengthScore.textContent = '';
+                
+                // Réinitialiser les exigences
+                document.querySelectorAll('.requirement-icon').forEach(icon => {
+                    icon.classList.replace('requirement-met', 'requirement-not-met');
+                });
+                
+                // Réinitialiser le message de correspondance
+                const matchMessage = document.getElementById('passwordMatchMessage');
+                if (matchMessage) matchMessage.innerHTML = '';
+                
+                // Rediriger après 3 secondes
                 setTimeout(() => {
-                    alert('Inscription réussie ! Bienvenue dans l\'équipe des tuteurs EduConnect Africa.');
-                    form.reset();
-                    selectedMatieres = [];
-                    updateMatieresDisplay();
-                    
-                    // Réafficher tous les boutons de matières
-                    document.querySelectorAll('.matiere-btn').forEach(btn => {
-                        btn.style.display = 'inline-flex';
-                    });
-                    
-                    document.getElementById('btnText').classList.remove('hidden');
-                    document.getElementById('btnLoader').classList.add('hidden');
-                    document.getElementById('submitBtn').disabled = false;
-                    
-                    // Reset password strength
-                    strengthBar.style.width = '0%';
-                    strengthText.textContent = 'Force du mot de passe';
-                    strengthScore.textContent = '';
-                    
-                    // Reset requirements
-                    document.querySelectorAll('.requirement-icon').forEach(icon => {
-                        icon.classList.remove('requirement-met');
-                        icon.classList.add('requirement-not-met');
-                    });
-                }, 2000);
+                    window.location.href = '../templates/Connexion.html?newUser=true';
+                }, 3000);
+                
+            } catch (error) {
+                console.error("Erreur lors de l'inscription:", error);
+                
+                let errorMessage = "Une erreur est survenue lors de l'inscription.";
+                
+                switch(error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = "Cet email est déjà utilisé. Essayez de vous connecter.";
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = "L'adresse email n'est pas valide.";
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = "Le mot de passe est trop faible. Utilisez au moins 6 caractères.";
+                        break;
+                    case 'auth/operation-not-allowed':
+                        errorMessage = "L'inscription par email/mot de passe n'est pas activée.";
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = "Problème de connexion internet. Veuillez réessayer.";
+                        break;
+                    case 'permission-denied':
+                        errorMessage = "Permission refusée. Contactez l'administrateur.";
+                        break;
+                }
+                
+                showNotification(errorMessage, 'error');
+                
+            } finally {
+                // Désactiver l'état de chargement
+                if (submitBtn && btnText && btnLoader) {
+                    submitBtn.disabled = false;
+                    btnText.classList.remove('hidden');
+                    btnLoader.classList.add('hidden');
+                }
             }
-        });
-
-        // Email validation
-        const email = document.getElementById('email');
-        email.addEventListener('blur', function() {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (emailRegex.test(this.value)) {
-                this.nextElementSibling.classList.add('hidden');
-                this.nextElementSibling.nextElementSibling.classList.remove('hidden');
-            } else if (this.value) {
-                this.nextElementSibling.textContent = 'Veuillez entrer une adresse email valide';
-                this.nextElementSibling.classList.remove('hidden');
-                this.nextElementSibling.nextElementSibling.classList.add('hidden');
+        }
+        
+        // ==================== INITIALISATION ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Page chargée, initialisation...");
+            
+            // Configurer les gestionnaires d'événements
+            setupPasswordHandlers();
+            setupPasswordToggles();
+            setupEmailValidation();
+            
+            // Configurer les boutons de matières
+            document.querySelectorAll('.matiere-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const matiere = this.getAttribute('data-matiere');
+                    addMatiere(matiere);
+                });
+            });
+            
+            // Configurer le formulaire
+            const form = document.getElementById('tutorRegistrationForm');
+            if (form) {
+                form.addEventListener('submit', handleFormSubmit);
             }
+            
+            console.log("Initialisation terminée");
         });
     </script>
 </body>

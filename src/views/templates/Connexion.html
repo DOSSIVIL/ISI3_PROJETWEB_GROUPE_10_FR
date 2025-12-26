@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - EduConnect Africa</title>
-    
     <!-- CSS local -->
     <link rel="stylesheet" href="/src/style.css">
-    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -330,6 +331,213 @@
             .form-section {
                 padding: 20px;
             }
+        }
+
+        /* Styles pour les messages d'erreur */
+        .error-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+            padding: 8px 12px;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .error-message i {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .error-message.hidden {
+            display: none;
+        }
+
+        /* Animation pour l'apparition des messages d'erreur */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 100px;
+            }
+        }
+
+        /* Styles pour les notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: white;
+            z-index: 9999;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            min-width: 320px;
+            max-width: 380px;
+            font-family: 'Poppins', sans-serif;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification-success {
+            background: linear-gradient(135deg, 
+                rgba(16, 185, 129, 0.95) 0%, 
+                rgba(5, 150, 105, 0.95) 100%);
+            border-left: 4px solid #10b981;
+        }
+
+        .notification-error {
+            background: linear-gradient(135deg, 
+                rgba(239, 68, 68, 0.95) 0%, 
+                rgba(220, 38, 38, 0.95) 100%);
+            border-left: 4px solid #ef4444;
+        }
+
+        /* Animation pour l'entrée des notifications */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Animation pour la sortie des notifications */
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%) translateY(-20px);
+                opacity: 0;
+            }
+        }
+
+        /* Style pour le contenu de la notification */
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        /* Style pour le bouton de fermeture */
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            opacity: 0.7;
+            cursor: pointer;
+            padding: 4px;
+            margin-left: 8px;
+            transition: opacity 0.2s ease;
+            font-size: 14px;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
+
+        /* Responsive pour les notifications */
+        @media (max-width: 640px) {
+            .notification {
+                min-width: 280px;
+                max-width: calc(100vw - 40px);
+                left: 20px;
+                right: 20px;
+                top: 20px;
+                animation: slideInDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            }
+        }
+
+        /* Progress bar pour les notifications */
+        .notification-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .notification-progress-bar {
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: progress 5s linear forwards;
+        }
+
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
+        }
+
+        /* Style pour les notifications avec icônes personnalisées */
+        .notification-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .notification-role.enseignant {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.3));
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        .notification-role.etudiant {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3));
+            border: 1px solid rgba(16, 185, 129, 0.4);
         }
     </style>
 </head>

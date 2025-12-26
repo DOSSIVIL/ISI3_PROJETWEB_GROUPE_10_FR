@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription Étudiant - EduConnect Africa</title>
     <link rel="stylesheet" href="../../style.css">
+    <!-- CDN nécessaires -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
@@ -419,6 +424,510 @@
                 width: 100%;
             }
         }
+                /* Styles pour les sélecteurs d'étude */
+        select:disabled {
+            background-color: #f9fafb;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        select:disabled:hover {
+            border-color: #e5e7eb;
+        }
+
+        /* Animation de transition pour les options */
+        select option {
+            padding: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        select option:hover {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        /* Style pour les icônes dans les options */
+        select option[value^="universitaire"] {
+            background-color: #eff6ff;
+        }
+
+        select option[value^="secondaire"] {
+            background-color: #f0fdf4;
+        }
+
+        select option[value^="autre"] {
+            background-color: #faf5ff;
+        }
+
+        /* Indicateur de champ obligatoire */
+        .form-field.required label::after {
+            content: " *";
+            color: #ef4444;
+        }
+
+        /* Message d'aide pour les champs d'étude */
+        .education-help {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .education-help i {
+            color: #f59e0b;
+            font-size: 10px;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 300px;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+        .notification-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-left: 4px solid #047857;
+        }
+
+        .notification-error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-left: 4px solid #b91c1c;
+        }
+
+        .notification-info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-left: 4px solid #1d4ed8;
+        }
+
+        .notification-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-left: 4px solid #b45309;
+        }
+
+        /* Messages d'erreur dans les champs */
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-message i {
+            font-size: 10px;
+        }
+
+        .error-message.hidden {
+            display: none;
+        }
+
+        /* Messages de succès dans les champs */
+        .success-message {
+            color: #10b981;
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-message i {
+            font-size: 10px;
+        }
+
+        .success-message.hidden {
+            display: none;
+        }
+
+        /* Style pour les messages de correspondance de mot de passe */
+        .password-match-message {
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .match-success {
+            color: #10b981;
+        }
+
+        .match-error {
+            color: #ef4444;
+        }
+
+        /* Messages d'aide/info */
+        .help-message {
+            color: #6b7280;
+            font-size: 11px;
+            margin-top: 4px;
+            font-style: italic;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Messages de chargement */
+        .loading-message {
+            color: #3b82f6;
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .loading-message i {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Animation pour le bouton de chargement */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animation pour les messages */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-5px); }
+        }
+
+        /* Messages toast supplémentaires */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 4.7s forwards;
+            max-width: 350px;
+        }
+
+        .toast-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-left: 3px solid #047857;
+        }
+
+        .toast-error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-left: 3px solid #b91c1c;
+        }
+
+        .toast-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-left: 3px solid #b45309;
+        }
+
+        .toast-info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-left: 3px solid #1d4ed8;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Messages dans les tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1f2937;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Messages de validation en ligne */
+        .inline-validation {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .inline-validation.valid {
+            color: #10b981;
+        }
+
+        .inline-validation.invalid {
+            color: #ef4444;
+        }
+
+        .inline-validation i {
+            font-size: 10px;
+        }
+
+        /* Messages de bienvenue et informations importantes */
+        .welcome-message {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(236, 72, 153, 0.1));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .welcome-message h3 {
+            color: #f59e0b;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .welcome-message p {
+            color: #4b5563;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Messages pour les étapes */
+        .step-message {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            color: #1e40af;
+            font-size: 12px;
+        }
+
+        /* Messages de confirmation */
+        .confirmation-message {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            color: #065f46;
+            font-size: 12px;
+        }
+
+        /* Messages d'erreur pour les formulaires */
+        .form-error-message {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #991b1b;
+            font-size: 13px;
+        }
+
+        /* Messages d'alerte */
+        .alert-message {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #92400e;
+            font-size: 13px;
+        }
+
+        /* Responsive pour les notifications */
+        @media (max-width: 640px) {
+            .notification {
+                min-width: 280px;
+                max-width: 90%;
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                margin: 0 auto;
+            }
+            
+            .toast {
+                max-width: 90%;
+                margin: 0 auto;
+            }
+        }
+
+        /* Animation pour les messages qui disparaissent */
+        .message-exit {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        /* Messages avec icônes */
+        .message-with-icon {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+
+        .message-with-icon i {
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .message-with-icon.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            border-left: 3px solid #10b981;
+            color: #065f46;
+        }
+
+        .message-with-icon.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+            border-left: 3px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .message-with-icon.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
+            border-left: 3px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        .message-with-icon.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+            border-left: 3px solid #f59e0b;
+            color: #92400e;
+        }
+
+        /* Messages flottants */
+        .floating-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: slideInUp 0.3s ease;
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Messages dans les modals */
+        .modal-message {
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .modal-message.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .modal-message.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15));
+            color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Messages pour les champs désactivés */
+        .disabled-message {
+            color: #9ca3af;
+            font-size: 11px;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* Messages de progression */
+        .progress-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #3b82f6;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .progress-message i {
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Messages avec fond dégradé */
+        .gradient-message {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin: 16px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-message h4 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .gradient-message p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800">
@@ -642,6 +1151,7 @@
                 </form>
 
                 <!-- ÉTAPE 2 - Détails supplémentaires (cachée par défaut) -->
+                
                 <form id="registrationFormStep2" class="space-y-4 sm:space-y-5 hidden" data-step="2">
                     <!-- Langue -->
                     <div class="form-field">
@@ -656,7 +1166,38 @@
                         </select>
                         <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                     </div>
-
+                
+                    <!-- NOUVEAU: Type d'étude et Niveau sur la même ligne -->
+                    <div class="form-row grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <!-- Type d'étude -->
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-graduation-cap label-icon"></i>Type d'étude
+                            </label>
+                            <select id="typeEtude" name="typeEtude" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600">
+                                <option value="">Sélectionnez un type</option>
+                                <option value="universitaire">Universitaire</option>
+                                <option value="secondaire">Secondaire</option>
+                                <option value="autre">Autre formation</option>
+                            </select>
+                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        </div>
+                
+                        <!-- Niveau d'étude -->
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-chart-line label-icon"></i>Niveau d'étude
+                            </label>
+                            <select id="niveauEtude" name="niveauEtude" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600">
+                                <option value="">Sélectionnez d'abord le type</option>
+                                <!-- Les options seront mises à jour dynamiquement -->
+                            </select>
+                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        </div>
+                    </div>
+                
                     <!-- Pays -->
                     <div class="form-field relative">
                         <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -674,7 +1215,7 @@
                         </div>
                         <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                     </div>
-
+                
                     <!-- Téléphone -->
                     <div class="form-field phone-section">
                         <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -690,20 +1231,21 @@
                         </div>
                         <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                     </div>
-
+                
                     <!-- Boutons Navigation Étape 2 -->
-                    <div class="form-actions pt-4 flex justify-between">
+                    <div class="form-actions pt-6 flex flex-col-reverse sm:flex-row sm:justify-between gap-4">
+    
                         <button type="button" id="backBtn"
-                            class="bg-gradient-to-r from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500 text-gray-800 dark:text-gray-200 dark:from-gray-700 dark:to-gray-600 dark:hover:from-gray-600 dark:hover:to-gray-700 py-3 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                            class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center">
                             <i class="fas fa-arrow-left mr-2"></i> Retour
                         </button>
                         
                         <button type="submit" id="submitBtn"
-                            class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            <span id="btnText">
+                            class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-10 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center">
+                            <span id="btnText" class="flex items-center">
                                 <i class="fas fa-user-plus mr-2"></i> S'inscrire
                             </span>
-                            <span id="btnLoader" class="hidden">
+                            <span id="btnLoader" class="hidden items-center">
                                 <i class="fas fa-spinner fa-spin mr-2"></i> Inscription...
                             </span>
                         </button>
@@ -723,6 +1265,1007 @@
         </div>
     </div>
 
-    <script src="../components/Inscription.js"></script>
+    <script>
+        // ==================== CONFIGURATION ====================
+        const API_TOKEN = '2ad1ffe2de6acb841251b8f5694ec531e074f130';
+        const API_BASE_URL = 'https://aaapis.com/api/v1';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
+            authDomain: "achitectureweb-groupe-10.firebaseapp.com",
+            projectId: "achitectureweb-groupe-10",
+            storageBucket: "achitectureweb-groupe-10.firebasestorage.app",
+            messagingSenderId: "646899550480",
+            appId: "1:646899550480:web:687fd4f4b2e0ca646efd95"
+        };
+        
+        // ==================== VARIABLES GLOBALES ====================
+        let app, db, auth;
+        let africanCountries = [];
+        let selectedCountry = null;
+        let currentStep = 1;
+        let emailVerificationCache = {};
+        
+        // ==================== INITIALISATION FIREBASE ====================
+        try {
+            app = firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            auth = firebase.auth();
+            console.log("Firebase initialisé avec succès");
+        } catch (error) {
+            console.error("Erreur d'initialisation Firebase:", error);
+            showNotification("Erreur de connexion à la base de données", "error");
+        }
+        
+        // ==================== FONCTIONS UTILITAIRES ====================
+        function showNotification(message, type = 'info', duration = 5000) {
+            // Supprimer les notifications existantes
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification animate__animated animate__fadeInRight ${type === 'success' ? 'notification-success' : type === 'error' ? 'notification-error' : type === 'warning' ? 'notification-warning' : 'notification-info'}`;
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-circle' : 
+                        type === 'warning' ? 'fa-exclamation-triangle' : 
+                        'fa-info-circle';
+            
+            notification.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas ${icon} text-xl"></i>
+                    <div class="flex-1">
+                        <p class="font-bold">${type === 'success' ? 'Succès !' : type === 'error' ? 'Erreur !' : type === 'warning' ? 'Attention !' : 'Information'}</p>
+                        <p class="text-sm opacity-90">${message}</p>
+                    </div>
+                    <button class="text-white opacity-70 hover:opacity-100" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Supprimer automatiquement
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.classList.add('animate__fadeOutRight');
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, duration);
+        }
+        
+        function resetFormErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+            
+            document.querySelectorAll('.input-field').forEach(field => {
+                field.classList.remove('border-red-500', 'error-shake');
+            });
+            
+            const successMsg = document.querySelector('.success-message');
+            if (successMsg) successMsg.classList.add('hidden');
+        }
+        
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // ==================== VÉRIFICATION EMAIL API ====================
+        async function verifyEmail(email) {
+            // Vérifier le cache d'abord
+            if (emailVerificationCache[email]) {
+                return emailVerificationCache[email];
+            }
+            
+            // Vérification basique du format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return { valid: false, reason: 'format_invalid' };
+            }
+            
+            try {
+                // Montrer l'indicateur de vérification
+                const emailField = document.getElementById('email');
+                const loadingMsg = emailField.parentElement.querySelector('.loading-message') || createLoadingMessage(emailField.parentElement);
+                loadingMsg.classList.remove('hidden');
+                
+                const response = await fetch(`${API_BASE_URL}/email/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_TOKEN}`
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                loadingMsg.classList.add('hidden');
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Mettre en cache le résultat
+                emailVerificationCache[email] = data;
+                
+                return data;
+                
+            } catch (error) {
+                console.error('Erreur vérification email:', error);
+                
+                // Fallback: vérification locale basique
+                const domain = email.split('@')[1];
+                const disposableDomains = ['tempmail.com', 'mailinator.com', 'guerrillamail.com'];
+                const freeDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
+                
+                const result = {
+                    valid: true,
+                    deliverable: true,
+                    disposable: disposableDomains.some(d => domain.includes(d)),
+                    free: freeDomains.some(d => domain.includes(d))
+                };
+                
+                // Mettre en cache le résultat
+                emailVerificationCache[email] = result;
+                
+                return result;
+            }
+        }
+        
+        function createLoadingMessage(container) {
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'loading-message';
+            loadingMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification de l\'email en cours...';
+            container.appendChild(loadingMsg);
+            return loadingMsg;
+        }
+        
+        async function handleEmailValidation() {
+            const emailField = document.getElementById('email');
+            const email = emailField.value.trim();
+            const errorMsg = emailField.parentElement.querySelector('.error-message');
+            const successMsg = emailField.parentElement.querySelector('.success-message');
+            
+            if (!email) {
+                errorMsg.classList.add('hidden');
+                successMsg.classList.add('hidden');
+                emailField.classList.remove('border-green-500', 'border-red-500');
+                return;
+            }
+            
+            // Vérification basique du format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorMsg.textContent = 'Format d\'email invalide';
+                errorMsg.classList.remove('hidden');
+                successMsg.classList.add('hidden');
+                emailField.classList.add('border-red-500');
+                emailField.classList.remove('border-green-500');
+                return;
+            }
+            
+            // Vérification via API
+            const verificationResult = await verifyEmail(email);
+            
+            if (!verificationResult.valid || verificationResult.reason === 'format_invalid') {
+                errorMsg.textContent = 'Format d\'email invalide';
+                errorMsg.classList.remove('hidden');
+                successMsg.classList.add('hidden');
+                emailField.classList.add('border-red-500');
+                emailField.classList.remove('border-green-500');
+            } else if (!verificationResult.deliverable) {
+                errorMsg.textContent = 'Cet email n\'est pas livrable';
+                errorMsg.classList.remove('hidden');
+                successMsg.classList.add('hidden');
+                emailField.classList.add('border-red-500');
+                emailField.classList.remove('border-green-500');
+            } else if (verificationResult.disposable) {
+                errorMsg.textContent = 'Les emails temporaires ne sont pas autorisés';
+                errorMsg.classList.remove('hidden');
+                successMsg.classList.add('hidden');
+                emailField.classList.add('border-red-500');
+                emailField.classList.remove('border-green-500');
+            } else if (verificationResult.free) {
+                successMsg.textContent = '✓ Email vérifié (compte personnel)';
+                successMsg.classList.remove('hidden');
+                errorMsg.classList.add('hidden');
+                emailField.classList.remove('border-red-500');
+                emailField.classList.add('border-green-500');
+            } else {
+                successMsg.textContent = '✓ Email vérifié (compte professionnel)';
+                successMsg.classList.remove('hidden');
+                errorMsg.classList.add('hidden');
+                emailField.classList.remove('border-red-500');
+                emailField.classList.add('border-green-500');
+            }
+        }
+        
+        // ==================== GESTION DES ÉTAPES ====================
+        function goToStep(step) {
+            const step1 = document.querySelector('[data-step="1"]');
+            const step2 = document.querySelector('[data-step="2"]');
+            
+            if (step === 2) {
+                const errors = validateStep1();
+                if (errors.length > 0) {
+                    displayFormErrors(errors);
+                    showNotification('Veuillez corriger les erreurs avant de continuer', 'error');
+                    return;
+                }
+                
+                currentStep = 2;
+                step1.classList.add('hidden');
+                step2.classList.remove('hidden');
+                updateStepIndicator(1);
+            } else if (step === 1) {
+                currentStep = 1;
+                step2.classList.add('hidden');
+                step1.classList.remove('hidden');
+                updateStepIndicator(0);
+            }
+        }
+        
+        function updateStepIndicator(activeStepIndex) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                const stepCircle = step.querySelector('div:first-child');
+                if (index <= activeStepIndex) {
+                    stepCircle.classList.remove('bg-gray-300', 'dark:bg-gray-600');
+                    stepCircle.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'text-white');
+                } else {
+                    stepCircle.classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'text-white');
+                    stepCircle.classList.add('bg-gray-300', 'dark:bg-gray-600');
+                    stepCircle.classList.add('text-gray-500', 'dark:text-gray-400');
+                }
+            });
+        }
+        
+        // ==================== VALIDATION DES ÉTAPES ====================
+        function validateStep1() {
+            const errors = [];
+            
+            const requiredFields = [
+                { id: 'nom', name: 'Nom' },
+                { id: 'prenom', name: 'Prénom' },
+                { id: 'email', name: 'Email' },
+                { id: 'password', name: 'Mot de passe' },
+                { id: 'confirmPassword', name: 'Confirmation mot de passe' }
+            ];
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                if (element && !element.value.trim()) {
+                    errors.push({
+                        field: field.id,
+                        message: `${field.name} est requis`
+                    });
+                }
+            });
+            
+            // Validation du sexe
+            const sexeSelected = document.querySelector('input[name="sexe"]:checked');
+            if (!sexeSelected) {
+                errors.push({
+                    field: 'sexe',
+                    message: 'Veuillez sélectionner votre sexe'
+                });
+            }
+            
+            // Validation de l'email
+            const email = document.getElementById('email');
+            if (email && email.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    errors.push({
+                        field: 'email',
+                        message: 'Format d\'email invalide'
+                    });
+                }
+            }
+            
+            // Validation du mot de passe
+            const password = document.getElementById('password');
+            if (password && password.value) {
+                if (password.value.length < 8) {
+                    errors.push({
+                        field: 'password',
+                        message: 'Le mot de passe doit contenir au moins 8 caractères'
+                    });
+                }
+                
+                const passwordScore = parseInt(document.getElementById('passwordScore')?.textContent || '0');
+                if (passwordScore < 40) {
+                    errors.push({
+                        field: 'password',
+                        message: 'Le mot de passe est trop faible'
+                    });
+                }
+            }
+            
+            // Validation de la confirmation
+            const confirmPassword = document.getElementById('confirmPassword');
+            if (password && confirmPassword && password.value !== confirmPassword.value) {
+                errors.push({
+                    field: 'confirmPassword',
+                    message: 'Les mots de passe ne correspondent pas'
+                });
+            }
+            
+            return errors;
+        }
+        
+        function validateStep2() {
+            const errors = [];
+            
+            const requiredFields = [
+                { id: 'langue', name: 'Langue' },
+                { id: 'typeEtude', name: 'Type d\'étude' },
+                { id: 'niveauEtude', name: 'Niveau d\'étude' },
+                { id: 'telephone', name: 'Téléphone' }
+            ];
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                if (element && !element.value.trim()) {
+                    errors.push({
+                        field: field.id,
+                        message: `${field.name} est requis`
+                    });
+                }
+            });
+            
+            // Validation du pays
+            if (!selectedCountry || !selectedCountry.name) {
+                errors.push({
+                    field: 'paysInput',
+                    message: 'Veuillez sélectionner un pays'
+                });
+            }
+            
+            // Validation du téléphone
+            const telephone = document.getElementById('telephone');
+            if (telephone && telephone.value) {
+                const phoneNumber = telephone.value.replace(/\D/g, '');
+                if (phoneNumber.length < 8 || phoneNumber.length > 15) {
+                    errors.push({
+                        field: 'telephone',
+                        message: 'Numéro de téléphone invalide'
+                    });
+                }
+            }
+            
+            // Vérification supplémentaire de l'email
+            const email = document.getElementById('email').value;
+            const cachedResult = emailVerificationCache[email];
+            if (cachedResult && (!cachedResult.deliverable || cachedResult.disposable)) {
+                errors.push({
+                    field: 'email',
+                    message: cachedResult.disposable ? 'Les emails temporaires ne sont pas autorisés' : 'Email non livrable'
+                });
+            }
+            
+            return errors;
+        }
+        
+        function displayFormErrors(errors) {
+            errors.forEach(error => {
+                let fieldElement;
+                let errorElement;
+                
+                if (error.field === 'sexe') {
+                    const sexeField = document.querySelector('.form-field:has(input[name="sexe"])');
+                    if (sexeField) {
+                        errorElement = sexeField.querySelector('.error-message');
+                    }
+                } else {
+                    fieldElement = document.getElementById(error.field);
+                    if (fieldElement) {
+                        errorElement = fieldElement.parentElement.querySelector('.error-message');
+                        if (!errorElement) {
+                            errorElement = fieldElement.parentElement.parentElement.querySelector('.error-message');
+                        }
+                    }
+                }
+                
+                if (errorElement) {
+                    errorElement.textContent = error.message;
+                    errorElement.classList.remove('hidden');
+                }
+                
+                if (fieldElement) {
+                    fieldElement.classList.add('error-shake', 'border-red-500');
+                    setTimeout(() => fieldElement.classList.remove('error-shake'), 400);
+                }
+            });
+        }
+        
+        // ==================== GESTION MOTS DE PASSE ====================
+        function checkPasswordStrength() {
+            const passwordInput = document.getElementById('password');
+            const password = passwordInput.value;
+            let score = 0;
+            
+            const hasLength = password.length >= 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*]/.test(password);
+            
+            if (hasLength) score += 20;
+            if (hasUppercase) score += 20;
+            if (hasLowercase) score += 20;
+            if (hasNumber) score += 20;
+            if (hasSpecial) score += 20;
+            
+            // Mettre à jour les icônes
+            const requirements = {
+                'reqLength': hasLength,
+                'reqUppercase': hasUppercase,
+                'reqLowercase': hasLowercase,
+                'reqNumber': hasNumber,
+                'reqSpecial': hasSpecial
+            };
+            
+            Object.keys(requirements).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (requirements[id]) {
+                        element.classList.replace('requirement-not-met', 'requirement-met');
+                        element.classList.replace('fa-times-circle', 'fa-check-circle');
+                    } else {
+                        element.classList.replace('requirement-met', 'requirement-not-met');
+                        element.classList.replace('fa-check-circle', 'fa-times-circle');
+                    }
+                }
+            });
+            
+            // Mettre à jour la barre
+            const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+            const passwordStrengthText = document.getElementById('passwordStrengthText');
+            const passwordScore = document.getElementById('passwordScore');
+            
+            if (passwordStrengthBar) {
+                passwordStrengthBar.style.width = `${score}%`;
+                passwordStrengthBar.className = 'password-strength-bar';
+                
+                if (score <= 40) {
+                    passwordStrengthBar.classList.add('strength-weak');
+                    if (passwordStrengthText) {
+                        passwordStrengthText.textContent = 'Faible';
+                        passwordStrengthText.className = 'password-strength-text strength-weak';
+                    }
+                } else if (score <= 80) {
+                    passwordStrengthBar.classList.add('strength-medium');
+                    if (passwordStrengthText) {
+                        passwordStrengthText.textContent = 'Moyen';
+                        passwordStrengthText.className = 'password-strength-text strength-medium';
+                    }
+                } else {
+                    passwordStrengthBar.classList.add('strength-strong');
+                    if (passwordStrengthText) {
+                        passwordStrengthText.textContent = 'Fort';
+                        passwordStrengthText.className = 'password-strength-text strength-strong';
+                    }
+                }
+            }
+            
+            if (passwordScore) {
+                passwordScore.textContent = `${score}%`;
+                if (score <= 40) {
+                    passwordScore.className = 'password-score strength-weak';
+                } else if (score <= 80) {
+                    passwordScore.className = 'password-score strength-medium';
+                } else {
+                    passwordScore.className = 'password-score strength-strong';
+                }
+            }
+        }
+        
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordMatchMessage = document.getElementById('passwordMatchMessage');
+            
+            if (confirmPassword.length === 0) {
+                passwordMatchMessage.innerHTML = '';
+                return;
+            }
+            
+            if (password === confirmPassword) {
+                passwordMatchMessage.innerHTML = `
+                    <i class="fas fa-check-circle match-success"></i>
+                    <span class="match-success">Les mots de passe correspondent</span>
+                `;
+                document.getElementById('confirmPassword').classList.remove('border-red-500');
+                document.getElementById('confirmPassword').classList.add('border-green-500');
+            } else {
+                passwordMatchMessage.innerHTML = `
+                    <i class="fas fa-times-circle match-error"></i>
+                    <span class="match-error">Les mots de passe ne correspondent pas</span>
+                `;
+                document.getElementById('confirmPassword').classList.remove('border-green-500');
+                document.getElementById('confirmPassword').classList.add('border-red-500');
+            }
+        }
+        
+        // ==================== GESTION DES PAYS ====================
+        function getFallbackAfricanCountries() {
+            return [
+                { name: 'Cameroun', code: 'CM', flag: '🇨🇲', phone_code: '+237' },
+                { name: 'Sénégal', code: 'SN', flag: '🇸🇳', phone_code: '+221' },
+                { name: 'Côte d\'Ivoire', code: 'CI', flag: '🇨🇮', phone_code: '+225' },
+                { name: 'Maroc', code: 'MA', flag: '🇲🇦', phone_code: '+212' },
+                { name: 'Algérie', code: 'DZ', flag: '🇩🇿', phone_code: '+213' },
+                { name: 'Tunisie', code: 'TN', flag: '🇹🇳', phone_code: '+216' },
+                { name: 'Mali', code: 'ML', flag: '🇲🇱', phone_code: '+223' },
+                { name: 'Burkina Faso', code: 'BF', flag: '🇧🇫', phone_code: '+226' },
+                { name: 'Niger', code: 'NE', flag: '🇳🇪', phone_code: '+227' },
+                { name: 'Tchad', code: 'TD', flag: '🇹🇩', phone_code: '+235' },
+                { name: 'Bénin', code: 'BJ', flag: '🇧🇯', phone_code: '+229' },
+                { name: 'Togo', code: 'TG', flag: '🇹🇬', phone_code: '+228' },
+                { name: 'Gabon', code: 'GA', flag: '🇬🇦', phone_code: '+241' },
+                { name: 'Congo', code: 'CG', flag: '🇨🇬', phone_code: '+242' },
+                { name: 'RDC', code: 'CD', flag: '🇨🇩', phone_code: '+243' },
+                { name: 'Rwanda', code: 'RW', flag: '🇷🇼', phone_code: '+250' },
+                { name: 'Burundi', code: 'BI', flag: '🇧🇮', phone_code: '+257' },
+                { name: 'Kenya', code: 'KE', flag: '🇰🇪', phone_code: '+254' },
+                { name: 'Tanzanie', code: 'TZ', flag: '🇹🇿', phone_code: '+255' },
+                { name: 'Ouganda', code: 'UG', flag: '🇺🇬', phone_code: '+256' },
+                { name: 'Ghana', code: 'GH', flag: '🇬🇭', phone_code: '+233' },
+                { name: 'Nigeria', code: 'NG', flag: '🇳🇬', phone_code: '+234' },
+                { name: 'Égypte', code: 'EG', flag: '🇪🇬', phone_code: '+20' },
+                { name: 'Afrique du Sud', code: 'ZA', flag: '🇿🇦', phone_code: '+27' }
+            ];
+        }
+        
+        function loadAfricanCountries() {
+            africanCountries = getFallbackAfricanCountries();
+            console.log(`${africanCountries.length} pays africains chargés`);
+            return africanCountries;
+        }
+        
+        function displayCountries(countries, query = '') {
+            const resultsContainer = document.getElementById('paysResults');
+            const dropdown = document.getElementById('paysDropdown');
+            
+            if (!resultsContainer || !dropdown) return;
+            
+            resultsContainer.innerHTML = '';
+            
+            if (countries.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="px-4 py-3 text-sm text-gray-500">
+                        Aucun pays trouvé "${query}"
+                    </div>
+                `;
+                dropdown.classList.remove('hidden');
+                return;
+            }
+            
+            countries.forEach(country => {
+                const div = document.createElement('div');
+                div.className = 'country-item px-4 py-3 cursor-pointer hover:bg-yellow-50 dark:hover:bg-gray-700 flex items-center gap-3';
+                div.innerHTML = `
+                    <span class="text-lg">${country.flag}</span>
+                    <div>
+                        <div class="font-medium">${country.name}</div>
+                        <div class="text-xs text-gray-500">${country.phone_code}</div>
+                    </div>
+                `;
+                
+                div.addEventListener('click', () => {
+                    selectCountry(country);
+                });
+                
+                resultsContainer.appendChild(div);
+            });
+            
+            dropdown.classList.remove('hidden');
+        }
+        
+        function selectCountry(country) {
+            selectedCountry = country;
+            
+            const paysInput = document.getElementById('paysInput');
+            const paysSelected = document.getElementById('paysSelected');
+            const countryCode = document.getElementById('countryCode');
+            const dropdown = document.getElementById('paysDropdown');
+            
+            if (paysInput) paysInput.value = `${country.flag} ${country.name}`;
+            if (paysSelected) paysSelected.value = country.name;
+            if (countryCode) countryCode.value = country.phone_code;
+            if (dropdown) dropdown.classList.add('hidden');
+            
+            // Enlever l'erreur du champ pays
+            paysInput.classList.remove('border-red-500');
+            const errorElement = paysInput.parentElement.querySelector('.error-message');
+            if (errorElement) errorElement.classList.add('hidden');
+        }
+        
+        function setupCountrySearch() {
+            const paysInput = document.getElementById('paysInput');
+            const dropdown = document.getElementById('paysDropdown');
+            
+            if (!paysInput || !dropdown) return;
+            
+            loadAfricanCountries();
+            
+            paysInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                
+                if (query.length === 0) {
+                    displayCountries(africanCountries);
+                    return;
+                }
+                
+                const filteredCountries = africanCountries.filter(country => 
+                    country.name.toLowerCase().includes(query) || 
+                    country.code.toLowerCase().includes(query)
+                );
+                
+                displayCountries(filteredCountries, query);
+            });
+            
+            document.addEventListener('click', function(event) {
+                if (!paysInput.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+            
+            paysInput.addEventListener('click', function() {
+                if (this.value.trim() === '') {
+                    displayCountries(africanCountries);
+                }
+            });
+        }
+        
+        // ==================== GESTION DES ÉTUDES ====================
+        function setupEducationFields() {
+            const typeEtudeSelect = document.getElementById('typeEtude');
+            const niveauEtudeSelect = document.getElementById('niveauEtude');
+            
+            if (!typeEtudeSelect || !niveauEtudeSelect) return;
+            
+            const niveauxOptions = {
+                universitaire: [
+                    { value: 'l1', label: 'Licence 1 (L1)' },
+                    { value: 'l2', label: 'Licence 2 (L2)' },
+                    { value: 'l3', label: 'Licence 3 (L3)' },
+                    { value: 'm1', label: 'Master 1 (M1)' },
+                    { value: 'm2', label: 'Master 2 (M2)' },
+                    { value: 'doctorat', label: 'Doctorat' },
+                    { value: 'ingenieur', label: 'Cycle ingénieur' }
+                ],
+                secondaire: [
+                    { value: 'seconde', label: 'Seconde' },
+                    { value: 'premiere', label: 'Première' },
+                    { value: 'terminale', label: 'Terminale' },
+                    { value: 'bac', label: 'Baccalauréat' }
+                ],
+                autre: [
+                    { value: 'formation_pro', label: 'Formation professionnelle' },
+                    { value: 'autodidacte', label: 'Autodidacte' },
+                    { value: 'autre_diplome', label: 'Autre diplôme' }
+                ]
+            };
+        
+            typeEtudeSelect.addEventListener('change', function() {
+                const selectedType = this.value;
+                updateNiveauOptions(selectedType, niveauEtudeSelect, niveauxOptions);
+            });
+            
+            updateNiveauOptions(typeEtudeSelect.value, niveauEtudeSelect, niveauxOptions);
+        }
+        
+        function updateNiveauOptions(selectedType, niveauSelect, niveauxOptions) {
+            const currentValue = niveauSelect.value;
+            
+            niveauSelect.innerHTML = '<option value="">Sélectionnez un niveau</option>';
+            
+            if (selectedType && niveauxOptions[selectedType]) {
+                niveauxOptions[selectedType].forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.label;
+                    niveauSelect.appendChild(opt);
+                });
+                
+                if (currentValue) {
+                    const optionExists = Array.from(niveauSelect.options).some(opt => opt.value === currentValue);
+                    if (optionExists) {
+                        niveauSelect.value = currentValue;
+                    }
+                }
+            }
+        }
+        
+        // ==================== TOGGLE VISIBILITÉ MOT DE PASSE ====================
+        function setupPasswordToggles() {
+            document.querySelectorAll('.eye-toggle').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('input');
+                    if (!input) return;
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.classList.replace('fa-eye', 'fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        this.classList.replace('fa-eye-slash', 'fa-eye');
+                    }
+                });
+            });
+        }
+        
+        // ==================== SOUMISSION À FIREBASE ====================
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            resetFormErrors();
+            
+            const errors = validateStep2();
+            
+            if (errors.length > 0) {
+                displayFormErrors(errors);
+                showNotification('Veuillez corriger les erreurs dans le formulaire', 'error');
+                return;
+            }
+            
+            // Vérification finale de l'email
+            const email = document.getElementById('email').value;
+            const cachedResult = emailVerificationCache[email];
+            if (cachedResult && (!cachedResult.deliverable || cachedResult.disposable)) {
+                showNotification(cachedResult.disposable ? 'Les emails temporaires ne sont pas autorisés' : 'Email non livrable', 'error');
+                return;
+            }
+            
+            if (!db || !auth) {
+                showNotification('Erreur de connexion à la base de données. Veuillez rafraîchir la page.', 'error');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            
+            if (submitBtn && btnText && btnLoader) {
+                submitBtn.disabled = true;
+                btnText.classList.add('hidden');
+                btnLoader.classList.remove('hidden');
+            }
+            
+            try {
+                const formData = {
+                    nom: document.getElementById('nom').value.trim(),
+                    prenom: document.getElementById('prenom').value.trim(),
+                    sexe: document.querySelector('input[name="sexe"]:checked').value,
+                    langue: document.getElementById('langue').value,
+                    email: email,
+                    typeEtude: document.getElementById('typeEtude').value,
+                    niveauEtude: document.getElementById('niveauEtude').value,
+                    pays: selectedCountry?.name || '',
+                    paysCode: selectedCountry?.code || '',
+                    telephone: document.getElementById('countryCode').value + document.getElementById('telephone').value.replace(/\D/g, '')
+                };
+                
+                const password = document.getElementById('password').value;
+                
+                console.log("Données étudiant à envoyer:", formData);
+                
+                // 1. Créer l'utilisateur dans Firebase Authentication
+                const userCredential = await auth.createUserWithEmailAndPassword(formData.email, password);
+                const user = userCredential.user;
+                
+                // 2. Mettre à jour le profil
+                await user.updateProfile({
+                    displayName: `${formData.prenom} ${formData.nom}`
+                });
+                
+                // 3. Envoyer un email de vérification
+                await user.sendEmailVerification();
+                
+                // 4. Préparer les données pour Firestore
+                const studentData = {
+                    uid: user.uid,
+                    email: formData.email,
+                    nom: formData.nom,
+                    prenom: formData.prenom,
+                    nomComplet: `${formData.prenom} ${formData.nom}`,
+                    sexe: formData.sexe,
+                    langue: formData.langue,
+                    typeEtude: formData.typeEtude,
+                    niveauEtude: formData.niveauEtude,
+                    pays: formData.pays,
+                    paysCode: formData.paysCode,
+                    telephone: formData.telephone,
+                    role: 'etudiant',
+                    statut: 'actif',
+                    emailVerified: false,
+                    emailVerificationSent: true,
+                    dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
+                    dateCreation: new Date().toISOString(),
+                    photoURL: '',
+                    bio: '',
+                    preferences: {
+                        notifications: true,
+                        emails: true,
+                        visibilite: 'public'
+                    },
+                    statistiques: {
+                        coursSuivis: 0,
+                        heuresEtude: 0,
+                        examensPasses: 0
+                    }
+                };
+                
+                // 5. Ajouter à la collection "etudiants"
+                const docRef = await db.collection("etudiants").add(studentData);
+                console.log("Étudiant ajouté avec ID:", docRef.id);
+                
+                // 6. Créer un document dans "users"
+                const userGeneralData = {
+                    uid: user.uid,
+                    email: formData.email,
+                    nom: formData.nom,
+                    prenom: formData.prenom,
+                    role: 'etudiant',
+                    dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
+                    derniereConnexion: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection("users").add(userGeneralData);
+                
+                // Succès
+                showNotification('Inscription réussie ! Un email de vérification a été envoyé. Redirection vers la connexion...', 'success');
+                
+                // Réinitialiser le formulaire
+                resetForm();
+                
+                // Rediriger après 5 secondes
+                setTimeout(() => {
+                    window.location.href = '../templates/Connexion.html?newStudent=true&emailVerificationSent=true';
+                }, 5000);
+                
+            } catch (error) {
+                console.error("Erreur lors de l'inscription:", error);
+                
+                let errorMessage = "Une erreur est survenue lors de l'inscription.";
+                
+                switch(error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = "Cet email est déjà utilisé. Essayez de vous connecter.";
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = "L'adresse email n'est pas valide.";
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = "Le mot de passe est trop faible. Utilisez au moins 6 caractères.";
+                        break;
+                    case 'auth/operation-not-allowed':
+                        errorMessage = "L'inscription par email/mot de passe n'est pas activée.";
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = "Problème de connexion internet. Veuillez réessayer.";
+                        break;
+                    case 'permission-denied':
+                        errorMessage = "Permission refusée. Contactez l'administrateur.";
+                        break;
+                }
+                
+                showNotification(errorMessage, 'error');
+                
+            } finally {
+                if (submitBtn && btnText && btnLoader) {
+                    submitBtn.disabled = false;
+                    btnText.classList.remove('hidden');
+                    btnLoader.classList.add('hidden');
+                }
+            }
+        }
+        
+        function resetForm() {
+            document.querySelectorAll('form').forEach(form => form.reset());
+            selectedCountry = null;
+            
+            const paysInput = document.getElementById('paysInput');
+            const paysSelected = document.getElementById('paysSelected');
+            const countryCode = document.getElementById('countryCode');
+            if (paysInput) paysInput.value = '';
+            if (paysSelected) paysSelected.value = '';
+            if (countryCode) countryCode.value = '';
+            
+            // Réinitialiser la force du mot de passe
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrengthText');
+            const strengthScore = document.getElementById('passwordScore');
+            if (strengthBar) strengthBar.style.width = '0%';
+            if (strengthText) strengthText.textContent = 'Force du mot de passe';
+            if (strengthScore) strengthScore.textContent = '';
+            
+            // Réinitialiser les exigences
+            document.querySelectorAll('.requirement-icon').forEach(icon => {
+                icon.classList.replace('fa-check-circle', 'fa-times-circle');
+                icon.classList.replace('requirement-met', 'requirement-not-met');
+            });
+            
+            // Réinitialiser les messages
+            const matchMessage = document.getElementById('passwordMatchMessage');
+            if (matchMessage) matchMessage.innerHTML = '';
+            
+            // Retourner à l'étape 1
+            goToStep(1);
+        }
+        
+        // ==================== INITIALISATION ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Page d'inscription étudiant chargée, initialisation...");
+            
+            // Bouton suivant
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => goToStep(2));
+            }
+            
+            // Bouton retour
+            const backBtn = document.getElementById('backBtn');
+            if (backBtn) {
+                backBtn.addEventListener('click', () => goToStep(1));
+            }
+            
+            // Soumission du formulaire
+            const formStep2 = document.getElementById('registrationFormStep2');
+            if (formStep2) {
+                formStep2.addEventListener('submit', handleFormSubmit);
+            }
+            
+            // Validation des mots de passe
+            const passwordInput = document.getElementById('password');
+            if (passwordInput) {
+                passwordInput.addEventListener('input', checkPasswordStrength);
+            }
+            
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            if (confirmPasswordInput) {
+                confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+            }
+            
+            // Vérification email avec debounce
+            const emailInput = document.getElementById('email');
+            if (emailInput) {
+                emailInput.addEventListener('blur', () => handleEmailValidation());
+                emailInput.addEventListener('input', debounce(() => {
+                    const email = emailInput.value.trim();
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    
+                    if (email && emailRegex.test(email)) {
+                        handleEmailValidation();
+                    }
+                }, 1000));
+            }
+            
+            // Configurer la recherche de pays
+            setupCountrySearch();
+            
+            // Configurer les champs d'étude
+            setupEducationFields();
+            
+            // Configurer les toggles de mot de passe
+            setupPasswordToggles();
+            
+            console.log("Initialisation terminée");
+        });
+        </script>
 </body>
 </html>
