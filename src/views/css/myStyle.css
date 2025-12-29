@@ -189,3 +189,79 @@
             right: 0;
             background: linear-gradient(to left, #f4f6f8 0%, rgba(255, 255, 255, 0) 100%);
         }
+
+        /* myStyle.css */
+.page-transition {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.active-menu {
+    background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+    color: white !important;
+}
+
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: translateY(-4px);
+}
+
+.line {
+    height: 4px;
+    border-radius: 2px;
+    width: 100%;
+}
+
+.gradient-bg {
+    background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+}
+
+.gradient-blue {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+}
+
+.gradient-orange {
+    background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+}
+
+.gradient-yellow {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+}
+
+.glass-effect {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.pulse-dot {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

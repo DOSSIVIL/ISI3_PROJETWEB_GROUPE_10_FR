@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mes Étudiants - EduConnect Africa</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#059669", // Emerald 600
+                        "primary-hover": "#047857", // Emerald 700
+                        "primary-light": "#d1fae5", // Emerald 100
+                        "background": "#f8fafc", // Slate 50
+                        "surface": "#ffffff",
+                        "border-subtle": "#e2e8f0", // Slate 200
+                        "text-main": "#0f172a", // Slate 900
+                        "text-muted": "#64748b", // Slate 500
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display bg-background text-text-main overflow-x-hidden min-h-screen flex flex-col">
+<div class="flex flex-1 overflow-hidden">
+<main class="flex-1 overflow-y-auto bg-background p-4 md:p-8 lg:p-12">
+<div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+<div class="flex items-center gap-2 text-sm">
+<a class="text-text-muted hover:text-primary transition-colors font-medium" href="#">Tableau de bord</a>
+<span class="material-symbols-outlined text-text-muted text-[16px]">chevron_right</span>
+<span class="text-text-main font-semibold">Mes Étudiants</span>
+</div>
+<div class="flex flex-wrap justify-between items-end gap-4">
+<div class="flex flex-col gap-2">
+<h1 class="text-text-main text-4xl font-black leading-tight tracking-[-0.033em]">Mes Étudiants</h1>
+<p class="text-text-muted text-base font-normal max-w-xl">
+                            Gérez votre liste d'étudiants, suivez leurs progrès académiques et planifiez vos prochaines sessions de tutorat.
+                        </p>
+</div>
+<button class="flex items-center justify-center gap-2 rounded-full h-12 px-6 bg-primary hover:bg-primary-hover text-white text-sm font-bold tracking-[0.015em] transition-all transform hover:scale-105 shadow-lg shadow-emerald-100">
+<span class="material-symbols-outlined text-lg">add</span>
+<span>Ajouter un étudiant</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="flex flex-col gap-1 rounded-xl p-6 bg-surface border border-border-subtle shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-2 mb-2">
+<div class="p-1.5 rounded-lg bg-emerald-50 text-primary">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+</div>
+<p class="text-text-muted text-xs font-bold uppercase tracking-wider">Total Étudiants</p>
+</div>
+<p class="text-text-main text-3xl font-bold">24</p>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-6 bg-surface border border-border-subtle shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-2 mb-2">
+<div class="p-1.5 rounded-lg bg-emerald-50 text-primary">
+<span class="material-symbols-outlined text-[20px]">event_available</span>
+</div>
+<p class="text-text-muted text-xs font-bold uppercase tracking-wider">Sessions Actives</p>
+</div>
+<p class="text-text-main text-3xl font-bold">5</p>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-6 bg-surface border border-border-subtle shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-2 mb-2">
+<div class="p-1.5 rounded-lg bg-emerald-50 text-primary">
+<span class="material-symbols-outlined text-[20px]">trending_up</span>
+</div>
+<p class="text-text-muted text-xs font-bold uppercase tracking-wider">Moyenne Globale</p>
+</div>
+<p class="text-text-main text-3xl font-bold">14.5<span class="text-lg text-text-muted font-normal">/20</span></p>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row gap-4 justify-between items-center bg-surface p-2 rounded-xl border border-border-subtle shadow-sm">
+<div class="relative w-full lg:w-96">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-muted">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-3 rounded-full bg-background border-transparent hover:border-border-subtle focus:bg-surface focus:border-primary focus:ring-1 focus:ring-primary text-text-main placeholder-text-muted sm:text-sm transition-all shadow-sm" placeholder="Rechercher par nom ou classe..." type="text"/>
+</div>
+<div class="flex gap-2 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
+<select class="rounded-full bg-background border-transparent hover:border-border-subtle text-text-main text-sm py-2.5 px-4 focus:ring-primary focus:border-primary cursor-pointer min-w-[140px] transition-colors shadow-sm">
+<option value="">Toutes les matières</option>
+<option value="maths">Mathématiques</option>
+<option value="physique">Physique-Chimie</option>
+<option value="svt">SVT</option>
+</select>
+<select class="rounded-full bg-background border-transparent hover:border-border-subtle text-text-main text-sm py-2.5 px-4 focus:ring-primary focus:border-primary cursor-pointer min-w-[130px] transition-colors shadow-sm">
+<option value="">Niveau</option>
+<option value="seconde">Seconde</option>
+<option value="premiere">Première</option>
+<option value="terminale">Terminale</option>
+</select>
+<div class="h-10 w-px bg-border-subtle mx-2 hidden lg:block"></div>
+<button aria-label="List View" class="flex items-center justify-center size-10 rounded-full bg-primary text-white hover:bg-primary-hover transition-colors shadow-sm">
+<span class="material-symbols-outlined">view_list</span>
+</button>
+<button aria-label="Grid View" class="flex items-center justify-center size-10 rounded-full bg-background text-text-muted hover:text-primary border border-transparent hover:border-border-subtle transition-colors shadow-sm">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="group flex flex-col md:flex-row items-start md:items-center gap-4 p-5 rounded-2xl bg-surface border border-border-subtle hover:border-primary/50 hover:shadow-md transition-all duration-300">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-14 border border-border-subtle group-hover:border-primary transition-colors shadow-sm" data-alt="Student portrait Aissatou" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDKN2FDLs-EePPSaMW09_Fz9lctbShKPGHi70Tjyd2ImGT9ylW9UQAEYYF--LE2H82PSm_nRkD_9G_GdX0TDQNRCQsr2ubEBR12TjNsuMUTDZ1itxo1wMUyB8qnR4acELtfXkEU-lJ2j44IubAAvTkqKKkBC1-FcISvWqkmpBb4UHZjOSlqJyTUxXMblOZpocR_x5LQyoAf3Ri4ISNGWiNSZhNmKRvo-tRKRjVx3rM5Z0ie1fMFV6La-xhRJ61H8bagGKEKOGLTRjIJ");'></div>
+<div class="absolute bottom-0 right-0 size-3.5 bg-green-500 border-2 border-surface rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="text-text-main text-lg font-bold truncate">Aïssatou Ndiaye</h3>
+<span class="hidden sm:inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-green-100 text-green-700 uppercase tracking-wide border border-green-200">Terminale S2</span>
+</div>
+<div class="flex flex-wrap gap-2 text-sm text-text-muted">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-primary">book</span> Maths, Physique</span>
+<span class="hidden sm:inline text-border-subtle">•</span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-text-muted">history</span> Il y a 2j</span>
+</div>
+</div>
+<div class="hidden lg:flex items-center gap-8 px-6 border-l border-border-subtle">
+<div class="flex flex-col items-center gap-1 w-24">
+<span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Sessions</span>
+<span class="text-text-main font-bold">12 / 20</span>
+<div class="w-full h-1.5 bg-background rounded-full overflow-hidden mt-1 ring-1 ring-black/5">
+<div class="h-full bg-primary w-[60%] rounded-full"></div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Moyenne</span>
+<span class="text-text-main font-bold text-lg">16.5</span>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 justify-end">
+<button class="p-2.5 rounded-full text-text-muted hover:text-primary hover:bg-primary-light/50 transition-colors" title="Historique">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-border-subtle text-text-main text-sm font-semibold hover:bg-primary hover:text-white hover:border-primary transition-colors shadow-sm">
+<span>Voir le profil</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="group flex flex-col md:flex-row items-start md:items-center gap-4 p-5 rounded-2xl bg-surface border border-border-subtle hover:border-primary/50 hover:shadow-md transition-all duration-300">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-14 border border-border-subtle group-hover:border-primary transition-colors shadow-sm" data-alt="Student portrait Moussa" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCoe59L2toXqeugXo8xa7OoDhuOAPBWJ651R8FqMo_Spfbq5QvZkGkAiCngq77S7Ol3ziFncuGtaqvoe5K6-gB05e0rSB_vNJUep4V6RMCmnh_oz2wQ_2yW_mKrIc-V4Ws_pKezvhFlMU86Hkzc2fp7YotkdI-kUuLzKXp7Cax1rHxmiQvANLxM-SM9U2sCeF3hWBGaKyI9mQE-5VGSCqJ4KkpBapMg1ZfbwZEHPueuQfbu8pOj9jC-y2qTb1Iet9mnw1tjPjPa9IT1");'></div>
+<div class="absolute bottom-0 right-0 size-3.5 bg-green-500 border-2 border-surface rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="text-text-main text-lg font-bold truncate">Moussa Koné</h3>
+<span class="hidden sm:inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-green-100 text-green-700 uppercase tracking-wide border border-green-200">Première L</span>
+</div>
+<div class="flex flex-wrap gap-2 text-sm text-text-muted">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-primary">book</span> Français, Philo</span>
+<span class="hidden sm:inline text-border-subtle">•</span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-text-muted">history</span> Il y a 5h</span>
+</div>
+</div>
+<div class="hidden lg:flex items-center gap-8 px-6 border-l border-border-subtle">
+<div class="flex flex-col items-center gap-1 w-24">
+<span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Sessions</span>
+<span class="text-text-main font-bold">8 / 15</span>
+<div class="w-full h-1.5 bg-background rounded-full overflow-hidden mt-1 ring-1 ring-black/5">
+<div class="h-full bg-primary w-[53%] rounded-full"></div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Moyenne</span>
+<span class="text-text-main font-bold text-lg">14.0</span>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 justify-end">
+<button class="p-2.5 rounded-full text-text-muted hover:text-primary hover:bg-primary-light/50 transition-colors" title="Historique">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-border-subtle text-text-main text-sm font-semibold hover:bg-primary hover:text-white hover:border-primary transition-colors shadow-sm">
+<span>Voir le profil</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="group flex flex-col md:flex-row items-start md:items-center gap-4 p-5 rounded-2xl bg-surface border border-border-subtle hover:border-primary/50 hover:shadow-md transition-all duration-300">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-14 border border-border-subtle group-hover:border-primary transition-colors shadow-sm" data-alt="Student portrait Fatou" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDsyiSk9YFz3fIprYwd332I_vyG_DG7L1qXBkTOt_aZT9gYesMd7ZsXR4cnxOsAaZX6P2lCR4R2QD2yEuqzI7TKbTDFnMYQVV-sJShRskqbZrWPhqQPtos9rLtvVYH66yrd9ytuPzFeUbvN2IO1lzWQJqqwCYpIrDNRr6TPZ90dhJx2pZYOi2mTGc48xtXKTYSYP72mXTMNVM4539NfIGv3BXK8tAULmKm424TicskNWW9fqcwGbi0yOf_PSXwpaa7L2om9bxuiTwaW");'></div>
+<div class="absolute bottom-0 right-0 size-3.5 bg-yellow-400 border-2 border-surface rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="text-text-main text-lg font-bold truncate">Fatou Cissé</h3>
+<span class="hidden sm:inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-yellow-100 text-yellow-700 uppercase tracking-wide border border-yellow-200">Seconde S</span>
+</div>
+<div class="flex flex-wrap gap-2 text-sm text-text-muted">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-primary">book</span> Maths, SVT</span>
+<span class="hidden sm:inline text-border-subtle">•</span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-text-muted">history</span> Il y a 1 sem</span>
+</div>
+</div>
+<div class="hidden lg:flex items-center gap-8 px-6 border-l border-border-subtle">
+<div class="flex flex-col items-center gap-1 w-24">
+<span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Sessions</span>
+<span class="text-text-main font-bold">2 / 10</span>
+<div class="w-full h-1.5 bg-background rounded-full overflow-hidden mt-1 ring-1 ring-black/5">
+<div class="h-full bg-yellow-400 w-[20%] rounded-full"></div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Moyenne</span>
+<span class="text-text-main font-bold text-lg">11.5</span>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 justify-end">
+<button class="p-2.5 rounded-full text-text-muted hover:text-primary hover:bg-primary-light/50 transition-colors" title="Historique">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-border-subtle text-text-main text-sm font-semibold hover:bg-primary hover:text-white hover:border-primary transition-colors shadow-sm">
+<span>Voir le profil</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="group flex flex-col md:flex-row items-start md:items-center gap-4 p-5 rounded-2xl bg-surface border border-border-subtle hover:border-primary/50 hover:shadow-md transition-all duration-300">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-14 border border-border-subtle group-hover:border-primary transition-colors shadow-sm" data-alt="Student portrait Jean" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzXccshh3l3Uu1RaTtOcsuF4hG9H7BgYFBgekI6Fbpm08d0BvEZPGEtkeGRtP7u0du0Gw-sVUzIT-LW0wopxDOuUtCG6hGaNozi8xIOl5ez9S3B02WFL56Es6CvESFr-xC8KKzUzmQzH1ZSN0nlg4zjaMrzqVvqsQSWKahrlNcJErZ3LfIzXwDwTxe7pUi6oE-i3Sn8MGhD2tXNJmOB_gpfPMQeofQRz3kRnU1YUGJrbj3D90nE3_iOsqIV3tpdaHguNz_SBV7uz8r");'></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="text-text-main text-lg font-bold truncate">Jean Baptiste</h3>
+<span class="hidden sm:inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-green-100 text-green-700 uppercase tracking-wide border border-green-200">Terminale S1</span>
+</div>
+<div class="flex flex-wrap gap-2 text-sm text-text-muted">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-primary">book</span> Physique, Info</span>
+<span class="hidden sm:inline text-border-subtle">•</span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-text-muted">history</span> Il y a 3j</span>
+</div>
+</div>
+<div class="hidden lg:flex items-center gap-8 px-6 border-l border-border-subtle">
+<div class="flex flex-col items-center gap-1 w-24">
+<span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Sessions</span>
+<span class="text-text-main font-bold">15 / 20</span>
+<div class="w-full h-1.5 bg-background rounded-full overflow-hidden mt-1 ring-1 ring-black/5">
+<div class="h-full bg-primary w-[75%] rounded-full"></div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-[10px] text-text-muted font-bold uppercase tracking-wider">Moyenne</span>
+<span class="text-text-main font-bold text-lg">15.8</span>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 justify-end">
+<button class="p-2.5 rounded-full text-text-muted hover:text-primary hover:bg-primary-light/50 transition-colors" title="Historique">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-border-subtle text-text-main text-sm font-semibold hover:bg-primary hover:text-white hover:border-primary transition-colors shadow-sm">
+<span>Voir le profil</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex justify-center mt-6">
+<nav class="flex items-center gap-2">
+<button class="size-10 flex items-center justify-center rounded-full bg-surface text-text-muted hover:text-text-main border border-border-subtle disabled:opacity-50 transition-colors shadow-sm">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded-full bg-primary text-white font-bold shadow-md shadow-emerald-200">1</button>
+<button class="size-10 flex items-center justify-center rounded-full bg-surface text-text-muted hover:text-primary border border-border-subtle hover:bg-background transition-colors shadow-sm">2</button>
+<button class="size-10 flex items-center justify-center rounded-full bg-surface text-text-muted hover:text-primary border border-border-subtle hover:bg-background transition-colors shadow-sm">3</button>
+<button class="size-10 flex items-center justify-center rounded-full bg-surface text-text-muted hover:text-text-main border border-border-subtle hover:bg-background transition-colors shadow-sm">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</nav>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>
