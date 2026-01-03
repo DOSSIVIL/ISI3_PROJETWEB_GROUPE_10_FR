@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",
+    "@huggingface/inference": "^4.13.5",
     "@tailwindcss/vite": "^4.1.17",
     "dotenv": "^17.2.3",
     "firebase": "^12.7.0",
