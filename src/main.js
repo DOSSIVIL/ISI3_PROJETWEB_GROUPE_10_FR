@@ -1,17 +1,13 @@
-import { loadHeader, loadFooter, loadPage } from "./app.js";
+import { loadPage } from "./app.js";
 
 async function init() {
     try {
-        // Charger le header et le footer
-        await loadHeader();
-        await loadFooter();
-        
         // Déterminer la page initiale à charger
         // Soit depuis l'URL, soit la page par défaut
         const path = window.location.pathname.substring(1); // Enlever le "/"
         const initialPage = path || "home";
         
-        // Charger la page initiale
+        // Charger la page initiale (qui chargera elle-même header et footer)
         await loadPage(initialPage);
         
         console.log("Application initialisée avec succès !");
@@ -22,6 +18,7 @@ async function init() {
             <div style="padding: 2rem; text-align: center;">
                 <h2>Erreur de chargement</h2>
                 <p>Impossible de charger l'application.</p>
+                <button onclick="window.location.reload()">Réessayer</button>
             </div>
         `;
     }

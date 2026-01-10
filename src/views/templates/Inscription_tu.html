@@ -12,6 +12,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -453,7 +455,23 @@
 
         <!-- Section Formulaire Responsive -->
         <div class="w-full lg:w-1/2 form-section px-4 sm:px-6 lg:px-8">
-            <div class="form-container max-w-2xl mx-auto">
+            <div class="form-container max-w-2xl mx-auto relative">
+                <!-- Icône Home (mobile seulement) -->
+                <div class="absolute -top-4 -left-4 lg:hidden">
+                    <a href="/" 
+                    class="home-icon-mobile group relative flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-50 to-gray-50 hover:from-blue-100 hover:to-gray-100 rounded-full transition-all duration-300 shadow-md hover:shadow-lg border border-gray-200"
+                    aria-label="Retour à l'accueil">
+                        <i class="fas fa-home text-blue-600 group-hover:text-blue-700 text-lg"></i>
+                        
+                        <!-- Tooltip (message au survol) -->
+                        <div class="home-tooltip absolute left-full top-1/2 ml-3 transform -translate-y-1/2 bg-gray-900 text-white text-xs font-medium py-2 px-3 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 whitespace-nowrap z-50 shadow-xl">
+                            Retour à l'accueil
+                            <!-- Pointe de la tooltip -->
+                            <div class="absolute -left-1 top-1/2 transform -translate-y-1/2 w-0 h-0 border-t-2 border-b-2 border-r-2 border-t-transparent border-b-transparent border-r-gray-900"></div>
+                        </div>
+                    </a>
+                </div>
+
                 <!-- Logo et titre -->
                 <div class="text-center mb-6 sm:mb-8">
                     <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-3">
@@ -477,7 +495,7 @@
                             <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
                                 <i class="fas fa-user label-icon"></i>Nom
                             </label>
-                            <input type="text" id="nom" name="nom" required
+                            <input type="text" id="name" name="nom" required
                                 class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white text-sm sm:text-base"
                                 placeholder="Votre nom">
                             <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
@@ -686,8 +704,7 @@
     </div>
 
     <script>
-        // ==================== INITIALISATION FIREBASE ====================
-        // Configuration Firebase
+        // ==================== CONFIGURATION FIREBASE ====================
         const firebaseConfig = {
             apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
             authDomain: "achitectureweb-groupe-10.firebaseapp.com",
@@ -696,17 +713,12 @@
             messagingSenderId: "646899550480",
             appId: "1:646899550480:web:687fd4f4b2e0ca646efd95"
         };
-        
-        // Initialiser Firebase
-        let app, db, auth;
-        try {
-            app = firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            auth = firebase.auth();
-            console.log("Firebase initialisé avec succès");
-        } catch (error) {
-            console.error("Erreur d'initialisation Firebase:", error);
-        }
+    
+        // Variables globales pour Firebase
+        let firebaseApp = null;
+        let firebaseAuth = null;
+        let firebaseDb = null;
+        let firebaseInitialized = false;
         
         // ==================== VARIABLES GLOBALES ====================
         let selectedMatieres = [];
@@ -714,7 +726,6 @@
         
         // ==================== FONCTIONS UTILITAIRES ====================
         function showNotification(message, type = 'info') {
-            // Supprimer les notifications existantes
             const existingNotifications = document.querySelectorAll('.notification');
             existingNotifications.forEach(notification => notification.remove());
             
@@ -740,7 +751,6 @@
             
             document.body.appendChild(notification);
             
-            // Supprimer automatiquement après 5 secondes
             setTimeout(() => {
                 if (notification.parentElement) {
                     notification.classList.add('animate__fadeOutRight');
@@ -750,19 +760,16 @@
         }
         
         function resetFormErrors() {
-            // Réinitialiser les messages d'erreur
             document.querySelectorAll('.error-message').forEach(el => {
                 el.classList.add('hidden');
                 el.textContent = '';
             });
             
-            // Réinitialiser les styles des champs
             document.querySelectorAll('.input-field').forEach(field => {
                 field.classList.remove('border-red-500', 'error-shake');
                 field.classList.add('border-gray-300');
             });
             
-            // Réinitialiser le message de succès email
             const successMsg = document.querySelector('.success-message');
             if (successMsg) successMsg.classList.add('hidden');
         }
@@ -770,9 +777,8 @@
         function validateForm() {
             const errors = [];
             
-            // Validation des champs requis
             const requiredFields = [
-                { id: 'nom', name: 'Nom' },
+                { id: 'name', name: 'Nom' },
                 { id: 'prenom', name: 'Prénom' },
                 { id: 'email', name: 'Email' },
                 { id: 'password', name: 'Mot de passe' },
@@ -789,7 +795,6 @@
                 }
             });
             
-            // Validation du sexe
             const sexeSelected = document.querySelector('input[name="sexe"]:checked');
             if (!sexeSelected) {
                 errors.push({
@@ -798,7 +803,6 @@
                 });
             }
             
-            // Validation du diplôme
             const diplome = document.getElementById('diplome');
             if (diplome && !diplome.value) {
                 errors.push({
@@ -807,7 +811,6 @@
                 });
             }
             
-            // Validation de la langue
             const langue = document.getElementById('langue');
             if (langue && !langue.value) {
                 errors.push({
@@ -816,7 +819,6 @@
                 });
             }
             
-            // Validation des matières
             if (selectedMatieres.length === 0) {
                 errors.push({
                     field: 'matieres',
@@ -824,7 +826,6 @@
                 });
             }
             
-            // Validation de l'email format
             const email = document.getElementById('email');
             if (email && email.value) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -836,7 +837,6 @@
                 }
             }
             
-            // Validation du mot de passe
             const password = document.getElementById('password');
             if (password && password.value.length < 6) {
                 errors.push({
@@ -845,7 +845,6 @@
                 });
             }
             
-            // Validation de la confirmation du mot de passe
             const confirmPassword = document.getElementById('confirmPassword');
             if (password && confirmPassword && password.value !== confirmPassword.value) {
                 errors.push({
@@ -854,54 +853,60 @@
                 });
             }
             
+            // Validation pour name et prenom (au moins 2 caractères)
+            const name = document.getElementById('name');
+            const prenom = document.getElementById('prenom');
+    
+            if (name && name.value.trim().length < 2) {
+                errors.push({
+                    field: 'name',
+                    message: 'Le nom doit contenir au moins 2 caractères'
+                });
+            }
+    
+            if (prenom && prenom.value.trim().length < 2) {
+                errors.push({
+                    field: 'prenom',
+                    message: 'Le prénom doit contenir au moins 2 caractères'
+                });
+            }
+            
             return errors;
         }
         
         function displayFormErrors(errors) {
             errors.forEach(error => {
-                let fieldElement;
-                let errorElement;
-                
-                // Cas spécial pour les boutons radio
                 if (error.field === 'sexe') {
                     const sexeField = document.querySelector('.form-field:has(input[name="sexe"])');
                     if (sexeField) {
-                        errorElement = sexeField.querySelector('.error-message');
+                        const errorElement = sexeField.querySelector('.error-message');
+                        errorElement.textContent = error.message;
+                        errorElement.classList.remove('hidden');
                     }
-                } 
-                // Cas spécial pour les matières
-                else if (error.field === 'matieres') {
+                } else if (error.field === 'matieres') {
                     const matieresContainer = document.getElementById('selectedMatieresContainer');
                     const matiereError = document.querySelector('#matieres').nextElementSibling;
                     
                     if (matiereError) {
-                        errorElement = matiereError;
-                        errorElement.textContent = error.message;
-                        errorElement.classList.remove('hidden');
+                        matiereError.textContent = error.message;
+                        matiereError.classList.remove('hidden');
                     }
                     
                     if (matieresContainer) {
                         matieresContainer.classList.add('error-shake', 'border-red-500');
                         setTimeout(() => matieresContainer.classList.remove('error-shake'), 400);
                     }
-                    return;
-                }
-                // Pour les autres champs
-                else {
-                    fieldElement = document.getElementById(error.field);
+                } else {
+                    const fieldElement = document.getElementById(error.field);
                     if (fieldElement) {
-                        errorElement = fieldElement.parentElement.querySelector('.error-message');
+                        const errorElement = fieldElement.parentElement.querySelector('.error-message');
+                        if (errorElement) {
+                            errorElement.textContent = error.message;
+                            errorElement.classList.remove('hidden');
+                        }
+                        fieldElement.classList.add('error-shake', 'border-red-500');
+                        setTimeout(() => fieldElement.classList.remove('error-shake'), 400);
                     }
-                }
-                
-                if (errorElement) {
-                    errorElement.textContent = error.message;
-                    errorElement.classList.remove('hidden');
-                }
-                
-                if (fieldElement) {
-                    fieldElement.classList.add('error-shake', 'border-red-500');
-                    setTimeout(() => fieldElement.classList.remove('error-shake'), 400);
                 }
             });
         }
@@ -917,11 +922,9 @@
             placeholder.style.display = selectedMatieres.length > 0 ? 'none' : 'block';
             input.value = selectedMatieres.join(',');
             
-            // Supprimer les anciens tags
             const oldTags = container.querySelectorAll('.matiere-selected');
             oldTags.forEach(tag => tag.remove());
             
-            // Ajouter les nouveaux tags
             selectedMatieres.forEach((matiere, index) => {
                 const tag = document.createElement('div');
                 tag.className = 'matiere-selected';
@@ -933,7 +936,6 @@
                 `;
                 container.appendChild(tag);
                 
-                // Ajouter l'événement de suppression
                 tag.querySelector('.remove-btn').addEventListener('click', function() {
                     const matiereToRemove = this.getAttribute('data-matiere');
                     removeMatiere(matiereToRemove);
@@ -991,7 +993,6 @@
             const value = password.value;
             let strength = 0;
             
-            // Vérifier les critères
             if (value.length >= 8) {
                 strength++;
                 document.getElementById('reqLength').classList.replace('requirement-not-met', 'requirement-met');
@@ -1027,11 +1028,9 @@
                 document.getElementById('reqSpecial').classList.replace('requirement-met', 'requirement-not-met');
             }
             
-            // Mettre à jour la barre
             const percentage = (strength / 5) * 100;
             strengthBar.style.width = percentage + '%';
             
-            // Mettre à jour le texte et la couleur
             strengthBar.className = 'password-strength-bar';
             strengthText.className = '';
             
@@ -1126,14 +1125,135 @@
             });
         }
         
+        // Fonction pour nettoyer et valider le display_name
+        function cleanDisplayName(prenom, name) {
+            const displayName = `${prenom || ''} ${name || ''}`.trim();
+            
+            if (!displayName) {
+                const email = document.getElementById('email').value.trim();
+                return email.split('@')[0];
+            }
+            
+            return displayName;
+        }
+        
+        // ==================== INITIALISATION FIREBASE ====================
+        async function initFirebase() {
+            console.log('Initialisation de Firebase...');
+            
+            // Attendre que la bibliothèque Firebase soit chargée
+            if (typeof firebase === 'undefined') {
+                console.log('Bibliothèque Firebase non détectée, chargement...');
+                
+                // Créer et charger le script Firebase (version compatibilité)
+                const script = document.createElement('script');
+                script.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js';
+                script.async = true;
+                
+                return new Promise((resolve, reject) => {
+                    script.onload = async () => {
+                        console.log('Firebase App chargée');
+                        
+                        try {
+                            // Charger les services nécessaires
+                            const authScript = document.createElement('script');
+                            authScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js';
+                            authScript.async = true;
+                            
+                            const firestoreScript = document.createElement('script');
+                            firestoreScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js';
+                            firestoreScript.async = true;
+                            
+                            await Promise.all([
+                                new Promise(res => {
+                                    authScript.onload = () => {
+                                        console.log('Firebase Auth chargé');
+                                        res();
+                                    };
+                                    authScript.onerror = reject;
+                                    document.head.appendChild(authScript);
+                                }),
+                                new Promise(res => {
+                                    firestoreScript.onload = () => {
+                                        console.log('Firebase Firestore chargé');
+                                        res();
+                                    };
+                                    firestoreScript.onerror = reject;
+                                    document.head.appendChild(firestoreScript);
+                                })
+                            ]);
+                            
+                            // Initialiser Firebase
+                            firebaseApp = firebase.initializeApp(firebaseConfig);
+                            firebaseAuth = firebaseApp;
+                            firebaseDb = firebase.firestore();
+                            
+                            // Configurer la persistance de session
+                            if (firebase.auth && firebase.auth().setPersistence) {
+                                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                            }
+                            
+                            firebaseInitialized = true;
+                            console.log('Firebase initialisé avec succès');
+                            
+                            // Tester la connexion Firestore
+                            try {
+                                const db = firebase.firestore();
+                                const testDoc = await db.collection('enseignants').limit(1).get();
+                                console.log('Connexion Firestore testée avec succès');
+                            } catch (firestoreError) {
+                                console.warn('Test Firestore (peut être normal si collection vide):', firestoreError.message);
+                            }
+                            
+                            resolve();
+                        } catch (error) {
+                            console.error('Erreur lors de l\'initialisation Firebase:', error);
+                            reject(error);
+                        }
+                    };
+                    
+                    script.onerror = (error) => {
+                        console.error('Erreur de chargement du script Firebase:', error);
+                        reject(error);
+                    };
+                    
+                    document.head.appendChild(script);
+                });
+            } else {
+                // Firebase est déjà chargé
+                try {
+                    if (!firebase.apps || firebase.apps.length === 0) {
+                        firebaseApp = firebase.initializeApp(firebaseConfig);
+                    } else {
+                        firebaseApp = firebase.app();
+                    }
+                    
+                    firebaseAuth = firebaseApp;
+                    firebaseDb = firebase.firestore ? firebase.firestore() : null;
+                    
+                    // Configurer la persistance si disponible
+                    if (firebase.auth && firebase.auth().setPersistence) {
+                        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                    }
+                    
+                    firebaseInitialized = true;
+                    console.log('Firebase initialisé (déjà chargé)');
+                    
+                    return Promise.resolve();
+                    
+                } catch (error) {
+                    console.error('Erreur lors de l\'initialisation Firebase:', error);
+                    return Promise.reject(error);
+                }
+            }
+        }
+        
         // ==================== SOUMISSION DU FORMULAIRE ====================
         async function handleFormSubmit(e) {
             e.preventDefault();
             
-            // Réinitialiser les erreurs
             resetFormErrors();
             
-            // Valider le formulaire
             const errors = validateForm();
             
             if (errors.length > 0) {
@@ -1142,13 +1262,12 @@
                 return;
             }
             
-            // Vérifier que Firebase est initialisé
-            if (!db || !auth) {
-                showNotification('Erreur de connexion à la base de données. Veuillez rafraîchir la page.', 'error');
+            if (!firebaseInitialized) {
+                showNotification('Erreur: Firebase non initialisé. Vérifiez votre connexion internet.', 'error');
+                console.error('Firebase non initialisé');
                 return;
             }
             
-            // Activer l'état de chargement
             const submitBtn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
             const btnLoader = document.getElementById('btnLoader');
@@ -1160,9 +1279,8 @@
             }
             
             try {
-                // Récupérer les données du formulaire
                 const formData = {
-                    nom: document.getElementById('nom').value.trim(),
+                    name: document.getElementById('name').value.trim(),
                     prenom: document.getElementById('prenom').value.trim(),
                     sexe: document.querySelector('input[name="sexe"]:checked').value,
                     diplome: document.getElementById('diplome').value,
@@ -1174,63 +1292,63 @@
                 
                 const password = document.getElementById('password').value;
                 
-                // 1. Créer l'utilisateur dans Firebase Authentication
+                console.log('Tentative d\'inscription Firebase pour:', formData.email);
+                
+                const displayName = cleanDisplayName(formData.prenom, formData.name);
+                
+                if (!displayName) {
+                    throw new Error('Le nom complet ne peut pas être vide');
+                }
+                
+                // 1. Créer l'utilisateur avec Firebase Auth
+                const auth = firebase.auth();
                 const userCredential = await auth.createUserWithEmailAndPassword(formData.email, password);
                 const user = userCredential.user;
                 
+                console.log('Utilisateur Firebase créé:', user.uid);
+                
                 // 2. Mettre à jour le profil
                 await user.updateProfile({
-                    displayName: `${formData.prenom} ${formData.nom}`
+                    displayName: displayName
                 });
                 
-                // 3. Préparer les données pour Firestore
+                // 3. Envoyer l'email de vérification
+                await user.sendEmailVerification({
+                    url: `${window.location.origin}/src/views/templates/Connexion.html?emailVerified=true`,
+                    handleCodeInApp: true
+                });
+                
+                // 4. Préparer les données pour Firestore
                 const enseignantData = {
                     uid: user.uid,
                     email: formData.email,
-                    nom: formData.nom,
+                    name: formData.name,
                     prenom: formData.prenom,
-                    nomComplet: `${formData.prenom} ${formData.nom}`,
+                    display_name: displayName,
                     sexe: formData.sexe,
                     diplome: formData.diplome,
                     matieres: formData.matieres,
-                    matieresText: formData.matieresText,
+                    matieres_text: formData.matieresText,
                     langue: formData.langue,
                     role: 'enseignant',
                     statut: 'actif',
-                    dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
-                    dateCreation: new Date().toISOString(),
-                    photoURL: '',
-                    telephone: '',
-                    bio: '',
-                    experience: 0,
-                    noteMoyenne: 0,
-                    nombreCours: 0,
-                    verifie: false,
-                    preferences: {
-                        notifications: true,
-                        emails: true,
-                        visibilite: 'public'
-                    }
+                    email_verified: false,
+                    
+                    // CORRECTION : Utiliser FieldValue.serverTimestamp()
+                    date_inscription: firebase.firestore.FieldValue.serverTimestamp(),
+                    date_creation: firebase.firestore.FieldValue.serverTimestamp(),
+                    date_mise_a_jour: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                // 4. Ajouter à la collection "enseignants"
-                const docRef = await db.collection("enseignants").add(enseignantData);
+                console.log('Données à envoyer:', enseignantData);
                 
-                // 5. Créer un document dans "users"
-                const userGeneralData = {
-                    uid: user.uid,
-                    email: formData.email,
-                    nom: formData.nom,
-                    prenom: formData.prenom,
-                    role: 'enseignant',
-                    dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
-                    derniereConnexion: firebase.firestore.FieldValue.serverTimestamp()
-                };
+                // 5. Insérer dans Firestore
+                const db = firebase.firestore();
+                await db.collection('enseignants').doc(user.uid).set(enseignantData);
                 
-                await db.collection("users").add(userGeneralData);
+                console.log('Insertion Firestore réussie');
                 
-                // Succès
-                showNotification('Inscription réussie ! Redirection vers la page de connexion...', 'success');
+                showNotification('Inscription réussie ! Un email de vérification a été envoyé. Vérifiez votre boîte mail avant de vous connecter.', 'success');
                 
                 // Réinitialiser le formulaire
                 document.getElementById('tutorRegistrationForm').reset();
@@ -1238,12 +1356,10 @@
                 selectedMatieresText = [];
                 updateMatieresDisplay();
                 
-                // Réafficher les boutons de matières
                 document.querySelectorAll('.matiere-btn').forEach(btn => {
                     btn.style.display = 'inline-flex';
                 });
                 
-                // Réinitialiser la force du mot de passe
                 const strengthBar = document.getElementById('passwordStrengthBar');
                 const strengthText = document.getElementById('passwordStrengthText');
                 const strengthScore = document.getElementById('passwordScore');
@@ -1251,50 +1367,63 @@
                 if (strengthText) strengthText.textContent = 'Force du mot de passe';
                 if (strengthScore) strengthScore.textContent = '';
                 
-                // Réinitialiser les exigences
                 document.querySelectorAll('.requirement-icon').forEach(icon => {
                     icon.classList.replace('requirement-met', 'requirement-not-met');
                 });
                 
-                // Réinitialiser le message de correspondance
                 const matchMessage = document.getElementById('passwordMatchMessage');
                 if (matchMessage) matchMessage.innerHTML = '';
                 
-                // Rediriger après 3 secondes
                 setTimeout(() => {
                     window.location.href = '../templates/Connexion.html?newUser=true';
                 }, 3000);
                 
             } catch (error) {
-                console.error("Erreur lors de l'inscription:", error);
+                console.error("Erreur complète lors de l'inscription Firebase:", error);
+                console.error("Code erreur:", error.code);
+                console.error("Message:", error.message);
                 
                 let errorMessage = "Une erreur est survenue lors de l'inscription.";
                 
-                switch(error.code) {
-                    case 'auth/email-already-in-use':
-                        errorMessage = "Cet email est déjà utilisé. Essayez de vous connecter.";
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = "L'adresse email n'est pas valide.";
-                        break;
-                    case 'auth/weak-password':
-                        errorMessage = "Le mot de passe est trop faible. Utilisez au moins 6 caractères.";
-                        break;
-                    case 'auth/operation-not-allowed':
-                        errorMessage = "L'inscription par email/mot de passe n'est pas activée.";
-                        break;
-                    case 'auth/network-request-failed':
-                        errorMessage = "Problème de connexion internet. Veuillez réessayer.";
-                        break;
-                    case 'permission-denied':
-                        errorMessage = "Permission refusée. Contactez l'administrateur.";
-                        break;
+                if (error.code) {
+                    switch(error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMessage = "Cet email est déjà utilisé. Essayez de vous connecter.";
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = "L'adresse email n'est pas valide.";
+                            break;
+                        case 'auth/weak-password':
+                            errorMessage = "Le mot de passe est trop faible. Utilisez au moins 6 caractères.";
+                            break;
+                        case 'auth/network-request-failed':
+                            errorMessage = "Problème de connexion internet. Veuillez réessayer.";
+                            break;
+                        case 'auth/operation-not-allowed':
+                            errorMessage = "L'inscription par email/mot de passe n'est pas activée dans Firebase.";
+                            break;
+                        case 'permission-denied':
+                            errorMessage = "Permission refusée. Vérifiez les règles Firestore ou utilisez des règles temporaires.";
+                            break;
+                        default:
+                            errorMessage = "Erreur Firebase: " + error.code;
+                    }
+                } else if (error.message) {
+                    errorMessage = "Erreur: " + error.message;
                 }
                 
                 showNotification(errorMessage, 'error');
                 
+                // Déconnecter l'utilisateur en cas d'erreur
+                if (firebaseAuth) {
+                    try {
+                        await firebase.auth().signOut();
+                    } catch (signOutError) {
+                        console.error('Erreur lors de la déconnexion:', signOutError);
+                    }
+                }
+                
             } finally {
-                // Désactiver l'état de chargement
                 if (submitBtn && btnText && btnLoader) {
                     submitBtn.disabled = false;
                     btnText.classList.remove('hidden');
@@ -1303,11 +1432,11 @@
             }
         }
         
-        // ==================== INITIALISATION ====================
-        document.addEventListener('DOMContentLoaded', function() {
+        // ==================== INITIALISATION DE LA PAGE ====================
+        document.addEventListener('DOMContentLoaded', async function() {
             console.log("Page chargée, initialisation...");
             
-            // Configurer les gestionnaires d'événements
+            // Configurer les gestionnaires qui ne dépendent pas de Firebase
             setupPasswordHandlers();
             setupPasswordToggles();
             setupEmailValidation();
@@ -1324,6 +1453,23 @@
             const form = document.getElementById('tutorRegistrationForm');
             if (form) {
                 form.addEventListener('submit', handleFormSubmit);
+            }
+            
+            // Initialiser Firebase
+            try {
+                await initFirebase();
+                console.log("Firebase initialisé avec succès");
+                showNotification('Connexion Firebase établie', 'info', 3000);
+            } catch (error) {
+                console.error("Échec de l'initialisation Firebase:", error);
+                showNotification('Erreur de connexion à Firebase. Vérifiez votre internet.', 'error');
+                
+                const submitBtn = document.getElementById('submitBtn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Base de données indisponible';
+                    submitBtn.classList.add('bg-red-500', 'cursor-not-allowed');
+                }
             }
             
             console.log("Initialisation terminée");
