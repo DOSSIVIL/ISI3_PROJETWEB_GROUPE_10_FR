@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning Enseignant - Gestion des Disponibilités</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #2c3e50;
+            --secondary-blue: #3498db;
+            --light-blue: #e8f4fc;
+            --primary-green: #27ae60;
+            --light-green: #d5f4e6;
+            --primary-red: #e74c3c;
+            --light-red: #fdeaea;
+            --white: #ffffff;
+            --light-gray: #f5f7fa;
+            --medium-gray: #ecf0f1;
+            --dark-gray: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8rem;
+        }
+
+        header h1 i {
+            color: var(--secondary-blue);
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .month-navigation {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .month-navigation button {
+            background-color: var(--secondary-blue);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
+        }
+
+        .month-navigation button:hover {
+            background-color: var(--primary-blue);
+        }
+
+        #current-month {
+            font-size: 1.4rem;
+            font-weight: 600;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .calendar-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 600;
+            padding: 10px;
+            color: var(--primary-blue);
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .day {
+            min-height: 120px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--white);
+            position: relative;
+        }
+
+        .day:hover {
+            background-color: var(--light-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .day-number {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--primary-blue);
+        }
+
+        .today {
+            background-color: var(--light-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .other-month {
+            background-color: #f9f9f9;
+            color: var(--dark-gray);
+        }
+
+        .event {
+            background-color: var(--secondary-blue);
+            color: white;
+            padding: 4px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .event.math {
+            background-color: var(--primary-green);
+        }
+
+        .event.physics {
+            background-color: var(--primary-red);
+        }
+
+        .event.french {
+            background-color: #9b59b6;
+        }
+
+        .event.english {
+            background-color: #f39c12;
+        }
+
+        .event.history {
+            background-color: #1abc9c;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--white);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+        }
+
+        .time-inputs .form-group {
+            flex: 1;
+        }
+
+        .subject-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .subject-option {
+            padding: 12px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .subject-option:hover {
+            border-color: var(--secondary-blue);
+        }
+
+        .subject-option.selected {
+            border-color: var(--secondary-blue);
+            background-color: var(--light-blue);
+            font-weight: 600;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-blue);
+        }
+
+        .btn-danger {
+            background-color: var(--primary-red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-secondary {
+            background-color: var(--dark-gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #6c7b7d;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .stat-icon.blue {
+            background-color: var(--secondary-blue);
+        }
+
+        .stat-icon.green {
+            background-color: var(--primary-green);
+        }
+
+        .stat-icon.red {
+            background-color: var(--primary-red);
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .empty-day {
+            color: var(--dark-gray);
+            font-style: italic;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .header-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .subject-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-inputs {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .day {
+                min-height: 100px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .calendar-container {
+                padding: 10px;
+            }
+            
+            .day {
+                min-height: 80px;
+                padding: 5px;
+            }
+            
+            .event {
+                font-size: 0.7rem;
+                padding: 2px 4px;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chalkboard-teacher"></i> Planning des Disponibilités - Enseignant</h1>
+            <div class="header-info">
+                <div>
+                    <p>Bienvenue, Professeur Dupont</p>
+                    <p>Utilisez cette interface pour planifier vos cours et gérer vos disponibilités</p>
+                </div>
+                <div class="month-navigation">
+                    <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                    <div id="current-month">Mai 2023</div>
+                    <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="courses-count">7</h3>
+                    <p>Cours planifiés ce mois</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="hours-count">21</h3>
+                    <p>Heures d'enseignement</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="subjects-count">5</h3>
+                    <p>Matières enseignées</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <div class="weekdays">
+                <div class="weekday">Lundi</div>
+                <div class="weekday">Mardi</div>
+                <div class="weekday">Mercredi</div>
+                <div class="weekday">Jeudi</div>
+                <div class="weekday">Vendredi</div>
+                <div class="weekday">Samedi</div>
+                <div class="weekday">Dimanche</div>
+            </div>
+            <div class="calendar" id="calendar">
+                <!-- Les jours seront générés par JavaScript -->
+            </div>
+        </div>
+
+        <footer>
+            <p>Planificateur de disponibilités enseignantes &copy; 2023 - Tous droits réservés</p>
+            <p>Cliquez sur un jour pour ajouter ou modifier un cours</p>
+        </footer>
+    </div>
+
+    <!-- Modal pour ajouter/modifier un cours -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Programmer un cours</h2>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="course-form">
+                    <div class="form-group">
+                        <label for="course-date">Date du cours</label>
+                        <input type="date" id="course-date" class="form-control" required>
+                    </div>
+                    
+                    <div class="time-inputs">
+                        <div class="form-group">
+                            <label for="start-time">Heure de début</label>
+                            <input type="time" id="start-time" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end-time">Heure de fin</label>
+                            <input type="time" id="end-time" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Matière enseignée</label>
+                        <div class="subject-options">
+                            <div class="subject-option" data-subject="math">
+                                <i class="fas fa-calculator"></i> Mathématiques
+                            </div>
+                            <div class="subject-option" data-subject="physics">
+                                <i class="fas fa-atom"></i> Physique
+                            </div>
+                            <div class="subject-option" data-subject="french">
+                                <i class="fas fa-book"></i> Français
+                            </div>
+                            <div class="subject-option" data-subject="english">
+                                <i class="fas fa-language"></i> Anglais
+                            </div>
+                            <div class="subject-option" data-subject="history">
+                                <i class="fas fa-landmark"></i> Histoire
+                            </div>
+                            <div class="subject-option" data-subject="other">
+                                <i class="fas fa-graduation-cap"></i> Autre
+                            </div>
+                        </div>
+                        <input type="hidden" id="selected-subject" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="course-description">Description (optionnel)</label>
+                        <textarea id="course-description" class="form-control" rows="3" placeholder="Détails supplémentaires sur le cours..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-btn">Annuler</button>
+                <button type="button" class="btn btn-danger" id="delete-btn" style="display: none;">Supprimer</button>
+                <button type="button" class="btn btn-primary" id="save-btn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedDayElement = null;
+        let editingEventId = null;
+        let courses = JSON.parse(localStorage.getItem('teacher_courses')) || [];
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCalendar();
+            updateStats();
+            setupEventListeners();
+        });
+        
+        // Rendu du calendrier
+        function renderCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            calendarEl.innerHTML = '';
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Mettre à jour l'affichage du mois
+            const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
+                              "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById('current-month').textContent = `${monthNames[month]} ${year}`;
+            
+            // Premier jour du mois
+            const firstDay = new Date(year, month, 1);
+            // Dernier jour du mois
+            const lastDay = new Date(year, month + 1, 0);
+            // Jour de la semaine du premier jour (0 = dimanche, 1 = lundi, etc.)
+            const firstDayOfWeek = firstDay.getDay();
+            // Ajustement pour commencer le calendrier par lundi
+            const startOffset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+            
+            // Afficher les jours du mois précédent
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = startOffset - 1; i >= 0; i--) {
+                const day = prevMonthLastDay - i;
+                const dayEl = createDayElement(new Date(year, month - 1, day), true);
+                calendarEl.appendChild(dayEl);
+            }
+            
+            // Afficher les jours du mois actuel
+            const today = new Date();
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                const isToday = date.getDate() === today.getDate() && 
+                               date.getMonth() === today.getMonth() && 
+                               date.getFullYear() === today.getFullYear();
+                const dayEl = createDayElement(date, false, isToday);
+                calendarEl.appendChild(dayEl);
+            }
+            
+            // Afficher les jours du mois suivant
+            const totalCells = 42; // 6 semaines * 7 jours
+            const nextMonthDays = totalCells - (startOffset + lastDay.getDate());
+            for (let day = 1; day <= nextMonthDays; day++) {
+                const date = new Date(year, month + 1, day);
+                const dayEl = createDayElement(date, true);
+                calendarEl.appendChild(dayEl);
+            }
+        }
+        
+        // Créer un élément jour
+        function createDayElement(date, isOtherMonth, isToday = false) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'day';
+            if (isOtherMonth) dayEl.classList.add('other-month');
+            if (isToday) dayEl.classList.add('today');
+            
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = date.getDate();
+            dayEl.appendChild(dayNumber);
+            
+            // Ajouter les événements pour ce jour
+            const dayEvents = getEventsForDate(date);
+            if (dayEvents.length > 0) {
+                dayEvents.forEach(event => {
+                    const eventEl = document.createElement('div');
+                    eventEl.className = `event ${event.subject}`;
+                    eventEl.textContent = `${event.startTime} ${getSubjectName(event.subject)}`;
+                    eventEl.title = `${event.startTime}-${event.endTime}: ${getSubjectName(event.subject)}`;
+                    dayEl.appendChild(eventEl);
+                });
+            } else {
+                const emptyEl = document.createElement('div');
+                emptyEl.className = 'empty-day';
+                emptyEl.textContent = 'Aucun cours';
+                dayEl.appendChild(emptyEl);
+            }
+            
+            // Gestionnaire de clic
+            dayEl.addEventListener('click', () => openModal(date, dayEl));
+            
+            return dayEl;
+        }
+        
+        // Obtenir les événements pour une date donnée
+        function getEventsForDate(date) {
+            const dateStr = date.toISOString().split('T')[0];
+            return courses.filter(course => course.date === dateStr);
+        }
+        
+        // Obtenir le nom complet d'une matière
+        function getSubjectName(subjectCode) {
+            const subjects = {
+                'math': 'Maths',
+                'physics': 'Physique',
+                'french': 'Français',
+                'english': 'Anglais',
+                'history': 'Histoire',
+                'other': 'Autre'
+            };
+            return subjects[subjectCode] || subjectCode;
+        }
+        
+        // Ouvrir la modal pour ajouter/modifier un cours
+        function openModal(date, dayElement) {
+            selectedDate = date;
+            selectedDayElement = dayElement;
+            editingEventId = null;
+            
+            const modalTitle = document.getElementById('modal-title');
+            const dateInput = document.getElementById('course-date');
+            const startTimeInput = document.getElementById('start-time');
+            const endTimeInput = document.getElementById('end-time');
+            const deleteBtn = document.getElementById('delete-btn');
+            
+            // Réinitialiser le formulaire
+            document.getElementById('course-form').reset();
+            document.querySelectorAll('.subject-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.getElementById('selected-subject').value = '';
+            
+            // Remplir avec la date sélectionnée
+            const dateStr = date.toISOString().split('T')[0];
+            dateInput.value = dateStr;
+            
+            // Définir l'heure par défaut (9h-11h)
+            startTimeInput.value = '09:00';
+            endTimeInput.value = '11:00';
+            
+            // Masquer le bouton supprimer (mode ajout)
+            deleteBtn.style.display = 'none';
+            
+            // Mettre à jour le titre de la modal
+            const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+            const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", 
+                              "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+            const dayName = dayNames[date.getDay()];
+            const dayNumber = date.getDate();
+            const monthName = monthNames[date.getMonth()];
+            
+            modalTitle.textContent = `Programmer un cours - ${dayName} ${dayNumber} ${monthName}`;
+            
+            // Afficher la modal
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+        
+        // Mettre à jour les statistiques
+        function updateStats() {
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            // Cours ce mois-ci
+            const monthCourses = courses.filter(course => {
+                const courseDate = new Date(course.date);
+                return courseDate.getMonth() === currentMonth && courseDate.getFullYear() === currentYear;
+            });
+            
+            // Heures d'enseignement
+            let totalHours = 0;
+            monthCourses.forEach(course => {
+                const start = parseTime(course.startTime);
+                const end = parseTime(course.endTime);
+                totalHours += (end - start) / (1000 * 60 * 60);
+            });
+            
+            // Matières enseignées
+            const subjectsSet = new Set(monthCourses.map(course => course.subject));
+            
+            // Mettre à jour l'affichage
+            document.getElementById('courses-count').textContent = monthCourses.length;
+            document.getElementById('hours-count').textContent = Math.round(totalHours);
+            document.getElementById('subjects-count').textContent = subjectsSet.size;
+        }
+        
+        // Parser l'heure au format HH:MM
+        function parseTime(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            const date = new Date();
+            date.setHours(hours, minutes, 0, 0);
+            return date;
+        }
+        
+        // Configurer les écouteurs d'événements
+        function setupEventListeners() {
+            // Navigation du mois
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+                updateStats();
+            });
+            
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+                updateStats();
+            });
+            
+            // Sélection des matières
+            document.querySelectorAll('.subject-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.subject-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    document.getElementById('selected-subject').value = option.dataset.subject;
+                });
+            });
+            
+            // Fermer la modal
+            document.getElementById('close-modal').addEventListener('click', closeModal);
+            document.getElementById('cancel-btn').addEventListener('click', closeModal);
+            document.getElementById('modal-overlay').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('modal-overlay')) {
+                    closeModal();
+                }
+            });
+            
+            // Enregistrer le cours
+            document.getElementById('save-btn').addEventListener('click', saveCourse);
+            
+            // Supprimer le cours
+            document.getElementById('delete-btn').addEventListener('click', deleteCourse);
+        }
+        
+        // Fermer la modal
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+            selectedDate = null;
+            selectedDayElement = null;
+            editingEventId = null;
+        }
+        
+        // Enregistrer un cours
+        function saveCourse() {
+            const dateInput = document.getElementById('course-date');
+            const startTimeInput = document.getElementById('start-time');
+            const endTimeInput = document.getElementById('end-time');
+            const subjectInput = document.getElementById('selected-subject');
+            const descriptionInput = document.getElementById('course-description');
+            
+            // Validation
+            if (!dateInput.value || !startTimeInput.value || !endTimeInput.value || !subjectInput.value) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            // Vérifier que l'heure de fin est après l'heure de début
+            if (startTimeInput.value >= endTimeInput.value) {
+                alert('L\'heure de fin doit être après l\'heure de début');
+                return;
+            }
+            
+            // Créer l'objet cours
+            const course = {
+                id: editingEventId || Date.now().toString(),
+                date: dateInput.value,
+                startTime: startTimeInput.value,
+                endTime: endTimeInput.value,
+                subject: subjectInput.value,
+                description: descriptionInput.value
+            };
+            
+            // Ajouter ou mettre à jour le cours
+            if (editingEventId) {
+                // Mettre à jour
+                const index = courses.findIndex(c => c.id === editingEventId);
+                if (index !== -1) {
+                    courses[index] = course;
+                }
+            } else {
+                // Ajouter
+                courses.push(course);
+            }
+            
+            // Sauvegarder dans localStorage
+            localStorage.setItem('teacher_courses', JSON.stringify(courses));
+            
+            // Mettre à jour l'affichage
+            renderCalendar();
+            updateStats();
+            closeModal();
+        }
+        
+        // Supprimer un cours
+        function deleteCourse() {
+            if (editingEventId && confirm('Êtes-vous sûr de vouloir supprimer ce cours ?')) {
+                courses = courses.filter(course => course.id !== editingEventId);
+                localStorage.setItem('teacher_courses', JSON.stringify(courses));
+                renderCalendar();
+                updateStats();
+                closeModal();
+            }
+        }
+        
+        // Ajouter des exemples de cours si aucun n'existe
+        if (courses.length === 0) {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const nextWeek = new Date(today);
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            
+            courses = [
+                {
+                    id: '1',
+                    date: today.toISOString().split('T')[0],
+                    startTime: '09:00',
+                    endTime: '11:00',
+                    subject: 'math',
+                    description: 'Cours de mathématiques sur les fonctions'
+                },
+                {
+                    id: '2',
+                    date: today.toISOString().split('T')[0],
+                    startTime: '14:00',
+                    endTime: '16:00',
+                    subject: 'physics',
+                    description: 'Physique quantique - introduction'
+                },
+                {
+                    id: '3',
+                    date: tomorrow.toISOString().split('T')[0],
+                    startTime: '10:00',
+                    endTime: '12:00',
+                    subject: 'french',
+                    description: 'Littérature française du 19ème siècle'
+                },
+                {
+                    id: '4',
+                    date: nextWeek.toISOString().split('T')[0],
+                    startTime: '13:00',
+                    endTime: '15:00',
+                    subject: 'english',
+                    description: 'Conversation en anglais'
+                }
+            ];
+            
+            localStorage.setItem('teacher_courses', JSON.stringify(courses));
+        }
+    </script>
+</body>
+</html>
