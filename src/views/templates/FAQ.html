@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - EduConnect Africa</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Styles pour les particules et l'effet de verre */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Animation douce pour les cartes */
+        .glass-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        
+        /* Animation d'apparition pour les questions */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Délai d'animation pour chaque carte */
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="font-sans">
+    
+    <!-- Conteneur des particules -->
+    <div id="particles-js"></div>
+    
+    <!-- Contenu principal -->
+    <div class="content-wrapper">
+        <section class="py-12 md:py-20 px-4 md:px-8">
+            <div class="max-w-4xl mx-auto">
+                
+                <!-- En-tête avec effet de verre -->
+                <div class="text-center mb-12 md:mb-16">
+                    <div class="glass-card rounded-2xl p-8 md:p-10 inline-block mx-4">
+                        <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+                            <span class="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                                Foire Aux Questions
+                            </span>
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-6">
+                            Tout ce que vous devez savoir sur EduConnect Africa
+                        </p>
+                        <div class="inline-flex items-center space-x-2 text-purple-600">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span class="font-medium">Plateforme éducative africaine</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteneur FAQ -->
+                <div class="space-y-5 md:space-y-6" id="faq-container">
+                    
+                    <!-- Question 1 -->
+                    <div class="glass-card rounded-2xl border-l-4 border-purple-600 overflow-hidden fade-in-up delay-1">
+                        <button class="w-full flex justify-between items-center text-left p-6 md:p-7 focus:outline-none focus:ring-2 focus:ring-purple-300 rounded-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-purple-100 p-3 rounded-lg">
+                                    <i class="fas fa-comment-dollar text-purple-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg md:text-xl font-semibold text-gray-900 mb-1">
+                                        EduConnect Africa est-elle gratuite ?
+                                    </h3>
+                                    <p class="text-sm text-gray-500">Accès et tarifs</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down text-purple-600 transform transition-transform duration-300 text-xl"></i>
+                        </button>
+                        <div class="faq-answer px-6 md:px-7 pb-0 max-h-0 overflow-hidden transition-all duration-300">
+                            <div class="border-t border-gray-100 pt-6 pb-7">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <p class="text-gray-700 leading-relaxed">
+                                        <span class="font-semibold text-purple-600">Oui, entièrement gratuite.</span> L'accès à la plateforme est gratuit pour tous les étudiants africains. Le tutorat est assuré par des bénévoles engagés et des professionnels qui croient en l'éducation comme vecteur de développement.
+                                    </p>
+                                </div>
+                                <div class="mt-4 pl-7">
+                                    <p class="text-sm text-gray-600">
+                                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                                        Nous croyons que l'éducation de qualité doit être accessible à tous, sans barrière financière.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="glass-card rounded-2xl border-l-4 border-blue-600 overflow-hidden fade-in-up delay-2">
+                        <button class="w-full flex justify-between items-center text-left p-6 md:p-7 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <i class="fas fa-users text-blue-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg md:text-xl font-semibold text-gray-900 mb-1">
+                                        Comment contacter un tuteur ?
+                                    </h3>
+                                    <p class="text-sm text-gray-500">Support et accompagnement</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down text-blue-600 transform transition-transform duration-300 text-xl"></i>
+                        </button>
+                        <div class="faq-answer px-6 md:px-7 pb-0 max-h-0 overflow-hidden transition-all duration-300">
+                            <div class="border-t border-gray-100 pt-6 pb-7">
+                                <p class="text-gray-700 leading-relaxed mb-4">
+                                    <span class="font-semibold text-blue-600">C'est très simple !</span> Suivez ces étapes :
+                                </p>
+                                <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+                                    <li>Choisissez votre matière dans le catalogue</li>
+                                    <li>Sélectionnez un tuteur disponible (voir horaires et spécialités)</li>
+                                    <li>Planifiez une session ou rejoignez une session en direct</li>
+                                    <li>Communiquez via texte, audio ou vidéo en temps réel</li>
+                                </ol>
+                                <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                                    <p class="text-sm text-blue-800">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Nos tuteurs sont vérifiés et formés pour offrir le meilleur accompagnement.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="glass-card rounded-2xl border-l-4 border-yellow-500 overflow-hidden fade-in-up delay-3">
+                        <button class="w-full flex justify-between items-center text-left p-6 md:p-7 focus:outline-none focus:ring-2 focus:ring-yellow-300 rounded-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-yellow-100 p-3 rounded-lg">
+                                    <i class="fas fa-book-open text-yellow-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg md:text-xl font-semibold text-gray-900 mb-1">
+                                        Quelles matières sont disponibles ?
+                                    </h3>
+                                    <p class="text-sm text-gray-500">Catalogue des cours</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down text-yellow-600 transform transition-transform duration-300 text-xl"></i>
+                        </button>
+                        <div class="faq-answer px-6 md:px-7 pb-0 max-h-0 overflow-hidden transition-all duration-300">
+                            <div class="border-t border-gray-100 pt-6 pb-7">
+                                <p class="text-gray-700 leading-relaxed mb-4">
+                                    <span class="font-semibold text-yellow-600">Un large choix de matières</span> couvrant tous les niveaux :
+                                </p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-calculator text-purple-600"></i>
+                                        <span>Mathématiques</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-atom text-blue-600"></i>
+                                        <span>Physique-Chimie</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-laptop-code text-green-600"></i>
+                                        <span>Informatique</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-globe-africa text-red-600"></i>
+                                        <span>Sciences de la Terre</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-book text-indigo-600"></i>
+                                        <span>Littérature africaine</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-language text-teal-600"></i>
+                                        <span>Anglais & Français</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4 text-sm text-gray-600">
+                                    <i class="fas fa-plus-circle mr-2"></i>
+                                    Et bien d'autres matières selon la demande !
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="glass-card rounded-2xl border-l-4 border-green-600 overflow-hidden fade-in-up delay-4">
+                        <button class="w-full flex justify-between items-center text-left p-6 md:p-7 focus:outline-none focus:ring-2 focus:ring-green-300 rounded-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <i class="fas fa-robot text-green-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg md:text-xl font-semibold text-gray-900 mb-1">
+                                        À quoi sert l'assistant IA ?
+                                    </h3>
+                                    <p class="text-sm text-gray-500">Support intelligent 24h/24</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down text-green-600 transform transition-transform duration-300 text-xl"></i>
+                        </button>
+                        <div class="faq-answer px-6 md:px-7 pb-0 max-h-0 overflow-hidden transition-all duration-300">
+                            <div class="border-t border-gray-100 pt-6 pb-7">
+                                <p class="text-gray-700 leading-relaxed mb-4">
+                                    <span class="font-semibold text-green-600">Notre assistant IA</span> est disponible 24h/24 pour :
+                                </p>
+                                <ul class="space-y-3 text-gray-700">
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fas fa-check text-green-500 mt-1"></i>
+                                        <span>Répondre à vos questions immédiates sur vos cours</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fas fa-check text-green-500 mt-1"></i>
+                                        <span>Expliquer des concepts difficiles avec des exemples</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fas fa-check text-green-500 mt-1"></i>
+                                        <span>Vous aider à réviser avec des quiz personnalisés</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <i class="fas fa-check text-green-500 mt-1"></i>
+                                        <span>Assister les tuteurs avec des ressources pédagogiques</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-6 p-4 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg border border-green-100">
+                                    <p class="text-sm text-gray-700">
+                                        <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                        L'IA ne remplace pas nos tuteurs, mais complète leur travail pour une expérience d'apprentissage optimale.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Note de bas de page -->
+                <div class="mt-12 text-center">
+                    <div class="glass-card rounded-xl p-6 inline-block">
+                        <p class="text-gray-600 mb-3">
+                            Vous avez d'autres questions ?
+                        </p>
+                        <a href="#" class="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
+                            <i class="fas fa-envelope"></i>
+                            <span>Contactez notre équipe</span>
+                        </a>
+                        <p class="text-sm text-gray-500 mt-4">
+                            Réponse garantie sous 24 heures
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // Configuration des particules
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { 
+                        value: 70, 
+                        density: { 
+                            enable: true, 
+                            value_area: 1000 
+                        } 
+                    },
+                    color: { 
+                        value: ["#6366f1", "#8b5cf6", "#3b82f6", "#06b6d4"] 
+                    },
+                    shape: { 
+                        type: "circle",
+                        stroke: { width: 0, color: "#000000" }
+                    },
+                    opacity: { 
+                        value: 0.4, 
+                        random: true,
+                        anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+                    },
+                    size: { 
+                        value: 3, 
+                        random: true,
+                        anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+                    },
+                    line_linked: {
+                        enable: true,
+                        distance: 120,
+                        color: "#a78bfa",
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1.5,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false,
+                        attract: { enable: true, rotateX: 600, rotateY: 1200 }
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { 
+                            enable: true, 
+                            mode: "grab" 
+                        },
+                        onclick: { 
+                            enable: true, 
+                            mode: "push" 
+                        },
+                        resize: true
+                    },
+                    modes: {
+                        grab: { distance: 140, line_linked: { opacity: 0.4 } },
+                        push: { particles_nb: 3 }
+                    }
+                },
+                retina_detect: true
+            });
+            
+            // Animation des cartes FAQ
+            const cards = document.querySelectorAll('.fade-in-up');
+            cards.forEach(card => {
+                card.style.opacity = '1';
+            });
+            
+            // Gestion des FAQ
+            const faqButtons = document.querySelectorAll('#faq-container button');
+            
+            // Ouvrir la première FAQ par défaut
+            const firstAnswer = document.querySelector('.fade-in-up .faq-answer');
+            if (firstAnswer) {
+                firstAnswer.style.maxHeight = firstAnswer.scrollHeight + 'px';
+                firstAnswer.previousElementSibling.querySelector('i').style.transform = 'rotate(180deg)';
+            }
+            
+            faqButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const faqItem = button.closest('.glass-card');
+                    const answer = faqItem.querySelector('.faq-answer');
+                    const icon = faqItem.querySelector('button i');
+                    
+                    // Si cette FAQ est déjà ouverte, on la ferme
+                    const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+                    
+                    if (isOpen) {
+                        // Fermer
+                        answer.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        // Ouvrir
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                        
+                        // Fermer les autres (optionnel)
+                        // document.querySelectorAll('.faq-answer').forEach(otherAnswer => {
+                        //     if (otherAnswer !== answer && otherAnswer.style.maxHeight) {
+                        //         otherAnswer.style.maxHeight = null;
+                        //         otherAnswer.previousElementSibling.querySelector('i').style.transform = 'rotate(0deg)';
+                        //     }
+                        // });
+                    }
+                });
+            });
+            
+            // Effet au survol des particules
+            const canvasEl = document.querySelector('#particles-js canvas');
+            if (canvasEl) {
+                canvasEl.style.cursor = 'grab';
+                canvasEl.addEventListener('mousedown', () => {
+                    canvasEl.style.cursor = 'grabbing';
+                });
+                canvasEl.addEventListener('mouseup', () => {
+                    canvasEl.style.cursor = 'grab';
+                });
+            }
+        });
+        
+        // Redimensionnement des particules
+        window.addEventListener('resize', function() {
+            if (window.pJSDom && window.pJSDom.length > 0) {
+                window.pJSDom[0].pJS.fn.vendors.destroypJS();
+                window.pJSDom = [];
+                particlesJS('particles-js', arguments[0]);
+            }
+        });
+    </script>
+</body>
+</html>
