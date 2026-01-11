@@ -2,11 +2,14 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Viewport optimisé pour mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
     <title>Documentation Technique - EduConnect Africa</title>
     
     <!-- CDN Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/src/style.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -14,13 +17,17 @@
                 extend: {
                     colors: {
                         primary: {
-                            blue: '#2563EB',    // Bleu EduConnect
-                            orange: '#F97316',  // Orange vif
-                            light: '#F0F9FF',   // Bleu clair
+                            blue: '#2563EB',
+                            orange: '#F97316',
+                            light: '#F0F9FF',
                         }
                     },
                     fontFamily: {
                         'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    screens: {
+                        'xs': '375px',
+                        'xxs': '320px',
                     }
                 }
             }
@@ -32,806 +39,1914 @@
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/views/docs/templates/docs.css">
     
-    <style>
-        :root {
-            --sidebar-width: 280px;
-            --header-height: 80px;
-        }
-        
-        /* Scrollbar personnalisée */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        
-        .dark ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        
-        .dark ::-webkit-scrollbar-thumb {
-            background: #475569;
-        }
-        
-        .dark ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        /* Styles pour la sidebar */
-        .sidebar-link {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .sidebar-link:hover {
-            background-color: rgba(37, 99, 235, 0.1);
-            color: #2563EB;
-            transform: translateX(5px);
-        }
-        
-        .sidebar-link.active {
-            background: linear-gradient(90deg, rgba(37, 99, 235, 0.1), transparent);
-            color: #2563EB;
-            font-weight: 600;
-            border-left: 3px solid #2563EB;
-        }
-        
-        .dark .sidebar-link:hover {
-            background-color: rgba(37, 99, 235, 0.2);
-        }
-        
-        .dark .sidebar-link.active {
-            background: linear-gradient(90deg, rgba(37, 99, 235, 0.2), transparent);
-        }
-        
-        /* Styles pour les badges */
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .badge-blue {
-            background-color: #DBEAFE;
-            color: #1E40AF;
-        }
-        
-        .badge-orange {
-            background-color: #FFEDD5;
-            color: #9A3412;
-        }
-        
-        .badge-green {
-            background-color: #D1FAE5;
-            color: #065F46;
-        }
-        
-        .dark .badge-blue {
-            background-color: #1E3A8A;
-            color: #93C5FD;
-        }
-        
-        .dark .badge-orange {
-            background-color: #7C2D12;
-            color: #FDBA74;
-        }
-        
-        .dark .badge-green {
-            background-color: #064E3B;
-            color: #6EE7B7;
-        }
-        
-        /* Styles pour les cartes */
-        .feature-card {
-            transition: all 0.3s ease;
-            border: 1px solid #E2E8F0;
-            border-radius: 0.75rem;
-            overflow: hidden;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border-color: #2563EB;
-        }
-        
-        .dark .feature-card {
-            border-color: #475569;
-        }
-        
-        .dark .feature-card:hover {
-            border-color: #3B82F6;
-        }
-        
-        /* Styles pour les sections de code */
-        .code-block {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border-radius: 0.75rem;
-            position: relative;
-        }
-        
-        .code-block::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, #2563EB, #F97316);
-        }
-        
-        /* Gradient pour les titres */
-        .gradient-text {
-            background: linear-gradient(90deg, #2563EB, #F97316);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar-container {
-                position: fixed;
-                left: -100%;
-                transition: left 0.3s ease;
-                z-index: 40;
-            }
-            
-            .sidebar-container.active {
-                left: 0;
-            }
-            
-            .content-container {
-                margin-left: 0 !important;
-            }
-            
-            .sidebar-overlay {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 30;
-            }
-            
-            .sidebar-overlay.active {
-                display: block;
-            }
-        }
-    </style>
+
 </head>
 <body class="bg-white text-gray-800 font-sans transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100" data-current-page="docs">
+    
+    <!-- Header Responsive -->
+    <header id="main-header" class="fixed top-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50 z-50 transition-all duration-300">
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-14 sm:h-16 lg:h-20">
+                <!-- Logo responsive -->
+                <a href="/" class="flex items-center space-x-2 sm:space-x-3 shrink-0 min-w-0" aria-label="Accueil EduConnect Africa">
+                    <img src="/Images/Logo.png" alt="Logo EduConnect Africa" 
+                         class="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 drop-shadow-lg transition-transform duration-300 active:scale-95" 
+                         onerror="this.style.display='none'" />
+                    
+                    <div class="leading-tight">
+                        <h1 class="text-base sm:text-lg lg:text-2xl font-bold whitespace-nowrap">
+                            <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                            <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                            <span class="ml-1 sm:ml-2 text-xs sm:text-sm lg:text-lg text-gray-600 dark:text-gray-400">Docs</span>
+                        </h1>
+                    </div>
+                </a>
 
-<!-- Header Documentation (déjà créé) -->
-<header id="main-header">
-    <!-- Ton header documentation ici -->
-</header>
+                <!-- Menu desktop -->
+                <nav class="hidden lg:flex space-x-1 max-w-3xl flex-1 justify-center mx-4" aria-label="Navigation principale">
+                    <a href="/" class="nav-item group flex items-center px-4 py-3 rounded-xl font-medium text-gray-700 transition-all duration-300 relative overflow-hidden" data-page="home">
+                        <div class="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                        <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300 rounded-full active-indicator"></div>
+                        <div class="relative flex items-center space-x-3">
+                            <svg class="nav-icon h-5 w-5 text-gray-600 group-hover:text-blue-600 transition-all duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
+                                <path d="M9 22V12h6v10"/>
+                            </svg>
+                            <span class="nav-text group-hover:text-blue-700 transition-colors duration-300">Home</span>
+                        </div>
+                    </a>
+                    
+                    <a href="/docs" class="nav-item group flex items-center px-4 py-3 rounded-xl font-medium text-primary-blue bg-blue-50 dark:bg-blue-900/30 transition-all duration-300 relative overflow-hidden" data-page="docs">
+                        <div class="absolute inset-0 bg-blue-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                        <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300 rounded-full active-indicator"></div>
+                        <div class="relative flex items-center space-x-3">
+                            <svg class="nav-icon h-5 w-5 text-primary-blue group-hover:text-blue-700 transition-all duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span class="nav-text font-semibold group-hover:text-blue-800 transition-colors duration-300">Docs</span>
+                        </div>
+                    </a>
+                </nav>
 
-<!-- Mobile Sidebar Toggle (visible uniquement sur mobile) -->
-<button id="sidebar-toggle" class="lg:hidden fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-primary-blue text-white shadow-lg flex items-center justify-center hover:bg-blue-700 transition-colors">
-    <i class="fas fa-bars text-lg"></i>
-</button>
-
-<!-- Overlay pour sidebar mobile -->
-<div id="sidebar-overlay" class="sidebar-overlay"></div>
-
-<main class="flex min-h-screen pt-16">
-    <!-- Sidebar Verticale Gauche -->
-    <aside id="sidebar" class="sidebar-container fixed lg:static left-0 top-16 w-64 h-[calc(100vh-4rem)] bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-40">
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                    <i class="fas fa-book mr-2 text-primary-blue"></i>
-                    Documentation
-                </h2>
-                <button id="close-sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <!-- Recherche dans la documentation -->
-            <div class="relative">
-                <input type="search" 
-                       placeholder="Rechercher..." 
-                       class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent">
-                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                <!-- Contrôles mobiles -->
+                <div class="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 shrink-0">
+                    <!-- Bouton recherche mobile -->
+                    <button id="mobile-search-toggle" aria-label="Rechercher" 
+                            class="lg:hidden p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50/80 dark:hover:bg-gray-800/80 rounded-xl transition-all duration-300 active:scale-95">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="7"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                    </button>
+                    
+                    <!-- Barre de recherche desktop -->
+                    <div id="search-container" class="hidden lg:flex items-center mr-4">
+                        <div class="relative flex-1 max-w-md">
+                            <div class="flex items-center bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 px-4 py-2">
+                                <svg class="w-5 h-5 text-gray-400 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <circle cx="11" cy="11" r="7"/>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                                <input type="search" 
+                                       placeholder="Rechercher..." 
+                                       class="bg-transparent outline-none w-full text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400 text-sm"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bouton menu mobile -->
+                    <button id="mobile-menu-toggle" aria-label="Ouvrir le menu" 
+                            class="lg:hidden flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 text-gray-600 hover:text-gray-800 hover:bg-gray-50/80 dark:hover:bg-gray-800/80 rounded-xl focus:outline-none transition-all duration-300 active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
-        
-        <!-- Navigation Documentation -->
-        <nav class="p-4 space-y-6">
-            <!-- Introduction -->
-            <div>
-                <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                    <i class="fas fa-play-circle mr-2 text-primary-orange"></i>
-                    Introduction
-                </h3>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="#overview" class="sidebar-link active flex items-center">
-                            <i class="fas fa-eye mr-3 text-gray-400"></i>
-                            Aperçu du Projet
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#vision" class="sidebar-link flex items-center">
-                            <i class="fas fa-bullseye mr-3 text-gray-400"></i>
-                            Vision & Mission
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#problematic" class="sidebar-link flex items-center">
-                            <i class="fas fa-exclamation-triangle mr-3 text-gray-400"></i>
-                            Problématique
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <!-- Architecture -->
-            <div>
-                <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                    <i class="fas fa-sitemap mr-2 text-primary-blue"></i>
-                    Architecture
-                </h3>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="#tech-stack" class="sidebar-link flex items-center">
-                            <i class="fas fa-layer-group mr-3 text-gray-400"></i>
-                            Stack Technologique
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#system-architecture" class="sidebar-link flex items-center">
-                            <i class="fas fa-project-diagram mr-3 text-gray-400"></i>
-                            Architecture Système
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#database" class="sidebar-link flex items-center">
-                            <i class="fas fa-database mr-3 text-gray-400"></i>
-                            Base de Données
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <!-- Fonctionnalités -->
-            <div>
-                <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                    <i class="fas fa-cogs mr-2 text-primary-orange"></i>
-                    Fonctionnalités
-                </h3>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="#tutoring-system" class="sidebar-link flex items-center">
-                            <i class="fas fa-users mr-3 text-gray-400"></i>
-                            Tutorat Pair-à-Pair
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#ai-assistant" class="sidebar-link flex items-center">
-                            <i class="fas fa-robot mr-3 text-gray-400"></i>
-                            Assistant IA
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#user-management" class="sidebar-link flex items-center">
-                            <i class="fas fa-user-cog mr-3 text-gray-400"></i>
-                            Gestion Utilisateurs
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#real-time-features" class="sidebar-link flex items-center">
-                            <i class="fas fa-bolt mr-3 text-gray-400"></i>
-                            Fonctionnalités Temps Réel
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <!-- Développement -->
-            <div>
-                <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                    <i class="fas fa-code mr-2 text-primary-blue"></i>
-                    Développement
-                </h3>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="#installation" class="sidebar-link flex items-center">
-                            <i class="fas fa-download mr-3 text-gray-400"></i>
-                            Installation
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#configuration" class="sidebar-link flex items-center">
-                            <i class="fas fa-sliders-h mr-3 text-gray-400"></i>
-                            Configuration
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#api-docs" class="sidebar-link flex items-center">
-                            <i class="fas fa-network-wired mr-3 text-gray-400"></i>
-                            Référence API
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <!-- Déploiement -->
-            <div>
-                <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                    <i class="fas fa-rocket mr-2 text-primary-orange"></i>
-                    Déploiement
-                </h3>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="#deployment" class="sidebar-link flex items-center">
-                            <i class="fas fa-cloud-upload-alt mr-3 text-gray-400"></i>
-                            Guide de Déploiement
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#maintenance" class="sidebar-link flex items-center">
-                            <i class="fas fa-tools mr-3 text-gray-400"></i>
-                            Maintenance
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        
-        
-    </aside>
-
-    <!-- Contenu Principal -->
-    <div class="content-container flex-1 lg:ml-64 animate-fade-in">
-        <!-- Breadcrumb -->
-        <nav class="px-6 lg:px-8 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-            <div class="text-sm flex items-center space-x-2">
-                <a href="/docs" class="text-primary-blue hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
-                    <i class="fas fa-home mr-1"></i>
-                    Docs
-                </a>
-                <span class="text-gray-400">
-                    <i class="fas fa-chevron-right mx-2"></i>
-                </span>
-                <span class="text-gray-600 dark:text-gray-300 font-medium">Introduction</span>
-            </div>
-        </nav>
-
-        <!-- Contenu Documentation -->
-        <div class="px-6 lg:px-8 py-6 max-w-6xl mx-auto">
-            <!-- En-tête -->
-            <div class="mb-10 text-center">
-                <h1 class="text-4xl font-bold mb-4 gradient-text">
-                    Documentation Technique
-                </h1>
-                <p class="text-xl text-gray-600 dark:text-gray-300 mb-2">
-                    EduConnect Africa : L'éducation connectée, accessible à chacun
-                </p>
-                <p class="text-gray-500 dark:text-gray-400 max-w-3xl mx-auto">
-                    Une plateforme collaborative unique qui connecte étudiants et tuteurs à travers le tutorat en temps réel, 
-                    l'intelligence artificielle et des ressources pédagogiques pensées pour l'Afrique.
-                </p>
-            </div>
-
-            <!-- Section Aperçu du Projet -->
-            <section id="overview" class="mb-16 scroll-mt-24">
-                <div class="flex items-center mb-6">
-                    <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-4">
-                        <i class="fas fa-eye text-2xl text-primary-blue"></i>
-                    </div>
-                    <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Aperçu du Projet</h2>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+        <div id="mobile-menu-overlay" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+    
+        <div id="mobile-menu-content" class="absolute right-0 top-0 h-full w-full max-w-xs sm:max-w-sm bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-2xl">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Menu</h2>
+                    <button id="close-mobile-menu" class="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 active:scale-95">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
                 </div>
                 
-                <div class="bg-gradient-to-r from-blue-50 to-orange-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 mb-8">
-                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">🚀 Mission & Vision</h3>
-                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
-                        EduConnect Africa est une plateforme révolutionnaire qui vise à démocratiser l'accès à l'éducation 
-                        de qualité en Afrique à travers les technologies numériques.
-                    </p>
+                <nav class="space-y-2">
+                    <a href="/" class="flex items-center p-4 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95">
+                        <i class="fas fa-home mr-4 text-gray-500"></i>
+                        <span class="text-gray-700 dark:text-gray-300 font-medium">Home</span>
+                    </a>
                     
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
-                            <h4 class="text-xl font-semibold mb-3 text-primary-blue">
-                                <i class="fas fa-bullseye mr-2"></i>
-                                Notre Mission
-                            </h4>
-                            <p class="text-gray-600 dark:text-gray-300">
-                                Fournir une éducation accessible, personnalisée et de qualité à chaque étudiant africain, 
-                                indépendamment de sa localisation géographique ou de ses ressources.
-                            </p>
-                        </div>
-                        
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
-                            <h4 class="text-xl font-semibold mb-3 text-primary-orange">
-                                <i class="fas fa-eye mr-2"></i>
-                                Notre Vision
-                            </h4>
-                            <p class="text-gray-600 dark:text-gray-300">
-                                Devenir la plateforme éducative de référence en Afrique, connectant des millions d'étudiants 
-                                et de tuteurs dans un écosystème d'apprentissage collaboratif.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section Problématique -->
-            <section id="problematic" class="mb-16 scroll-mt-24">
-                <div class="flex items-center mb-6">
-                    <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-4">
-                        <i class="fas fa-exclamation-triangle text-2xl text-primary-orange"></i>
-                    </div>
-                    <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Problématique Africaine</h2>
-                </div>
-                
-                <div class="grid md:grid-cols-2 gap-8 mb-8">
-                    <!-- Challenges -->
-                    <div>
-                        <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
-                            <i class="fas fa-times-circle text-red-500 mr-2"></i>
-                            Défis Éducatifs
-                        </h3>
-                        <div class="space-y-4">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                                        <i class="fas fa-chalkboard-teacher text-red-500"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Pénurie d'enseignants</h4>
-                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                        Manque d'enseignants qualifiés, surtout en zones rurales
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-                                        <i class="fas fa-book text-yellow-500"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Ressources limitées</h4>
-                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                        Manque de matériel pédagogique adapté au contexte local
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                        <i class="fas fa-user-graduate text-blue-500"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Manque de personnalisation</h4>
-                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                        Soutien académique non adapté aux besoins individuels
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                                        <i class="fas fa-wifi text-purple-500"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Fracture numérique</h4>
-                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                        Accès limité à Internet et aux technologies
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Solutions -->
-                    <div>
-                        <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            Nos Solutions
-                        </h3>
-                        <div class="space-y-4">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                                        <i class="fas fa-users text-green-500"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Tutorat Pair-à-Pair</h4>
-                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                        Connecter étudiants et tuteurs via Peer.js
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
-                                        <i class="fas fa-robot text-teal-500"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Assistant IA</h4>
-                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                        Tuteur virtuel avec DeepSeek API
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                                        <i class="fas fa-cloud text-indigo-500"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Ressources Cloud</h4>
-                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                        Documents accessibles hors ligne via Firestore
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
-                                        <i class="fas fa-bolt text-pink-500"></i>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Temps Réel</h4>
-                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                        Communication texte/audio/vidéo en direct
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section Stack Technologique -->
-            <section id="tech-stack" class="mb-16 scroll-mt-24">
-                <div class="flex items-center mb-6">
-                    <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-4">
-                        <i class="fas fa-layer-group text-2xl text-primary-blue"></i>
-                    </div>
-                    <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Stack Technologique</h2>
-                </div>
-                
-                <div class="mb-8">
-                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
-                        Technologies Principales
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <!-- HTML/CSS/JS -->
-                        <div class="feature-card p-6 bg-white dark:bg-gray-800">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-4">
-                                <i class="fas fa-code text-white text-2xl"></i>
-                            </div>
-                            <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-                                Frontend
-                            </h4>
-                            <div class="flex flex-wrap gap-2 mb-3">
-                                <span class="badge badge-orange">HTML5</span>
-                                <span class="badge badge-blue">CSS3</span>
-                                <span class="badge badge-orange">JavaScript</span>
-                            </div>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                Interface utilisateur responsive et moderne
-                            </p>
-                        </div>
-                        
-                        <!-- Tailwind CSS -->
-                        <div class="feature-card p-6 bg-white dark:bg-gray-800">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center mb-4">
-                                <i class="fab fa-css3-alt text-white text-2xl"></i>
-                            </div>
-                            <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-                                Tailwind CSS
-                            </h4>
-                            <div class="flex flex-wrap gap-2 mb-3">
-                                <span class="badge badge-blue">Framework CSS</span>
-                                <span class="badge badge-green">Utility-First</span>
-                            </div>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                Design system cohérent et maintenable
-                            </p>
-                        </div>
-                        
-                        <!-- Peer.js -->
-                        <div class="feature-card p-6 bg-white dark:bg-gray-800">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-4">
-                                <i class="fas fa-network-wired text-white text-2xl"></i>
-                            </div>
-                            <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-                                Peer.js
-                            </h4>
-                            <div class="flex flex-wrap gap-2 mb-3">
-                                <span class="badge badge-green">WebRTC</span>
-                                <span class="badge badge-blue">P2P</span>
-                            </div>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                Communication pair-à-pair en temps réel
-                            </p>
-                        </div>
-                        
-                        <!-- DeepSeek API -->
-                        <div class="feature-card p-6 bg-white dark:bg-gray-800">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4">
-                                <i class="fas fa-brain text-white text-2xl"></i>
-                            </div>
-                            <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-                                DeepSeek API
-                            </h4>
-                            <div class="flex flex-wrap gap-2 mb-3">
-                                <span class="badge badge-blue">IA</span>
-                                <span class="badge badge-orange">NLP</span>
-                            </div>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                Assistant pédagogique intelligent
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Contraintes Techniques -->
-                <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-6 rounded-r-lg">
-                    <div class="flex items-start">
-                        <i class="fas fa-exclamation-circle text-yellow-500 text-2xl mr-3 mt-1"></i>
-                        <div>
-                            <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-                                Contraintes Techniques
-                            </h4>
-                            <ul class="list-disc pl-5 space-y-2 text-gray-700 dark:text-gray-300">
-                                <li><strong>Langages autorisés :</strong> HTML, CSS, JavaScript uniquement</li>
-                                <li><strong>Framework CSS :</strong> TailwindCSS avec thème libre</li>
-                                <li><strong>Technologies obligatoires :</strong> Peer.js, DeepSeek API, Firestore, Canvas</li>
-                                <li><strong>Déploiement :</strong> Application web obligatoirement déployée</li>
-                                <li><strong>Interdiction :</strong> Tout autre framework (note = 0)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Navigation entre sections -->
-            <div class="flex justify-between items-center mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
-                <!-- Page précédente -->
-                <a href="#" class="group flex items-center text-primary-blue hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
-                    <i class="fas fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform"></i>
-                    <div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Précédent</div>
-                        <div class="font-semibold">Présentation du projet</div>
-                    </div>
-                </a>
-                
-                <!-- Page suivante -->
-                <a href="#architecture" class="group flex items-center text-primary-blue hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
-                    <div class="text-right">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Suivant</div>
-                        <div class="font-semibold">Architecture Technique</div>
-                    </div>
-                    <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
-                </a>
+                    <a href="/docs" class="flex items-center p-4 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-primary-blue font-semibold active:scale-95">
+                        <i class="fas fa-book mr-4"></i>
+                        <span>Documentation</span>
+                    </a>
+                </nav>
             </div>
         </div>
     </div>
-</main>
-
-<!-- Footer (sera injecté) -->
-<div id="footer"></div>
-
-<!-- Scripts -->
-<script>
-// Gestion de la sidebar responsive
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const sidebar = document.getElementById('sidebar');
-    const closeSidebar = document.getElementById('close-sidebar');
-    const sidebarOverlay = document.getElementById('sidebar-overlay');
     
-    if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.add('active');
-            sidebarOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-        
-        closeSidebar.addEventListener('click', closeSidebarFunc);
-        sidebarOverlay.addEventListener('click', closeSidebarFunc);
-        
-        function closeSidebarFunc() {
-            sidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        // Fermer la sidebar en cliquant sur un lien (mobile)
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 1024) {
-                    closeSidebarFunc();
-                }
-            });
-        });
-        
-        // Fermer avec ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sidebar.classList.contains('active')) {
-                closeSidebarFunc();
-            }
-        });
-    }
-    
-    // Navigation smooth scroll pour les ancres
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href === '#') return;
-            
-            e.preventDefault();
-            const targetId = href.substring(1);
-            const targetElement = document.getElementById(targetId);
-            
-            if (targetElement) {
-                // Mettre à jour la sidebar active
-                document.querySelectorAll('.sidebar-link').forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === href) {
-                        link.classList.add('active');
-                    }
-                });
+    <!-- Mobile Search Overlay -->
+    <div id="mobile-search-overlay" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
+        <div class="absolute top-0 left-0 right-0 bg-white/95 backdrop-blur-xl p-4 transform -translate-y-full transition-transform duration-300">
+            <!-- Contenu recherche mobile -->
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button id="sidebar-toggle" class="lg:hidden fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-primary-blue text-white shadow-lg flex items-center justify-center hover:bg-blue-700 transition-colors active:scale-95">
+        <i class="fas fa-bars text-lg"></i>
+    </button>
+
+    <!-- Overlay pour sidebar mobile -->
+    <div id="sidebar-overlay" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+
+    <main class="flex min-h-screen pt-14 sm:pt-16 lg:pt-20">
+        <!-- Sidebar Verticale -->
+        <aside id="sidebar" class="sidebar-container fixed lg:static left-0 top-0 w-64 sm:w-72 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-40 transform lg:transform-none lg:translate-x-0 -translate-x-full lg:transition-none">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                        <i class="fas fa-book mr-2 text-primary-blue"></i>
+                        Documentation
+                    </h2>
+                    <button id="close-sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 p-1 active:scale-95">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
                 
-                // Scroll vers l'élément
-                window.scrollTo({
-                    top: targetElement.offsetTop - 100,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-    
-});
-</script>
-<script src="/src/views/docs/components/home.js"></script>
+                <div class="relative">
+                    <input type="search" 
+                        placeholder="Rechercher..." 
+                        class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-blue focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+            
+            <nav class="p-4 space-y-1">
+                <!-- Introduction -->
+                <div class="accordion-section">
+                    <button class="accordion-header w-full flex items-center justify-between py-3 px-2 text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors active:scale-95">
+                        <div class="flex items-center">
+                            <i class="fas fa-play-circle mr-2 text-primary-orange"></i>
+                            <span>Introduction</span>
+                        </div>
+                        <i class="fas fa-chevron-down accordion-icon transition-transform duration-300 text-xs"></i>
+                    </button>
+                    <div class="accordion-content overflow-hidden transition-all duration-300 max-h-0">
+                        <ul class="py-2 space-y-1 ml-6">
+                            <li>
+                                <a href="#overview" class="sidebar-link active flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-eye mr-3 text-gray-400"></i>
+                                    Aperçu du Projet
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#vision" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-bullseye mr-3 text-gray-400"></i>
+                                    Vision & Mission
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#problematic" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-exclamation-triangle mr-3 text-gray-400"></i>
+                                    Problématique
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Architecture -->
+                <div class="accordion-section">
+                    <button class="accordion-header w-full flex items-center justify-between py-3 px-2 text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors active:scale-95">
+                        <div class="flex items-center">
+                            <i class="fas fa-sitemap mr-2 text-primary-blue"></i>
+                            <span>Architecture</span>
+                        </div>
+                        <i class="fas fa-chevron-down accordion-icon transition-transform duration-300 text-xs"></i>
+                    </button>
+                    <div class="accordion-content overflow-hidden transition-all duration-300 max-h-0">
+                        <ul class="py-2 space-y-1 ml-6">
+                            <li>
+                                <a href="#tech-stack" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-layer-group mr-3 text-gray-400"></i>
+                                    Stack Technologique
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#system-architecture" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-project-diagram mr-3 text-gray-400"></i>
+                                    Architecture Système
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#database" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-database mr-3 text-gray-400"></i>
+                                    Base de Données
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Fonctionnalités -->
+                <div class="accordion-section">
+                    <button class="accordion-header w-full flex items-center justify-between py-3 px-2 text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors active:scale-95">
+                        <div class="flex items-center">
+                            <i class="fas fa-cogs mr-2 text-primary-orange"></i>
+                            <span>Fonctionnalités</span>
+                        </div>
+                        <i class="fas fa-chevron-down accordion-icon transition-transform duration-300 text-xs"></i>
+                    </button>
+                    <div class="accordion-content overflow-hidden transition-all duration-300 max-h-0">
+                        <ul class="py-2 space-y-1 ml-6">
+                            <li>
+                                <a href="#tutoring-system" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-users mr-3 text-gray-400"></i>
+                                    Tutorat Pair-à-Pair
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#ai-assistant" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-robot mr-3 text-gray-400"></i>
+                                    Assistant IA
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#user-management" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-user-cog mr-3 text-gray-400"></i>
+                                    Gestion Utilisateurs
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#real-time-features" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-bolt mr-3 text-gray-400"></i>
+                                    Fonctionnalités Temps Réel
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Développement -->
+                <div class="accordion-section">
+                    <button class="accordion-header w-full flex items-center justify-between py-3 px-2 text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors active:scale-95">
+                        <div class="flex items-center">
+                            <i class="fas fa-code mr-2 text-primary-blue"></i>
+                            <span>Développement</span>
+                        </div>
+                        <i class="fas fa-chevron-down accordion-icon transition-transform duration-300 text-xs"></i>
+                    </button>
+                    <div class="accordion-content overflow-hidden transition-all duration-300 max-h-0">
+                        <ul class="py-2 space-y-1 ml-6">
+                            <li>
+                                <a href="#installation" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-download mr-3 text-gray-400"></i>
+                                    Installation
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#configuration" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-sliders-h mr-3 text-gray-400"></i>
+                                    Configuration
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#api-docs" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-network-wired mr-3 text-gray-400"></i>
+                                    Référence API
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Déploiement -->
+                <div class="accordion-section">
+                    <button class="accordion-header w-full flex items-center justify-between py-3 px-2 text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors active:scale-95">
+                        <div class="flex items-center">
+                            <i class="fas fa-rocket mr-2 text-primary-orange"></i>
+                            <span>Déploiement</span>
+                        </div>
+                        <i class="fas fa-chevron-down accordion-icon transition-transform duration-300 text-xs"></i>
+                    </button>
+                    <div class="accordion-content overflow-hidden transition-all duration-300 max-h-0">
+                        <ul class="py-2 space-y-1 ml-6">
+                            <li>
+                                <a href="#deployment" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-cloud-upload-alt mr-3 text-gray-400"></i>
+                                    Guide de Déploiement
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#maintenance" class="sidebar-link flex items-center py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-tools mr-3 text-gray-400"></i>
+                                    Maintenance
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </aside>
 
+        <!-- Bouton pour ouvrir la sidebar sur mobile -->
+        <button id="open-sidebar" class="lg:hidden fixed left-4 top-20 z-30 bg-primary-blue text-white p-2 rounded-full shadow-lg hover:bg-blue-600 transition-colors active:scale-95">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Contenu Principal -->
+        <div class="content-container flex-1 lg:ml-64 animate-fade-in">
+            <!-- Breadcrumb -->
+            <nav class="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <div class="text-xs sm:text-sm flex items-center space-x-1 sm:space-x-2 overflow-x-auto whitespace-nowrap">
+                    <a href="/docs" class="text-primary-blue hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
+                        <i class="fas fa-home mr-1"></i>
+                        Docs
+                    </a>
+                    <span class="text-gray-400">
+                        <i class="fas fa-chevron-right mx-1 sm:mx-2 text-xs"></i>
+                    </span>
+                    <span class="text-gray-600 dark:text-gray-300 font-medium">Introduction</span>
+                </div>
+            </nav>
+
+            <!-- Contenu Documentation -->
+            <div class="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-6xl mx-auto">
+                <!-- En-tête -->
+                <div class="mb-6 sm:mb-8 md:mb-10 text-center">
+                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 gradient-text">
+                        Documentation Technique
+                    </h1>
+                    <p class="text-sm sm:text-base md:text-xl text-gray-600 dark:text-gray-300 mb-2">
+                        EduConnect Africa : L'éducation connectée, accessible à chacun
+                    </p>
+                    <p class="text-xs sm:text-sm md:text-base text-gray-500 dark:text-gray-400 max-w-3xl mx-auto px-2">
+                        Une plateforme collaborative unique qui connecte étudiants et tuteurs à travers le tutorat en temps réel, 
+                        l'intelligence artificielle et des ressources pédagogiques pensées pour l'Afrique.
+                    </p>
+                </div>
+
+                <!-- Section Aperçu du Projet -->
+                <section id="overview" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-eye text-lg sm:text-xl md:text-2xl text-primary-blue"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Aperçu du Projet</h2>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-orange-50 dark:from-gray-800 dark:to-gray-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">🚀 Mission & Vision</h3>
+                        <p class="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-4 sm:mb-6">
+                            EduConnect Africa est une plateforme révolutionnaire qui vise à démocratiser l'accès à l'éducation 
+                            de qualité en Afrique à travers les technologies numériques.
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                                <h4 class="text-lg sm:text-xl font-semibold mb-3 text-primary-blue">
+                                    <i class="fas fa-bullseye mr-2"></i>
+                                    Notre Mission
+                                </h4>
+                                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                                    Fournir une éducation accessible, personnalisée et de qualité à chaque étudiant africain, 
+                                    indépendamment de sa localisation géographique ou de ses ressources.
+                                </p>
+                            </div>
+                            
+                            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                                <h4 class="text-lg sm:text-xl font-semibold mb-3 text-primary-orange">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    Notre Vision
+                                </h4>
+                                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                                    Devenir la plateforme éducative de référence en Afrique, connectant des millions d'étudiants 
+                                    et de tuteurs dans un écosystème d'apprentissage collaboratif.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Problématique -->
+                <section id="problematic" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-exclamation-triangle text-lg sm:text-xl md:text-2xl text-primary-orange"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Problématique Africaine</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+                        <!-- Challenges -->
+                        <div>
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                                <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                                Défis Éducatifs
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                            <i class="fas fa-chalkboard-teacher text-red-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Pénurie d'enseignants</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Manque d'enseignants qualifiés, surtout en zones rurales
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                                            <i class="fas fa-book text-yellow-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Ressources limitées</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Manque de matériel pédagogique adapté au contexte local
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                            <i class="fas fa-user-graduate text-blue-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Manque de personnalisation</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Soutien académique non adapté aux besoins individuels
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                            <i class="fas fa-wifi text-purple-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Fracture numérique</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Accès limité à Internet et aux technologies
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Solutions -->
+                        <div class="mt-6 md:mt-0">
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                Nos Solutions
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                            <i class="fas fa-users text-green-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Tutorat Pair-à-Pair</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Connecter étudiants et tuteurs via Peer.js
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+                                            <i class="fas fa-robot text-teal-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Assistant IA</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Tuteur virtuel avec DeepSeek API
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+                                            <i class="fas fa-cloud text-indigo-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Ressources Cloud</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Documents accessibles hors ligne via Firestore
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
+                                            <i class="fas fa-bolt text-pink-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Temps Réel</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Communication texte/audio/vidéo en direct
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Stack Technologique -->
+                <section id="tech-stack" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-layer-group text-lg sm:text-xl md:text-2xl text-primary-blue"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Stack Technologique</h2>
+                    </div>
+                    
+                    <div class="mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                            Technologies Principales
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                            <!-- HTML/CSS/JS -->
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-4">
+                                    <i class="fas fa-code text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
+                                    Frontend
+                                </h4>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="badge badge-orange">HTML5</span>
+                                    <span class="badge badge-blue">CSS3</span>
+                                    <span class="badge badge-orange">JavaScript</span>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                    Interface utilisateur responsive et moderne
+                                </p>
+                            </div>
+                            
+                            <!-- Tailwind CSS -->
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center mb-4">
+                                    <i class="fab fa-css3-alt text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
+                                    Tailwind CSS
+                                </h4>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="badge badge-blue">Framework CSS</span>
+                                    <span class="badge badge-green">Utility-First</span>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                    Design system cohérent et maintenable
+                                </p>
+                            </div>
+                            
+                            <!-- Peer.js -->
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-4">
+                                    <i class="fas fa-network-wired text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
+                                    Peer.js
+                                </h4>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="badge badge-green">WebRTC</span>
+                                    <span class="badge badge-blue">P2P</span>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                    Communication pair-à-pair en temps réel
+                                </p>
+                            </div>
+                            
+                            <!-- DeepSeek API -->
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4">
+                                    <i class="fas fa-brain text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
+                                    Groq API
+                                </h4>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="badge badge-blue">IA</span>
+                                    <span class="badge badge-orange">NLP</span>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                    Assistant pédagogique intelligent
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contraintes Techniques -->
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 sm:p-6 rounded-r-lg">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-circle text-yellow-500 text-xl sm:text-2xl mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
+                                    Contraintes Techniques
+                                </h4>
+                                <ul class="list-disc pl-5 space-y-2 text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                                    <li><strong>Langages autorisés :</strong> HTML, CSS, JavaScript uniquement</li>
+                                    <li><strong>Framework CSS :</strong> TailwindCSS avec thème libre</li>
+                                    <li><strong>Technologies obligatoires :</strong> Peer.js, DeepSeek API, Firestore, Canvas</li>
+                                    <li><strong>Déploiement :</strong> Application web obligatoirement déployée</li>
+                                    <li><strong>Interdiction :</strong> Tout autre framework (note = 0)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Architecture Système -->
+                <section id="system-architecture" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-project-diagram text-lg sm:text-xl md:text-2xl text-primary-blue"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Architecture Système</h2>
+                    </div>
+                    
+                    <div class="architecture-diagram mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-white">Architecture en 3 Tiers</h3>
+                        
+                        <div class="diagram-node">
+                            <div class="flex items-center mb-2">
+                                <div class="tech-icon bg-white/20 mr-3">
+                                    <i class="fas fa-desktop text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm sm:text-base">Tier 1 : Frontend</h4>
+                                    <p class="text-white/80 text-xs sm:text-sm">Interface utilisateur responsive</p>
+                                </div>
+                            </div>
+                            <p class="text-white/90 text-xs sm:text-sm">HTML5, CSS3, JavaScript, Tailwind CSS, Peer.js Client</p>
+                        </div>
+                        
+                        <div class="diagram-line"></div>
+                        
+                        <div class="diagram-node">
+                            <div class="flex items-center mb-2">
+                                <div class="tech-icon bg-white/20 mr-3">
+                                    <i class="fas fa-server text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm sm:text-base">Tier 2 : Backend Services</h4>
+                                    <p class="text-white/80 text-xs sm:text-sm">Services externes et APIs</p>
+                                </div>
+                            </div>
+                            <p class="text-white/90 text-xs sm:text-sm">Peer.js Server, Firebase/Firestore, Groq API, DeepSeek API</p>
+                        </div>
+                        
+                        <div class="diagram-line"></div>
+                        
+                        <div class="diagram-node">
+                            <div class="flex items-center mb-2">
+                                <div class="tech-icon bg-white/20 mr-3">
+                                    <i class="fas fa-database text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm sm:text-base">Tier 3 : Stockage & IA</h4>
+                                    <p class="text-white/80 text-xs sm:text-sm">Données et intelligence artificielle</p>
+                                </div>
+                            </div>
+                            <p class="text-white/90 text-xs sm:text-sm">Firebase Cloud Storage, Modèles IA, Base de connaissances</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 rounded-xl">
+                        <h3 class="text-lg sm:text-xl font-semibold mb-4 text-gray-800 dark:text-white">Flux de Données</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                        <i class="fas fa-arrow-right text-green-500"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">1. Authentification</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                        L'utilisateur se connecte via Firebase Authentication
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                        <i class="fas fa-comments text-blue-500"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">2. Communication P2P</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                        Établissement de connexion directe via Peer.js Server
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                        <i class="fas fa-brain text-purple-500"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">3. Assistant IA</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                        Requêtes vers Groq API pour l'assistance pédagogique
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                                        <i class="fas fa-save text-orange-500"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">4. Persistance des Données</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                        Sauvegarde des sessions et ressources dans Firestore
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Base de Données -->
+                <section id="database" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-database text-lg sm:text-xl md:text-2xl text-primary-blue"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Base de Données</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+                        <!-- Structure Firestore -->
+                        <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg sm:text-xl font-semibold mb-4 text-primary-blue">
+                                <i class="fas fa-fire mr-2"></i>
+                                Structure Firestore
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-blue-500 pl-4">
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Collection: users</h4>
+                                    <pre class="text-xs sm:text-sm bg-gray-100 dark:bg-gray-700 p-3 rounded mt-2 overflow-x-auto">
+{
+  "uid": "string",
+  "email": "string",
+  "displayName": "string",
+  "role": "student|tutor|admin",
+  "subjects": ["math", "physics"],
+  "rating": 4.5,
+  "createdAt": "timestamp"
+}</pre>
+                                </div>
+                                
+                                <div class="border-l-4 border-green-500 pl-4">
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100">Collection: sessions</h4>
+                                    <pre class="text-xs sm:text-sm bg-gray-100 dark:bg-gray-700 p-3 rounded mt-2 overflow-x-auto">
+{
+  "sessionId": "string",
+  "tutorId": "string",
+  "studentId": "string",
+  "subject": "string",
+  "status": "active|completed|cancelled",
+  "startTime": "timestamp",
+  "endTime": "timestamp",
+  "whiteboardData": "object"
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Avantages Firebase -->
+                        <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg sm:text-xl font-semibold mb-4 text-primary-orange">
+                                <i class="fas fa-bolt mr-2"></i>
+                                Avantages Firebase
+                            </h3>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                            <i class="fas fa-sync text-green-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Temps Réel</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Synchronisation instantanée des données
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                            <i class="fas fa-shield-alt text-blue-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Sécurité</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Règles de sécurité configurables
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                            <i class="fas fa-cloud text-purple-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Hors Ligne</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Support natif pour le mode hors ligne
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                                            <i class="fas fa-chart-line text-orange-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100">Scalabilité</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                            Scaling automatique selon la charge
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Fonctionnalités - Tutorat Pair-à-Pair -->
+                <section id="tutoring-system" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-users text-lg sm:text-xl md:text-2xl text-primary-orange"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Tutorat Pair-à-Pair</h2>
+                    </div>
+                    
+                    <div class="mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                            <i class="fas fa-handshake mr-2 text-green-500"></i>
+                            Système de Matching Intelligent
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="feature-icon bg-gradient-to-br from-green-500 to-emerald-500 mb-4">
+                                    <i class="fas fa-search text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                    Recherche de Tuteurs
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                    Trouvez des tuteurs qualifiés par matière, niveau et disponibilité
+                                </p>
+                                <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Filtres avancés</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Notations et avis</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Disponibilité en temps réel</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="feature-icon bg-gradient-to-br from-blue-500 to-cyan-500 mb-4">
+                                    <i class="fas fa-video text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                    Session Vidéo
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                    Communication audio/vidéo haute qualité via WebRTC
+                                </p>
+                                <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Qualité adaptative</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Partage d'écran</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Enregistrement optionnel</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="feature-icon bg-gradient-to-br from-purple-500 to-pink-500 mb-4">
+                                    <i class="fas fa-chalkboard text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                    Tableau Blanc Collaboratif
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                    Écrivez, dessinez et résolvez des problèmes ensemble en temps réel
+                                </p>
+                                <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Outils mathématiques</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Import de fichiers</li>
+                                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Sauvegarde automatique</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Workflow de Tutorat -->
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 p-4 sm:p-6 rounded-xl sm:rounded-2xl">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-6 text-gray-800 dark:text-white">
+                            <i class="fas fa-list-ol mr-2 text-blue-500"></i>
+                            Workflow d'une Session
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="deployment-step">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Recherche et Réservation</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                        L'étudiant recherche un tuteur, consulte les disponibilités et réserve un créneau
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="deployment-step">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Connexion P2P</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                        Établissement de la connexion directe via Peer.js Server
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="deployment-step">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Session Interactive</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                        Utilisation du tableau blanc, partage de fichiers et communication audio/vidéo
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="deployment-step">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Feedback et Évaluation</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                        Notation de la session, feedback et sauvegarde des ressources
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Assistant IA -->
+                <section id="ai-assistant" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-robot text-lg sm:text-xl md:text-2xl text-primary-orange"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Assistant IA</h2>
+                    </div>
+                    
+                    <div class="mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                            <i class="fas fa-brain mr-2 text-purple-500"></i>
+                            Tutor Intelligent avec Groq API
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+                            <!-- Caractéristiques IA -->
+                            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                                <h4 class="text-lg sm:text-xl font-semibold mb-4 text-primary-blue">
+                                    <i class="fas fa-star mr-2"></i>
+                                    Caractéristiques Principales
+                                </h4>
+                                
+                                <div class="space-y-3">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                                <i class="fas fa-comment-dots text-blue-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Explications Contextuelles</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                Adapté au niveau et contexte de l'étudiant
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                                <i class="fas fa-lightbulb text-green-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Résolution Étape par Étape</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                Guides l'étudiant vers la solution
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                                <i class="fas fa-language text-purple-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Support Multilingue</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                Français, Anglais, et langues locales
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                                                <i class="fas fa-history text-orange-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Mémoire de Conversation</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                Garde le contexte de l'apprentissage
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Intégration Technique -->
+                            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                                <h4 class="text-lg sm:text-xl font-semibold mb-4 text-primary-orange">
+                                    <i class="fas fa-code mr-2"></i>
+                                    Intégration Technique
+                                </h4>
+                                
+                                <div class="api-endpoint">
+                                    <div class="flex items-center mb-2">
+                                        <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-xs font-semibold mr-2">POST</span>
+                                        <code class="text-xs sm:text-sm font-mono">/api/ai/assist</code>
+                                    </div>
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                        Endpoint pour l'assistance IA
+                                    </p>
+                                    
+                                    <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded mt-2 overflow-x-auto">
+{
+  "prompt": "Explique-moi le théorème de Pythagore",
+  "context": {
+    "subject": "mathématiques",
+    "level": "secondaire",
+    "language": "fr"
+  }
+}</pre>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h5 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm sm:text-base">Limites et Contrôles</h5>
+                                    <ul class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                                        <li><i class="fas fa-shield-alt text-green-500 mr-2"></i>Filtrage de contenu inapproprié</li>
+                                        <li><i class="fas fa-tachometer-alt text-yellow-500 mr-2"></i>Limite de requêtes par utilisateur</li>
+                                        <li><i class="fas fa-user-graduate text-blue-500 mr-2"></i>Contexte éducatif uniquement</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gestion Utilisateurs -->
+                <section id="user-management" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-user-cog text-lg sm:text-xl md:text-2xl text-primary-blue"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Gestion Utilisateurs</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                        <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                            <div class="feature-icon bg-gradient-to-br from-blue-500 to-cyan-500 mb-4">
+                                <i class="fas fa-user-plus text-white text-xl sm:text-2xl"></i>
+                            </div>
+                            <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                Inscription & Profils
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                Création de compte avec rôles spécifiques (étudiant, tuteur, administrateur)
+                            </p>
+                            <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Email/Google auth</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Profil personnalisable</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Vérification de compétences</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                            <div class="feature-icon bg-gradient-to-br from-green-500 to-emerald-500 mb-4">
+                                <i class="fas fa-chart-line text-white text-xl sm:text-2xl"></i>
+                            </div>
+                            <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                Suivi de Progrès
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                Tableau de bord personnel avec statistiques et recommandations
+                            </p>
+                            <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Historique des sessions</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Points de compétence</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Objectifs d'apprentissage</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                            <div class="feature-icon bg-gradient-to-br from-purple-500 to-pink-500 mb-4">
+                                <i class="fas fa-star text-white text-xl sm:text-2xl"></i>
+                            </div>
+                            <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                Système de Notation
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                Évaluation mutuelle et réputation pour assurer la qualité
+                            </p>
+                            <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Notes 1-5 étoiles</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Commentaires détaillés</li>
+                                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Badges de compétence</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Fonctionnalités Temps Réel -->
+                <section id="real-time-features" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-bolt text-lg sm:text-xl md:text-2xl text-primary-orange"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Fonctionnalités Temps Réel</h2>
+                    </div>
+                    
+                    <div class="mb-6 sm:mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                            <!-- WebRTC avec Peer.js -->
+                            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                                <h3 class="text-lg sm:text-xl font-semibold mb-4 text-primary-blue">
+                                    <i class="fas fa-video mr-2"></i>
+                                    WebRTC avec Peer.js
+                                </h3>
+                                
+                                <div class="space-y-3">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                                <i class="fas fa-wifi text-green-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Connexion Directe</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                P2P sans serveur intermédiaire pour la vidéo
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                                <i class="fas fa-shield-alt text-blue-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Sécurisé</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                Chiffrement end-to-end des communications
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                                <i class="fas fa-tachometer-alt text-purple-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Faible Latence</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                 50ms pour une expérience fluide
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Firestore Realtime -->
+                            <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                                <h3 class="text-lg sm:text-xl font-semibold mb-4 text-primary-orange">
+                                    <i class="fas fa-fire mr-2"></i>
+                                    Firestore Realtime
+                                </h3>
+                                
+                                <div class="space-y-3">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                                                <i class="fas fa-sync text-orange-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Synchronisation</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                Mise à jour instantanée des données
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+                                                <i class="fas fa-cloud text-teal-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Hors Ligne</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                Fonctionne sans connexion internet
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <div class="w-8 h-8 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
+                                                <i class="fas fa-bell text-pink-500"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Notifications</h4>
+                                            <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                                Alertes en temps réel pour nouvelles sessions
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Installation -->
+                <section id="installation" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-download text-lg sm:text-xl md:text-2xl text-primary-blue"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Installation</h2>
+                    </div>
+                    
+                    <div class="mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                            <i class="fas fa-terminal mr-2 text-green-500"></i>
+                            Guide d'Installation Local
+                        </h3>
+                        
+                        <div class="bg-gray-900 text-gray-100 p-4 sm:p-6 rounded-xl mb-4 sm:mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-semibold text-base sm:text-lg">
+                                    <i class="fas fa-code mr-2"></i>
+                                    Prérequis
+                                </h4>
+                                <span class="bg-blue-500 text-white px-3 py-1 rounded text-xs sm:text-sm">Obligatoire</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-800 p-4 rounded">
+                                    <h5 class="font-semibold text-blue-300 mb-2 text-sm sm:text-base">Node.js & npm</h5>
+                                    <code class="text-xs sm:text-sm block mb-2">node --version</code>
+                                    <p class="text-gray-400 text-xs sm:text-sm">Version 16+ requise</p>
+                                </div>
+                                
+                                <div class="bg-gray-800 p-4 rounded">
+                                    <h5 class="font-semibold text-green-300 mb-2 text-sm sm:text-base">Git</h5>
+                                    <code class="text-xs sm:text-sm block mb-2">git --version</code>
+                                    <p class="text-gray-400 text-xs sm:text-sm">Pour cloner le dépôt</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="deployment-step">
+                                <div class="step-number">1</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Cloner le Dépôt</h4>
+                                    <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2">
+                                        <code class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-200">
+git clone https://github.com/educconnect-africa/docs.git
+cd educonnect-docs
+                                        </code>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="deployment-step">
+                                <div class="step-number">2</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Installer les Dépendances</h4>
+                                    <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2">
+                                        <code class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-200">
+npm install
+# ou
+yarn install
+                                        </code>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="deployment-step">
+                                <div class="step-number">3</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Configurer les Variables d'Environnement</h4>
+                                    <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2">
+                                        <code class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-200">
+cp .env.example .env
+# Éditer .env avec vos clés API
+                                        </code>
+                                        <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-2">
+                                            Nécessite : Firebase, Groq API, Peer.js Server
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="deployment-step">
+                                <div class="step-number">4</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Démarrer le Serveur de Développement</h4>
+                                    <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2">
+                                        <code class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-200">
+npm run dev
+# Accéder à http://localhost:3000
+                                        </code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Configuration -->
+                <section id="configuration" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-sliders-h text-lg sm:text-xl md:text-2xl text-primary-blue"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Configuration</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+                        <!-- Fichier .env -->
+                        <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg sm:text-xl font-semibold mb-4 text-primary-blue">
+                                <i class="fas fa-cog mr-2"></i>
+                                Variables d'Environnement
+                            </h3>
+                            
+                            <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mb-4">
+                                <pre class="text-xs sm:text-sm overflow-x-auto">
+# Fichier .env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+
+VITE_GROQ_API_KEY=your_groq_api_key
+VITE_PEERJS_SERVER=peerjs.yourdomain.com
+VITE_PEERJS_PORT=443
+                                </pre>
+                            </div>
+                            
+                            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                                Ces variables sont injectées au build time
+                            </div>
+                        </div>
+                        
+                        <!-- Configuration Firebase -->
+                        <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg sm:text-xl font-semibold mb-4 text-primary-orange">
+                                <i class="fas fa-fire mr-2"></i>
+                                Configuration Firebase
+                            </h3>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                            <i class="fab fa-google text-red-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">1. Créer un Projet</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                            Nouveau projet sur Firebase Console
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                            <i class="fas fa-shield-alt text-blue-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">2. Règles de Sécurité</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                            Configurer les règles Firestore et Storage
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                            <i class="fas fa-user-check text-green-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">3. Authentification</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                            Activer Email/Password et Google Sign-In
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Référence API -->
+                <section id="api-docs" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-network-wired text-lg sm:text-xl md:text-2xl text-primary-blue"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Référence API</h2>
+                    </div>
+                    
+                    <div class="mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-6 text-gray-800 dark:text-gray-100">
+                            <i class="fas fa-plug mr-2 text-green-500"></i>
+                            Endpoints Principaux
+                        </h3>
+                        
+                        <div class="space-y-6">
+                            <!-- Endpoint 1 -->
+                            <div class="api-endpoint">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                                    <div class="flex items-center">
+                                        <span class="bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold mr-2">POST</span>
+                                        <code class="text-xs sm:text-sm font-mono">/api/ai/chat</code>
+                                    </div>
+                                    <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-xs">IA Assistant</span>
+                                </div>
+                                
+                                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                    Endpoint pour l'assistant IA pédagogique
+                                </p>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm">Request Body</h5>
+                                          <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto">
+                                          {
+                                            "message": "Explique la photosynthèse",
+                                            "context": {
+                                              "subject": "biologie",
+                                              "level": "secondaire",
+                                              "language": "fr"
+                                            }
+                                          }</pre>
+                                     </div>
+                                                      
+                                    <div>
+                                        <h5 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm">Response</h5>
+                                        <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto">
+                                        {
+                                          "response": "La photosynthèse est...",
+                                          "explanation": "...",
+                                          "examples": ["..."]
+                                        }</pre>
+                                                            </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Endpoint 2 -->
+                            <div class="api-endpoint">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                                    <div class="flex items-center">
+                                        <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs font-semibold mr-2">GET</span>
+                                        <code class="text-xs sm:text-sm font-mono">/api/tutors/search</code>
+                                    </div>
+                                    <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded text-xs">Tutorat</span>
+                                </div>
+                                
+                                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                    Recherche de tuteurs par critères
+                                </p>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h5 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm">Query Parameters</h5>
+                                        <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto">
+{
+  "subject": "mathématiques",
+  "level": "universitaire",
+  "availability": "now",
+  "language": "fr"
+}</pre>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm">Response</h5>
+                                        <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto">
+{
+  "tutors": [
+    {
+      "id": "tutor_123",
+      "name": "Marie Curie",
+      "rating": 4.8,
+      "subjects": ["math", "physics"],
+      "available": true
+    }
+  ]
+}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Guide de Déploiement -->
+                <section id="deployment" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-cloud-upload-alt text-lg sm:text-xl md:text-2xl text-primary-orange"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Guide de Déploiement</h2>
+                    </div>
+                    
+                    <div class="mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-6 text-gray-800 dark:text-gray-100">
+                            <i class="fas fa-server mr-2 text-blue-500"></i>
+                            Options de Déploiement
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                            <!-- Option 1 -->
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="feature-icon bg-gradient-to-br from-blue-500 to-cyan-500 mb-4">
+                                    <i class="fab fa-aws text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                    AWS Amplify
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                    Déploiement continu avec CI/CD intégré
+                                </p>
+                                <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>HTTPS automatique</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>CDN global</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>Monitoring intégré</li>
+                                </ul>
+                                <div class="mt-4">
+                                    <code class="text-xs bg-gray-100 dark:bg-gray-700 p-2 rounded block">
+amplify publish
+                                    </code>
+                                </div>
+                            </div>
+                            
+                            <!-- Option 2 -->
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="feature-icon bg-gradient-to-br from-orange-500 to-red-500 mb-4">
+                                    <i class="fab fa-firefox text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                    Firebase Hosting
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                    Hébergement optimisé pour Firebase
+                                </p>
+                                <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>Intégration native</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>SSL gratuit</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>Pré-rendu possible</li>
+                                </ul>
+                                <div class="mt-4">
+                                    <code class="text-xs bg-gray-100 dark:bg-gray-700 p-2 rounded block">
+firebase deploy --only hosting
+                                    </code>
+                                </div>
+                            </div>
+                            
+                            <!-- Option 3 -->
+                            <div class="feature-card p-4 sm:p-6 bg-white dark:bg-gray-800">
+                                <div class="feature-icon bg-gradient-to-br from-green-500 to-emerald-500 mb-4">
+                                    <i class="fab fa-docker text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100">
+                                    Docker + VPS
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                                    Contrôle total sur l'infrastructure
+                                </p>
+                                <ul class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>Flexibilité maximale</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>Coût réduit</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i>Personnalisation complète</li>
+                                </ul>
+                                <div class="mt-4">
+                                    <code class="text-xs bg-gray-100 dark:bg-gray-700 p-2 rounded block">
+docker-compose up -d
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Étapes de Déploiement -->
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 p-4 sm:p-6 rounded-xl sm:rounded-2xl">
+                            <h4 class="text-lg sm:text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+                                <i class="fas fa-list-ol mr-2 text-green-500"></i>
+                                Étapes de Déploiement (Vercel)
+                            </h4>
+                            
+                            <div class="space-y-4">
+                                <div class="deployment-step">
+                                    <div class="step-number">1</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Build de Production</h4>
+                                        <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2">
+                                            <code class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-200">
+npm run build
+                                            </code>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="deployment-step">
+                                    <div class="step-number">2</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Tests de Qualité</h4>
+                                        <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2">
+                                            <code class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-200">
+npm test
+# et
+npm run lighthouse
+                                            </code>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="deployment-step">
+                                    <div class="step-number">3</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Déploiement</h4>
+                                        <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2">
+                                            <code class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-200">
+vercel --prod
+                                            </code>
+                                            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-2">
+                                                Ou via l'intégration GitHub
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="deployment-step">
+                                    <div class="step-number">4</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">Monitoring</h4>
+                                        <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
+                                            Surveillance des performances et des erreurs avec Sentry/LogRocket
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Maintenance -->
+                <section id="maintenance" class="mb-8 sm:mb-12 md:mb-16 scroll-mt-20 sm:scroll-mt-24">
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3">
+                            <i class="fas fa-tools text-lg sm:text-xl md:text-2xl text-primary-orange"></i>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Maintenance</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+                        <!-- Tâches Routinières -->
+                        <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg sm:text-xl font-semibold mb-4 text-primary-blue">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                Tâches Routinières
+                            </h3>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                            <i class="fas fa-sync text-green-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Quotidien</h4>
+                                        <ul class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                                            <li>• Vérification des logs d'erreur</li>
+                                            <li>• Monitoring des performances</li>
+                                            <li>• Sauvegarde des données</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                            <i class="fas fa-calendar-week text-blue-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Hebdomadaire</h4>
+                                        <ul class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                                            <li>• Analyse des métriques d'utilisation</li>
+                                            <li>• Nettoyage des données temporaires</li>
+                                            <li>• Revue des tickets support</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                            <i class="fas fa-calendar-month text-purple-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base">Mensuel</h4>
+                                        <ul class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                                            <li>• Mise à jour des dépendances</li>
+                                            <li>• Revue de sécurité</li>
+                                            <li>• Rapport d'activité</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Monitoring & Alerts -->
+                        <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg sm:text-xl font-semibold mb-4 text-primary-orange">
+                                <i class="fas fa-bell mr-2"></i>
+                                Monitoring & Alertes
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm sm:text-base">Métriques à Surveiller</h4>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">
+                                            <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Temps de réponse</div>
+                                            <div class="text-lg font-bold text-green-500">
+                                              <div class="text-lg font-bold text-green-500">&lt; 200ms</div>
+                                            </div>
+                                            <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">
+                                                <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Disponibilité</div>
+                                                <div class="text-lg font-bold text-blue-500">99.9%</div>
+                                            </div>
+                                            <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">
+                                                <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Erreurs API</div>
+                                                <div class="text-lg font-bold text-red-500">&lt; 0.1%</div>
+                                            </div>
+                                            <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">
+                                                <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Sessions actives</div>
+                                                <div class="text-lg font-bold text-purple-500">500+</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm sm:text-base">Outils Recommandés</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="badge badge-blue">Sentry</span>
+                                            <span class="badge badge-green">LogRocket</span>
+                                            <span class="badge badge-orange">New Relic</span>
+                                            <span class="badge badge-blue">Google Analytics</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Procédure de Rollback -->
+                    <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 sm:p-6 rounded-r-lg">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-triangle text-red-500 text-xl sm:text-2xl mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="text-lg sm:text-xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
+                                    Procédure de Rollback d'Urgence
+                                </h4>
+                                <div class="space-y-2 text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                                    <div class="flex items-start">
+                                        <span class="inline-block w-6 h-6 bg-red-500 text-white rounded-full text-center mr-2 flex-shrink-0 text-xs">1</span>
+                                        <span>Identifier la version précédente stable</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <span class="inline-block w-6 h-6 bg-red-500 text-white rounded-full text-center mr-2 flex-shrink-0 text-xs">2</span>
+                                        <span>Exécuter la commande de rollback spécifique au fournisseur</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <span class="inline-block w-6 h-6 bg-red-500 text-white rounded-full text-center mr-2 flex-shrink-0 text-xs">3</span>
+                                        <span>Vérifier que les données utilisateur sont intactes</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <span class="inline-block w-6 h-6 bg-red-500 text-white rounded-full text-center mr-2 flex-shrink-0 text-xs">4</span>
+                                        <span>Notifier les utilisateurs du problème temporaire</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+    
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <div id="footer"></div>
+    
+    <!-- Scripts -->
+    <script>
+        
+    </script>
+    <script src="/src/views/docs/components/docs.js"></script>
 </body>
 </html>
