@@ -2,8 +2,7 @@ export class AssistantIA {
   constructor(data = {}) {
     this.id = data.id || null;
     this.date = data.date || new Date();
-    this.categorie = data.categorie || "";
-    this.langue = data.langue || "fr";
+    this.question = data.question || "";
     this.reponse = data.reponse || "";
     this.etudiantId = data.etudiantId || null;
   }
@@ -11,8 +10,7 @@ export class AssistantIA {
   toFirestore() {
     return {
       date: this.date,
-      categorie: this.categorie,
-      langue: this.langue,
+      question: this.question,
       reponse: this.reponse,
       etudiantId: this.etudiantId,
     };
