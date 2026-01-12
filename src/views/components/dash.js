@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Mettre en évidence le menu actif initial
     updateActiveMenuOnLoad();
+    
+    // Initialiser le toggle du sidebar
+    initSidebarToggle();
 });
 
 // Générer le calendrier
@@ -190,6 +193,14 @@ function initAnchors() {
     });
 }
 
-// Exposer les fonctions globales
-window.loadPage = loadPage;
-window.generateCalendar = generateCalendar;
+// Initialiser le toggle du sidebar
+function initSidebarToggle() {
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    
+    if (hamburger && sidebar) {
+        hamburger.addEventListener('click', function() {
+            sidebar.classList.toggle('hidden');
+        });
+    }
+}
