@@ -1,0 +1,270 @@
+/* styles/colors.css */
+
+/* Palette de couleurs EduConnect Africa */
+
+:root {
+    /* Couleurs primaires */
+    --primary-blue: #1A3B52;
+    --primary-yellow: #FFD700;
+    --primary-orange: #FFA500;
+    --primary-purple: #8B3A9E;
+    --primary-teal: #089182;
+    --primary-brown: #8B7355;
+    
+    /* Couleurs secondaires */
+    --secondary-blue: #2C5282;
+    --secondary-yellow: #E6C200;
+    --secondary-orange: #E69500;
+    --secondary-purple: #7B2CBF;
+    --secondary-teal: #0D9488;
+    
+    /* Couleurs neutres */
+    --white: #FFFFFF;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+    --black: #000000;
+    
+    /* Couleurs de statut */
+    --success: #10B981;
+    --warning: #F59E0B;
+    --error: #EF4444;
+    --info: #3B82F6;
+    
+    /* Couleurs des matières */
+    --math: #FFD700;
+    --physics: #FFA500;
+    --informatics: #089182;
+    --literature: #8B3A9E;
+    --science: #1A3B52;
+    --chemistry: #8B7355;
+}
+
+/* Classes utilitaires pour les couleurs */
+.bg-primary-blue { background-color: var(--primary-blue); }
+.text-primary-blue { color: var(--primary-blue); }
+.border-primary-blue { border-color: var(--primary-blue); }
+
+.bg-primary-yellow { background-color: var(--primary-yellow); }
+.text-primary-yellow { color: var(--primary-yellow); }
+
+.bg-primary-orange { background-color: var(--primary-orange); }
+.text-primary-orange { color: var(--primary-orange); }
+
+.bg-primary-purple { background-color: var(--primary-purple); }
+.text-primary-purple { color: var(--primary-purple); }
+
+.bg-primary-teal { background-color: var(--primary-teal); }
+.text-primary-teal { color: var(--primary-teal); }
+
+.bg-primary-brown { background-color: var(--primary-brown); }
+.text-primary-brown { color: var(--primary-brown); }
+
+/* Classes pour les matières */
+.subject-math {
+    background-color: var(--math);
+    color: var(--gray-800);
+}
+
+.subject-physics {
+    background-color: var(--physics);
+    color: white;
+}
+
+.subject-informatics {
+    background-color: var(--informatics);
+    color: white;
+}
+
+.subject-literature {
+    background-color: var(--literature);
+    color: white;
+}
+
+.subject-science {
+    background-color: var(--science);
+    color: white;
+}
+
+.subject-chemistry {
+    background-color: var(--chemistry);
+    color: white;
+}
+
+/* Classes de disponibilité */
+.available {
+    background-color: var(--success);
+    color: white;
+}
+
+.busy {
+    background-color: var(--error);
+    color: white;
+}
+
+.away {
+    background-color: var(--warning);
+    color: white;
+}
+
+/* Classes pour les boutons */
+.btn-math {
+    background-color: var(--math);
+    color: var(--gray-800);
+}
+
+.btn-math:hover {
+    background-color: #e6c200;
+}
+
+.btn-physics {
+    background-color: var(--physics);
+    color: white;
+}
+
+.btn-physics:hover {
+    background-color: #e69500;
+}
+
+.btn-informatics {
+    background-color: var(--informatics);
+    color: white;
+}
+
+.btn-informatics:hover {
+    background-color: #0d9488;
+}
+
+/* Gradients */
+.gradient-blue {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+}
+
+.gradient-purple {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+}
+
+.gradient-teal {
+    background: linear-gradient(135deg, var(--primary-teal) 0%, var(--secondary-teal) 100%);
+}
+
+.gradient-sunset {
+    background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+}
+
+/* Ombre avec couleur */
+.shadow-blue {
+    box-shadow: 0 4px 6px rgba(26, 59, 82, 0.1);
+}
+
+.shadow-yellow {
+    box-shadow: 0 4px 6px rgba(255, 215, 0, 0.2);
+}
+
+.shadow-purple {
+    box-shadow: 0 4px 6px rgba(139, 58, 158, 0.2);
+}
+
+/* Bordures colorées */
+.border-top-blue {
+    border-top: 4px solid var(--primary-blue);
+}
+
+.border-top-yellow {
+    border-top: 4px solid var(--primary-yellow);
+}
+
+.border-top-orange {
+    border-top: 4px solid var(--primary-orange);
+}
+
+.border-top-purple {
+    border-top: 4px solid var(--primary-purple);
+}
+
+.border-top-teal {
+    border-top: 4px solid var(--primary-teal);
+}
+
+/* Text gradients */
+.text-gradient-blue {
+    background: linear-gradient(90deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-purple {
+    background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-sunset {
+    background: linear-gradient(90deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Classes pour les statuts en ligne */
+.online-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--success);
+    margin-right: 5px;
+}
+
+.offline-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--gray-400);
+    margin-right: 5px;
+}
+
+.busy-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--warning);
+    margin-right: 5px;
+}
+
+/* Classes pour les avatars */
+.avatar-math {
+    background-color: var(--math);
+    color: var(--gray-800);
+}
+
+.avatar-physics {
+    background-color: var(--physics);
+    color: white;
+}
+
+.avatar-informatics {
+    background-color: var(--informatics);
+    color: white;
+}
+
+.avatar-literature {
+    background-color: var(--literature);
+    color: white;
+}
+
+.avatar-science {
+    background-color: var(--science);
+    color: white;
+}

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Trouvez votre tuteur idéal sur EduConnect Africa - Plateforme de tutorat collaborative pour l'Afrique">
+    <meta name="keywords" content="tutorat, éducation, Afrique, tuteurs, cours en ligne, mathématiques, physique, informatique">
+    <title>Liste des Tuteurs - EduConnect Africa</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Styles personnalisés -->
+    <link rel="stylesheet" href="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\css\LT-ST\tutoring-list.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="flex items-center space-x-3 text-primary-blue">
+                        <div class="w-10 h-10 bg-gradient-to-r from-primary-blue to-primary-teal rounded-lg flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-white text-xl"></i>
+                        </div>
+                        <span class="text-xl font-bold">EduConnect Africa</span>
+                    </a>
+                    <span class="text-sm px-3 py-1 bg-primary-yellow text-primary-blue rounded-full font-semibold">
+                        DTuteurs
+                    </span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="tutor-list.html" class="nav-link active">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>Tuteurs
+                    </a>
+                    <a href="tutoring-room.html" class="nav-link">
+                        <i class="fas fa-video mr-2"></i>Tutorat
+                    </a>
+                    <div class="relative group">
+                        <div class="avatar-nav">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-user mr-2"></i>Mon profil
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-cog mr-2"></i>Paramètres
+                            </a>
+                            <div class="border-t my-2"></div>
+                            <a href="#" class="dropdown-item text-red-600">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- En-tête avec recherche -->
+    <header class="bg-gradient-blue text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                    Trouvez votre mentor idéal
+                </h1>
+                <p class="text-xl text-gray-200 mb-8">
+                    Des experts qualifiés dans toutes les matières, disponibles pour vous accompagner
+                </p>
+                
+                <!-- Barre de recherche -->
+                <div class="relative max-w-2xl mx-auto">
+                    <input type="text" 
+                           id="global-search"
+                           placeholder="Rechercher un tuteur par nom, matière ou compétence..." 
+                           class="search-input">
+                    <i class="fas fa-search search-icon"></i>
+                    <button id="search-btn" class="search-button">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filtres et statistiques -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+            <!-- Filtres par matière -->
+            <div>
+                <h3 class="section-subtitle">
+                    <i class="fas fa-filter mr-2"></i>
+                    Filtrer par matière
+                </h3>
+                <div class="filters-container">
+                    <button class="filter-btn filter-all" data-subject="all">
+                        <i class="fas fa-layer-group mr-2"></i>Toutes
+                    </button>
+                    <button class="filter-btn filter-math" data-subject="math">
+                        <i class="fas fa-calculator mr-2"></i>Mathématiques
+                    </button>
+                    <button class="filter-btn filter-physics" data-subject="physics">
+                        <i class="fas fa-atom mr-2"></i>Physique
+                    </button>
+                    <button class="filter-btn filter-info" data-subject="info">
+                        <i class="fas fa-laptop-code mr-2"></i>Informatique
+                    </button>
+                    <button class="filter-btn filter-literature" data-subject="literature">
+                        <i class="fas fa-book mr-2"></i>Littérature
+                    </button>
+                    <button class="filter-btn filter-science" data-subject="science">
+                        <i class="fas fa-flask mr-2"></i>Sciences
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Statistiques -->
+            <div class="stats-card">
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="stat-item">
+                        <div class="stat-number text-primary-blue" id="total-tutors">0</div>
+                        <div class="stat-label">Tuteurs</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number text-primary-teal" id="online-tutors">0</div>
+                        <div class="stat-label">En ligne</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number text-primary-purple" id="avg-rating">0.0</div>
+                        <div class="stat-label">Note moyenne</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- En-tête résultats -->
+        <div class="results-header">
+            <div>
+                <h2 class="section-title">
+                    Tuteurs disponibles
+                    <span id="results-count" class="text-primary-blue">(0)</span>
+                </h2>
+                <p class="filter-info" id="filter-info">
+                    Filtrez par matière ou recherchez un tuteur spécifique
+                </p>
+            </div>
+            
+            <!-- Options de tri -->
+            <div class="sort-container">
+                <span class="sort-label">Trier par :</span>
+                <select id="sort-options" class="sort-select">
+                    <option value="rating">Note la plus élevée</option>
+                    <option value="name">Nom (A-Z)</option>
+                    <option value="price">Tarif croissant</option>
+                    <option value="experience">Expérience</option>
+                    <option value="availability">Disponibilité</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Liste des tuteurs -->
+        <div id="tutor-list-container" class="min-h-[500px]">
+            <!-- Chargement initial -->
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Chargement des tuteurs...</p>
+            </div>
+        </div>
+
+        <!-- Message aucun résultat -->
+        <div id="no-results" class="no-results-container">
+            <div class="no-results-content">
+                <div class="no-results-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3 class="no-results-title">Aucun tuteur trouvé</h3>
+                <p class="no-results-message">
+                    Aucun tuteur ne correspond à vos critères de recherche.
+                    Essayez de modifier vos filtres ou votre recherche.
+                </p>
+                <button id="reset-filters" class="reset-button">
+                    <i class="fas fa-redo mr-2"></i>Réinitialiser les filtres
+                </button>
+            </div>
+        </div>
+
+        <!-- Guide de sélection -->
+        <div class="guide-card">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="md:w-2/3">
+                    <h3 class="guide-title">
+                        <i class="fas fa-lightbulb guide-icon"></i>
+                        Comment choisir votre tuteur ?
+                    </h3>
+                    <p class="guide-text">
+                        Notre plateforme vous permet de trouver le tuteur idéal selon vos besoins.
+                        Comparez les notes, les spécialités et les disponibilités.
+                    </p>
+                    <ul class="guide-list">
+                        <li><i class="fas fa-check-circle list-icon-success"></i>Vérifiez les disponibilités en temps réel</li>
+                        <li><i class="fas fa-check-circle list-icon-success"></i>Consultez les avis et notes des étudiants</li>
+                        <li><i class="fas fa-check-circle list-icon-success"></i>Comparez les tarifs et spécialités</li>
+                        <li><i class="fas fa-check-circle list-icon-success"></i>Planifiez une session d'essai gratuite</li>
+                    </ul>
+                </div>
+                <div class="md:w-1/3 text-center">
+                    <div class="demo-card">
+                        <i class="fas fa-video demo-icon"></i>
+                        <p class="demo-title">Essai gratuit</p>
+                        <p class="demo-subtitle">15 minutes avec n'importe quel tuteur</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="footer-title">
+                        <div class="footer-logo">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        EduConnect Africa
+                    </h4>
+                    <p class="footer-text">
+                        L'éducation connectée, accessible à chacun.
+                        Plateforme de tutorat collaborative pour l'Afrique.
+                    </p>
+                </div>
+                
+                <div>
+                    <h5 class="footer-subtitle">Navigation</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html" class="footer-link">Accueil</a></li>
+                        <li><a href="tutor-list.html" class="footer-link active">Liste des tuteurs</a></li>
+                        <li><a href="tutoring-room.html" class="footer-link">Salle de tutorat</a></li>
+                        <li><a href="#" class="footer-link">Assistant IA</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="footer-subtitle">Matières</h5>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Mathématiques</a></li>
+                        <li><a href="#" class="footer-link">Physique</a></li>
+                        <li><a href="#" class="footer-link">Informatique</a></li>
+                        <li><a href="#" class="footer-link">Littérature</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="footer-subtitle">Développeur</h5>
+                    <div class="footer-info">
+                        <p><i class="fas fa-user mr-2"></i><span class="font-semibold">Domisseck</span></p>
+                        <p class="text-sm mt-1"><i class="fas fa-code mr-2"></i>Interface Liste des Tuteurs</p>
+                        <p class="text-sm mt-1"><i class="fas fa-users mr-2"></i>Groupe 10 - ISI3</p>
+                        <p class="text-sm mt-1"><i class="fas fa-calendar mr-2"></i>Sprint 1</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-copyright">
+                <p>
+                    &copy; 2024 EduConnect Africa - Interface développée par 
+                    <span class="developer-name">Domisseck</span>
+                </p>
+                <p class="copyright-note">
+                    Projet académique - Technologies et Programmation Web 
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div id="notification" class="notification hidden">
+        <div class="flex items-start">
+            <i class="fas fa-bell notification-icon"></i>
+            <div class="flex-1">
+                <h4 class="notification-title" id="notification-title"></h4>
+                <p class="notification-message" id="notification-message"></p>
+            </div>
+            <button onclick="hideNotification()" class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\auth-mock.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\tutors-list.js"></script>
+    <script src="c:\Users\PC\ISI3_PROJETWEB_GROUPE_10_FR\src\views\components\firebase.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
+
+    <script>
+        // Initialiser Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEXAMPLEKEY1234567890",
+            authDomain: "educonnect-africa.firebaseapp.com",
+            projectId: "educonnect-africa",
+            storageBucket: "educonnect-africa.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+            // AU DÉBUT du script dans tutoring-room.html
+    document.addEventListener('DOMContentLoaded', function() {
+        // Récupérer les infos du tuteur depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tutorId = urlParams.get('tutor');
+        let tutorName = decodeURIComponent(urlParams.get('name') || 'Tuteur');
+        let tutorSubject = decodeURIComponent(urlParams.get('subject') || 'Matière');
+        
+        // Si pas dans l'URL, essayer localStorage
+        if (!tutorName || tutorName === 'Tuteur') {
+            const savedTutor = localStorage.getItem('selectedTutor');
+            if (savedTutor) {
+                try {
+                    const tutorData = JSON.parse(savedTutor);
+                    tutorName = tutorData.name || 'Tuteur';
+                    tutorSubject = tutorData.subject || 'Matière';
+                } catch (e) {
+                    console.warn('Erreur parsing saved tutor:', e);
+                }
+            }
+        }
+        
+        // Mettre à jour l'interface IMMÉDIATEMENT
+        document.getElementById('tutor-name').textContent = tutorName;
+        document.getElementById('tutor-name-display').textContent = tutorName;
+        document.getElementById('placeholder-tutor-name').textContent = tutorName;
+        document.getElementById('subject-badge').textContent = tutorSubject;
+        document.getElementById('placeholder-tutor-subject').textContent = `Tuteur en ${tutorSubject}`;
+        
+        // Stocker pour utilisation ultérieure
+        window.currentTutor = { 
+            id: tutorId, 
+            name: tutorName, 
+            subject: tutorSubject,
+            peerId: `tutor_${tutorId}` // Générer un ID Peer pour le tuteur
+        };
+        
+        console.log('Tuteur chargé:', window.currentTutor);
+    });
+        // Définir les instances Firebase globales
+        window.firebaseDb = firebase.firestore();
+        window.firebaseAuth = firebase.auth();
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser Firebase Manager
+            if (typeof FirebaseManager === 'function') {
+                window.firebaseManager = new FirebaseManager(firebaseConfig);
+            }
+            
+            // Initialiser la liste des tuteurs
+            if (typeof TutorListManager === 'function') {
+                window.tutorListManager = new TutorListManager();
+            } else {
+                console.error('TutorListManager non trouvé. Vérifiez tutors-list.js');
+                showNotification('Erreur', 'Module de tuteurs non chargé', 'error');
+            }
+            
+            // Réinitialiser les filtres
+            document.getElementById('reset-filters')?.addEventListener('click', function() {
+                document.getElementById('global-search').value = '';
+                document.querySelector('[data-subject="all"]').click();
+                showNotification('Filtres réinitialisés', 'Tous les tuteurs sont affichés', 'success');
+            });
+            
+            // Recherche avec bouton
+            document.getElementById('search-btn')?.addEventListener('click', function() {
+                if (window.tutorListManager && typeof window.tutorListManager.applySearch === 'function') {
+                    window.tutorListManager.applySearch();
+                }
+            });
+            
+            // Recherche avec Entrée
+            document.getElementById('global-search')?.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (window.tutorListManager && typeof window.tutorListManager.applySearch === 'function') {
+                        window.tutorListManager.applySearch();
+                    }
+                }
+            });
+        });
+        
+        // Fonctions de notification
+        function showNotification(title, message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const titleEl = document.getElementById('notification-title');
+            const messageEl = document.getElementById('notification-message');
+            
+            if (notification && titleEl && messageEl) {
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                
+                // Appliquer la couleur selon le type
+                const colors = {
+                    'success': '#10B981',
+                    'error': '#EF4444',
+                    'warning': '#F59E0B',
+                    'info': '#1A3B52'
+                };
+                
+                notification.style.borderLeftColor = colors[type] || colors.info;
+                notification.classList.remove('hidden');
+                
+                // Auto-hide après 5 secondes
+                setTimeout(hideNotification, 5000);
+            }
+        }
+        
+        function hideNotification() {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.classList.add('hidden');
+            }
+        }
+        
+        window.showNotification = showNotification;
+        window.hideNotification = hideNotification;
+        
+        // Redirection vers la salle de tutorat
+        function startTutoringSession(tutorId) {
+            showNotification('Redirection', 'Ouverture de la salle de tutorat...', 'info');
+            setTimeout(() => {
+                window.location.href = `tutoring-room.html?tutor=${tutorId}`;
+            }, 1000);
+        }
+        
+        window.startTutoringSession = startTutoringSession;
+    </script>
+</body>
+</html>
