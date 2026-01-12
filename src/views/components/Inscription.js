@@ -1,57 +1,40 @@
 // ==================== CONFIGURATION FIREBASE ====================
 const firebaseConfig = {
-  apiKey: "AIzaSyBtoYd9WwiKq7p9nikG9dS50AwDCHDKPp4",
-  authDomain: "projetscolaire-8a437.firebaseapp.com",
-  projectId: "projetscolaire-8a437",
-  storageBucket: "projetscolaire-8a437.firebasestorage.app",
-  messagingSenderId: "489152998874",
-  appId: "1:489152998874:web:9a527c9a9faf47be7e24e3",
+    apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
+    authDomain: "achitectureweb-groupe-10.firebaseapp.com",
+    projectId: "achitectureweb-groupe-10",
+    storageBucket: "achitectureweb-groupe-10.firebasestorage.app",
+    messagingSenderId: "646899550480",
+    appId: "1:646899550480:web:687fd4f4b2e0ca646efd95"
 };
 
-// Initialiser Firebase
-let app, db, auth;
-try {
-  app = firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-  auth = firebase.auth();
-  console.log("Firebase initialisé avec succès");
-} catch (error) {
-  console.error("Erreur d'initialisation Firebase:", error);
-}
+// Variables globales pour Firebase
+let firebaseApp = null;
+let firebaseAuth = null;
+let firebaseDb = null;
+let firebaseInitialized = false;
+
+// ==================== VARIABLES GLOBALES ====================
+let selectedMatieres = [];
+let selectedMatieresText = [];
 
 // ==================== FONCTIONS UTILITAIRES ====================
-function showNotification(message, type = "info") {
-  // Supprimer les notifications existantes
-  const existingNotifications = document.querySelectorAll(".notification");
-  existingNotifications.forEach((notification) => notification.remove());
-
-  const notification = document.createElement("div");
-  notification.className = `notification animate__animated animate__fadeInRight ${
-    type === "success"
-      ? "notification-success"
-      : type === "error"
-      ? "notification-error"
-      : "notification-info"
-  }`;
-
-  const icon =
-    type === "success"
-      ? "fa-check-circle"
-      : type === "error"
-      ? "fa-exclamation-circle"
-      : "fa-info-circle";
-
-  notification.innerHTML = `
+function showNotification(message, type = 'info') {
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(notification => notification.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = `notification animate__animated animate__fadeInRight ${type === 'success' ? 'notification-success' : type === 'error' ? 'notification-error' : 'notification-info'}`;
+    
+    const icon = type === 'success' ? 'fa-check-circle' : 
+                type === 'error' ? 'fa-exclamation-circle' : 
+                'fa-info-circle';
+    
+    notification.innerHTML = `
         <div class="flex items-center gap-3">
             <i class="fas ${icon} text-xl"></i>
             <div class="flex-1">
-                <p class="font-bold">${
-                  type === "success"
-                    ? "Succès !"
-                    : type === "error"
-                    ? "Erreur !"
-                    : "Information"
-                }</p>
+                <p class="font-bold">${type === 'success' ? 'Succès !' : type === 'error' ? 'Erreur !' : 'Information'}</p>
                 <p class="text-sm opacity-90">${message}</p>
             </div>
             <button class="text-white opacity-70 hover:opacity-100" onclick="this.parentElement.parentElement.remove()">
@@ -59,610 +42,729 @@ function showNotification(message, type = "info") {
             </button>
         </div>
     `;
-
-  document.body.appendChild(notification);
-
-  // Supprimer automatiquement après 5 secondes
-  setTimeout(() => {
-    if (notification.parentElement) {
-      notification.classList.add("animate__fadeOutRight");
-      setTimeout(() => notification.remove(), 500);
-    }
-  }, 5000);
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.classList.add('animate__fadeOutRight');
+            setTimeout(() => notification.remove(), 500);
+        }
+    }, 5000);
 }
 
 function resetFormErrors() {
-  // Réinitialiser les messages d'erreur
-  document.querySelectorAll(".error-message").forEach((el) => {
-    el.classList.add("hidden");
-    el.textContent = "";
-  });
-
-  // Réinitialiser les styles des champs
-  document.querySelectorAll("input, select").forEach((field) => {
-    field.classList.remove("border-red-500", "error-shake");
-  });
-}
-
-// ==================== GESTION DU FORMULAIRE ====================
-document.addEventListener("DOMContentLoaded", function () {
-  // EMPÊCHER LA SOUMISSION PAR DÉFAUT DU FORMULAIRE
-  const form = document.getElementById("registrationForm");
-  if (form) {
-    // Empêcher le comportement par défaut (qui envoie dans l'URL)
-    form.addEventListener("submit", function (e) {
-      e.preventDefault(); // CECI EST ESSENTIEL !
-      handleFormSubmit(e);
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.classList.add('hidden');
+        el.textContent = '';
     });
-
-    // S'assurer que le formulaire n'a pas de méthode GET
-    form.method = "post"; // ou enlever l'attribut method
-  }
-});
-
-// ==================== GESTION DES MOTS DE PASSE ====================
-function checkPasswordStrength() {
-  const passwordInput = document.getElementById("password");
-  const password = passwordInput.value;
-  let score = 0;
-
-  // Vérifier chaque critère
-  const hasLength = password.length >= 8;
-  const hasUppercase = /[A-Z]/.test(password);
-  const hasLowercase = /[a-z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-  const hasSpecial = /[!@#$%^&*]/.test(password);
-
-  // Calcul du score (chaque critère vaut 20 points)
-  if (hasLength) score += 20;
-  if (hasUppercase) score += 20;
-  if (hasLowercase) score += 20;
-  if (hasNumber) score += 20;
-  if (hasSpecial) score += 20;
-
-  // Mettre à jour les icônes des exigences
-  const reqLength = document.getElementById("reqLength");
-  const reqUppercase = document.getElementById("reqUppercase");
-  const reqLowercase = document.getElementById("reqLowercase");
-  const reqNumber = document.getElementById("reqNumber");
-  const reqSpecial = document.getElementById("reqSpecial");
-
-  if (reqLength)
-    reqLength.className = hasLength
-      ? "fas fa-check-circle requirement-icon requirement-met"
-      : "fas fa-times-circle requirement-icon requirement-not-met";
-  if (reqUppercase)
-    reqUppercase.className = hasUppercase
-      ? "fas fa-check-circle requirement-icon requirement-met"
-      : "fas fa-times-circle requirement-icon requirement-not-met";
-  if (reqLowercase)
-    reqLowercase.className = hasLowercase
-      ? "fas fa-check-circle requirement-icon requirement-met"
-      : "fas fa-times-circle requirement-icon requirement-not-met";
-  if (reqNumber)
-    reqNumber.className = hasNumber
-      ? "fas fa-check-circle requirement-icon requirement-met"
-      : "fas fa-times-circle requirement-icon requirement-not-met";
-  if (reqSpecial)
-    reqSpecial.className = hasSpecial
-      ? "fas fa-check-circle requirement-icon requirement-met"
-      : "fas fa-times-circle requirement-icon requirement-not-met";
-
-  // Mettre à jour la barre de force
-  const passwordStrengthBar = document.getElementById("passwordStrengthBar");
-  const passwordStrengthText = document.getElementById("passwordStrengthText");
-  const passwordScore = document.getElementById("passwordScore");
-
-  if (passwordStrengthBar) {
-    passwordStrengthBar.style.width = `${score}%`;
-    passwordStrengthBar.className = "password-strength-bar";
-
-    if (score <= 40) {
-      passwordStrengthBar.classList.add("strength-weak");
-      if (passwordStrengthText) passwordStrengthText.textContent = "Faible";
-    } else if (score <= 80) {
-      passwordStrengthBar.classList.add("strength-medium");
-      if (passwordStrengthText) passwordStrengthText.textContent = "Moyen";
-    } else {
-      passwordStrengthBar.classList.add("strength-strong");
-      if (passwordStrengthText) passwordStrengthText.textContent = "Fort";
-    }
-  }
-
-  if (passwordScore) passwordScore.textContent = `${score}%`;
+    
+    document.querySelectorAll('.input-field').forEach(field => {
+        field.classList.remove('border-red-500', 'error-shake');
+        field.classList.add('border-gray-300');
+    });
+    
+    const successMsg = document.querySelector('.success-message');
+    if (successMsg) successMsg.classList.add('hidden');
 }
 
-function checkPasswordMatch() {
-  const password = document.getElementById("password").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
-  const passwordMatchMessage = document.getElementById("passwordMatchMessage");
-
-  if (confirmPassword.length === 0) {
-    passwordMatchMessage.innerHTML = "";
-    return;
-  }
-
-  if (password === confirmPassword) {
-    passwordMatchMessage.innerHTML = `
-            <i class="fas fa-check-circle match-success"></i>
-            <span class="match-success">Les mots de passe correspondent</span>
-        `;
-  } else {
-    passwordMatchMessage.innerHTML = `
-            <i class="fas fa-times-circle match-error"></i>
-            <span class="match-error">Les mots de passe ne correspondent pas</span>
-        `;
-  }
-}
-
-// ==================== GESTION DES PAYS ====================
-let africanCountries = [];
-
-async function loadAfricanCountries() {
-  try {
-    // Charger les pays...
-  } catch (error) {
-    console.error("Erreur lors du chargement des pays:", error);
-    africanCountries = getFallbackAfricanCountries();
-  }
-}
-
-function getFallbackAfricanCountries() {
-  return [
-    { name: "Cameroun", code: "CM", flag: "🇨🇲", phone_code: "+237" },
-    // ... autres pays
-  ];
-}
-
-// ==================== GESTION DES ÉTUDES ====================
-function setupEducationFields() {
-  const typeEtudeSelect = document.getElementById("typeEtude");
-  const niveauEtudeSelect = document.getElementById("niveauEtude");
-
-  if (!typeEtudeSelect || !niveauEtudeSelect) return;
-
-  const niveauxOptions = {
-    universitaire: [
-      { value: "l1", label: "Licence 1 (L1)" },
-      { value: "l2", label: "Licence 2 (L2)" },
-      { value: "l3", label: "Licence 3 (L3)" },
-      { value: "m1", label: "Master 1 (M1)" },
-      { value: "m2", label: "Master 2 (M2)" },
-      { value: "doctorat", label: "Doctorat" },
-      { value: "ingenieur", label: "Cycle ingénieur" },
-    ],
-    // ... autres options
-  };
-
-  typeEtudeSelect.addEventListener("change", function () {
-    const selectedType = this.value;
-    updateNiveauOptions(selectedType, niveauEtudeSelect, niveauxOptions);
-  });
-}
-
-// ==================== VALIDATION DU FORMULAIRE ====================
 function validateForm() {
-  const errors = [];
-
-  // Validation des champs requis
-  const requiredFields = [
-    { id: "nom", name: "Nom" },
-    { id: "prenom", name: "Prénom" },
-    { id: "email", name: "Email" },
-    { id: "password", name: "Mot de passe" },
-    { id: "confirmPassword", name: "Confirmation mot de passe" },
-  ];
-
-  requiredFields.forEach((field) => {
-    const element = document.getElementById(field.id);
-    if (element && !element.value.trim()) {
-      errors.push({
-        field: field.id,
-        message: `${field.name} est requis`,
-      });
+    const errors = [];
+    
+    const requiredFields = [
+        { id: 'name', name: 'Nom' },
+        { id: 'prenom', name: 'Prénom' },
+        { id: 'email', name: 'Email' },
+        { id: 'password', name: 'Mot de passe' },
+        { id: 'confirmPassword', name: 'Confirmation mot de passe' }
+    ];
+    
+    requiredFields.forEach(field => {
+        const element = document.getElementById(field.id);
+        if (element && !element.value.trim()) {
+            errors.push({
+                field: field.id,
+                message: `${field.name} est requis`
+            });
+        }
+    });
+    
+    const sexeSelected = document.querySelector('input[name="sexe"]:checked');
+    if (!sexeSelected) {
+        errors.push({
+            field: 'sexe',
+            message: 'Veuillez sélectionner votre sexe'
+        });
     }
-  });
-
-  // Validation du sexe
-  const sexeSelected = document.querySelector('input[name="sexe"]:checked');
-  if (!sexeSelected) {
-    errors.push({
-      field: "sexe",
-      message: "Veuillez sélectionner votre sexe",
-    });
-  }
-
-  // Validation des études
-  const typeEtude = document.getElementById("typeEtude");
-  const niveauEtude = document.getElementById("niveauEtude");
-
-  if (typeEtude && !typeEtude.value) {
-    errors.push({
-      field: "typeEtude",
-      message: "Veuillez sélectionner un type d'étude",
-    });
-  }
-
-  if (niveauEtude && !niveauEtude.value) {
-    errors.push({
-      field: "niveauEtude",
-      message: "Veuillez sélectionner un niveau d'étude",
-    });
-  }
-
-  // Validation du pays
-  const paysSelected = document.getElementById("paysSelected");
-  if (!paysSelected || !paysSelected.value) {
-    errors.push({
-      field: "paysInput",
-      message: "Veuillez sélectionner un pays",
-    });
-  }
-
-  // Validation du téléphone
-  const telephone = document.getElementById("telephone");
-  const countryCode = document.getElementById("countryCode");
-  if (telephone && telephone.value.replace(/\D/g, "").length < 8) {
-    errors.push({
-      field: "telephone",
-      message: "Le numéro doit contenir au moins 8 chiffres",
-    });
-  }
-
-  if (!countryCode || !countryCode.value) {
-    errors.push({
-      field: "telephone",
-      message: "Veuillez sélectionner un pays d'abord",
-    });
-  }
-
-  // Validation de l'email format
-  const email = document.getElementById("email");
-  if (email && email.value) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.value)) {
-      errors.push({
-        field: "email",
-        message: "Format d'email invalide",
-      });
+    
+    const diplome = document.getElementById('diplome');
+    if (diplome && !diplome.value) {
+        errors.push({
+            field: 'diplome',
+            message: 'Veuillez sélectionner votre diplôme'
+        });
     }
-  }
-
-  // Validation de la force du mot de passe
-  const passwordScore = document.getElementById("passwordScore");
-  if (passwordScore) {
-    const score = parseInt(passwordScore.textContent);
-    if (score < 60) {
-      errors.push({
-        field: "password",
-        message:
-          "Le mot de passe est trop faible. Améliorez-le pour continuer.",
-      });
+    
+    const langue = document.getElementById('langue');
+    if (langue && !langue.value) {
+        errors.push({
+            field: 'langue',
+            message: 'Veuillez sélectionner une langue'
+        });
     }
-  }
+    
+    if (selectedMatieres.length === 0) {
+        errors.push({
+            field: 'matieres',
+            message: 'Veuillez sélectionner au moins une matière'
+        });
+    }
+    
+    const email = document.getElementById('email');
+    if (email && email.value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value)) {
+            errors.push({
+                field: 'email',
+                message: 'Format d\'email invalide'
+            });
+        }
+    }
+    
+    const password = document.getElementById('password');
+    if (password && password.value.length < 6) {
+        errors.push({
+            field: 'password',
+            message: 'Le mot de passe doit contenir au moins 6 caractères'
+        });
+    }
+    
+    const confirmPassword = document.getElementById('confirmPassword');
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+        errors.push({
+            field: 'confirmPassword',
+            message: 'Les mots de passe ne correspondent pas'
+        });
+    }
+    
+    // Validation pour name et prenom (au moins 2 caractères)
+    const name = document.getElementById('name');
+    const prenom = document.getElementById('prenom');
 
-  return errors;
+    if (name && name.value.trim().length < 2) {
+        errors.push({
+            field: 'name',
+            message: 'Le nom doit contenir au moins 2 caractères'
+        });
+    }
+
+    if (prenom && prenom.value.trim().length < 2) {
+        errors.push({
+            field: 'prenom',
+            message: 'Le prénom doit contenir au moins 2 caractères'
+        });
+    }
+    
+    return errors;
 }
 
 function displayFormErrors(errors) {
-  errors.forEach((error) => {
-    const fieldElement = document.getElementById(error.field);
-    if (!fieldElement) return;
-
-    let errorElement =
-      fieldElement.parentElement.querySelector(".error-message");
-    if (!errorElement) {
-      errorElement =
-        fieldElement.parentElement.parentElement.querySelector(
-          ".error-message"
-        );
-    }
-
-    if (errorElement) {
-      errorElement.textContent = error.message;
-      errorElement.classList.remove("hidden");
-    }
-
-    fieldElement.classList.add("border-red-500", "error-shake");
-    setTimeout(() => fieldElement.classList.remove("error-shake"), 400);
-  });
-}
-
-// ==================== SOUMISSION À FIREBASE ====================
-async function handleFormSubmit(e) {
-  e.preventDefault(); // IMPORTANT : empêche l'envoi dans l'URL
-
-  // Réinitialiser les erreurs
-  resetFormErrors();
-
-  // Valider le formulaire
-  const errors = validateForm();
-
-  if (errors.length > 0) {
-    displayFormErrors(errors);
-    showNotification(
-      "Veuillez corriger les erreurs dans le formulaire",
-      "error"
-    );
-    return;
-  }
-
-  // Vérifier que Firebase est initialisé
-  if (!db || !auth) {
-    showNotification(
-      "Erreur de connexion à la base de données. Veuillez rafraîchir la page.",
-      "error"
-    );
-    return;
-  }
-
-  // Activer l'état de chargement
-  const submitBtn = document.getElementById("submitBtn");
-  const btnText = document.getElementById("btnText");
-  const btnLoader = document.getElementById("btnLoader");
-
-  submitBtn.disabled = true;
-  btnText.classList.add("hidden");
-  btnLoader.classList.remove("hidden");
-
-  try {
-    // Récupérer les données du formulaire
-    const formData = {
-      nom: document.getElementById("nom").value.trim(),
-      prenom: document.getElementById("prenom").value.trim(),
-      sexe: document.querySelector('input[name="sexe"]:checked').value,
-      langue: document.getElementById("langue").value,
-      email: document.getElementById("email").value.trim(),
-      typeEtude: document.getElementById("typeEtude").value,
-      niveauEtude: document.getElementById("niveauEtude").value,
-      pays: document.getElementById("paysSelected").value,
-      telephone:
-        document.getElementById("countryCode").value +
-        document.getElementById("telephone").value.replace(/\D/g, ""),
-    };
-
-    const password = document.getElementById("password").value;
-
-    console.log("Données à envoyer à Firebase:", formData);
-
-    // 1. Créer l'utilisateur dans Firebase Authentication
-    const userCredential = await auth.createUserWithEmailAndPassword(
-      formData.email,
-      password
-    );
-    const user = userCredential.user;
-
-    // 2. Mettre à jour le profil
-    await user.updateProfile({
-      displayName: `${formData.prenom} ${formData.nom}`,
+    errors.forEach(error => {
+        if (error.field === 'sexe') {
+            const sexeField = document.querySelector('.form-field:has(input[name="sexe"])');
+            if (sexeField) {
+                const errorElement = sexeField.querySelector('.error-message');
+                errorElement.textContent = error.message;
+                errorElement.classList.remove('hidden');
+            }
+        } else if (error.field === 'matieres') {
+            const matieresContainer = document.getElementById('selectedMatieresContainer');
+            const matiereError = document.querySelector('#matieres').nextElementSibling;
+            
+            if (matiereError) {
+                matiereError.textContent = error.message;
+                matiereError.classList.remove('hidden');
+            }
+            
+            if (matieresContainer) {
+                matieresContainer.classList.add('error-shake', 'border-red-500');
+                setTimeout(() => matieresContainer.classList.remove('error-shake'), 400);
+            }
+        } else {
+            const fieldElement = document.getElementById(error.field);
+            if (fieldElement) {
+                const errorElement = fieldElement.parentElement.querySelector('.error-message');
+                if (errorElement) {
+                    errorElement.textContent = error.message;
+                    errorElement.classList.remove('hidden');
+                }
+                fieldElement.classList.add('error-shake', 'border-red-500');
+                setTimeout(() => fieldElement.classList.remove('error-shake'), 400);
+            }
+        }
     });
-
-    // 3. Préparer les données pour Firestore
-    const studentData = {
-      uid: user.uid,
-      email: formData.email,
-      nom: formData.nom,
-      prenom: formData.prenom,
-      nomComplet: `${formData.prenom} ${formData.nom}`,
-      sexe: formData.sexe,
-      langue: formData.langue,
-      typeEtude: formData.typeEtude,
-      niveauEtude: formData.niveauEtude,
-      pays: formData.pays,
-      telephone: formData.telephone,
-      role: "etudiant",
-      statut: "actif",
-      dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
-      dateCreation: new Date().toISOString(),
-      photoURL: "",
-      preferences: {
-        notifications: true,
-        emails: true,
-        visibilite: "public",
-      },
-    };
-
-    // 4. Ajouter à la collection "etudiants"
-    const studentRef = await db.collection("etudiants").add(studentData);
-    console.log("Étudiant ajouté avec ID:", studentRef.id);
-
-    // 5. Créer un document dans "users"
-    const userGeneralData = {
-      uid: user.uid,
-      email: formData.email,
-      nom: formData.nom,
-      prenom: formData.prenom,
-      role: "etudiant",
-      dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
-      derniereConnexion: firebase.firestore.FieldValue.serverTimestamp(),
-    };
-
-    await db.collection("users").add(userGeneralData);
-
-    // Succès
-    showNotification(
-      "Inscription réussie ! Redirection vers la page de connexion...",
-      "success"
-    );
-
-    // Réinitialiser le formulaire
-    setTimeout(() => {
-      // Réinitialiser les champs
-      document.getElementById("registrationForm").reset();
-
-      // Réinitialiser les champs spécifiques
-      const paysInput = document.getElementById("paysInput");
-      const paysSelected = document.getElementById("paysSelected");
-      const countryCode = document.getElementById("countryCode");
-      if (paysInput) paysInput.value = "";
-      if (paysSelected) paysSelected.value = "";
-      if (countryCode) countryCode.value = "";
-
-      // Réinitialiser la force du mot de passe
-      const passwordStrengthBar = document.getElementById(
-        "passwordStrengthBar"
-      );
-      const passwordStrengthText = document.getElementById(
-        "passwordStrengthText"
-      );
-      const passwordScore = document.getElementById("passwordScore");
-      if (passwordStrengthBar) passwordStrengthBar.style.width = "0%";
-      if (passwordStrengthText)
-        passwordStrengthText.textContent = "Force du mot de passe";
-      if (passwordScore) passwordScore.textContent = "";
-
-      // Rediriger vers la page de connexion
-      window.location.href = "Connexion.html?newStudent=true";
-    }, 3000);
-  } catch (error) {
-    console.error("Erreur Firebase:", error);
-
-    let errorMessage = "Une erreur est survenue lors de l'inscription.";
-
-    switch (error.code) {
-      case "auth/email-already-in-use":
-        errorMessage = "Cet email est déjà utilisé. Essayez de vous connecter.";
-        break;
-      case "auth/invalid-email":
-        errorMessage = "L'adresse email n'est pas valide.";
-        break;
-      case "auth/weak-password":
-        errorMessage =
-          "Le mot de passe est trop faible. Utilisez au moins 6 caractères.";
-        break;
-      case "auth/operation-not-allowed":
-        errorMessage =
-          "L'inscription par email/mot de passe n'est pas activée.";
-        break;
-      case "auth/network-request-failed":
-        errorMessage = "Problème de connexion internet. Veuillez réessayer.";
-        break;
-      case "permission-denied":
-        errorMessage = "Permission refusée. Contactez l'administrateur.";
-        break;
-    }
-
-    showNotification(errorMessage, "error");
-  } finally {
-    // Désactiver l'état de chargement
-    submitBtn.disabled = false;
-    btnText.classList.remove("hidden");
-    btnLoader.classList.add("hidden");
-  }
 }
 
-// ==================== NAVIGATION ENTRE LES ÉTAPES ====================
-document.getElementById("nextBtn").addEventListener("click", function () {
-  // Valider l'étape 1 d'abord
-  const step1Valid = validateStep1();
-  if (step1Valid) {
-    // Cacher l'étape 1
-    document.querySelector('[data-step="1"]').classList.add("hidden");
-    // Afficher l'étape 2
-    document.querySelector('[data-step="2"]').classList.remove("hidden");
+// ==================== GESTION DES MATIÈRES ====================
+function updateMatieresDisplay() {
+    const container = document.getElementById('selectedMatieresContainer');
+    const placeholder = document.getElementById('placeholderText');
+    const input = document.getElementById('matieres');
+    
+    if (!container || !placeholder || !input) return;
+    
+    placeholder.style.display = selectedMatieres.length > 0 ? 'none' : 'block';
+    input.value = selectedMatieres.join(',');
+    
+    const oldTags = container.querySelectorAll('.matiere-selected');
+    oldTags.forEach(tag => tag.remove());
+    
+    selectedMatieres.forEach((matiere, index) => {
+        const tag = document.createElement('div');
+        tag.className = 'matiere-selected';
+        tag.innerHTML = `
+            <span>${selectedMatieresText[index] || matiere}</span>
+            <span class="remove-btn" data-matiere="${matiere}">
+                <i class="fas fa-times"></i>
+            </span>
+        `;
+        container.appendChild(tag);
+        
+        tag.querySelector('.remove-btn').addEventListener('click', function() {
+            const matiereToRemove = this.getAttribute('data-matiere');
+            removeMatiere(matiereToRemove);
+        });
+    });
+}
 
-    // Mettre à jour l'indicateur d'étape
-    updateStepIndicator(1);
-  }
-});
+function addMatiere(matiere) {
+    if (!selectedMatieres.includes(matiere)) {
+        selectedMatieres.push(matiere);
+        const btn = document.querySelector(`[data-matiere="${matiere}"]`);
+        if (btn) {
+            selectedMatieresText.push(btn.textContent.trim());
+            btn.style.display = 'none';
+        }
+        updateMatieresDisplay();
+    }
+}
 
-document.getElementById("backBtn").addEventListener("click", function () {
-  // Cacher l'étape 2
-  document.querySelector('[data-step="2"]').classList.add("hidden");
-  // Afficher l'étape 1
-  document.querySelector('[data-step="1"]').classList.remove("hidden");
+function removeMatiere(matiere) {
+    const index = selectedMatieres.indexOf(matiere);
+    if (index > -1) {
+        selectedMatieres.splice(index, 1);
+        selectedMatieresText.splice(index, 1);
+        const btn = document.querySelector(`[data-matiere="${matiere}"]`);
+        if (btn) {
+            btn.style.display = 'inline-flex';
+        }
+        updateMatieresDisplay();
+    }
+}
 
-  // Mettre à jour l'indicateur d'étape
-  updateStepIndicator(0);
-});
+// ==================== GESTION DES MOTS DE PASSE ====================
+function setupPasswordHandlers() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    if (password) {
+        password.addEventListener('input', updatePasswordStrength);
+    }
+    
+    if (confirmPassword) {
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+    }
+}
 
-function validateStep1() {
-  // Votre validation existante
-  const requiredFields = [
-    "nom",
-    "prenom",
-    "email",
-    "password",
-    "confirmPassword",
-  ];
-  let isValid = true;
-
-  requiredFields.forEach((fieldId) => {
-    const field = document.getElementById(fieldId);
-    if (!field.value.trim()) {
-      isValid = false;
-      field.classList.add("border-red-500");
+function updatePasswordStrength() {
+    const password = document.getElementById('password');
+    const strengthBar = document.getElementById('passwordStrengthBar');
+    const strengthText = document.getElementById('passwordStrengthText');
+    const strengthScore = document.getElementById('passwordScore');
+    
+    if (!password || !strengthBar || !strengthText) return;
+    
+    const value = password.value;
+    let strength = 0;
+    
+    if (value.length >= 8) {
+        strength++;
+        document.getElementById('reqLength').classList.replace('requirement-not-met', 'requirement-met');
     } else {
-      field.classList.remove("border-red-500");
+        document.getElementById('reqLength').classList.replace('requirement-met', 'requirement-not-met');
     }
-  });
-
-  // Vérifier si un sexe est sélectionné
-  const sexeSelected = document.querySelector('input[name="sexe"]:checked');
-  if (!sexeSelected) {
-    isValid = false;
-  }
-
-  // Vérifier la correspondance des mots de passe
-  const password = document.getElementById("password").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
-  if (password !== confirmPassword) {
-    isValid = false;
-    document.getElementById("confirmPassword").classList.add("border-red-500");
-  }
-
-  return isValid;
-}
-
-function updateStepIndicator(activeStep) {
-  // Votre code existant pour mettre à jour l'indicateur d'étape
-  document.querySelectorAll(".step").forEach((step, index) => {
-    if (index <= activeStep) {
-      step
-        .querySelector("div")
-        .classList.remove("bg-gray-300", "dark:bg-gray-600");
-      step
-        .querySelector("div")
-        .classList.add("bg-gradient-to-r", "from-blue-600", "to-blue-700");
-      step.querySelector("div").classList.add("text-white");
+    
+    if (/[A-Z]/.test(value)) {
+        strength++;
+        document.getElementById('reqUppercase').classList.replace('requirement-not-met', 'requirement-met');
     } else {
-      step
-        .querySelector("div")
-        .classList.remove(
-          "bg-gradient-to-r",
-          "from-blue-600",
-          "to-blue-700",
-          "text-white"
-        );
-      step
-        .querySelector("div")
-        .classList.add("bg-gray-300", "dark:bg-gray-600");
+        document.getElementById('reqUppercase').classList.replace('requirement-met', 'requirement-not-met');
     }
-  });
+    
+    if (/[a-z]/.test(value)) {
+        strength++;
+        document.getElementById('reqLowercase').classList.replace('requirement-not-met', 'requirement-met');
+    } else {
+        document.getElementById('reqLowercase').classList.replace('requirement-met', 'requirement-not-met');
+    }
+    
+    if (/[0-9]/.test(value)) {
+        strength++;
+        document.getElementById('reqNumber').classList.replace('requirement-not-met', 'requirement-met');
+    } else {
+        document.getElementById('reqNumber').classList.replace('requirement-met', 'requirement-not-met');
+    }
+    
+    if (/[!@#$%^&*]/.test(value)) {
+        strength++;
+        document.getElementById('reqSpecial').classList.replace('requirement-not-met', 'requirement-met');
+    } else {
+        document.getElementById('reqSpecial').classList.replace('requirement-met', 'requirement-not-met');
+    }
+    
+    const percentage = (strength / 5) * 100;
+    strengthBar.style.width = percentage + '%';
+    
+    strengthBar.className = 'password-strength-bar';
+    strengthText.className = '';
+    
+    if (strength <= 2) {
+        strengthBar.classList.add('strength-weak');
+        strengthText.classList.add('strength-weak');
+        strengthText.textContent = 'Faible';
+        if (strengthScore) {
+            strengthScore.textContent = strength + '/5';
+            strengthScore.className = 'text-xs sm:text-sm font-bold strength-weak';
+        }
+    } else if (strength <= 4) {
+        strengthBar.classList.add('strength-medium');
+        strengthText.classList.add('strength-medium');
+        strengthText.textContent = 'Moyen';
+        if (strengthScore) {
+            strengthScore.textContent = strength + '/5';
+            strengthScore.className = 'text-xs sm:text-sm font-bold strength-medium';
+        }
+    } else {
+        strengthBar.classList.add('strength-strong');
+        strengthText.classList.add('strength-strong');
+        strengthText.textContent = 'Fort';
+        if (strengthScore) {
+            strengthScore.textContent = strength + '/5';
+            strengthScore.className = 'text-xs sm:text-sm font-bold strength-strong';
+        }
+    }
 }
 
-// ==================== INITIALISATION ====================
-document.addEventListener("DOMContentLoaded", async function () {
-  console.log("Initialisation de l'inscription étudiant...");
+function checkPasswordMatch() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const matchMessage = document.getElementById('passwordMatchMessage');
+    
+    if (!password || !confirmPassword || !matchMessage) return;
+    
+    if (confirmPassword.value === '') {
+        matchMessage.innerHTML = '';
+        return;
+    }
+    
+    if (password.value === confirmPassword.value) {
+        matchMessage.innerHTML = '<span class="text-green-600 text-xs flex items-center gap-1"><i class="fas fa-check-circle"></i> Les mots de passe correspondent</span>';
+    } else {
+        matchMessage.innerHTML = '<span class="text-red-500 text-xs flex items-center gap-1"><i class="fas fa-times-circle"></i> Les mots de passe ne correspondent pas</span>';
+    }
+}
 
-  // Configurer les événements
-  document
-    .getElementById("password")
-    .addEventListener("input", checkPasswordStrength);
-  document
-    .getElementById("confirmPassword")
-    .addEventListener("input", checkPasswordMatch);
+// ==================== TOGGLE VISIBILITÉ MOT DE PASSE ====================
+function setupPasswordToggles() {
+    document.querySelectorAll('.eye-toggle').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            if (!input) return;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                this.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    });
+}
 
-  // Charger les pays
-  await loadAfricanCountries();
+// ==================== VALIDATION EMAIL ====================
+function setupEmailValidation() {
+    const email = document.getElementById('email');
+    if (!email) return;
+    
+    email.addEventListener('blur', function() {
+        const errorMsg = this.nextElementSibling;
+        const successMsg = errorMsg.nextElementSibling;
+        
+        if (!errorMsg || !successMsg) return;
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (emailRegex.test(this.value)) {
+            errorMsg.classList.add('hidden');
+            successMsg.classList.remove('hidden');
+            this.classList.remove('border-red-500');
+        } else if (this.value) {
+            errorMsg.textContent = 'Veuillez entrer une adresse email valide';
+            errorMsg.classList.remove('hidden');
+            successMsg.classList.add('hidden');
+            this.classList.add('border-red-500', 'error-shake');
+            setTimeout(() => this.classList.remove('error-shake'), 400);
+        }
+    });
+}
 
-  // Configurer les champs d'étude
-  setupEducationFields();
+// Fonction pour nettoyer et valider le display_name
+function cleanDisplayName(prenom, name) {
+    const displayName = `${prenom || ''} ${name || ''}`.trim();
+    
+    if (!displayName) {
+        const email = document.getElementById('email').value.trim();
+        return email.split('@')[0];
+    }
+    
+    return displayName;
+}
 
-  // S'assurer que le formulaire ne soumet pas par défaut
-  const form = document.getElementById("registrationForm");
-  if (form) {
-    form.addEventListener("submit", handleFormSubmit);
-    form.method = "post"; // Changer de GET à POST
-  }
+// ==================== INITIALISATION FIREBASE ====================
+async function initFirebase() {
+    console.log('Initialisation de Firebase...');
+    
+    // Attendre que la bibliothèque Firebase soit chargée
+    if (typeof firebase === 'undefined') {
+        console.log('Bibliothèque Firebase non détectée, chargement...');
+        
+        // Créer et charger le script Firebase (version compatibilité)
+        const script = document.createElement('script');
+        script.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js';
+        script.async = true;
+        
+        return new Promise((resolve, reject) => {
+            script.onload = async () => {
+                console.log('Firebase App chargée');
+                
+                try {
+                    // Charger les services nécessaires
+                    const authScript = document.createElement('script');
+                    authScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js';
+                    authScript.async = true;
+                    
+                    const firestoreScript = document.createElement('script');
+                    firestoreScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js';
+                    firestoreScript.async = true;
+                    
+                    await Promise.all([
+                        new Promise(res => {
+                            authScript.onload = () => {
+                                console.log('Firebase Auth chargé');
+                                res();
+                            };
+                            authScript.onerror = reject;
+                            document.head.appendChild(authScript);
+                        }),
+                        new Promise(res => {
+                            firestoreScript.onload = () => {
+                                console.log('Firebase Firestore chargé');
+                                res();
+                            };
+                            firestoreScript.onerror = reject;
+                            document.head.appendChild(firestoreScript);
+                        })
+                    ]);
+                    
+                    // Initialiser Firebase
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                    firebaseAuth = firebaseApp;
+                    firebaseDb = firebase.firestore();
+                    
+                    // Configurer la persistance de session
+                    if (firebase.auth && firebase.auth().setPersistence) {
+                        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                    }
+                    
+                    firebaseInitialized = true;
+                    console.log('Firebase initialisé avec succès');
+                    
+                    // Tester la connexion Firestore
+                    try {
+                        const db = firebase.firestore();
+                        const testDoc = await db.collection('enseignants').limit(1).get();
+                        console.log('Connexion Firestore testée avec succès');
+                    } catch (firestoreError) {
+                        console.warn('Test Firestore (peut être normal si collection vide):', firestoreError.message);
+                    }
+                    
+                    resolve();
+                } catch (error) {
+                    console.error('Erreur lors de l\'initialisation Firebase:', error);
+                    reject(error);
+                }
+            };
+            
+            script.onerror = (error) => {
+                console.error('Erreur de chargement du script Firebase:', error);
+                reject(error);
+            };
+            
+            document.head.appendChild(script);
+        });
+    } else {
+        // Firebase est déjà chargé
+        try {
+            if (!firebase.apps || firebase.apps.length === 0) {
+                firebaseApp = firebase.initializeApp(firebaseConfig);
+            } else {
+                firebaseApp = firebase.app();
+            }
+            
+            firebaseAuth = firebaseApp;
+            firebaseDb = firebase.firestore ? firebase.firestore() : null;
+            
+            // Configurer la persistance si disponible
+            if (firebase.auth && firebase.auth().setPersistence) {
+                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+            }
+            
+            firebaseInitialized = true;
+            console.log('Firebase initialisé (déjà chargé)');
+            
+            return Promise.resolve();
+            
+        } catch (error) {
+            console.error('Erreur lors de l\'initialisation Firebase:', error);
+            return Promise.reject(error);
+        }
+    }
+}
+
+// ==================== SOUMISSION DU FORMULAIRE ====================
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    resetFormErrors();
+    
+    const errors = validateForm();
+    
+    if (errors.length > 0) {
+        displayFormErrors(errors);
+        showNotification('Veuillez corriger les erreurs dans le formulaire', 'error');
+        return;
+    }
+    
+    if (!firebaseInitialized) {
+        showNotification('Erreur: Firebase non initialisé. Vérifiez votre connexion internet.', 'error');
+        console.error('Firebase non initialisé');
+        return;
+    }
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnLoader = document.getElementById('btnLoader');
+    
+    if (submitBtn && btnText && btnLoader) {
+        submitBtn.disabled = true;
+        btnText.classList.add('hidden');
+        btnLoader.classList.remove('hidden');
+    }
+    
+    try {
+        const formData = {
+            name: document.getElementById('name').value.trim(),
+            prenom: document.getElementById('prenom').value.trim(),
+            sexe: document.querySelector('input[name="sexe"]:checked').value,
+            diplome: document.getElementById('diplome').value,
+            matieres: selectedMatieres,
+            matieresText: selectedMatieresText,
+            langue: document.getElementById('langue').value,
+            email: document.getElementById('email').value.trim()
+        };
+        
+        const password = document.getElementById('password').value;
+        
+        console.log('Tentative d\'inscription Firebase pour:', formData.email);
+        
+        const displayName = cleanDisplayName(formData.prenom, formData.name);
+        
+        if (!displayName) {
+            throw new Error('Le nom complet ne peut pas être vide');
+        }
+        
+        // 1. Créer l'utilisateur avec Firebase Auth
+        const auth = firebase.auth();
+        const userCredential = await auth.createUserWithEmailAndPassword(formData.email, password);
+        const user = userCredential.user;
+        
+        console.log('Utilisateur Firebase créé:', user.uid);
+        
+        // 2. Mettre à jour le profil
+        await user.updateProfile({
+            displayName: displayName
+        });
+        
+        // 3. Envoyer l'email de vérification
+        await user.sendEmailVerification({
+            url: `${window.location.origin}/src/views/templates/Connexion.html?emailVerified=true`,
+            handleCodeInApp: true
+        });
+        
+        // 4. Préparer les données pour Firestore
+        const enseignantData = {
+            uid: user.uid,
+            email: formData.email,
+            name: formData.name,
+            prenom: formData.prenom,
+            display_name: displayName,
+            sexe: formData.sexe,
+            diplome: formData.diplome,
+            matieres: formData.matieres,
+            matieres_text: formData.matieresText,
+            langue: formData.langue,
+            role: 'enseignant',
+            statut: 'actif',
+            email_verified: false,
+            
+            // CORRECTION : Utiliser FieldValue.serverTimestamp()
+            date_inscription: firebase.firestore.FieldValue.serverTimestamp(),
+            date_creation: firebase.firestore.FieldValue.serverTimestamp(),
+            date_mise_a_jour: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        console.log('Données à envoyer:', enseignantData);
+        
+        // 5. Insérer dans Firestore
+        const db = firebase.firestore();
+        await db.collection('enseignants').doc(user.uid).set(enseignantData);
+        
+        console.log('Insertion Firestore réussie');
+        
+        showNotification('Inscription réussie ! Un email de vérification a été envoyé. Vérifiez votre boîte mail avant de vous connecter.', 'success');
+        
+        // Réinitialiser le formulaire
+        document.getElementById('tutorRegistrationForm').reset();
+        selectedMatieres = [];
+        selectedMatieresText = [];
+        updateMatieresDisplay();
+        
+        document.querySelectorAll('.matiere-btn').forEach(btn => {
+            btn.style.display = 'inline-flex';
+        });
+        
+        const strengthBar = document.getElementById('passwordStrengthBar');
+        const strengthText = document.getElementById('passwordStrengthText');
+        const strengthScore = document.getElementById('passwordScore');
+        if (strengthBar) strengthBar.style.width = '0%';
+        if (strengthText) strengthText.textContent = 'Force du mot de passe';
+        if (strengthScore) strengthScore.textContent = '';
+        
+        document.querySelectorAll('.requirement-icon').forEach(icon => {
+            icon.classList.replace('requirement-met', 'requirement-not-met');
+        });
+        
+        const matchMessage = document.getElementById('passwordMatchMessage');
+        if (matchMessage) matchMessage.innerHTML = '';
+        
+        setTimeout(() => {
+            window.location.href = '../templates/Connexion.html?newUser=true';
+        }, 3000);
+        
+    } catch (error) {
+        console.error("Erreur complète lors de l'inscription Firebase:", error);
+        console.error("Code erreur:", error.code);
+        console.error("Message:", error.message);
+        
+        let errorMessage = "Une erreur est survenue lors de l'inscription.";
+        
+        if (error.code) {
+            switch(error.code) {
+                case 'auth/email-already-in-use':
+                    errorMessage = "Cet email est déjà utilisé. Essayez de vous connecter.";
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = "L'adresse email n'est pas valide.";
+                    break;
+                case 'auth/weak-password':
+                    errorMessage = "Le mot de passe est trop faible. Utilisez au moins 6 caractères.";
+                    break;
+                case 'auth/network-request-failed':
+                    errorMessage = "Problème de connexion internet. Veuillez réessayer.";
+                    break;
+                case 'auth/operation-not-allowed':
+                    errorMessage = "L'inscription par email/mot de passe n'est pas activée dans Firebase.";
+                    break;
+                case 'permission-denied':
+                    errorMessage = "Permission refusée. Vérifiez les règles Firestore ou utilisez des règles temporaires.";
+                    break;
+                default:
+                    errorMessage = "Erreur Firebase: " + error.code;
+            }
+        } else if (error.message) {
+            errorMessage = "Erreur: " + error.message;
+        }
+        
+        showNotification(errorMessage, 'error');
+        
+        // Déconnecter l'utilisateur en cas d'erreur
+        if (firebaseAuth) {
+            try {
+                await firebase.auth().signOut();
+            } catch (signOutError) {
+                console.error('Erreur lors de la déconnexion:', signOutError);
+            }
+        }
+        
+    } finally {
+        if (submitBtn && btnText && btnLoader) {
+            submitBtn.disabled = false;
+            btnText.classList.remove('hidden');
+            btnLoader.classList.add('hidden');
+        }
+    }
+}
+
+// ==================== INITIALISATION DE LA PAGE ====================
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log("Page chargée, initialisation...");
+    
+    // Configurer les gestionnaires qui ne dépendent pas de Firebase
+    setupPasswordHandlers();
+    setupPasswordToggles();
+    setupEmailValidation();
+    
+    // Configurer les boutons de matières
+    document.querySelectorAll('.matiere-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const matiere = this.getAttribute('data-matiere');
+            addMatiere(matiere);
+        });
+    });
+    
+    // Configurer le formulaire
+    const form = document.getElementById('tutorRegistrationForm');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
+    }
+    
+    // Initialiser Firebase
+    try {
+        await initFirebase();
+        console.log("Firebase initialisé avec succès");
+        showNotification('Connexion Firebase établie', 'info', 3000);
+    } catch (error) {
+        console.error("Échec de l'initialisation Firebase:", error);
+        showNotification('Erreur de connexion à Firebase. Vérifiez votre internet.', 'error');
+        
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Base de données indisponible';
+            submitBtn.classList.add('bg-red-500', 'cursor-not-allowed');
+        }
+    }
+    
+    console.log("Initialisation terminée");
 });
