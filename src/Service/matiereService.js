@@ -9,7 +9,7 @@ import {
   getDocs,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { db } from "../firebase/firebase-config.js"; // ← avec les accolades { }
+import { db } from "../firebase/firebase-config.js";
 /**
  * Service pour gérer les opérations CRUD sur les matières (Firestore)
  */
@@ -19,9 +19,6 @@ const matiereService = {
    * @returns {Promise<Array>} Liste des matières avec leur id
    */
   async getAll() {
-    console.log("Valeur de db :", db);
-    console.log("Type de db :", typeof db);
-    console.log("db.constructor?.name :", db?.constructor?.name);
     try {
       const matieresCol = collection(db, "matieres");
       const matiereSnapshot = await getDocs(matieresCol);

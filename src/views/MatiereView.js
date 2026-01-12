@@ -13,11 +13,11 @@ export class MatiereView {
     const isEditing = !!editingId;
 
     const html = `
-      <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
+      <div class="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
         <div class="max-w-4xl mx-auto">
           <!-- Titre avec gradient -->
           <div class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-yellow-500 to-pink-500 bg-clip-text text-transparent mb-3">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold bg-linear-to-r from-yellow-500 to-pink-500 bg-clip-text text-transparent mb-3">
               Gestion des Matières
             </h1>
             <p class="text-gray-600 text-base sm:text-lg">
@@ -25,7 +25,6 @@ export class MatiereView {
             </p>
           </div>
 
-          <!-- Formulaire -->
           <form id="matiere-form" class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100 mb-10">
             <input type="hidden" id="matiere-id" value="${editingId || ""}">
 
@@ -87,7 +86,7 @@ export class MatiereView {
               
               <button 
                 type="submit" 
-                class="px-8 py-3 bg-gradient-to-r from-yellow-500 to-pink-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:from-yellow-600 hover:to-pink-600 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center"
+                class="px-8 py-3 bg-linear-to-r from-yellow-500 to-pink-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:from-yellow-600 hover:to-pink-600 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center"
               >
                 <i class="fas ${isEditing ? "fa-edit" : "fa-plus"} mr-2"></i>
                 ${isEditing ? "Modifier la matière" : "Ajouter la matière"}

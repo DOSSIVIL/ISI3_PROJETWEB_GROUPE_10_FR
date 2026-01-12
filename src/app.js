@@ -1,5 +1,5 @@
 import { MatiereController } from "../src/Controller/MatiereController";
-
+import { AssistantIAController } from "./Controller/assistantAiController";
 // ------------------------------------------------------
 // Fonction utilitaire : charge du HTML et exécute les scripts
 // ------------------------------------------------------
@@ -81,6 +81,13 @@ export async function loadPage(pageName) {
       const container = document.getElementById("matiere-container");
       if (container) {
         const ctrl = new MatiereController(container);
+        await ctrl.init();
+      }
+    }
+    if (pageName === "assistantAi") {
+      const container = document.getElementById("assistant-ai-container");
+      if (container) {
+        const ctrl = new AssistantIAController(container);
         await ctrl.init();
       }
     }

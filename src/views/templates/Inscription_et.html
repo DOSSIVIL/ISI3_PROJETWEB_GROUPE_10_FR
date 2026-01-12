@@ -1,1321 +1,1736 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inscription Étudiant - EduConnect Africa</title>
-    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../style.css" />
     <!-- CDN nécessaires -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .gradient-bg::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-        
-        .gradient-bg::after {
-            content: '';
-            position: absolute;
-            bottom: -50%;
-            left: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
-            animation: pulse 10s ease-in-out infinite reverse;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.2) translate(10%, 10%); }
-        }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .input-focus:focus {
-            border-color: #f59e0b;
-            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .input-field {
-            transition: all 0.3s ease;
-            border: 2px solid #e5e7eb;
-        }
-        
-        .input-field:hover {
-            border-color: #f59e0b;
-        }
-        
-        .country-dropdown {
-            max-height: 280px;
-            overflow-y: auto;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border: 2px solid #f59e0b;
-        }
-        
-        .country-dropdown::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .country-dropdown::-webkit-scrollbar-track {
-            background: #f3f4f6;
-        }
-        
-        .country-dropdown::-webkit-scrollbar-thumb {
-            background: #f59e0b;
-            border-radius: 4px;
-        }
-        
-        .country-item {
-            transition: all 0.2s ease;
-        }
-        
-        .country-item:hover {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), rgba(236, 72, 153, 0.1));
-            transform: translateX(5px);
-        }
-        
-        .error-shake {
-            animation: shake 0.4s;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-            20%, 40%, 60%, 80% { transform: translateX(8px); }
-        }
-        
-        .btn-gradient {
-            background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-        }
-        
-        .btn-gradient:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-        }
-        
-        .btn-gradient:active {
-            transform: translateY(-1px);
-        }
-        
-        .radio-custom {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #d1d5db;
-            border-radius: 50%;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .radio-custom:checked {
-            border-color: #f59e0b;
-            background: #f59e0b;
-        }
-        
-        .radio-custom:checked::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-        }
-        
-        .floating-icon {
-            position: absolute;
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        
-        .label-icon {
-            color: #f59e0b;
-            margin-right: 8px;
-            font-size: 16px;
-        }
-        
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 20px;
-            padding-right: 40px;
-        }
-        
-        .success-pulse {
-            animation: successPulse 0.5s ease;
-        }
-        
-        @keyframes successPulse {
-            0% { transform: scale(0.95); opacity: 0; }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        /* Styles pour la force du mot de passe */
-        .password-strength-container {
-            margin-top: 8px;
-        }
-        
-        .password-strength-bar-container {
-            height: 8px;
-            background-color: #e5e7eb;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 6px;
-        }
-        
-        .password-strength-bar {
-            height: 100%;
-            width: 0%;
-            border-radius: 4px;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background-color: #ef4444; /* Couleur par défaut - rouge */
-        }
-        
-        /* Classes pour les différentes forces (sans dégradé) */
-        .password-strength-bar.strength-weak {
-            background-color: #ef4444; /* Rouge */
-        }
-        
-        .password-strength-bar.strength-medium {
-            background-color: #f59e0b; /* Orange */
-        }
-        
-        .password-strength-bar.strength-strong {
-            background-color: #10b981; /* Vert */
-        }
-        
-        .password-strength-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .password-strength-text {
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .strength-weak { 
-            color: #ef4444; 
-        }
-        
-        .strength-medium { 
-            color: #f59e0b; 
-        }
-        
-        .strength-strong { 
-            color: #10b981; 
-        }
-        
-        .password-score {
-            font-size: 11px;
-            font-weight: bold;
-        }
-        
-        .password-match-message {
-            font-size: 12px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .match-error {
-            color: #ef4444;
-        }
-        
-        .match-success {
-            color: #10b981;
-        }
-        
-        .password-requirements {
-            background-color: #f9fafb;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 8px;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .requirement {
-            display: flex;
-            align-items: center;
-            margin-bottom: 6px;
-            font-size: 11px;
-            transition: all 0.3s ease;
-        }
-        
-        .requirement:last-child {
-            margin-bottom: 0;
-        }
-        
-        .requirement-met {
-            color: #10b981;
-        }
-        
-        .requirement-not-met {
-            color: #9ca3af;
-        }
-        
-        .requirement-icon {
-            margin-right: 6px;
-            font-size: 10px;
-        }
-        
-        .eye-toggle {
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        
-        .eye-toggle:hover {
-            color: #f59e0b;
-        }
-        
-        /* Animation pour la barre de force */
-        @keyframes barFill {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(0%); }
-        }
-        
-        /* Animation pour le texte */
-        @keyframes textPop {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-        /* Styles pour le bouton retour */
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 20;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-        
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
+      * {
+        font-family: "Poppins", sans-serif;
+      }
 
-        /* Améliorations de positionnement */
-        .form-section {
-            padding: 30px;
-            overflow-y: auto;
-            max-height: 100vh;
-        }
+      .gradient-bg {
+        background: linear-gradient(
+          135deg,
+          #1e293b 0%,
+          #0f172a 50%,
+          #1e293b 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
 
-        .form-container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
+      .gradient-bg::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          rgba(245, 158, 11, 0.1) 0%,
+          transparent 70%
+        );
+        animation: pulse 8s ease-in-out infinite;
+      }
 
-        .form-title {
-            margin-bottom: 30px;
-        }
+      .gradient-bg::after {
+        content: "";
+        position: absolute;
+        bottom: -50%;
+        left: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          rgba(236, 72, 153, 0.1) 0%,
+          transparent 70%
+        );
+        animation: pulse 10s ease-in-out infinite reverse;
+      }
 
-        .form-grid {
-            display: grid;
-            gap: 20px;
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1) translate(0, 0);
         }
+        50% {
+          transform: scale(1.2) translate(10%, 10%);
+        }
+      }
 
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .input-focus:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .input-field {
+        transition: all 0.3s ease;
+        border: 2px solid #e5e7eb;
+      }
+
+      .input-field:hover {
+        border-color: #f59e0b;
+      }
+
+      .country-dropdown {
+        max-height: 280px;
+        overflow-y: auto;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        border: 2px solid #f59e0b;
+      }
+
+      .country-dropdown::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .country-dropdown::-webkit-scrollbar-track {
+        background: #f3f4f6;
+      }
+
+      .country-dropdown::-webkit-scrollbar-thumb {
+        background: #f59e0b;
+        border-radius: 4px;
+      }
+
+      .country-item {
+        transition: all 0.2s ease;
+      }
+
+      .country-item:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(245, 158, 11, 0.1),
+          rgba(236, 72, 153, 0.1)
+        );
+        transform: translateX(5px);
+      }
+
+      .error-shake {
+        animation: shake 0.4s;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-8px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(8px);
+        }
+      }
+
+      .btn-gradient {
+        background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+      }
+
+      .btn-gradient:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+      }
+
+      .btn-gradient:active {
+        transform: translateY(-1px);
+      }
+
+      .radio-custom {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
+        border-radius: 50%;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .radio-custom:checked {
+        border-color: #f59e0b;
+        background: #f59e0b;
+      }
+
+      .radio-custom:checked::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      .floating-icon {
+        position: absolute;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(5deg);
+        }
+      }
+
+      .label-icon {
+        color: #f59e0b;
+        margin-right: 8px;
+        font-size: 16px;
+      }
+
+      select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 20px;
+        padding-right: 40px;
+      }
+
+      .success-pulse {
+        animation: successPulse 0.5s ease;
+      }
+
+      @keyframes successPulse {
+        0% {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Styles pour la force du mot de passe */
+      .password-strength-container {
+        margin-top: 8px;
+      }
+
+      .password-strength-bar-container {
+        height: 8px;
+        background-color: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 6px;
+      }
+
+      .password-strength-bar {
+        height: 100%;
+        width: 0%;
+        border-radius: 4px;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        background-color: #ef4444; /* Couleur par défaut - rouge */
+      }
+
+      /* Classes pour les différentes forces (sans dégradé) */
+      .password-strength-bar.strength-weak {
+        background-color: #ef4444; /* Rouge */
+      }
+
+      .password-strength-bar.strength-medium {
+        background-color: #f59e0b; /* Orange */
+      }
+
+      .password-strength-bar.strength-strong {
+        background-color: #10b981; /* Vert */
+      }
+
+      .password-strength-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .password-strength-text {
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .strength-weak {
+        color: #ef4444;
+      }
+
+      .strength-medium {
+        color: #f59e0b;
+      }
+
+      .strength-strong {
+        color: #10b981;
+      }
+
+      .password-score {
+        font-size: 11px;
+        font-weight: bold;
+      }
+
+      .password-match-message {
+        font-size: 12px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .match-error {
+        color: #ef4444;
+      }
+
+      .match-success {
+        color: #10b981;
+      }
+
+      .password-requirements {
+        background-color: #f9fafb;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 8px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .requirement {
+        display: flex;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: 11px;
+        transition: all 0.3s ease;
+      }
+
+      .requirement:last-child {
+        margin-bottom: 0;
+      }
+
+      .requirement-met {
+        color: #10b981;
+      }
+
+      .requirement-not-met {
+        color: #9ca3af;
+      }
+
+      .requirement-icon {
+        margin-right: 6px;
+        font-size: 10px;
+      }
+
+      .eye-toggle {
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+
+      .eye-toggle:hover {
+        color: #f59e0b;
+      }
+
+      /* Animation pour la barre de force */
+      @keyframes barFill {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(0%);
+        }
+      }
+
+      /* Animation pour le texte */
+      @keyframes textPop {
+        0% {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Styles pour le bouton retour */
+      .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 20;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Améliorations de positionnement */
+      .form-section {
+        padding: 30px;
+        overflow-y: auto;
+        max-height: 100vh;
+      }
+
+      .form-container {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .form-title {
+        margin-bottom: 30px;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 20px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .form-field {
+        margin-bottom: 20px;
+      }
+
+      .form-actions {
+        margin-top: 30px;
+      }
+
+      .login-link {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      /* Améliorations pour les sections */
+      .section-spacing {
+        margin-top: 25px;
+      }
+
+      .phone-section {
+        margin-top: 20px;
+      }
+
+      .phone-input-group {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .country-code-input {
+        width: 100px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
         .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-field {
-            margin-bottom: 20px;
-        }
-
-        .form-actions {
-            margin-top: 30px;
-        }
-
-        .login-link {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        /* Améliorations pour les sections */
-        .section-spacing {
-            margin-top: 25px;
-        }
-
-        .phone-section {
-            margin-top: 20px;
+          grid-template-columns: 1fr;
         }
 
         .phone-input-group {
-            display: flex;
-            gap: 15px;
-            align-items: center;
+          flex-direction: column;
+          gap: 10px;
         }
 
         .country-code-input {
-            width: 100px;
-            text-align: center;
-            font-weight: bold;
+          width: 100%;
         }
+      }
+      /* Styles pour les sélecteurs d'étude */
+      select:disabled {
+        background-color: #f9fafb;
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .phone-input-group {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .country-code-input {
-                width: 100%;
-            }
-        }
-                /* Styles pour les sélecteurs d'étude */
-        select:disabled {
-            background-color: #f9fafb;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
+      select:disabled:hover {
+        border-color: #e5e7eb;
+      }
 
-        select:disabled:hover {
-            border-color: #e5e7eb;
-        }
+      /* Animation de transition pour les options */
+      select option {
+        padding: 10px;
+        transition: background-color 0.2s ease;
+      }
 
-        /* Animation de transition pour les options */
-        select option {
-            padding: 10px;
-            transition: background-color 0.2s ease;
-        }
+      select option:hover {
+        background-color: #f59e0b;
+        color: white;
+      }
 
-        select option:hover {
-            background-color: #f59e0b;
-            color: white;
-        }
+      /* Style pour les icônes dans les options */
+      select option[value^="universitaire"] {
+        background-color: #eff6ff;
+      }
 
-        /* Style pour les icônes dans les options */
-        select option[value^="universitaire"] {
-            background-color: #eff6ff;
-        }
+      select option[value^="secondaire"] {
+        background-color: #f0fdf4;
+      }
 
-        select option[value^="secondaire"] {
-            background-color: #f0fdf4;
-        }
+      select option[value^="autre"] {
+        background-color: #faf5ff;
+      }
 
-        select option[value^="autre"] {
-            background-color: #faf5ff;
-        }
+      /* Indicateur de champ obligatoire */
+      .form-field.required label::after {
+        content: " *";
+        color: #ef4444;
+      }
 
-        /* Indicateur de champ obligatoire */
-        .form-field.required label::after {
-            content: " *";
-            color: #ef4444;
-        }
+      /* Message d'aide pour les champs d'étude */
+      .education-help {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
 
-        /* Message d'aide pour les champs d'étude */
-        .education-help {
-            font-size: 11px;
-            color: #6b7280;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+      .education-help i {
+        color: #f59e0b;
+        font-size: 10px;
+      }
 
-        .education-help i {
-            color: #f59e0b;
-            font-size: 10px;
-        }
+      /* Notification styles */
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        color: white;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        min-width: 300px;
+        max-width: 400px;
+        backdrop-filter: blur(10px);
+      }
 
-        /* Notification styles */
+      .notification-success {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-left: 4px solid #047857;
+      }
+
+      .notification-error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        border-left: 4px solid #b91c1c;
+      }
+
+      .notification-info {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        border-left: 4px solid #1d4ed8;
+      }
+
+      .notification-warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        border-left: 4px solid #b45309;
+      }
+
+      /* Messages d'erreur dans les champs */
+      .error-message {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .error-message i {
+        font-size: 10px;
+      }
+
+      .error-message.hidden {
+        display: none;
+      }
+
+      /* Messages de succès dans les champs */
+      .success-message {
+        color: #10b981;
+        font-size: 12px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .success-message i {
+        font-size: 10px;
+      }
+
+      .success-message.hidden {
+        display: none;
+      }
+
+      /* Style pour les messages de correspondance de mot de passe */
+      .password-match-message {
+        font-size: 12px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .match-success {
+        color: #10b981;
+      }
+
+      .match-error {
+        color: #ef4444;
+      }
+
+      /* Messages d'aide/info */
+      .help-message {
+        color: #6b7280;
+        font-size: 11px;
+        margin-top: 4px;
+        font-style: italic;
+        animation: fadeIn 0.3s ease;
+      }
+
+      /* Messages de chargement */
+      .loading-message {
+        color: #3b82f6;
+        font-size: 12px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .loading-message i {
+        animation: spin 1s linear infinite;
+      }
+
+      /* Animation pour le bouton de chargement */
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Animation pour les messages */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+      }
+
+      /* Messages toast supplémentaires */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .toast {
+        padding: 12px 16px;
+        border-radius: 8px;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 4.7s forwards;
+        max-width: 350px;
+      }
+
+      .toast-success {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-left: 3px solid #047857;
+      }
+
+      .toast-error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        border-left: 3px solid #b91c1c;
+      }
+
+      .toast-warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        border-left: 3px solid #b45309;
+      }
+
+      .toast-info {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        border-left: 3px solid #1d4ed8;
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      /* Messages dans les tooltips */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 200px;
+        background-color: #1f2937;
+        color: white;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .tooltip .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #1f2937 transparent transparent transparent;
+      }
+
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      /* Messages de validation en ligne */
+      .inline-validation {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .inline-validation.valid {
+        color: #10b981;
+      }
+
+      .inline-validation.invalid {
+        color: #ef4444;
+      }
+
+      .inline-validation i {
+        font-size: 10px;
+      }
+
+      /* Messages de bienvenue et informations importantes */
+      .welcome-message {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.1),
+          rgba(236, 72, 153, 0.1)
+        );
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .welcome-message h3 {
+        color: #f59e0b;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      .welcome-message p {
+        color: #4b5563;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      /* Messages pour les étapes */
+      .step-message {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.1),
+          rgba(37, 99, 235, 0.1)
+        );
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 10px;
+        color: #1e40af;
+        font-size: 12px;
+      }
+
+      /* Messages de confirmation */
+      .confirmation-message {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.1),
+          rgba(5, 150, 105, 0.1)
+        );
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 10px;
+        color: #065f46;
+        font-size: 12px;
+      }
+
+      /* Messages d'erreur pour les formulaires */
+      .form-error-message {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.1),
+          rgba(220, 38, 38, 0.1)
+        );
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 20px;
+        color: #991b1b;
+        font-size: 13px;
+      }
+
+      /* Messages d'alerte */
+      .alert-message {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.1),
+          rgba(217, 119, 6, 0.1)
+        );
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 20px;
+        color: #92400e;
+        font-size: 13px;
+      }
+
+      /* Responsive pour les notifications */
+      @media (max-width: 640px) {
         .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 10px;
-            color: white;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            min-width: 300px;
-            max-width: 400px;
-            backdrop-filter: blur(10px);
-        }
-
-        .notification-success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            border-left: 4px solid #047857;
-        }
-
-        .notification-error {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            border-left: 4px solid #b91c1c;
-        }
-
-        .notification-info {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-left: 4px solid #1d4ed8;
-        }
-
-        .notification-warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            border-left: 4px solid #b45309;
-        }
-
-        /* Messages d'erreur dans les champs */
-        .error-message {
-            color: #ef4444;
-            font-size: 12px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .error-message i {
-            font-size: 10px;
-        }
-
-        .error-message.hidden {
-            display: none;
-        }
-
-        /* Messages de succès dans les champs */
-        .success-message {
-            color: #10b981;
-            font-size: 12px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .success-message i {
-            font-size: 10px;
-        }
-
-        .success-message.hidden {
-            display: none;
-        }
-
-        /* Style pour les messages de correspondance de mot de passe */
-        .password-match-message {
-            font-size: 12px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .match-success {
-            color: #10b981;
-        }
-
-        .match-error {
-            color: #ef4444;
-        }
-
-        /* Messages d'aide/info */
-        .help-message {
-            color: #6b7280;
-            font-size: 11px;
-            margin-top: 4px;
-            font-style: italic;
-            animation: fadeIn 0.3s ease;
-        }
-
-        /* Messages de chargement */
-        .loading-message {
-            color: #3b82f6;
-            font-size: 12px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .loading-message i {
-            animation: spin 1s linear infinite;
-        }
-
-        /* Animation pour le bouton de chargement */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Animation pour les messages */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-5px); }
-        }
-
-        /* Messages toast supplémentaires */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+          min-width: 280px;
+          max-width: 90%;
+          top: 10px;
+          right: 10px;
+          left: 10px;
+          margin: 0 auto;
         }
 
         .toast {
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 4.7s forwards;
-            max-width: 350px;
+          max-width: 90%;
+          margin: 0 auto;
         }
+      }
 
-        .toast-success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            border-left: 3px solid #047857;
-        }
+      /* Animation pour les messages qui disparaissent */
+      .message-exit {
+        animation: fadeOut 0.3s ease forwards;
+      }
 
-        .toast-error {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            border-left: 3px solid #b91c1c;
-        }
+      /* Messages avec icônes */
+      .message-with-icon {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        margin: 8px 0;
+      }
 
-        .toast-warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            border-left: 3px solid #b45309;
-        }
+      .message-with-icon i {
+        font-size: 16px;
+        margin-top: 2px;
+      }
 
-        .toast-info {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-left: 3px solid #1d4ed8;
-        }
+      .message-with-icon.success {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.1),
+          rgba(5, 150, 105, 0.1)
+        );
+        border-left: 3px solid #10b981;
+        color: #065f46;
+      }
 
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+      .message-with-icon.error {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.1),
+          rgba(220, 38, 38, 0.1)
+        );
+        border-left: 3px solid #ef4444;
+        color: #991b1b;
+      }
 
-        /* Messages dans les tooltips */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
+      .message-with-icon.info {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.1),
+          rgba(37, 99, 235, 0.1)
+        );
+        border-left: 3px solid #3b82f6;
+        color: #1e40af;
+      }
 
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: #1f2937;
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+      .message-with-icon.warning {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.1),
+          rgba(217, 119, 6, 0.1)
+        );
+        border-left: 3px solid #f59e0b;
+        color: #92400e;
+      }
 
-        .tooltip .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #1f2937 transparent transparent transparent;
-        }
+      /* Messages flottants */
+      .floating-message {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        animation: slideInUp 0.3s ease;
+      }
 
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
+      @keyframes slideInUp {
+        from {
+          transform: translateY(100%);
+          opacity: 0;
         }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
 
-        /* Messages de validation en ligne */
-        .inline-validation {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            margin-top: 4px;
-        }
+      /* Messages dans les modals */
+      .modal-message {
+        padding: 16px;
+        border-radius: 8px;
+        margin: 16px 0;
+        text-align: center;
+      }
 
-        .inline-validation.valid {
-            color: #10b981;
-        }
+      .modal-message.success {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.15),
+          rgba(5, 150, 105, 0.15)
+        );
+        color: #065f46;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
 
-        .inline-validation.invalid {
-            color: #ef4444;
-        }
+      .modal-message.error {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.15),
+          rgba(220, 38, 38, 0.15)
+        );
+        color: #991b1b;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
 
-        .inline-validation i {
-            font-size: 10px;
-        }
+      /* Messages pour les champs désactivés */
+      .disabled-message {
+        color: #9ca3af;
+        font-size: 11px;
+        margin-top: 4px;
+        font-style: italic;
+      }
 
-        /* Messages de bienvenue et informations importantes */
-        .welcome-message {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(236, 72, 153, 0.1));
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s ease;
-        }
+      /* Messages de progression */
+      .progress-message {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #3b82f6;
+        font-size: 12px;
+        margin-top: 8px;
+      }
 
-        .welcome-message h3 {
-            color: #f59e0b;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
+      .progress-message i {
+        animation: pulse 1.5s ease infinite;
+      }
 
-        .welcome-message p {
-            color: #4b5563;
-            font-size: 13px;
-            line-height: 1.5;
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
         }
+        50% {
+          opacity: 0.5;
+        }
+      }
 
-        /* Messages pour les étapes */
-        .step-message {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 10px;
-            color: #1e40af;
-            font-size: 12px;
-        }
+      /* Messages avec fond dégradé */
+      .gradient-message {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 16px;
+        border-radius: 10px;
+        margin: 16px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
 
-        /* Messages de confirmation */
-        .confirmation-message {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 10px;
-            color: #065f46;
-            font-size: 12px;
-        }
+      .gradient-message h4 {
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
 
-        /* Messages d'erreur pour les formulaires */
-        .form-error-message {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 20px;
-            color: #991b1b;
-            font-size: 13px;
-        }
-
-        /* Messages d'alerte */
-        .alert-message {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 20px;
-            color: #92400e;
-            font-size: 13px;
-        }
-
-        /* Responsive pour les notifications */
-        @media (max-width: 640px) {
-            .notification {
-                min-width: 280px;
-                max-width: 90%;
-                top: 10px;
-                right: 10px;
-                left: 10px;
-                margin: 0 auto;
-            }
-            
-            .toast {
-                max-width: 90%;
-                margin: 0 auto;
-            }
-        }
-
-        /* Animation pour les messages qui disparaissent */
-        .message-exit {
-            animation: fadeOut 0.3s ease forwards;
-        }
-
-        /* Messages avec icônes */
-        .message-with-icon {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 8px 0;
-        }
-
-        .message-with-icon i {
-            font-size: 16px;
-            margin-top: 2px;
-        }
-
-        .message-with-icon.success {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
-            border-left: 3px solid #10b981;
-            color: #065f46;
-        }
-
-        .message-with-icon.error {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
-            border-left: 3px solid #ef4444;
-            color: #991b1b;
-        }
-
-        .message-with-icon.info {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
-            border-left: 3px solid #3b82f6;
-            color: #1e40af;
-        }
-
-        .message-with-icon.warning {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
-            border-left: 3px solid #f59e0b;
-            color: #92400e;
-        }
-
-        /* Messages flottants */
-        .floating-message {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            animation: slideInUp 0.3s ease;
-        }
-
-        @keyframes slideInUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Messages dans les modals */
-        .modal-message {
-            padding: 16px;
-            border-radius: 8px;
-            margin: 16px 0;
-            text-align: center;
-        }
-
-        .modal-message.success {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
-            color: #065f46;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .modal-message.error {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15));
-            color: #991b1b;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        /* Messages pour les champs désactivés */
-        .disabled-message {
-            color: #9ca3af;
-            font-size: 11px;
-            margin-top: 4px;
-            font-style: italic;
-        }
-
-        /* Messages de progression */
-        .progress-message {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #3b82f6;
-            font-size: 12px;
-            margin-top: 8px;
-        }
-
-        .progress-message i {
-            animation: pulse 1.5s ease infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Messages avec fond dégradé */
-        .gradient-message {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 16px;
-            border-radius: 10px;
-            margin: 16px 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .gradient-message h4 {
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .gradient-message p {
-            font-size: 13px;
-            opacity: 0.9;
-        }
+      .gradient-message p {
+        font-size: 13px;
+        opacity: 0.9;
+      }
     </style>
-</head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800">
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800"
+  >
     <div class="flex min-h-screen">
-        <!-- Section Image avec dégradé -->
-        <div class="hidden lg:flex lg:w-1/2 gradient-bg items-center justify-center p-12 relative">
-            <!-- Bouton retour -->
-            <a href="/" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Retour
-            </a>
-            
-            <div class="text-center text-white z-10 relative">
-                <!-- Icônes flottantes décoratives -->
-                <i class="fas fa-book floating-icon text-yellow-500 text-3xl" style="top: 10%; left: 15%; animation-delay: 0s;"></i>
-                <i class="fas fa-graduation-cap floating-icon text-pink-500 text-4xl" style="top: 20%; right: 20%; animation-delay: 1s;"></i>
-                <i class="fas fa-pencil-alt floating-icon text-yellow-400 text-2xl" style="bottom: 25%; left: 10%; animation-delay: 2s;"></i>
-                <i class="fas fa-globe-africa floating-icon text-pink-400 text-5xl" style="bottom: 15%; right: 15%; animation-delay: 1.5s;"></i>
-                
-                <div class="mb-1">
-                    <div class="inline-block mb-6">
-                        <img 
-                            src="../../../Images/Logo.png" 
-                            alt="Logo EduConnect Africa"
-                            class="w-85 h-34 object-contain mx-auto"
-                        />
-                    </div>
-                </div>
-                <h1 class="text-5xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">
-                    Bienvenue sur  <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
-                    <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
-                </h1>
-                <p class="text-2xl mb-12 text-gray-200 dark:text-gray-300">Votre portail éducatif pour l'excellence académique</p>
-                
-                <div class="grid grid-cols-3 gap-8 mt-16">
-                    <div class="text-center group cursor-pointer">
-                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
-                            <i class="fas fa-book-open text-5xl mb-3 text-yellow-400"></i>
-                            <p class="text-sm font-medium">Cours en ligne</p>
-                        </div>
-                    </div>
-                    <div class="text-center group cursor-pointer">
-                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
-                            <i class="fas fa-users text-5xl mb-3 text-pink-400"></i>
-                            <p class="text-sm font-medium">TuTeur</p>
-                        </div>
-                    </div>
-                    <div class="text-center group cursor-pointer">
-                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
-                            <i class="fas fa-brain text-5xl mb-3 text-cyan-300 drop-shadow-lg"></i>
-                            <p class="text-sm font-medium">Assistant IA</p>
-                        </div>
-                    </div>
-                </div>
+      <!-- Section Image avec dégradé -->
+      <div
+        class="relative items-center justify-center hidden p-12 lg:flex lg:w-1/2 gradient-bg"
+      >
+        <!-- Bouton retour -->
+        <a href="/" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          Retour
+        </a>
+
+        <div class="relative z-10 text-center text-white">
+          <!-- Icônes flottantes décoratives -->
+          <i
+            class="text-3xl text-yellow-500 fas fa-book floating-icon"
+            style="top: 10%; left: 15%; animation-delay: 0s"
+          ></i>
+          <i
+            class="text-4xl text-pink-500 fas fa-graduation-cap floating-icon"
+            style="top: 20%; right: 20%; animation-delay: 1s"
+          ></i>
+          <i
+            class="text-2xl text-yellow-400 fas fa-pencil-alt floating-icon"
+            style="bottom: 25%; left: 10%; animation-delay: 2s"
+          ></i>
+          <i
+            class="text-5xl text-pink-400 fas fa-globe-africa floating-icon"
+            style="bottom: 15%; right: 15%; animation-delay: 1.5s"
+          ></i>
+
+          <div class="mb-1">
+            <div class="inline-block mb-6">
+              <img
+                src="../../../Images/Logo.png"
+                alt="Logo EduConnect Africa"
+                class="object-contain mx-auto w-85 h-34"
+              />
             </div>
-        </div>
+          </div>
+          <h1
+            class="mb-6 text-5xl font-bold text-transparent bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text"
+          >
+            Bienvenue sur
+            <span
+              style="
+                background: linear-gradient(90deg, #ff3131, #ff914d);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+              "
+              >Edu</span
+            ><span
+              style="
+                background: linear-gradient(90deg, #8c52ff, #5ce1e6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+              "
+              >Connect</span
+            >
+            <span
+              style="
+                background: linear-gradient(90deg, #8c52ff, #ff914d);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+              "
+              >Africa</span
+            >
+          </h1>
+          <p class="mb-12 text-2xl text-gray-200 dark:text-gray-300">
+            Votre portail éducatif pour l'excellence académique
+          </p>
 
-        <!-- Section Formulaire Responsive -->
-        <div class="w-full lg:w-1/2 form-section px-4 sm:px-6 lg:px-8">
-            <div class="form-container max-w-2xl mx-auto">
-                <!-- Logo et titre -->
-                <div class="text-center form-title mb-6 sm:mb-8">
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-3">
-                        Créer un compte 
-                    </h2>
-                    <h2 class="text-2xl sm:text-3xl position:center font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-3">
-                        Etudiant
-                    </h2>
-                    
-                    <!-- Indicateur d'étape -->
-                    <div class="step-indicator flex justify-center space-x-4 mt-6">
-                        <div class="step active flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold text-sm">
-                                1
-                            </div>
-                            <span class="text-xs mt-2 text-gray-700 dark:text-gray-300 font-medium">Informations</span>
-                        </div>
-                        <div class="step-line w-12 h-1 bg-gray-300 dark:bg-gray-600 mt-4"></div>
-                        <div class="step flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold text-sm">
-                                2
-                            </div>
-                            <span class="text-xs mt-2 text-gray-500 dark:text-gray-500 font-medium">Détails</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ÉTAPE 1 - Informations de base -->
-                <form id="registrationForm" class="space-y-4 sm:space-y-5" data-step="1">
-                    <!-- Nom et Prénom -->
-                    <div class="form-row grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="form-field">
-                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                <i class="fas fa-user label-icon"></i>Nom
-                            </label>
-                            <input type="text" id="nom" name="nom" required
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 text-sm sm:text-base dark:border-gray-600"
-                                placeholder="Votre nom">
-                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                        </div>
-                        <div class="form-field">
-                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                <i class="fas fa-user label-icon"></i>Prénom
-                            </label>
-                            <input type="text" id="prenom" name="prenom" required
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 text-sm sm:text-base dark:border-gray-600"
-                                placeholder="Votre prénom">
-                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                        </div>
-                    </div>
-
-                    <!-- Sexe -->
-                    <div class="form-field">
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                            <i class="fas fa-venus-mars label-icon"></i>Sexe
-                        </label>
-                        <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
-                            <label class="flex items-center cursor-pointer group">
-                                <input type="radio" name="sexe" value="masculin" required class="radio-custom">
-                                <span class="ml-3 text-sm sm:text-base text-gray-700 dark:text-gray-300 font-medium group-hover:text-yellow-600 dark:group-hover:text-yellow-500 transition">Masculin</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer group">
-                                <input type="radio" name="sexe" value="feminin" required class="radio-custom">
-                                <span class="ml-3 text-sm sm:text-base text-gray-700 dark:text-gray-300 font-medium group-hover:text-pink-600 dark:group-hover:text-pink-500 transition">Féminin</span>
-                            </label>
-                        </div>
-                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="form-field">
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            <i class="fas fa-envelope label-icon"></i>Email
-                        </label>
-                        <div class="relative">
-                            <input type="email" id="email" name="email" required
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
-                                placeholder="exemple@email.com">
-                            <i class="fas fa-at absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 text-sm sm:text-base"></i>
-                        </div>
-                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                        <p class="success-message text-green-600 dark:text-green-400 text-xs mt-2 hidden font-medium success-pulse">
-                            <i class="fas fa-check-circle"></i> Email valide et vérifié
-                        </p>
-                    </div>
-
-                    <!-- Mot de passe -->
-                    <div class="form-field">
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            <i class="fas fa-lock label-icon"></i>Mot de passe
-                        </label>
-                        <div class="relative">
-                            <input type="password" id="password" name="password" required
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
-                                placeholder="Créez un mot de passe sécurisé">
-                            <i class="fas fa-eye eye-toggle absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 cursor-pointer text-sm sm:text-base"></i>
-                        </div>
-                        
-                        <!-- Barre de force du mot de passe -->
-                        <div class="password-strength-container mt-3">
-                            <div class="password-strength-bar-container">
-                                <div class="password-strength-bar" id="passwordStrengthBar"></div>
-                            </div>
-                            <div class="password-strength-info flex justify-between items-center mt-2">
-                                <span class="password-strength-text text-xs sm:text-sm dark:text-gray-400" id="passwordStrengthText">Force du mot de passe</span>
-                                <span class="password-score text-xs sm:text-sm font-bold" id="passwordScore"></span>
-                            </div>
-                            
-                            <!-- Exigences du mot de passe -->
-                            <div class="password-requirements mt-3 space-y-1.5">
-                                <div class="requirement flex items-center gap-2">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqLength"></i>
-                                    <span class="text-xs sm:text-sm dark:text-gray-400">Au moins 8 caractères</span>
-                                </div>
-                                <div class="requirement flex items-center gap-2">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqUppercase"></i>
-                                    <span class="text-xs sm:text-sm dark:text-gray-400">Une lettre majuscule</span>
-                                </div>
-                                <div class="requirement flex items-center gap-2">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqLowercase"></i>
-                                    <span class="text-xs sm:text-sm dark:text-gray-400">Une lettre minuscule</span>
-                                </div>
-                                <div class="requirement flex items-center gap-2">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqNumber"></i>
-                                    <span class="text-xs sm:text-sm dark:text-gray-400">Un chiffre</span>
-                                </div>
-                                <div class="requirement flex items-center gap-2">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqSpecial"></i>
-                                    <span class="text-xs sm:text-sm dark:text-gray-400">Un caractère spécial (!@#$%^&*)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Confirmation du mot de passe -->
-                    <div class="form-field">
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            <i class="fas fa-lock label-icon"></i>Confirmer le mot de passe
-                        </label>
-                        <div class="relative">
-                            <input type="password" id="confirmPassword" name="confirmPassword" required
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
-                                placeholder="Répétez votre mot de passe">
-                            <i class="fas fa-eye eye-toggle absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 cursor-pointer text-sm sm:text-base"></i>
-                        </div>
-                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                        
-                        <!-- Message de correspondance des mots de passe -->
-                        <div class="password-match-message mt-2" id="passwordMatchMessage">
-                            <!-- Le message sera ajouté dynamiquement -->
-                        </div>
-                    </div>
-
-                    <!-- Boutons Navigation Étape 1 -->
-                    <div class="form-actions pt-4 flex justify-end">
-                        <button type="button" id="nextBtn"
-                            class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            Suivant <i class="fas fa-arrow-right ml-2"></i>
-                        </button>
-                    </div>
-                </form>
-
-                <!-- ÉTAPE 2 - Détails supplémentaires (cachée par défaut) -->
-                
-                <form id="registrationFormStep2" class="space-y-4 sm:space-y-5 hidden" data-step="2">
-                    <!-- Langue -->
-                    <div class="form-field">
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            <i class="fas fa-language label-icon"></i>Langue
-                        </label>
-                        <select id="langue" name="langue" required
-                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600">
-                            <option value="">Sélectionnez une langue</option>
-                            <option value="francais">🇫🇷 Français</option>
-                            <option value="anglais">🇬🇧 Anglais</option>
-                        </select>
-                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                    </div>
-                
-                    <!-- NOUVEAU: Type d'étude et Niveau sur la même ligne -->
-                    <div class="form-row grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                        <!-- Type d'étude -->
-                        <div class="form-field">
-                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                <i class="fas fa-graduation-cap label-icon"></i>Type d'étude
-                            </label>
-                            <select id="typeEtude" name="typeEtude" required
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600">
-                                <option value="">Sélectionnez un type</option>
-                                <option value="universitaire">Universitaire</option>
-                                <option value="secondaire">Secondaire</option>
-                                <option value="autre">Autre formation</option>
-                            </select>
-                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                        </div>
-                
-                        <!-- Niveau d'étude -->
-                        <div class="form-field">
-                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                <i class="fas fa-chart-line label-icon"></i>Niveau d'étude
-                            </label>
-                            <select id="niveauEtude" name="niveauEtude" required
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600">
-                                <option value="">Sélectionnez d'abord le type</option>
-                                <!-- Les options seront mises à jour dynamiquement -->
-                            </select>
-                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                        </div>
-                    </div>
-                
-                    <!-- Pays -->
-                    <div class="form-field relative">
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            <i class="fas fa-globe-africa label-icon"></i>Pays
-                        </label>
-                        <div class="relative">
-                            <input type="text" id="paysInput" autocomplete="off"
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
-                                placeholder="Rechercher votre pays...">
-                            <i class="fas fa-search absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 text-sm sm:text-base"></i>
-                        </div>
-                        <input type="hidden" id="paysSelected" name="pays">
-                        <div id="paysDropdown" class="absolute z-10 w-full country-dropdown rounded-xl shadow-2xl mt-2 hidden max-h-60 overflow-y-auto dark:bg-gray-800 dark:border dark:border-gray-700">
-                            <div id="paysResults" class="py-2"></div>
-                        </div>
-                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                    </div>
-                
-                    <!-- Téléphone -->
-                    <div class="form-field phone-section">
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            <i class="fas fa-phone label-icon"></i>Téléphone
-                        </label>
-                        <div class="phone-input-group flex gap-2">
-                            <input type="text" id="countryCode" readonly
-                                class="country-code-input w-16 sm:w-20 px-2 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl bg-gradient-to-br from-yellow-50 to-pink-50 dark:from-yellow-900/30 dark:to-pink-900/30 text-center font-bold text-gray-700 dark:text-gray-300 text-sm sm:text-base dark:border-gray-600"
-                                placeholder="+___">
-                            <input type="tel" id="telephone" name="telephone" required
-                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
-                                placeholder="Numéro de téléphone">
-                        </div>
-                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                    </div>
-                
-                    <!-- Boutons Navigation Étape 2 -->
-                    <div class="form-actions pt-6 flex flex-col-reverse sm:flex-row sm:justify-between gap-4">
-    
-                        <button type="button" id="backBtn"
-                            class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center">
-                            <i class="fas fa-arrow-left mr-2"></i> Retour
-                        </button>
-                        
-                        <button type="submit" id="submitBtn"
-                            class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-10 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center">
-                            <span id="btnText" class="flex items-center">
-                                <i class="fas fa-user-plus mr-2"></i> S'inscrire
-                            </span>
-                            <span id="btnLoader" class="hidden items-center">
-                                <i class="fas fa-spinner fa-spin mr-2"></i> Inscription...
-                            </span>
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Lien de connexion -->
-                <div class="login-link text-center mt-6 sm:mt-8 pb-6">
-                    <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                        Déjà un compte ?
-                        <a href="../templates/Connexion.html" class="font-bold bg-gradient-to-r from-yellow-600 to-pink-600 dark:from-yellow-500 dark:to-pink-500 bg-clip-text text-transparent hover:from-yellow-700 hover:to-pink-700 transition-all">
-                            Connectez-vous ici
-                        </a>
-                    </p>
-                </div>
+          <div class="grid grid-cols-3 gap-8 mt-16">
+            <div class="text-center cursor-pointer group">
+              <div
+                class="p-6 transition-all duration-300 border border-white border-opacity-30 rounded-2xl backdrop-blur-sm group-hover:border-opacity-50 group-hover:scale-110"
+              >
+                <i class="mb-3 text-5xl text-yellow-400 fas fa-book-open"></i>
+                <p class="text-sm font-medium">Cours en ligne</p>
+              </div>
             </div>
+            <div class="text-center cursor-pointer group">
+              <div
+                class="p-6 transition-all duration-300 border border-white border-opacity-30 rounded-2xl backdrop-blur-sm group-hover:border-opacity-50 group-hover:scale-110"
+              >
+                <i class="mb-3 text-5xl text-pink-400 fas fa-users"></i>
+                <p class="text-sm font-medium">TuTeur</p>
+              </div>
+            </div>
+            <div class="text-center cursor-pointer group">
+              <div
+                class="p-6 transition-all duration-300 border border-white border-opacity-30 rounded-2xl backdrop-blur-sm group-hover:border-opacity-50 group-hover:scale-110"
+              >
+                <i
+                  class="mb-3 text-5xl fas fa-brain text-cyan-300 drop-shadow-lg"
+                ></i>
+                <p class="text-sm font-medium">Assistant IA</p>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Section Formulaire Responsive -->
+      <div class="w-full px-4 lg:w-1/2 form-section sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto form-container">
+          <!-- Logo et titre -->
+          <div class="mb-6 text-center form-title sm:mb-8">
+            <h2
+              class="mb-2 text-2xl font-bold text-transparent sm:text-3xl lg:text-4xl bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text sm:mb-3"
+            >
+              Créer un compte
+            </h2>
+            <h2
+              class="mb-2 text-2xl font-bold text-transparent sm:text-3xl position:center bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text sm:mb-3"
+            >
+              Etudiant
+            </h2>
+
+            <!-- Indicateur d'étape -->
+            <div class="flex justify-center mt-6 space-x-4 step-indicator">
+              <div class="flex flex-col items-center step active">
+                <div
+                  class="flex items-center justify-center w-8 h-8 text-sm font-bold text-white rounded-full bg-gradient-to-r from-blue-600 to-blue-700"
+                >
+                  1
+                </div>
+                <span
+                  class="mt-2 text-xs font-medium text-gray-700 dark:text-gray-300"
+                  >Informations</span
+                >
+              </div>
+              <div
+                class="w-12 h-1 mt-4 bg-gray-300 step-line dark:bg-gray-600"
+              ></div>
+              <div class="flex flex-col items-center step">
+                <div
+                  class="flex items-center justify-center w-8 h-8 text-sm font-bold text-gray-500 bg-gray-300 rounded-full dark:bg-gray-600 dark:text-gray-400"
+                >
+                  2
+                </div>
+                <span
+                  class="mt-2 text-xs font-medium text-gray-500 dark:text-gray-500"
+                  >Détails</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- ÉTAPE 1 - Informations de base -->
+          <form
+            id="registrationForm"
+            class="space-y-4 sm:space-y-5"
+            data-step="1"
+          >
+            <!-- Nom et Prénom -->
+            <div class="grid grid-cols-1 gap-4 form-row sm:grid-cols-2">
+              <div class="form-field">
+                <label
+                  class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+                >
+                  <i class="fas fa-user label-icon"></i>Nom
+                </label>
+                <input
+                  type="text"
+                  id="nom"
+                  name="nom"
+                  required
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 text-sm sm:text-base dark:border-gray-600"
+                  placeholder="Votre nom"
+                />
+                <p
+                  class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+                ></p>
+              </div>
+              <div class="form-field">
+                <label
+                  class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+                >
+                  <i class="fas fa-user label-icon"></i>Prénom
+                </label>
+                <input
+                  type="text"
+                  id="prenom"
+                  name="prenom"
+                  required
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 text-sm sm:text-base dark:border-gray-600"
+                  placeholder="Votre prénom"
+                />
+                <p
+                  class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+                ></p>
+              </div>
+            </div>
+
+            <!-- Sexe -->
+            <div class="form-field">
+              <label
+                class="block mb-3 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+              >
+                <i class="fas fa-venus-mars label-icon"></i>Sexe
+              </label>
+              <div class="flex flex-col gap-4 sm:flex-row sm:gap-8">
+                <label class="flex items-center cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="sexe"
+                    value="masculin"
+                    required
+                    class="radio-custom"
+                  />
+                  <span
+                    class="ml-3 text-sm font-medium text-gray-700 transition sm:text-base dark:text-gray-300 group-hover:text-yellow-600 dark:group-hover:text-yellow-500"
+                    >Masculin</span
+                  >
+                </label>
+                <label class="flex items-center cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="sexe"
+                    value="feminin"
+                    required
+                    class="radio-custom"
+                  />
+                  <span
+                    class="ml-3 text-sm font-medium text-gray-700 transition sm:text-base dark:text-gray-300 group-hover:text-pink-600 dark:group-hover:text-pink-500"
+                    >Féminin</span
+                  >
+                </label>
+              </div>
+              <p
+                class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+              ></p>
+            </div>
+
+            <!-- Email -->
+            <div class="form-field">
+              <label
+                class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+              >
+                <i class="fas fa-envelope label-icon"></i>Email
+              </label>
+              <div class="relative">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
+                  placeholder="exemple@email.com"
+                />
+                <i
+                  class="absolute text-sm text-gray-400 fas fa-at right-3 sm:right-4 top-3 sm:top-4 sm:text-base"
+                ></i>
+              </div>
+              <p
+                class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+              ></p>
+              <p
+                class="hidden mt-2 text-xs font-medium text-green-600 success-message dark:text-green-400 success-pulse"
+              >
+                <i class="fas fa-check-circle"></i> Email valide et vérifié
+              </p>
+            </div>
+
+            <!-- Mot de passe -->
+            <div class="form-field">
+              <label
+                class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+              >
+                <i class="fas fa-lock label-icon"></i>Mot de passe
+              </label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
+                  placeholder="Créez un mot de passe sécurisé"
+                />
+                <i
+                  class="absolute text-sm text-gray-400 cursor-pointer fas fa-eye eye-toggle right-3 sm:right-4 top-3 sm:top-4 sm:text-base"
+                ></i>
+              </div>
+
+              <!-- Barre de force du mot de passe -->
+              <div class="mt-3 password-strength-container">
+                <div class="password-strength-bar-container">
+                  <div
+                    class="password-strength-bar"
+                    id="passwordStrengthBar"
+                  ></div>
+                </div>
+                <div
+                  class="flex items-center justify-between mt-2 password-strength-info"
+                >
+                  <span
+                    class="text-xs password-strength-text sm:text-sm dark:text-gray-400"
+                    id="passwordStrengthText"
+                    >Force du mot de passe</span
+                  >
+                  <span
+                    class="text-xs font-bold password-score sm:text-sm"
+                    id="passwordScore"
+                  ></span>
+                </div>
+
+                <!-- Exigences du mot de passe -->
+                <div class="password-requirements mt-3 space-y-1.5">
+                  <div class="flex items-center gap-2 requirement">
+                    <i
+                      class="text-xs fas fa-circle requirement-icon requirement-not-met"
+                      id="reqLength"
+                    ></i>
+                    <span class="text-xs sm:text-sm dark:text-gray-400"
+                      >Au moins 8 caractères</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-2 requirement">
+                    <i
+                      class="text-xs fas fa-circle requirement-icon requirement-not-met"
+                      id="reqUppercase"
+                    ></i>
+                    <span class="text-xs sm:text-sm dark:text-gray-400"
+                      >Une lettre majuscule</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-2 requirement">
+                    <i
+                      class="text-xs fas fa-circle requirement-icon requirement-not-met"
+                      id="reqLowercase"
+                    ></i>
+                    <span class="text-xs sm:text-sm dark:text-gray-400"
+                      >Une lettre minuscule</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-2 requirement">
+                    <i
+                      class="text-xs fas fa-circle requirement-icon requirement-not-met"
+                      id="reqNumber"
+                    ></i>
+                    <span class="text-xs sm:text-sm dark:text-gray-400"
+                      >Un chiffre</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-2 requirement">
+                    <i
+                      class="text-xs fas fa-circle requirement-icon requirement-not-met"
+                      id="reqSpecial"
+                    ></i>
+                    <span class="text-xs sm:text-sm dark:text-gray-400"
+                      >Un caractère spécial (!@#$%^&*)</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirmation du mot de passe -->
+            <div class="form-field">
+              <label
+                class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+              >
+                <i class="fas fa-lock label-icon"></i>Confirmer le mot de passe
+              </label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  required
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
+                  placeholder="Répétez votre mot de passe"
+                />
+                <i
+                  class="absolute text-sm text-gray-400 cursor-pointer fas fa-eye eye-toggle right-3 sm:right-4 top-3 sm:top-4 sm:text-base"
+                ></i>
+              </div>
+              <p
+                class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+              ></p>
+
+              <!-- Message de correspondance des mots de passe -->
+              <div
+                class="mt-2 password-match-message"
+                id="passwordMatchMessage"
+              >
+                <!-- Le message sera ajouté dynamiquement -->
+              </div>
+            </div>
+
+            <!-- Boutons Navigation Étape 1 -->
+            <div class="flex justify-end pt-4 form-actions">
+              <button
+                type="button"
+                id="nextBtn"
+                class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Suivant <i class="ml-2 fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </form>
+
+          <!-- ÉTAPE 2 - Détails supplémentaires (cachée par défaut) -->
+
+          <form
+            id="registrationFormStep2"
+            class="hidden space-y-4 sm:space-y-5"
+            data-step="2"
+          >
+            <!-- Langue -->
+            <div class="form-field">
+              <label
+                class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+              >
+                <i class="fas fa-language label-icon"></i>Langue
+              </label>
+              <select
+                id="langue"
+                name="langue"
+                required
+                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600"
+              >
+                <option value="">Sélectionnez une langue</option>
+                <option value="francais">🇫🇷 Français</option>
+                <option value="anglais">🇬🇧 Anglais</option>
+              </select>
+              <p
+                class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+              ></p>
+            </div>
+
+            <!-- NOUVEAU: Type d'étude et Niveau sur la même ligne -->
+            <div
+              class="grid grid-cols-1 gap-4 form-row sm:grid-cols-2 sm:gap-6"
+            >
+              <!-- Type d'étude -->
+              <div class="form-field">
+                <label
+                  class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+                >
+                  <i class="fas fa-graduation-cap label-icon"></i>Type d'étude
+                </label>
+                <select
+                  id="typeEtude"
+                  name="typeEtude"
+                  required
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600"
+                >
+                  <option value="">Sélectionnez un type</option>
+                  <option value="universitaire">Universitaire</option>
+                  <option value="secondaire">Secondaire</option>
+                  <option value="autre">Autre formation</option>
+                </select>
+                <p
+                  class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+                ></p>
+              </div>
+
+              <!-- Niveau d'étude -->
+              <div class="form-field">
+                <label
+                  class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+                >
+                  <i class="fas fa-chart-line label-icon"></i>Niveau d'étude
+                </label>
+                <select
+                  id="niveauEtude"
+                  name="niveauEtude"
+                  required
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600"
+                >
+                  <option value="">Sélectionnez d'abord le type</option>
+                  <!-- Les options seront mises à jour dynamiquement -->
+                </select>
+                <p
+                  class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+                ></p>
+              </div>
+            </div>
+
+            <!-- Pays -->
+            <div class="relative form-field">
+              <label
+                class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+              >
+                <i class="fas fa-globe-africa label-icon"></i>Pays
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="paysInput"
+                  autocomplete="off"
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
+                  placeholder="Rechercher votre pays..."
+                />
+                <i
+                  class="absolute text-sm text-gray-400 fas fa-search right-3 sm:right-4 top-3 sm:top-4 sm:text-base"
+                ></i>
+              </div>
+              <input type="hidden" id="paysSelected" name="pays" />
+              <div
+                id="paysDropdown"
+                class="absolute z-10 hidden w-full mt-2 overflow-y-auto shadow-2xl country-dropdown rounded-xl max-h-60 dark:bg-gray-800 dark:border dark:border-gray-700"
+              >
+                <div id="paysResults" class="py-2"></div>
+              </div>
+              <p
+                class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+              ></p>
+            </div>
+
+            <!-- Téléphone -->
+            <div class="form-field phone-section">
+              <label
+                class="block mb-2 text-xs font-semibold text-gray-700 sm:text-sm dark:text-gray-300"
+              >
+                <i class="fas fa-phone label-icon"></i>Téléphone
+              </label>
+              <div class="flex gap-2 phone-input-group">
+                <input
+                  type="text"
+                  id="countryCode"
+                  readonly
+                  class="country-code-input w-16 sm:w-20 px-2 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl bg-gradient-to-br from-yellow-50 to-pink-50 dark:from-yellow-900/30 dark:to-pink-900/30 text-center font-bold text-gray-700 dark:text-gray-300 text-sm sm:text-base dark:border-gray-600"
+                  placeholder="+___"
+                />
+                <input
+                  type="tel"
+                  id="telephone"
+                  name="telephone"
+                  required
+                  class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
+                  placeholder="Numéro de téléphone"
+                />
+              </div>
+              <p
+                class="hidden mt-2 text-xs font-medium text-red-500 error-message"
+              ></p>
+            </div>
+
+            <!-- Boutons Navigation Étape 2 -->
+            <div
+              class="flex flex-col-reverse gap-4 pt-6 form-actions sm:flex-row sm:justify-between"
+            >
+              <button
+                type="button"
+                id="backBtn"
+                class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center"
+              >
+                <i class="mr-2 fas fa-arrow-left"></i> Retour
+              </button>
+
+              <button
+                type="submit"
+                id="submitBtn"
+                class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-10 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center"
+              >
+                <span id="btnText" class="flex items-center">
+                  <i class="mr-2 fas fa-user-plus"></i> S'inscrire
+                </span>
+                <span id="btnLoader" class="items-center hidden">
+                  <i class="mr-2 fas fa-spinner fa-spin"></i> Inscription...
+                </span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Lien de connexion -->
+          <div class="pb-6 mt-6 text-center login-link sm:mt-8">
+            <p class="text-sm text-gray-600 dark:text-gray-400 sm:text-base">
+              Déjà un compte ?
+              <a
+                href="../templates/Connexion.html"
+                class="font-bold text-transparent transition-all bg-gradient-to-r from-yellow-600 to-pink-600 dark:from-yellow-500 dark:to-pink-500 bg-clip-text hover:from-yellow-700 hover:to-pink-700"
+              >
+                Connectez-vous ici
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-        // ==================== CONFIGURATION ====================
-        const API_TOKEN = '2ad1ffe2de6acb841251b8f5694ec531e074f130';
-        const API_BASE_URL = 'https://aaapis.com/api/v1';
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
-            authDomain: "achitectureweb-groupe-10.firebaseapp.com",
-            projectId: "achitectureweb-groupe-10",
-            storageBucket: "achitectureweb-groupe-10.firebasestorage.app",
-            messagingSenderId: "646899550480",
-            appId: "1:646899550480:web:687fd4f4b2e0ca646efd95"
-        };
-        
-        // ==================== VARIABLES GLOBALES ====================
-        let app, db, auth;
-        let africanCountries = [];
-        let selectedCountry = null;
-        let currentStep = 1;
-        let emailVerificationCache = {};
-        
-        // ==================== INITIALISATION FIREBASE ====================
-        try {
-            app = firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            auth = firebase.auth();
-            console.log("Firebase initialisé avec succès");
-        } catch (error) {
-            console.error("Erreur d'initialisation Firebase:", error);
-            showNotification("Erreur de connexion à la base de données", "error");
-        }
-        
-        // ==================== FONCTIONS UTILITAIRES ====================
-        function showNotification(message, type = 'info', duration = 5000) {
-            // Supprimer les notifications existantes
-            const existingNotifications = document.querySelectorAll('.notification');
-            existingNotifications.forEach(notification => notification.remove());
-            
-            const notification = document.createElement('div');
-            notification.className = `notification animate__animated animate__fadeInRight ${type === 'success' ? 'notification-success' : type === 'error' ? 'notification-error' : type === 'warning' ? 'notification-warning' : 'notification-info'}`;
-            
-            const icon = type === 'success' ? 'fa-check-circle' : 
-                        type === 'error' ? 'fa-exclamation-circle' : 
-                        type === 'warning' ? 'fa-exclamation-triangle' : 
-                        'fa-info-circle';
-            
-            notification.innerHTML = `
+      // ==================== CONFIGURATION ====================
+      const API_TOKEN = "2ad1ffe2de6acb841251b8f5694ec531e074f130";
+      const API_BASE_URL = "https://aaapis.com/api/v1";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
+        authDomain: "achitectureweb-groupe-10.firebaseapp.com",
+        projectId: "achitectureweb-groupe-10",
+        storageBucket: "achitectureweb-groupe-10.firebasestorage.app",
+        messagingSenderId: "646899550480",
+        appId: "1:646899550480:web:687fd4f4b2e0ca646efd95",
+      };
+
+      // ==================== VARIABLES GLOBALES ====================
+      let app, db, auth;
+      let africanCountries = [];
+      let selectedCountry = null;
+      let currentStep = 1;
+      let emailVerificationCache = {};
+
+      // ==================== INITIALISATION FIREBASE ====================
+      try {
+        app = firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        auth = firebase.auth();
+        console.log("Firebase initialisé avec succès");
+      } catch (error) {
+        console.error("Erreur d'initialisation Firebase:", error);
+        showNotification("Erreur de connexion à la base de données", "error");
+      }
+
+      // ==================== FONCTIONS UTILITAIRES ====================
+      function showNotification(message, type = "info", duration = 5000) {
+        // Supprimer les notifications existantes
+        const existingNotifications =
+          document.querySelectorAll(".notification");
+        existingNotifications.forEach((notification) => notification.remove());
+
+        const notification = document.createElement("div");
+        notification.className = `notification animate__animated animate__fadeInRight ${
+          type === "success"
+            ? "notification-success"
+            : type === "error"
+            ? "notification-error"
+            : type === "warning"
+            ? "notification-warning"
+            : "notification-info"
+        }`;
+
+        const icon =
+          type === "success"
+            ? "fa-check-circle"
+            : type === "error"
+            ? "fa-exclamation-circle"
+            : type === "warning"
+            ? "fa-exclamation-triangle"
+            : "fa-info-circle";
+
+        notification.innerHTML = `
                 <div class="flex items-center gap-3">
                     <i class="fas ${icon} text-xl"></i>
                     <div class="flex-1">
-                        <p class="font-bold">${type === 'success' ? 'Succès !' : type === 'error' ? 'Erreur !' : type === 'warning' ? 'Attention !' : 'Information'}</p>
+                        <p class="font-bold">${
+                          type === "success"
+                            ? "Succès !"
+                            : type === "error"
+                            ? "Erreur !"
+                            : type === "warning"
+                            ? "Attention !"
+                            : "Information"
+                        }</p>
                         <p class="text-sm opacity-90">${message}</p>
                     </div>
                     <button class="text-white opacity-70 hover:opacity-100" onclick="this.parentElement.parentElement.remove()">
@@ -1323,949 +1738,1062 @@
                     </button>
                 </div>
             `;
-            
-            document.body.appendChild(notification);
-            
-            // Supprimer automatiquement
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.classList.add('animate__fadeOutRight');
-                    setTimeout(() => notification.remove(), 500);
-                }
-            }, duration);
+
+        document.body.appendChild(notification);
+
+        // Supprimer automatiquement
+        setTimeout(() => {
+          if (notification.parentElement) {
+            notification.classList.add("animate__fadeOutRight");
+            setTimeout(() => notification.remove(), 500);
+          }
+        }, duration);
+      }
+
+      function resetFormErrors() {
+        document.querySelectorAll(".error-message").forEach((el) => {
+          el.classList.add("hidden");
+          el.textContent = "";
+        });
+
+        document.querySelectorAll(".input-field").forEach((field) => {
+          field.classList.remove("border-red-500", "error-shake");
+        });
+
+        const successMsg = document.querySelector(".success-message");
+        if (successMsg) successMsg.classList.add("hidden");
+      }
+
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      // ==================== VÉRIFICATION EMAIL API ====================
+      async function verifyEmail(email) {
+        // Vérifier le cache d'abord
+        if (emailVerificationCache[email]) {
+          return emailVerificationCache[email];
         }
-        
-        function resetFormErrors() {
-            document.querySelectorAll('.error-message').forEach(el => {
-                el.classList.add('hidden');
-                el.textContent = '';
+
+        // Vérification basique du format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          return { valid: false, reason: "format_invalid" };
+        }
+
+        try {
+          // Montrer l'indicateur de vérification
+          const emailField = document.getElementById("email");
+          const loadingMsg =
+            emailField.parentElement.querySelector(".loading-message") ||
+            createLoadingMessage(emailField.parentElement);
+          loadingMsg.classList.remove("hidden");
+
+          const response = await fetch(`${API_BASE_URL}/email/verify`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${API_TOKEN}`,
+            },
+            body: JSON.stringify({ email: email }),
+          });
+
+          loadingMsg.classList.add("hidden");
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          // Mettre en cache le résultat
+          emailVerificationCache[email] = data;
+
+          return data;
+        } catch (error) {
+          console.error("Erreur vérification email:", error);
+
+          // Fallback: vérification locale basique
+          const domain = email.split("@")[1];
+          const disposableDomains = [
+            "tempmail.com",
+            "mailinator.com",
+            "guerrillamail.com",
+          ];
+          const freeDomains = [
+            "gmail.com",
+            "yahoo.com",
+            "outlook.com",
+            "hotmail.com",
+          ];
+
+          const result = {
+            valid: true,
+            deliverable: true,
+            disposable: disposableDomains.some((d) => domain.includes(d)),
+            free: freeDomains.some((d) => domain.includes(d)),
+          };
+
+          // Mettre en cache le résultat
+          emailVerificationCache[email] = result;
+
+          return result;
+        }
+      }
+
+      function createLoadingMessage(container) {
+        const loadingMsg = document.createElement("div");
+        loadingMsg.className = "loading-message";
+        loadingMsg.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Vérification de l\'email en cours...';
+        container.appendChild(loadingMsg);
+        return loadingMsg;
+      }
+
+      async function handleEmailValidation() {
+        const emailField = document.getElementById("email");
+        const email = emailField.value.trim();
+        const errorMsg =
+          emailField.parentElement.querySelector(".error-message");
+        const successMsg =
+          emailField.parentElement.querySelector(".success-message");
+
+        if (!email) {
+          errorMsg.classList.add("hidden");
+          successMsg.classList.add("hidden");
+          emailField.classList.remove("border-green-500", "border-red-500");
+          return;
+        }
+
+        // Vérification basique du format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          errorMsg.textContent = "Format d'email invalide";
+          errorMsg.classList.remove("hidden");
+          successMsg.classList.add("hidden");
+          emailField.classList.add("border-red-500");
+          emailField.classList.remove("border-green-500");
+          return;
+        }
+
+        // Vérification via API
+        const verificationResult = await verifyEmail(email);
+
+        if (
+          !verificationResult.valid ||
+          verificationResult.reason === "format_invalid"
+        ) {
+          errorMsg.textContent = "Format d'email invalide";
+          errorMsg.classList.remove("hidden");
+          successMsg.classList.add("hidden");
+          emailField.classList.add("border-red-500");
+          emailField.classList.remove("border-green-500");
+        } else if (!verificationResult.deliverable) {
+          errorMsg.textContent = "Cet email n'est pas livrable";
+          errorMsg.classList.remove("hidden");
+          successMsg.classList.add("hidden");
+          emailField.classList.add("border-red-500");
+          emailField.classList.remove("border-green-500");
+        } else if (verificationResult.disposable) {
+          errorMsg.textContent = "Les emails temporaires ne sont pas autorisés";
+          errorMsg.classList.remove("hidden");
+          successMsg.classList.add("hidden");
+          emailField.classList.add("border-red-500");
+          emailField.classList.remove("border-green-500");
+        } else if (verificationResult.free) {
+          successMsg.textContent = "✓ Email vérifié (compte personnel)";
+          successMsg.classList.remove("hidden");
+          errorMsg.classList.add("hidden");
+          emailField.classList.remove("border-red-500");
+          emailField.classList.add("border-green-500");
+        } else {
+          successMsg.textContent = "✓ Email vérifié (compte professionnel)";
+          successMsg.classList.remove("hidden");
+          errorMsg.classList.add("hidden");
+          emailField.classList.remove("border-red-500");
+          emailField.classList.add("border-green-500");
+        }
+      }
+
+      // ==================== GESTION DES ÉTAPES ====================
+      function goToStep(step) {
+        const step1 = document.querySelector('[data-step="1"]');
+        const step2 = document.querySelector('[data-step="2"]');
+
+        if (step === 2) {
+          const errors = validateStep1();
+          if (errors.length > 0) {
+            displayFormErrors(errors);
+            showNotification(
+              "Veuillez corriger les erreurs avant de continuer",
+              "error"
+            );
+            return;
+          }
+
+          currentStep = 2;
+          step1.classList.add("hidden");
+          step2.classList.remove("hidden");
+          updateStepIndicator(1);
+        } else if (step === 1) {
+          currentStep = 1;
+          step2.classList.add("hidden");
+          step1.classList.remove("hidden");
+          updateStepIndicator(0);
+        }
+      }
+
+      function updateStepIndicator(activeStepIndex) {
+        const steps = document.querySelectorAll(".step");
+        steps.forEach((step, index) => {
+          const stepCircle = step.querySelector("div:first-child");
+          if (index <= activeStepIndex) {
+            stepCircle.classList.remove("bg-gray-300", "dark:bg-gray-600");
+            stepCircle.classList.add(
+              "bg-gradient-to-r",
+              "from-blue-600",
+              "to-blue-700",
+              "text-white"
+            );
+          } else {
+            stepCircle.classList.remove(
+              "bg-gradient-to-r",
+              "from-blue-600",
+              "to-blue-700",
+              "text-white"
+            );
+            stepCircle.classList.add("bg-gray-300", "dark:bg-gray-600");
+            stepCircle.classList.add("text-gray-500", "dark:text-gray-400");
+          }
+        });
+      }
+
+      // ==================== VALIDATION DES ÉTAPES ====================
+      function validateStep1() {
+        const errors = [];
+
+        const requiredFields = [
+          { id: "nom", name: "Nom" },
+          { id: "prenom", name: "Prénom" },
+          { id: "email", name: "Email" },
+          { id: "password", name: "Mot de passe" },
+          { id: "confirmPassword", name: "Confirmation mot de passe" },
+        ];
+
+        requiredFields.forEach((field) => {
+          const element = document.getElementById(field.id);
+          if (element && !element.value.trim()) {
+            errors.push({
+              field: field.id,
+              message: `${field.name} est requis`,
             });
-            
-            document.querySelectorAll('.input-field').forEach(field => {
-                field.classList.remove('border-red-500', 'error-shake');
+          }
+        });
+
+        // Validation du sexe
+        const sexeSelected = document.querySelector(
+          'input[name="sexe"]:checked'
+        );
+        if (!sexeSelected) {
+          errors.push({
+            field: "sexe",
+            message: "Veuillez sélectionner votre sexe",
+          });
+        }
+
+        // Validation de l'email
+        const email = document.getElementById("email");
+        if (email && email.value) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email.value)) {
+            errors.push({
+              field: "email",
+              message: "Format d'email invalide",
             });
-            
-            const successMsg = document.querySelector('.success-message');
-            if (successMsg) successMsg.classList.add('hidden');
+          }
         }
-        
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+
+        // Validation du mot de passe
+        const password = document.getElementById("password");
+        if (password && password.value) {
+          if (password.value.length < 8) {
+            errors.push({
+              field: "password",
+              message: "Le mot de passe doit contenir au moins 8 caractères",
+            });
+          }
+
+          const passwordScore = parseInt(
+            document.getElementById("passwordScore")?.textContent || "0"
+          );
+          if (passwordScore < 40) {
+            errors.push({
+              field: "password",
+              message: "Le mot de passe est trop faible",
+            });
+          }
         }
-        
-        // ==================== VÉRIFICATION EMAIL API ====================
-        async function verifyEmail(email) {
-            // Vérifier le cache d'abord
-            if (emailVerificationCache[email]) {
-                return emailVerificationCache[email];
-            }
-            
-            // Vérification basique du format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                return { valid: false, reason: 'format_invalid' };
-            }
-            
-            try {
-                // Montrer l'indicateur de vérification
-                const emailField = document.getElementById('email');
-                const loadingMsg = emailField.parentElement.querySelector('.loading-message') || createLoadingMessage(emailField.parentElement);
-                loadingMsg.classList.remove('hidden');
-                
-                const response = await fetch(`${API_BASE_URL}/email/verify`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_TOKEN}`
-                    },
-                    body: JSON.stringify({ email: email })
-                });
-                
-                loadingMsg.classList.add('hidden');
-                
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                // Mettre en cache le résultat
-                emailVerificationCache[email] = data;
-                
-                return data;
-                
-            } catch (error) {
-                console.error('Erreur vérification email:', error);
-                
-                // Fallback: vérification locale basique
-                const domain = email.split('@')[1];
-                const disposableDomains = ['tempmail.com', 'mailinator.com', 'guerrillamail.com'];
-                const freeDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
-                
-                const result = {
-                    valid: true,
-                    deliverable: true,
-                    disposable: disposableDomains.some(d => domain.includes(d)),
-                    free: freeDomains.some(d => domain.includes(d))
-                };
-                
-                // Mettre en cache le résultat
-                emailVerificationCache[email] = result;
-                
-                return result;
-            }
+
+        // Validation de la confirmation
+        const confirmPassword = document.getElementById("confirmPassword");
+        if (
+          password &&
+          confirmPassword &&
+          password.value !== confirmPassword.value
+        ) {
+          errors.push({
+            field: "confirmPassword",
+            message: "Les mots de passe ne correspondent pas",
+          });
         }
-        
-        function createLoadingMessage(container) {
-            const loadingMsg = document.createElement('div');
-            loadingMsg.className = 'loading-message';
-            loadingMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification de l\'email en cours...';
-            container.appendChild(loadingMsg);
-            return loadingMsg;
+
+        return errors;
+      }
+
+      function validateStep2() {
+        const errors = [];
+
+        const requiredFields = [
+          { id: "langue", name: "Langue" },
+          { id: "typeEtude", name: "Type d'étude" },
+          { id: "niveauEtude", name: "Niveau d'étude" },
+          { id: "telephone", name: "Téléphone" },
+        ];
+
+        requiredFields.forEach((field) => {
+          const element = document.getElementById(field.id);
+          if (element && !element.value.trim()) {
+            errors.push({
+              field: field.id,
+              message: `${field.name} est requis`,
+            });
+          }
+        });
+
+        // Validation du pays
+        if (!selectedCountry || !selectedCountry.name) {
+          errors.push({
+            field: "paysInput",
+            message: "Veuillez sélectionner un pays",
+          });
         }
-        
-        async function handleEmailValidation() {
-            const emailField = document.getElementById('email');
-            const email = emailField.value.trim();
-            const errorMsg = emailField.parentElement.querySelector('.error-message');
-            const successMsg = emailField.parentElement.querySelector('.success-message');
-            
-            if (!email) {
-                errorMsg.classList.add('hidden');
-                successMsg.classList.add('hidden');
-                emailField.classList.remove('border-green-500', 'border-red-500');
-                return;
+
+        // Validation du téléphone
+        const telephone = document.getElementById("telephone");
+        if (telephone && telephone.value) {
+          const phoneNumber = telephone.value.replace(/\D/g, "");
+          if (phoneNumber.length < 8 || phoneNumber.length > 15) {
+            errors.push({
+              field: "telephone",
+              message: "Numéro de téléphone invalide",
+            });
+          }
+        }
+
+        // Vérification supplémentaire de l'email
+        const email = document.getElementById("email").value;
+        const cachedResult = emailVerificationCache[email];
+        if (
+          cachedResult &&
+          (!cachedResult.deliverable || cachedResult.disposable)
+        ) {
+          errors.push({
+            field: "email",
+            message: cachedResult.disposable
+              ? "Les emails temporaires ne sont pas autorisés"
+              : "Email non livrable",
+          });
+        }
+
+        return errors;
+      }
+
+      function displayFormErrors(errors) {
+        errors.forEach((error) => {
+          let fieldElement;
+          let errorElement;
+
+          if (error.field === "sexe") {
+            const sexeField = document.querySelector(
+              '.form-field:has(input[name="sexe"])'
+            );
+            if (sexeField) {
+              errorElement = sexeField.querySelector(".error-message");
             }
-            
-            // Vérification basique du format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                errorMsg.textContent = 'Format d\'email invalide';
-                errorMsg.classList.remove('hidden');
-                successMsg.classList.add('hidden');
-                emailField.classList.add('border-red-500');
-                emailField.classList.remove('border-green-500');
-                return;
+          } else {
+            fieldElement = document.getElementById(error.field);
+            if (fieldElement) {
+              errorElement =
+                fieldElement.parentElement.querySelector(".error-message");
+              if (!errorElement) {
+                errorElement =
+                  fieldElement.parentElement.parentElement.querySelector(
+                    ".error-message"
+                  );
+              }
             }
-            
-            // Vérification via API
-            const verificationResult = await verifyEmail(email);
-            
-            if (!verificationResult.valid || verificationResult.reason === 'format_invalid') {
-                errorMsg.textContent = 'Format d\'email invalide';
-                errorMsg.classList.remove('hidden');
-                successMsg.classList.add('hidden');
-                emailField.classList.add('border-red-500');
-                emailField.classList.remove('border-green-500');
-            } else if (!verificationResult.deliverable) {
-                errorMsg.textContent = 'Cet email n\'est pas livrable';
-                errorMsg.classList.remove('hidden');
-                successMsg.classList.add('hidden');
-                emailField.classList.add('border-red-500');
-                emailField.classList.remove('border-green-500');
-            } else if (verificationResult.disposable) {
-                errorMsg.textContent = 'Les emails temporaires ne sont pas autorisés';
-                errorMsg.classList.remove('hidden');
-                successMsg.classList.add('hidden');
-                emailField.classList.add('border-red-500');
-                emailField.classList.remove('border-green-500');
-            } else if (verificationResult.free) {
-                successMsg.textContent = '✓ Email vérifié (compte personnel)';
-                successMsg.classList.remove('hidden');
-                errorMsg.classList.add('hidden');
-                emailField.classList.remove('border-red-500');
-                emailField.classList.add('border-green-500');
+          }
+
+          if (errorElement) {
+            errorElement.textContent = error.message;
+            errorElement.classList.remove("hidden");
+          }
+
+          if (fieldElement) {
+            fieldElement.classList.add("error-shake", "border-red-500");
+            setTimeout(() => fieldElement.classList.remove("error-shake"), 400);
+          }
+        });
+      }
+
+      // ==================== GESTION MOTS DE PASSE ====================
+      function checkPasswordStrength() {
+        const passwordInput = document.getElementById("password");
+        const password = passwordInput.value;
+        let score = 0;
+
+        const hasLength = password.length >= 8;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*]/.test(password);
+
+        if (hasLength) score += 20;
+        if (hasUppercase) score += 20;
+        if (hasLowercase) score += 20;
+        if (hasNumber) score += 20;
+        if (hasSpecial) score += 20;
+
+        // Mettre à jour les icônes
+        const requirements = {
+          reqLength: hasLength,
+          reqUppercase: hasUppercase,
+          reqLowercase: hasLowercase,
+          reqNumber: hasNumber,
+          reqSpecial: hasSpecial,
+        };
+
+        Object.keys(requirements).forEach((id) => {
+          const element = document.getElementById(id);
+          if (element) {
+            if (requirements[id]) {
+              element.classList.replace(
+                "requirement-not-met",
+                "requirement-met"
+              );
+              element.classList.replace("fa-times-circle", "fa-check-circle");
             } else {
-                successMsg.textContent = '✓ Email vérifié (compte professionnel)';
-                successMsg.classList.remove('hidden');
-                errorMsg.classList.add('hidden');
-                emailField.classList.remove('border-red-500');
-                emailField.classList.add('border-green-500');
+              element.classList.replace(
+                "requirement-met",
+                "requirement-not-met"
+              );
+              element.classList.replace("fa-check-circle", "fa-times-circle");
             }
+          }
+        });
+
+        // Mettre à jour la barre
+        const passwordStrengthBar = document.getElementById(
+          "passwordStrengthBar"
+        );
+        const passwordStrengthText = document.getElementById(
+          "passwordStrengthText"
+        );
+        const passwordScore = document.getElementById("passwordScore");
+
+        if (passwordStrengthBar) {
+          passwordStrengthBar.style.width = `${score}%`;
+          passwordStrengthBar.className = "password-strength-bar";
+
+          if (score <= 40) {
+            passwordStrengthBar.classList.add("strength-weak");
+            if (passwordStrengthText) {
+              passwordStrengthText.textContent = "Faible";
+              passwordStrengthText.className =
+                "password-strength-text strength-weak";
+            }
+          } else if (score <= 80) {
+            passwordStrengthBar.classList.add("strength-medium");
+            if (passwordStrengthText) {
+              passwordStrengthText.textContent = "Moyen";
+              passwordStrengthText.className =
+                "password-strength-text strength-medium";
+            }
+          } else {
+            passwordStrengthBar.classList.add("strength-strong");
+            if (passwordStrengthText) {
+              passwordStrengthText.textContent = "Fort";
+              passwordStrengthText.className =
+                "password-strength-text strength-strong";
+            }
+          }
         }
-        
-        // ==================== GESTION DES ÉTAPES ====================
-        function goToStep(step) {
-            const step1 = document.querySelector('[data-step="1"]');
-            const step2 = document.querySelector('[data-step="2"]');
-            
-            if (step === 2) {
-                const errors = validateStep1();
-                if (errors.length > 0) {
-                    displayFormErrors(errors);
-                    showNotification('Veuillez corriger les erreurs avant de continuer', 'error');
-                    return;
-                }
-                
-                currentStep = 2;
-                step1.classList.add('hidden');
-                step2.classList.remove('hidden');
-                updateStepIndicator(1);
-            } else if (step === 1) {
-                currentStep = 1;
-                step2.classList.add('hidden');
-                step1.classList.remove('hidden');
-                updateStepIndicator(0);
-            }
+
+        if (passwordScore) {
+          passwordScore.textContent = `${score}%`;
+          if (score <= 40) {
+            passwordScore.className = "password-score strength-weak";
+          } else if (score <= 80) {
+            passwordScore.className = "password-score strength-medium";
+          } else {
+            passwordScore.className = "password-score strength-strong";
+          }
         }
-        
-        function updateStepIndicator(activeStepIndex) {
-            const steps = document.querySelectorAll('.step');
-            steps.forEach((step, index) => {
-                const stepCircle = step.querySelector('div:first-child');
-                if (index <= activeStepIndex) {
-                    stepCircle.classList.remove('bg-gray-300', 'dark:bg-gray-600');
-                    stepCircle.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'text-white');
-                } else {
-                    stepCircle.classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'text-white');
-                    stepCircle.classList.add('bg-gray-300', 'dark:bg-gray-600');
-                    stepCircle.classList.add('text-gray-500', 'dark:text-gray-400');
-                }
-            });
+      }
+
+      function checkPasswordMatch() {
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+        const passwordMatchMessage = document.getElementById(
+          "passwordMatchMessage"
+        );
+
+        if (confirmPassword.length === 0) {
+          passwordMatchMessage.innerHTML = "";
+          return;
         }
-        
-        // ==================== VALIDATION DES ÉTAPES ====================
-        function validateStep1() {
-            const errors = [];
-            
-            const requiredFields = [
-                { id: 'nom', name: 'Nom' },
-                { id: 'prenom', name: 'Prénom' },
-                { id: 'email', name: 'Email' },
-                { id: 'password', name: 'Mot de passe' },
-                { id: 'confirmPassword', name: 'Confirmation mot de passe' }
-            ];
-            
-            requiredFields.forEach(field => {
-                const element = document.getElementById(field.id);
-                if (element && !element.value.trim()) {
-                    errors.push({
-                        field: field.id,
-                        message: `${field.name} est requis`
-                    });
-                }
-            });
-            
-            // Validation du sexe
-            const sexeSelected = document.querySelector('input[name="sexe"]:checked');
-            if (!sexeSelected) {
-                errors.push({
-                    field: 'sexe',
-                    message: 'Veuillez sélectionner votre sexe'
-                });
-            }
-            
-            // Validation de l'email
-            const email = document.getElementById('email');
-            if (email && email.value) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email.value)) {
-                    errors.push({
-                        field: 'email',
-                        message: 'Format d\'email invalide'
-                    });
-                }
-            }
-            
-            // Validation du mot de passe
-            const password = document.getElementById('password');
-            if (password && password.value) {
-                if (password.value.length < 8) {
-                    errors.push({
-                        field: 'password',
-                        message: 'Le mot de passe doit contenir au moins 8 caractères'
-                    });
-                }
-                
-                const passwordScore = parseInt(document.getElementById('passwordScore')?.textContent || '0');
-                if (passwordScore < 40) {
-                    errors.push({
-                        field: 'password',
-                        message: 'Le mot de passe est trop faible'
-                    });
-                }
-            }
-            
-            // Validation de la confirmation
-            const confirmPassword = document.getElementById('confirmPassword');
-            if (password && confirmPassword && password.value !== confirmPassword.value) {
-                errors.push({
-                    field: 'confirmPassword',
-                    message: 'Les mots de passe ne correspondent pas'
-                });
-            }
-            
-            return errors;
-        }
-        
-        function validateStep2() {
-            const errors = [];
-            
-            const requiredFields = [
-                { id: 'langue', name: 'Langue' },
-                { id: 'typeEtude', name: 'Type d\'étude' },
-                { id: 'niveauEtude', name: 'Niveau d\'étude' },
-                { id: 'telephone', name: 'Téléphone' }
-            ];
-            
-            requiredFields.forEach(field => {
-                const element = document.getElementById(field.id);
-                if (element && !element.value.trim()) {
-                    errors.push({
-                        field: field.id,
-                        message: `${field.name} est requis`
-                    });
-                }
-            });
-            
-            // Validation du pays
-            if (!selectedCountry || !selectedCountry.name) {
-                errors.push({
-                    field: 'paysInput',
-                    message: 'Veuillez sélectionner un pays'
-                });
-            }
-            
-            // Validation du téléphone
-            const telephone = document.getElementById('telephone');
-            if (telephone && telephone.value) {
-                const phoneNumber = telephone.value.replace(/\D/g, '');
-                if (phoneNumber.length < 8 || phoneNumber.length > 15) {
-                    errors.push({
-                        field: 'telephone',
-                        message: 'Numéro de téléphone invalide'
-                    });
-                }
-            }
-            
-            // Vérification supplémentaire de l'email
-            const email = document.getElementById('email').value;
-            const cachedResult = emailVerificationCache[email];
-            if (cachedResult && (!cachedResult.deliverable || cachedResult.disposable)) {
-                errors.push({
-                    field: 'email',
-                    message: cachedResult.disposable ? 'Les emails temporaires ne sont pas autorisés' : 'Email non livrable'
-                });
-            }
-            
-            return errors;
-        }
-        
-        function displayFormErrors(errors) {
-            errors.forEach(error => {
-                let fieldElement;
-                let errorElement;
-                
-                if (error.field === 'sexe') {
-                    const sexeField = document.querySelector('.form-field:has(input[name="sexe"])');
-                    if (sexeField) {
-                        errorElement = sexeField.querySelector('.error-message');
-                    }
-                } else {
-                    fieldElement = document.getElementById(error.field);
-                    if (fieldElement) {
-                        errorElement = fieldElement.parentElement.querySelector('.error-message');
-                        if (!errorElement) {
-                            errorElement = fieldElement.parentElement.parentElement.querySelector('.error-message');
-                        }
-                    }
-                }
-                
-                if (errorElement) {
-                    errorElement.textContent = error.message;
-                    errorElement.classList.remove('hidden');
-                }
-                
-                if (fieldElement) {
-                    fieldElement.classList.add('error-shake', 'border-red-500');
-                    setTimeout(() => fieldElement.classList.remove('error-shake'), 400);
-                }
-            });
-        }
-        
-        // ==================== GESTION MOTS DE PASSE ====================
-        function checkPasswordStrength() {
-            const passwordInput = document.getElementById('password');
-            const password = passwordInput.value;
-            let score = 0;
-            
-            const hasLength = password.length >= 8;
-            const hasUppercase = /[A-Z]/.test(password);
-            const hasLowercase = /[a-z]/.test(password);
-            const hasNumber = /[0-9]/.test(password);
-            const hasSpecial = /[!@#$%^&*]/.test(password);
-            
-            if (hasLength) score += 20;
-            if (hasUppercase) score += 20;
-            if (hasLowercase) score += 20;
-            if (hasNumber) score += 20;
-            if (hasSpecial) score += 20;
-            
-            // Mettre à jour les icônes
-            const requirements = {
-                'reqLength': hasLength,
-                'reqUppercase': hasUppercase,
-                'reqLowercase': hasLowercase,
-                'reqNumber': hasNumber,
-                'reqSpecial': hasSpecial
-            };
-            
-            Object.keys(requirements).forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    if (requirements[id]) {
-                        element.classList.replace('requirement-not-met', 'requirement-met');
-                        element.classList.replace('fa-times-circle', 'fa-check-circle');
-                    } else {
-                        element.classList.replace('requirement-met', 'requirement-not-met');
-                        element.classList.replace('fa-check-circle', 'fa-times-circle');
-                    }
-                }
-            });
-            
-            // Mettre à jour la barre
-            const passwordStrengthBar = document.getElementById('passwordStrengthBar');
-            const passwordStrengthText = document.getElementById('passwordStrengthText');
-            const passwordScore = document.getElementById('passwordScore');
-            
-            if (passwordStrengthBar) {
-                passwordStrengthBar.style.width = `${score}%`;
-                passwordStrengthBar.className = 'password-strength-bar';
-                
-                if (score <= 40) {
-                    passwordStrengthBar.classList.add('strength-weak');
-                    if (passwordStrengthText) {
-                        passwordStrengthText.textContent = 'Faible';
-                        passwordStrengthText.className = 'password-strength-text strength-weak';
-                    }
-                } else if (score <= 80) {
-                    passwordStrengthBar.classList.add('strength-medium');
-                    if (passwordStrengthText) {
-                        passwordStrengthText.textContent = 'Moyen';
-                        passwordStrengthText.className = 'password-strength-text strength-medium';
-                    }
-                } else {
-                    passwordStrengthBar.classList.add('strength-strong');
-                    if (passwordStrengthText) {
-                        passwordStrengthText.textContent = 'Fort';
-                        passwordStrengthText.className = 'password-strength-text strength-strong';
-                    }
-                }
-            }
-            
-            if (passwordScore) {
-                passwordScore.textContent = `${score}%`;
-                if (score <= 40) {
-                    passwordScore.className = 'password-score strength-weak';
-                } else if (score <= 80) {
-                    passwordScore.className = 'password-score strength-medium';
-                } else {
-                    passwordScore.className = 'password-score strength-strong';
-                }
-            }
-        }
-        
-        function checkPasswordMatch() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const passwordMatchMessage = document.getElementById('passwordMatchMessage');
-            
-            if (confirmPassword.length === 0) {
-                passwordMatchMessage.innerHTML = '';
-                return;
-            }
-            
-            if (password === confirmPassword) {
-                passwordMatchMessage.innerHTML = `
+
+        if (password === confirmPassword) {
+          passwordMatchMessage.innerHTML = `
                     <i class="fas fa-check-circle match-success"></i>
                     <span class="match-success">Les mots de passe correspondent</span>
                 `;
-                document.getElementById('confirmPassword').classList.remove('border-red-500');
-                document.getElementById('confirmPassword').classList.add('border-green-500');
-            } else {
-                passwordMatchMessage.innerHTML = `
+          document
+            .getElementById("confirmPassword")
+            .classList.remove("border-red-500");
+          document
+            .getElementById("confirmPassword")
+            .classList.add("border-green-500");
+        } else {
+          passwordMatchMessage.innerHTML = `
                     <i class="fas fa-times-circle match-error"></i>
                     <span class="match-error">Les mots de passe ne correspondent pas</span>
                 `;
-                document.getElementById('confirmPassword').classList.remove('border-green-500');
-                document.getElementById('confirmPassword').classList.add('border-red-500');
-            }
+          document
+            .getElementById("confirmPassword")
+            .classList.remove("border-green-500");
+          document
+            .getElementById("confirmPassword")
+            .classList.add("border-red-500");
         }
-        
-        // ==================== GESTION DES PAYS ====================
-        function getFallbackAfricanCountries() {
-            return [
-                { name: 'Cameroun', code: 'CM', flag: '🇨🇲', phone_code: '+237' },
-                { name: 'Sénégal', code: 'SN', flag: '🇸🇳', phone_code: '+221' },
-                { name: 'Côte d\'Ivoire', code: 'CI', flag: '🇨🇮', phone_code: '+225' },
-                { name: 'Maroc', code: 'MA', flag: '🇲🇦', phone_code: '+212' },
-                { name: 'Algérie', code: 'DZ', flag: '🇩🇿', phone_code: '+213' },
-                { name: 'Tunisie', code: 'TN', flag: '🇹🇳', phone_code: '+216' },
-                { name: 'Mali', code: 'ML', flag: '🇲🇱', phone_code: '+223' },
-                { name: 'Burkina Faso', code: 'BF', flag: '🇧🇫', phone_code: '+226' },
-                { name: 'Niger', code: 'NE', flag: '🇳🇪', phone_code: '+227' },
-                { name: 'Tchad', code: 'TD', flag: '🇹🇩', phone_code: '+235' },
-                { name: 'Bénin', code: 'BJ', flag: '🇧🇯', phone_code: '+229' },
-                { name: 'Togo', code: 'TG', flag: '🇹🇬', phone_code: '+228' },
-                { name: 'Gabon', code: 'GA', flag: '🇬🇦', phone_code: '+241' },
-                { name: 'Congo', code: 'CG', flag: '🇨🇬', phone_code: '+242' },
-                { name: 'RDC', code: 'CD', flag: '🇨🇩', phone_code: '+243' },
-                { name: 'Rwanda', code: 'RW', flag: '🇷🇼', phone_code: '+250' },
-                { name: 'Burundi', code: 'BI', flag: '🇧🇮', phone_code: '+257' },
-                { name: 'Kenya', code: 'KE', flag: '🇰🇪', phone_code: '+254' },
-                { name: 'Tanzanie', code: 'TZ', flag: '🇹🇿', phone_code: '+255' },
-                { name: 'Ouganda', code: 'UG', flag: '🇺🇬', phone_code: '+256' },
-                { name: 'Ghana', code: 'GH', flag: '🇬🇭', phone_code: '+233' },
-                { name: 'Nigeria', code: 'NG', flag: '🇳🇬', phone_code: '+234' },
-                { name: 'Égypte', code: 'EG', flag: '🇪🇬', phone_code: '+20' },
-                { name: 'Afrique du Sud', code: 'ZA', flag: '🇿🇦', phone_code: '+27' }
-            ];
-        }
-        
-        function loadAfricanCountries() {
-            africanCountries = getFallbackAfricanCountries();
-            console.log(`${africanCountries.length} pays africains chargés`);
-            return africanCountries;
-        }
-        
-        function displayCountries(countries, query = '') {
-            const resultsContainer = document.getElementById('paysResults');
-            const dropdown = document.getElementById('paysDropdown');
-            
-            if (!resultsContainer || !dropdown) return;
-            
-            resultsContainer.innerHTML = '';
-            
-            if (countries.length === 0) {
-                resultsContainer.innerHTML = `
+      }
+
+      // ==================== GESTION DES PAYS ====================
+      function getFallbackAfricanCountries() {
+        return [
+          { name: "Cameroun", code: "CM", flag: "🇨🇲", phone_code: "+237" },
+          { name: "Sénégal", code: "SN", flag: "🇸🇳", phone_code: "+221" },
+          { name: "Côte d'Ivoire", code: "CI", flag: "🇨🇮", phone_code: "+225" },
+          { name: "Maroc", code: "MA", flag: "🇲🇦", phone_code: "+212" },
+          { name: "Algérie", code: "DZ", flag: "🇩🇿", phone_code: "+213" },
+          { name: "Tunisie", code: "TN", flag: "🇹🇳", phone_code: "+216" },
+          { name: "Mali", code: "ML", flag: "🇲🇱", phone_code: "+223" },
+          { name: "Burkina Faso", code: "BF", flag: "🇧🇫", phone_code: "+226" },
+          { name: "Niger", code: "NE", flag: "🇳🇪", phone_code: "+227" },
+          { name: "Tchad", code: "TD", flag: "🇹🇩", phone_code: "+235" },
+          { name: "Bénin", code: "BJ", flag: "🇧🇯", phone_code: "+229" },
+          { name: "Togo", code: "TG", flag: "🇹🇬", phone_code: "+228" },
+          { name: "Gabon", code: "GA", flag: "🇬🇦", phone_code: "+241" },
+          { name: "Congo", code: "CG", flag: "🇨🇬", phone_code: "+242" },
+          { name: "RDC", code: "CD", flag: "🇨🇩", phone_code: "+243" },
+          { name: "Rwanda", code: "RW", flag: "🇷🇼", phone_code: "+250" },
+          { name: "Burundi", code: "BI", flag: "🇧🇮", phone_code: "+257" },
+          { name: "Kenya", code: "KE", flag: "🇰🇪", phone_code: "+254" },
+          { name: "Tanzanie", code: "TZ", flag: "🇹🇿", phone_code: "+255" },
+          { name: "Ouganda", code: "UG", flag: "🇺🇬", phone_code: "+256" },
+          { name: "Ghana", code: "GH", flag: "🇬🇭", phone_code: "+233" },
+          { name: "Nigeria", code: "NG", flag: "🇳🇬", phone_code: "+234" },
+          { name: "Égypte", code: "EG", flag: "🇪🇬", phone_code: "+20" },
+          { name: "Afrique du Sud", code: "ZA", flag: "🇿🇦", phone_code: "+27" },
+        ];
+      }
+
+      function loadAfricanCountries() {
+        africanCountries = getFallbackAfricanCountries();
+        console.log(`${africanCountries.length} pays africains chargés`);
+        return africanCountries;
+      }
+
+      function displayCountries(countries, query = "") {
+        const resultsContainer = document.getElementById("paysResults");
+        const dropdown = document.getElementById("paysDropdown");
+
+        if (!resultsContainer || !dropdown) return;
+
+        resultsContainer.innerHTML = "";
+
+        if (countries.length === 0) {
+          resultsContainer.innerHTML = `
                     <div class="px-4 py-3 text-sm text-gray-500">
                         Aucun pays trouvé "${query}"
                     </div>
                 `;
-                dropdown.classList.remove('hidden');
-                return;
-            }
-            
-            countries.forEach(country => {
-                const div = document.createElement('div');
-                div.className = 'country-item px-4 py-3 cursor-pointer hover:bg-yellow-50 dark:hover:bg-gray-700 flex items-center gap-3';
-                div.innerHTML = `
+          dropdown.classList.remove("hidden");
+          return;
+        }
+
+        countries.forEach((country) => {
+          const div = document.createElement("div");
+          div.className =
+            "country-item px-4 py-3 cursor-pointer hover:bg-yellow-50 dark:hover:bg-gray-700 flex items-center gap-3";
+          div.innerHTML = `
                     <span class="text-lg">${country.flag}</span>
                     <div>
                         <div class="font-medium">${country.name}</div>
                         <div class="text-xs text-gray-500">${country.phone_code}</div>
                     </div>
                 `;
-                
-                div.addEventListener('click', () => {
-                    selectCountry(country);
-                });
-                
-                resultsContainer.appendChild(div);
-            });
-            
-            dropdown.classList.remove('hidden');
-        }
-        
-        function selectCountry(country) {
-            selectedCountry = country;
-            
-            const paysInput = document.getElementById('paysInput');
-            const paysSelected = document.getElementById('paysSelected');
-            const countryCode = document.getElementById('countryCode');
-            const dropdown = document.getElementById('paysDropdown');
-            
-            if (paysInput) paysInput.value = `${country.flag} ${country.name}`;
-            if (paysSelected) paysSelected.value = country.name;
-            if (countryCode) countryCode.value = country.phone_code;
-            if (dropdown) dropdown.classList.add('hidden');
-            
-            // Enlever l'erreur du champ pays
-            paysInput.classList.remove('border-red-500');
-            const errorElement = paysInput.parentElement.querySelector('.error-message');
-            if (errorElement) errorElement.classList.add('hidden');
-        }
-        
-        function setupCountrySearch() {
-            const paysInput = document.getElementById('paysInput');
-            const dropdown = document.getElementById('paysDropdown');
-            
-            if (!paysInput || !dropdown) return;
-            
-            loadAfricanCountries();
-            
-            paysInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase().trim();
-                
-                if (query.length === 0) {
-                    displayCountries(africanCountries);
-                    return;
-                }
-                
-                const filteredCountries = africanCountries.filter(country => 
-                    country.name.toLowerCase().includes(query) || 
-                    country.code.toLowerCase().includes(query)
-                );
-                
-                displayCountries(filteredCountries, query);
-            });
-            
-            document.addEventListener('click', function(event) {
-                if (!paysInput.contains(event.target) && !dropdown.contains(event.target)) {
-                    dropdown.classList.add('hidden');
-                }
-            });
-            
-            paysInput.addEventListener('click', function() {
-                if (this.value.trim() === '') {
-                    displayCountries(africanCountries);
-                }
-            });
-        }
-        
-        // ==================== GESTION DES ÉTUDES ====================
-        function setupEducationFields() {
-            const typeEtudeSelect = document.getElementById('typeEtude');
-            const niveauEtudeSelect = document.getElementById('niveauEtude');
-            
-            if (!typeEtudeSelect || !niveauEtudeSelect) return;
-            
-            const niveauxOptions = {
-                universitaire: [
-                    { value: 'l1', label: 'Licence 1 (L1)' },
-                    { value: 'l2', label: 'Licence 2 (L2)' },
-                    { value: 'l3', label: 'Licence 3 (L3)' },
-                    { value: 'm1', label: 'Master 1 (M1)' },
-                    { value: 'm2', label: 'Master 2 (M2)' },
-                    { value: 'doctorat', label: 'Doctorat' },
-                    { value: 'ingenieur', label: 'Cycle ingénieur' }
-                ],
-                secondaire: [
-                    { value: 'seconde', label: 'Seconde' },
-                    { value: 'premiere', label: 'Première' },
-                    { value: 'terminale', label: 'Terminale' },
-                    { value: 'bac', label: 'Baccalauréat' }
-                ],
-                autre: [
-                    { value: 'formation_pro', label: 'Formation professionnelle' },
-                    { value: 'autodidacte', label: 'Autodidacte' },
-                    { value: 'autre_diplome', label: 'Autre diplôme' }
-                ]
-            };
-        
-            typeEtudeSelect.addEventListener('change', function() {
-                const selectedType = this.value;
-                updateNiveauOptions(selectedType, niveauEtudeSelect, niveauxOptions);
-            });
-            
-            updateNiveauOptions(typeEtudeSelect.value, niveauEtudeSelect, niveauxOptions);
-        }
-        
-        function updateNiveauOptions(selectedType, niveauSelect, niveauxOptions) {
-            const currentValue = niveauSelect.value;
-            
-            niveauSelect.innerHTML = '<option value="">Sélectionnez un niveau</option>';
-            
-            if (selectedType && niveauxOptions[selectedType]) {
-                niveauxOptions[selectedType].forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option.value;
-                    opt.textContent = option.label;
-                    niveauSelect.appendChild(opt);
-                });
-                
-                if (currentValue) {
-                    const optionExists = Array.from(niveauSelect.options).some(opt => opt.value === currentValue);
-                    if (optionExists) {
-                        niveauSelect.value = currentValue;
-                    }
-                }
-            }
-        }
-        
-        // ==================== TOGGLE VISIBILITÉ MOT DE PASSE ====================
-        function setupPasswordToggles() {
-            document.querySelectorAll('.eye-toggle').forEach(icon => {
-                icon.addEventListener('click', function() {
-                    const input = this.parentElement.querySelector('input');
-                    if (!input) return;
-                    
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        this.classList.replace('fa-eye', 'fa-eye-slash');
-                    } else {
-                        input.type = 'password';
-                        this.classList.replace('fa-eye-slash', 'fa-eye');
-                    }
-                });
-            });
-        }
-        
-        // ==================== SOUMISSION À FIREBASE ====================
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            
-            resetFormErrors();
-            
-            const errors = validateStep2();
-            
-            if (errors.length > 0) {
-                displayFormErrors(errors);
-                showNotification('Veuillez corriger les erreurs dans le formulaire', 'error');
-                return;
-            }
-            
-            // Vérification finale de l'email
-            const email = document.getElementById('email').value;
-            const cachedResult = emailVerificationCache[email];
-            if (cachedResult && (!cachedResult.deliverable || cachedResult.disposable)) {
-                showNotification(cachedResult.disposable ? 'Les emails temporaires ne sont pas autorisés' : 'Email non livrable', 'error');
-                return;
-            }
-            
-            if (!db || !auth) {
-                showNotification('Erreur de connexion à la base de données. Veuillez rafraîchir la page.', 'error');
-                return;
-            }
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const btnText = document.getElementById('btnText');
-            const btnLoader = document.getElementById('btnLoader');
-            
-            if (submitBtn && btnText && btnLoader) {
-                submitBtn.disabled = true;
-                btnText.classList.add('hidden');
-                btnLoader.classList.remove('hidden');
-            }
-            
-            try {
-                const formData = {
-                    nom: document.getElementById('nom').value.trim(),
-                    prenom: document.getElementById('prenom').value.trim(),
-                    sexe: document.querySelector('input[name="sexe"]:checked').value,
-                    langue: document.getElementById('langue').value,
-                    email: email,
-                    typeEtude: document.getElementById('typeEtude').value,
-                    niveauEtude: document.getElementById('niveauEtude').value,
-                    pays: selectedCountry?.name || '',
-                    paysCode: selectedCountry?.code || '',
-                    telephone: document.getElementById('countryCode').value + document.getElementById('telephone').value.replace(/\D/g, '')
-                };
-                
-                const password = document.getElementById('password').value;
-                
-                console.log("Données étudiant à envoyer:", formData);
-                
-                // 1. Créer l'utilisateur dans Firebase Authentication
-                const userCredential = await auth.createUserWithEmailAndPassword(formData.email, password);
-                const user = userCredential.user;
-                
-                // 2. Mettre à jour le profil
-                await user.updateProfile({
-                    displayName: `${formData.prenom} ${formData.nom}`
-                });
-                
-                // 3. Envoyer un email de vérification
-                await user.sendEmailVerification();
-                
-                // 4. Préparer les données pour Firestore
-                const studentData = {
-                    uid: user.uid,
-                    email: formData.email,
-                    nom: formData.nom,
-                    prenom: formData.prenom,
-                    nomComplet: `${formData.prenom} ${formData.nom}`,
-                    sexe: formData.sexe,
-                    langue: formData.langue,
-                    typeEtude: formData.typeEtude,
-                    niveauEtude: formData.niveauEtude,
-                    pays: formData.pays,
-                    paysCode: formData.paysCode,
-                    telephone: formData.telephone,
-                    role: 'etudiant',
-                    statut: 'actif',
-                    emailVerified: false,
-                    emailVerificationSent: true,
-                    dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
-                    dateCreation: new Date().toISOString(),
-                    photoURL: '',
-                    bio: '',
-                    preferences: {
-                        notifications: true,
-                        emails: true,
-                        visibilite: 'public'
-                    },
-                    statistiques: {
-                        coursSuivis: 0,
-                        heuresEtude: 0,
-                        examensPasses: 0
-                    }
-                };
-                
-                // 5. Ajouter à la collection "etudiants"
-                const docRef = await db.collection("etudiants").add(studentData);
-                console.log("Étudiant ajouté avec ID:", docRef.id);
-                
-                // 6. Créer un document dans "users"
-                const userGeneralData = {
-                    uid: user.uid,
-                    email: formData.email,
-                    nom: formData.nom,
-                    prenom: formData.prenom,
-                    role: 'etudiant',
-                    dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
-                    derniereConnexion: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                await db.collection("users").add(userGeneralData);
-                
-                // Succès
-                showNotification('Inscription réussie ! Un email de vérification a été envoyé. Redirection vers la connexion...', 'success');
-                
-                // Réinitialiser le formulaire
-                resetForm();
-                
-                // Rediriger après 5 secondes
-                setTimeout(() => {
-                    window.location.href = '../templates/Connexion.html?newStudent=true&emailVerificationSent=true';
-                }, 5000);
-                
-            } catch (error) {
-                console.error("Erreur lors de l'inscription:", error);
-                
-                let errorMessage = "Une erreur est survenue lors de l'inscription.";
-                
-                switch(error.code) {
-                    case 'auth/email-already-in-use':
-                        errorMessage = "Cet email est déjà utilisé. Essayez de vous connecter.";
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = "L'adresse email n'est pas valide.";
-                        break;
-                    case 'auth/weak-password':
-                        errorMessage = "Le mot de passe est trop faible. Utilisez au moins 6 caractères.";
-                        break;
-                    case 'auth/operation-not-allowed':
-                        errorMessage = "L'inscription par email/mot de passe n'est pas activée.";
-                        break;
-                    case 'auth/network-request-failed':
-                        errorMessage = "Problème de connexion internet. Veuillez réessayer.";
-                        break;
-                    case 'permission-denied':
-                        errorMessage = "Permission refusée. Contactez l'administrateur.";
-                        break;
-                }
-                
-                showNotification(errorMessage, 'error');
-                
-            } finally {
-                if (submitBtn && btnText && btnLoader) {
-                    submitBtn.disabled = false;
-                    btnText.classList.remove('hidden');
-                    btnLoader.classList.add('hidden');
-                }
-            }
-        }
-        
-        function resetForm() {
-            document.querySelectorAll('form').forEach(form => form.reset());
-            selectedCountry = null;
-            
-            const paysInput = document.getElementById('paysInput');
-            const paysSelected = document.getElementById('paysSelected');
-            const countryCode = document.getElementById('countryCode');
-            if (paysInput) paysInput.value = '';
-            if (paysSelected) paysSelected.value = '';
-            if (countryCode) countryCode.value = '';
-            
-            // Réinitialiser la force du mot de passe
-            const strengthBar = document.getElementById('passwordStrengthBar');
-            const strengthText = document.getElementById('passwordStrengthText');
-            const strengthScore = document.getElementById('passwordScore');
-            if (strengthBar) strengthBar.style.width = '0%';
-            if (strengthText) strengthText.textContent = 'Force du mot de passe';
-            if (strengthScore) strengthScore.textContent = '';
-            
-            // Réinitialiser les exigences
-            document.querySelectorAll('.requirement-icon').forEach(icon => {
-                icon.classList.replace('fa-check-circle', 'fa-times-circle');
-                icon.classList.replace('requirement-met', 'requirement-not-met');
-            });
-            
-            // Réinitialiser les messages
-            const matchMessage = document.getElementById('passwordMatchMessage');
-            if (matchMessage) matchMessage.innerHTML = '';
-            
-            // Retourner à l'étape 1
-            goToStep(1);
-        }
-        
-        // ==================== INITIALISATION ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("Page d'inscription étudiant chargée, initialisation...");
-            
-            // Bouton suivant
-            const nextBtn = document.getElementById('nextBtn');
-            if (nextBtn) {
-                nextBtn.addEventListener('click', () => goToStep(2));
-            }
-            
-            // Bouton retour
-            const backBtn = document.getElementById('backBtn');
-            if (backBtn) {
-                backBtn.addEventListener('click', () => goToStep(1));
-            }
-            
-            // Soumission du formulaire
-            const formStep2 = document.getElementById('registrationFormStep2');
-            if (formStep2) {
-                formStep2.addEventListener('submit', handleFormSubmit);
-            }
-            
-            // Validation des mots de passe
-            const passwordInput = document.getElementById('password');
-            if (passwordInput) {
-                passwordInput.addEventListener('input', checkPasswordStrength);
-            }
-            
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-            if (confirmPasswordInput) {
-                confirmPasswordInput.addEventListener('input', checkPasswordMatch);
-            }
-            
-            // Vérification email avec debounce
-            const emailInput = document.getElementById('email');
-            if (emailInput) {
-                emailInput.addEventListener('blur', () => handleEmailValidation());
-                emailInput.addEventListener('input', debounce(() => {
-                    const email = emailInput.value.trim();
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    
-                    if (email && emailRegex.test(email)) {
-                        handleEmailValidation();
-                    }
-                }, 1000));
-            }
-            
-            // Configurer la recherche de pays
-            setupCountrySearch();
-            
-            // Configurer les champs d'étude
-            setupEducationFields();
-            
-            // Configurer les toggles de mot de passe
-            setupPasswordToggles();
-            
-            console.log("Initialisation terminée");
+
+          div.addEventListener("click", () => {
+            selectCountry(country);
+          });
+
+          resultsContainer.appendChild(div);
         });
-        </script>
-</body>
+
+        dropdown.classList.remove("hidden");
+      }
+
+      function selectCountry(country) {
+        selectedCountry = country;
+
+        const paysInput = document.getElementById("paysInput");
+        const paysSelected = document.getElementById("paysSelected");
+        const countryCode = document.getElementById("countryCode");
+        const dropdown = document.getElementById("paysDropdown");
+
+        if (paysInput) paysInput.value = `${country.flag} ${country.name}`;
+        if (paysSelected) paysSelected.value = country.name;
+        if (countryCode) countryCode.value = country.phone_code;
+        if (dropdown) dropdown.classList.add("hidden");
+
+        // Enlever l'erreur du champ pays
+        paysInput.classList.remove("border-red-500");
+        const errorElement =
+          paysInput.parentElement.querySelector(".error-message");
+        if (errorElement) errorElement.classList.add("hidden");
+      }
+
+      function setupCountrySearch() {
+        const paysInput = document.getElementById("paysInput");
+        const dropdown = document.getElementById("paysDropdown");
+
+        if (!paysInput || !dropdown) return;
+
+        loadAfricanCountries();
+
+        paysInput.addEventListener("input", function () {
+          const query = this.value.toLowerCase().trim();
+
+          if (query.length === 0) {
+            displayCountries(africanCountries);
+            return;
+          }
+
+          const filteredCountries = africanCountries.filter(
+            (country) =>
+              country.name.toLowerCase().includes(query) ||
+              country.code.toLowerCase().includes(query)
+          );
+
+          displayCountries(filteredCountries, query);
+        });
+
+        document.addEventListener("click", function (event) {
+          if (
+            !paysInput.contains(event.target) &&
+            !dropdown.contains(event.target)
+          ) {
+            dropdown.classList.add("hidden");
+          }
+        });
+
+        paysInput.addEventListener("click", function () {
+          if (this.value.trim() === "") {
+            displayCountries(africanCountries);
+          }
+        });
+      }
+
+      // ==================== GESTION DES ÉTUDES ====================
+      function setupEducationFields() {
+        const typeEtudeSelect = document.getElementById("typeEtude");
+        const niveauEtudeSelect = document.getElementById("niveauEtude");
+
+        if (!typeEtudeSelect || !niveauEtudeSelect) return;
+
+        const niveauxOptions = {
+          universitaire: [
+            { value: "l1", label: "Licence 1 (L1)" },
+            { value: "l2", label: "Licence 2 (L2)" },
+            { value: "l3", label: "Licence 3 (L3)" },
+            { value: "m1", label: "Master 1 (M1)" },
+            { value: "m2", label: "Master 2 (M2)" },
+            { value: "doctorat", label: "Doctorat" },
+            { value: "ingenieur", label: "Cycle ingénieur" },
+          ],
+          secondaire: [
+            { value: "seconde", label: "Seconde" },
+            { value: "premiere", label: "Première" },
+            { value: "terminale", label: "Terminale" },
+            { value: "bac", label: "Baccalauréat" },
+          ],
+          autre: [
+            { value: "formation_pro", label: "Formation professionnelle" },
+            { value: "autodidacte", label: "Autodidacte" },
+            { value: "autre_diplome", label: "Autre diplôme" },
+          ],
+        };
+
+        typeEtudeSelect.addEventListener("change", function () {
+          const selectedType = this.value;
+          updateNiveauOptions(selectedType, niveauEtudeSelect, niveauxOptions);
+        });
+
+        updateNiveauOptions(
+          typeEtudeSelect.value,
+          niveauEtudeSelect,
+          niveauxOptions
+        );
+      }
+
+      function updateNiveauOptions(selectedType, niveauSelect, niveauxOptions) {
+        const currentValue = niveauSelect.value;
+
+        niveauSelect.innerHTML =
+          '<option value="">Sélectionnez un niveau</option>';
+
+        if (selectedType && niveauxOptions[selectedType]) {
+          niveauxOptions[selectedType].forEach((option) => {
+            const opt = document.createElement("option");
+            opt.value = option.value;
+            opt.textContent = option.label;
+            niveauSelect.appendChild(opt);
+          });
+
+          if (currentValue) {
+            const optionExists = Array.from(niveauSelect.options).some(
+              (opt) => opt.value === currentValue
+            );
+            if (optionExists) {
+              niveauSelect.value = currentValue;
+            }
+          }
+        }
+      }
+
+      // ==================== TOGGLE VISIBILITÉ MOT DE PASSE ====================
+      function setupPasswordToggles() {
+        document.querySelectorAll(".eye-toggle").forEach((icon) => {
+          icon.addEventListener("click", function () {
+            const input = this.parentElement.querySelector("input");
+            if (!input) return;
+
+            if (input.type === "password") {
+              input.type = "text";
+              this.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+              input.type = "password";
+              this.classList.replace("fa-eye-slash", "fa-eye");
+            }
+          });
+        });
+      }
+
+      // ==================== SOUMISSION À FIREBASE ====================
+      async function handleFormSubmit(e) {
+        e.preventDefault();
+
+        resetFormErrors();
+
+        const errors = validateStep2();
+
+        if (errors.length > 0) {
+          displayFormErrors(errors);
+          showNotification(
+            "Veuillez corriger les erreurs dans le formulaire",
+            "error"
+          );
+          return;
+        }
+
+        // Vérification finale de l'email
+        const email = document.getElementById("email").value;
+        const cachedResult = emailVerificationCache[email];
+        if (
+          cachedResult &&
+          (!cachedResult.deliverable || cachedResult.disposable)
+        ) {
+          showNotification(
+            cachedResult.disposable
+              ? "Les emails temporaires ne sont pas autorisés"
+              : "Email non livrable",
+            "error"
+          );
+          return;
+        }
+
+        if (!db || !auth) {
+          showNotification(
+            "Erreur de connexion à la base de données. Veuillez rafraîchir la page.",
+            "error"
+          );
+          return;
+        }
+
+        const submitBtn = document.getElementById("submitBtn");
+        const btnText = document.getElementById("btnText");
+        const btnLoader = document.getElementById("btnLoader");
+
+        if (submitBtn && btnText && btnLoader) {
+          submitBtn.disabled = true;
+          btnText.classList.add("hidden");
+          btnLoader.classList.remove("hidden");
+        }
+
+        try {
+          const formData = {
+            nom: document.getElementById("nom").value.trim(),
+            prenom: document.getElementById("prenom").value.trim(),
+            sexe: document.querySelector('input[name="sexe"]:checked').value,
+            langue: document.getElementById("langue").value,
+            email: email,
+            typeEtude: document.getElementById("typeEtude").value,
+            niveauEtude: document.getElementById("niveauEtude").value,
+            pays: selectedCountry?.name || "",
+            paysCode: selectedCountry?.code || "",
+            telephone:
+              document.getElementById("countryCode").value +
+              document.getElementById("telephone").value.replace(/\D/g, ""),
+          };
+
+          const password = document.getElementById("password").value;
+
+          console.log("Données étudiant à envoyer:", formData);
+
+          // 1. Créer l'utilisateur dans Firebase Authentication
+          const userCredential = await auth.createUserWithEmailAndPassword(
+            formData.email,
+            password
+          );
+          const user = userCredential.user;
+
+          // 2. Mettre à jour le profil
+          await user.updateProfile({
+            displayName: `${formData.prenom} ${formData.nom}`,
+          });
+
+          // 3. Envoyer un email de vérification
+          await user.sendEmailVerification();
+
+          // 4. Préparer les données pour Firestore
+          const studentData = {
+            uid: user.uid,
+            email: formData.email,
+            nom: formData.nom,
+            prenom: formData.prenom,
+            nomComplet: `${formData.prenom} ${formData.nom}`,
+            sexe: formData.sexe,
+            langue: formData.langue,
+            typeEtude: formData.typeEtude,
+            niveauEtude: formData.niveauEtude,
+            pays: formData.pays,
+            paysCode: formData.paysCode,
+            telephone: formData.telephone,
+            role: "etudiant",
+            statut: "actif",
+            emailVerified: false,
+            emailVerificationSent: true,
+            dateInscription: firebase.firestore.FieldValue.serverTimestamp(),
+            dateCreation: new Date().toISOString(),
+            photoURL: "",
+            bio: "",
+            preferences: {
+              notifications: true,
+              emails: true,
+              visibilite: "public",
+            },
+            statistiques: {
+              coursSuivis: 0,
+              heuresEtude: 0,
+              examensPasses: 0,
+            },
+          };
+
+          // 5. Ajouter à la collection "etudiants"
+          const docRef = await db.collection("etudiants").add(studentData);
+          console.log("Étudiant ajouté avec ID:", docRef.id);
+
+          // 6. Créer un document dans "users"
+          const userGeneralData = {
+            uid: user.uid,
+            email: formData.email,
+            nom: formData.nom,
+            prenom: formData.prenom,
+            role: "etudiant",
+            dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
+            derniereConnexion: firebase.firestore.FieldValue.serverTimestamp(),
+          };
+
+          await db.collection("users").add(userGeneralData);
+
+          // Succès
+          showNotification(
+            "Inscription réussie ! Un email de vérification a été envoyé. Redirection vers la connexion...",
+            "success"
+          );
+
+          // Réinitialiser le formulaire
+          resetForm();
+
+          // Rediriger après 5 secondes
+          setTimeout(() => {
+            window.location.href =
+              "../templates/Connexion.html?newStudent=true&emailVerificationSent=true";
+          }, 5000);
+        } catch (error) {
+          console.error("Erreur lors de l'inscription:", error);
+
+          let errorMessage = "Une erreur est survenue lors de l'inscription.";
+
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              errorMessage =
+                "Cet email est déjà utilisé. Essayez de vous connecter.";
+              break;
+            case "auth/invalid-email":
+              errorMessage = "L'adresse email n'est pas valide.";
+              break;
+            case "auth/weak-password":
+              errorMessage =
+                "Le mot de passe est trop faible. Utilisez au moins 6 caractères.";
+              break;
+            case "auth/operation-not-allowed":
+              errorMessage =
+                "L'inscription par email/mot de passe n'est pas activée.";
+              break;
+            case "auth/network-request-failed":
+              errorMessage =
+                "Problème de connexion internet. Veuillez réessayer.";
+              break;
+            case "permission-denied":
+              errorMessage = "Permission refusée. Contactez l'administrateur.";
+              break;
+          }
+
+          showNotification(errorMessage, "error");
+        } finally {
+          if (submitBtn && btnText && btnLoader) {
+            submitBtn.disabled = false;
+            btnText.classList.remove("hidden");
+            btnLoader.classList.add("hidden");
+          }
+        }
+      }
+
+      function resetForm() {
+        document.querySelectorAll("form").forEach((form) => form.reset());
+        selectedCountry = null;
+
+        const paysInput = document.getElementById("paysInput");
+        const paysSelected = document.getElementById("paysSelected");
+        const countryCode = document.getElementById("countryCode");
+        if (paysInput) paysInput.value = "";
+        if (paysSelected) paysSelected.value = "";
+        if (countryCode) countryCode.value = "";
+
+        // Réinitialiser la force du mot de passe
+        const strengthBar = document.getElementById("passwordStrengthBar");
+        const strengthText = document.getElementById("passwordStrengthText");
+        const strengthScore = document.getElementById("passwordScore");
+        if (strengthBar) strengthBar.style.width = "0%";
+        if (strengthText) strengthText.textContent = "Force du mot de passe";
+        if (strengthScore) strengthScore.textContent = "";
+
+        // Réinitialiser les exigences
+        document.querySelectorAll(".requirement-icon").forEach((icon) => {
+          icon.classList.replace("fa-check-circle", "fa-times-circle");
+          icon.classList.replace("requirement-met", "requirement-not-met");
+        });
+
+        // Réinitialiser les messages
+        const matchMessage = document.getElementById("passwordMatchMessage");
+        if (matchMessage) matchMessage.innerHTML = "";
+
+        // Retourner à l'étape 1
+        goToStep(1);
+      }
+
+      // ==================== INITIALISATION ====================
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("Page d'inscription étudiant chargée, initialisation...");
+
+        // Bouton suivant
+        const nextBtn = document.getElementById("nextBtn");
+        if (nextBtn) {
+          nextBtn.addEventListener("click", () => goToStep(2));
+        }
+
+        // Bouton retour
+        const backBtn = document.getElementById("backBtn");
+        if (backBtn) {
+          backBtn.addEventListener("click", () => goToStep(1));
+        }
+
+        // Soumission du formulaire
+        const formStep2 = document.getElementById("registrationFormStep2");
+        if (formStep2) {
+          formStep2.addEventListener("submit", handleFormSubmit);
+        }
+
+        // Validation des mots de passe
+        const passwordInput = document.getElementById("password");
+        if (passwordInput) {
+          passwordInput.addEventListener("input", checkPasswordStrength);
+        }
+
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+        if (confirmPasswordInput) {
+          confirmPasswordInput.addEventListener("input", checkPasswordMatch);
+        }
+
+        // Vérification email avec debounce
+        const emailInput = document.getElementById("email");
+        if (emailInput) {
+          emailInput.addEventListener("blur", () => handleEmailValidation());
+          emailInput.addEventListener(
+            "input",
+            debounce(() => {
+              const email = emailInput.value.trim();
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+              if (email && emailRegex.test(email)) {
+                handleEmailValidation();
+              }
+            }, 1000)
+          );
+        }
+
+        // Configurer la recherche de pays
+        setupCountrySearch();
+
+        // Configurer les champs d'étude
+        setupEducationFields();
+
+        // Configurer les toggles de mot de passe
+        setupPasswordToggles();
+
+        console.log("Initialisation terminée");
+      });
+    </script>
+  </body>
 </html>

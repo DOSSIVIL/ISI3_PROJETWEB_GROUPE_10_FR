@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Gestion des matières scolaires" />
     <link rel="stylesheet" href="../../style.css" />
+    <link rel="icon" type="image/png"  sizes="40x40"  href="./Images/Logo.png">
+    
+    
+    <link rel="apple-touch-icon" href="../../../public">
     <title>Gestion des matières</title>
 
-    <link rel="stylesheet" href="/src/views/css/matiere.css" />
+   
 
     <script type="module">
  
 
-      // 2. Import de tes fichiers (type="module" donc les imports fonctionnent)
       import { Matiere } from "../../models/Matiere.model";
       import { MatiereView } from "../../views/MatiereView";
       import { MatiereController } from "../../Controller/MatiereController";
 
-      // 3. Initialisation quand le DOM est prêt
       document.addEventListener("DOMContentLoaded", async () => {
         const container = document.getElementById("matiere-container");
 
@@ -58,16 +60,13 @@
 
 
     <main>
-      <!-- C'est ici que MatiereView va injecter le formulaire + le tableau -->
       <div id="matiere-container">
-        <!-- Contenu chargé dynamiquement par MatiereView -->
- <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 bg-gradient-to-br from-gray-50 to-gray-100">
+ <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 bg-linear-to-br from-gray-50 to-gray-100">
     <div class="text-center">
       <div class="relative w-24 h-24 mx-auto mb-6">
-        <!-- Anneau tournant -->
+       
         <div class="absolute inset-0 border-4 border-solid rounded-full border-t-yellow-500 border-r-pink-500 border-b-yellow-500 border-l-pink-500 animate-spin"></div>
-        
-        <!-- Icône au centre -->
+            
         <div class="absolute inset-0 flex items-center justify-center">
           <i class="text-5xl text-yellow-500 fas fa-book-open animate-pulse"></i>
         </div>
@@ -75,50 +74,9 @@
       </div>
     </main>
 
-    <!-- ... ton HTML existant ... -->
 
     <script type="module" src="../../main.js">
-      // Imports déjà présents (si tu en as)
-      import { MatiereController } from "../../Controller/MatiereController.js";
-      import matiereService from "../../Service/matiereService.js"; // ou sans {} selon ta config
-
-      // ────────────────────────────────────────────────
-      // CODE DE TEST TEMPORAIRE - À SUPPRIMER APRÈS
-      import {
-        collection,
-        addDoc,
-      } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-      import { db } from "../../firebase/firebase-config.js";
-
-      async function createTestMatiere() {
-        try {
-          const docRef = await addDoc(collection(db, "matieres"), {
-            intitule: "Math-info",
-            categorie: "S-A",
-            createdAt: new Date().toISOString(),
-          });
-          console.log("Document test créé → ID :", docRef.id);
-          alert(
-            "Document test créé avec succès ! Recharge la page pour voir la liste."
-          );
-        } catch (e) {
-          console.error("Erreur lors de la création du document test :", e);
-          alert("Erreur création test : " + e.message);
-        }
-      }
-
-      // Exécute le test UNE SEULE FOIS
-      createTestMatiere();
-      // ────────────────────────────────────────────────
-
-      // Ton code normal d’initialisation
-      document.addEventListener("DOMContentLoaded", async () => {
-        const container = document.getElementById("matiere-container");
-        if (container) {
-          const controller = new MatiereController(container);
-          await controller.init();
-        }
-      });
+  
     </script>
   </body>
 </html>
