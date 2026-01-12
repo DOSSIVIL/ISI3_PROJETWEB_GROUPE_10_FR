@@ -1,0 +1,191 @@
+ @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-orange {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .gradient-blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .gradient-yellow {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .calendar-day {
+            transition: all 0.2s ease;
+        }
+        
+        .calendar-day:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .active-menu {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .page-content {
+            display: none;
+        }
+        
+        .page-content.active {
+            display: block;
+        }
+        .line{
+            content: "";
+            width: 40px;
+            height: 2px;
+            
+        }
+
+        /* Parttie style defilement des elements de la section temoignage  dans la page home.html*/
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slideCards {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-100% - 1.5rem)); }
+  }
+  
+  .testimonial-card {
+    animation: fadeIn 0.6s ease-out forwards;
+    min-width: 340px;
+  }
+  
+  @media (max-width: 640px) {
+    .testimonial-card {
+      min-width: 290px;
+    }
+  }
+  
+  .carousel-track {
+    display: flex;
+    gap: 1.5rem;
+    animation: slideCards 40s linear infinite;
+  }
+  
+  .carousel-track.paused {
+    animation-play-state: paused;
+  }
+  
+  .simple-gradient-bg {
+    background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #f0f9ff 100%);
+  }
+  
+  .simple-gradient-text {
+    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .card-gradient-border {
+    position: relative;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%) border-box;
+    border: 2px solid transparent;
+  }
+
+  /* ------------------------------------------- */
+        /* CSS PUR pour l'Animation de Défilement des Matières (scroll-left) */
+        /* ------------------------------------------- */
+
+        /* Définit l'animation de défilement (déplacement vers la gauche) */
+        @keyframes scroll-left {
+            from {
+                /* Commence à la position 0 */
+                transform: translateX(0);
+            }
+            to {
+                /* Déplace la piste de la taille d'un ensemble de matières (100% de la largeur du contenu cloné) */
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Applique l'animation à la piste de défilement */
+        .slider-track {
+            /* Assure que la piste est assez large pour contenir les copies */
+            width: max-content; 
+            /* Applique l'animation : 
+               - nom: scroll-left
+               - durée: 45s (vitesse de défilement)
+               - fonction de temps: linear (vitesse constante)
+               - répétition: infinite (boucle sans fin)
+            */
+            animation: scroll-left 45s linear infinite;
+        }
+
+        /* Pause l'animation au survol */
+        .slider-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* Assure que chaque contenu (le jeu original et sa copie) ne se rétrécit pas */
+        .slider-content {
+            flex-shrink: 0;
+        }
+
+        /* Effet de masquage (fade) sur les bords du conteneur pour l'aspect professionnel */
+        .slider-container::before,
+        .slider-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 6rem; /* Largeur du fade */
+            z-index: 10;
+        }
+
+        /* Dégradé à gauche (utilise la couleur de fond du body : #f4f6f8, qui correspond à la classe bg-purple-50 si non spécifiée) */
+        /* Ajustez le code couleur si vous changez le fond de votre body */
+        .slider-container::before {
+            left: 0;
+            background: linear-gradient(to right, #f4f6f8 0%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        /* Dégradé à droite */
+        .slider-container::after {
+            right: 0;
+            background: linear-gradient(to left, #f4f6f8 0%, rgba(255, 255, 255, 0) 100%);
+        }

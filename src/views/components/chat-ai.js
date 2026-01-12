@@ -1,499 +1,456 @@
-// scripts/chat-ai.js - VERSION COMPLÈTE AMÉLIORÉE
-class ChatAI {
-    constructor(options = {}) {
-        this.apiKey = options.apiKey || localStorage.getItem('openai_api_key');
-        this.model = options.model || 'gpt-3.5-turbo';
-        this.temperature = options.temperature || 0.7;
-        this.maxTokens = options.maxTokens || 250;
-        this.context = [];
-        this.maxContextLength = 15;
-        this.isEnabled = false;
-        this.role = options.role || 'assistant_dual'; // assistant_dual pour les deux rôles
-        this.subject = options.subject || 'Général';
-        this.userType = options.userType || 'student'; // 'student' ou 'tutor'
-        this.name = options.name || 'Assistant IA';
+/**
+ * Chat AI Manager - Intégration OpenRouter API
+ * Gère l'assistant IA EduAssist dans la salle de tutorat
+ */
+
+class ChatAIManager {
+    constructor() {
+        // Configuration API OpenRouter
+        this.apiKey = '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';
+        this.apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+        this.model = 'mistralai/mistral-7b-instruct:free'; // Modèle gratuit
         
-        // Statistiques
-        this.stats = {
-            messagesSent: 0,
-            suggestionsGiven: 0,
-            questionsAnswered: 0
-        };
+        // Paramètres de génération
+        this.temperature = 0.7;
+        this.maxTokens = 1000;
         
-        // Types de réponse disponibles
-        this.responseTypes = {
-            EXPLANATION: 'explication',
-            EXERCISE: 'exercice',
-            QUESTION: 'question',
-            CORRECTION: 'correction',
-            SUPPORT: 'support'
-        };
+        // Éléments DOM
+        this.aiFloatingBtn = document.getElementById('ai-floating-btn');
+        this.aiPanel = document.getElementById('ai-panel');
+        this.aiCloseBtn = document.getElementById('ai-close');
+        this.aiInput = document.getElementById('ai-input');
+        this.aiSendBtn = document.getElementById('ai-send');
+        this.aiResponse = document.getElementById('ai-response');
+        this.aiTabs = document.querySelectorAll('.ai-tab');
+        this.aiActionBtns = document.querySelectorAll('.ai-action-btn');
+        this.aiBadge = document.getElementById('ai-badge');
         
-        // Charger les statistiques sauvegardées
-        this.loadStats();
+        // État
+        this.isOpen = false;
+        this.isLoading = false;
+        this.currentAction = null;
+        this.conversationHistory = [];
+        this.maxHistoryLength = 5;
+        
+        // Initialiser
+        this.initialize();
     }
-
-    async init() {
-        if (!this.apiKey) {
-            console.warn('Clé API OpenAI non configurée');
-            this.isEnabled = false;
-            return false;
-        }
+    
+    /**
+     * Initialiser les événements
+     */
+    initialize() {
+        console.log('Initialisation du ChatAIManager');
         
-        this.isEnabled = true;
-        this.loadContext();
+        // Bouton flottant
+        this.aiFloatingBtn?.addEventListener('click', () => this.togglePanel());
+        this.aiCloseBtn?.addEventListener('click', () => this.closePanel());
         
-        // Ajouter le prompt système adapté
-        const systemPrompt = this.getSystemPrompt();
-        this.addToContext('system', systemPrompt, true);
-        
-        console.log(`✅ ChatAI initialisé pour: ${this.userType} en ${this.subject}`);
-        return true;
-    }
-
-    getSystemPrompt() {
-        const basePrompt = `Tu es EduAssist, un assistant pédagogique intelligent intégré à la plateforme EduConnect Africa.
-        
-Règles générales:
-- Sois précis, pédagogique et bienveillant
-- Adapte tes réponses au niveau de l'utilisateur
-- Utilise des exemples concrets et pertinents
-- Propose toujours des ressources supplémentaires
-- Sois concis mais complet
-- Tu peux utiliser des émojis modérément pour rendre le dialogue plus vivant
-
-Matière principale: ${this.subject}
-`;
-
-        if (this.userType === 'tutor') {
-            return basePrompt + `
-Rôle spécifique (Tuteur):
-🎯 Tu aides le tuteur à:
-1. Préparer et animer des sessions de tutorat
-2. Expliquer des concepts complexes simplement
-3. Générer des exercices adaptés au niveau de l'étudiant
-4. Corriger les erreurs courantes
-5. Fournir des ressources pédagogiques
-6. Analyser les difficultés de l'étudiant
-7. Proposer des méthodes d'enseignement alternatives
-
-Style: Professionnel, technique, orienté pédagogie.
-`;
-        } else { // student
-            return basePrompt + `
-Rôle spécifique (Étudiant):
-🎯 Tu aides l'étudiant à:
-1. Comprendre les explications du tuteur
-2. Poser des questions pertinentes
-3. Réviser et consolider les connaissances
-4. Préparer des exercices
-5. Identifier ses points faibles
-6. Organiser son apprentissage
-7. Restituer les concepts dans ses propres mots
-
-Style: Encourageant, patient, orienté apprentissage.
-`;
-        }
-    }
-
-    async generateResponse(userMessage, responseType = null, options = {}) {
-        if (!this.isEnabled || !this.apiKey) {
-            return { 
-                success: false, 
-                error: 'ChatAI non disponible',
-                fallback: this.getFallbackResponse(responseType) 
-            };
-        }
-        
-        try {
-            // Ajouter le message de l'utilisateur
-            this.addToContext('user', userMessage);
-            
-            // Construire le message avec contexte et type de réponse
-            const messages = this.buildMessages(userMessage, responseType, options);
-            
-            // Appeler l'API OpenAI
-            const response = await this.callOpenAI(messages, options);
-            
-            if (!response.success) {
-                throw new Error(response.error);
-            }
-            
-            const aiResponse = response.data;
-            
-            // Ajouter la réponse au contexte
-            this.addToContext('assistant', aiResponse);
-            
-            // Mettre à jour les statistiques
-            this.updateStats(responseType);
-            
-            // Sauvegarder
-            this.saveContext();
-            this.saveStats();
-            
-            console.log(`✅ ChatAI: Réponse générée (${responseType || 'général'})`);
-            
-            return {
-                success: true,
-                message: aiResponse,
-                type: responseType || 'general',
-                usage: response.usage,
-                timestamp: Date.now()
-            };
-            
-        } catch (error) {
-            console.error('❌ Erreur ChatAI:', error);
-            return {
-                success: false,
-                error: error.message,
-                fallback: this.getFallbackResponse(responseType)
-            };
-        }
-    }
-
-    async callOpenAI(messages, options = {}) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
-        
-        try {
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
-                },
-                body: JSON.stringify({
-                    model: this.model,
-                    messages: messages,
-                    temperature: options.temperature || this.temperature,
-                    max_tokens: options.maxTokens || this.maxTokens,
-                    stream: false
-                }),
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(`API error ${response.status}: ${errorData.error?.message || response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            return {
-                success: true,
-                data: data.choices[0].message.content,
-                usage: data.usage
-            };
-            
-        } catch (error) {
-            clearTimeout(timeoutId);
-            throw error;
-        }
-    }
-
-    buildMessages(userMessage, responseType, options = {}) {
-        let messages = this.context.map(msg => ({
-            role: msg.role === 'assistant' ? 'assistant' : 'user',
-            content: msg.content
-        }));
-        
-        // Ajouter des instructions spécifiques selon le type de réponse
-        if (responseType) {
-            const specificPrompt = this.getResponseTypePrompt(responseType, options);
-            if (specificPrompt) {
-                messages.unshift({
-                    role: 'system',
-                    content: specificPrompt
-                });
-            }
-        }
-        
-        // Ajouter le contexte de la session
-        if (this.subject !== 'Général') {
-            messages.unshift({
-                role: 'system',
-                content: `Session de tutorat en ${this.subject}. Niveau: ${options.level || 'intermédiaire'}.`
-            });
-        }
-        
-        return messages;
-    }
-
-    getResponseTypePrompt(responseType, options = {}) {
-        const prompts = {
-            'explication': `Fournis une explication claire et pédagogique. 
-Points à couvrir:
-1. Définition simple du concept
-2. Exemple concret
-3. Analogie ou métaphore si utile
-4. Points clés à retenir
-5. Pièges à éviter
-
-Niveau: ${options.level || 'intermédiaire'}
-Format: Explication structurée avec emojis pour la clarté`,
-            
-            'exercice': `Génère un exercice pédagogique.
-Structure:
-📌 Énoncé clair et précis
-🎯 Objectif d'apprentissage
-💡 Indices (optionnels)
-✅ Solution détaillée
-🔍 Points de vérification
-
-Difficulté: ${options.difficulty || 'moyenne'}
-Sujet: ${options.topic || this.subject}`,
-            
-            'question': `Formule des questions pertinentes pour:
-1. Vérifier la compréhension
-2. Approfondir le sujet
-3. Faire réfléchir
-4. Identifier les difficultés
-
-Nombre: ${options.count || 3} questions
-Type: ${options.questionType || 'ouvertes'}`,
-            
-            'correction': `Corrige ou améliore le texte fourni.
-Approche:
-✓ Identifier les erreurs
-✓ Proposer des corrections
-✓ Expliquer les raisons
-✓ Donner des alternatives
-✓ Encourager l'amélioration
-
-Ton: Constructif et bienveillant`,
-            
-            'support': `Fournis un support pédagogique.
-Peut inclure:
-📚 Ressources supplémentaires
-🎯 Conseils d'apprentissage
-⏱️ Stratégies de révision
-📊 Méthodes d'évaluation
-🤝 Conseils pour interagir avec le tuteur/étudiant`
-        };
-        
-        return prompts[responseType] || null;
-    }
-
-    async generateExplanation(concept, level = 'beginner') {
-        return await this.generateResponse(
-            `Explique-moi le concept suivant: ${concept}`,
-            'explication',
-            { level }
-        );
-    }
-
-    async generateExercise(topic, difficulty = 'medium') {
-        return await this.generateResponse(
-            `Génère un exercice sur le sujet: ${topic}`,
-            'exercice',
-            { difficulty, topic }
-        );
-    }
-
-    async generateQuestions(count = 3, topic = null) {
-        return await this.generateResponse(
-            `Génère ${count} questions sur ${topic || this.subject}`,
-            'question',
-            { count, topic }
-        );
-    }
-
-    async correctText(text) {
-        return await this.generateResponse(
-            `Corrige et améliore ce texte: ${text}`,
-            'correction'
-        );
-    }
-
-    async getLearningSupport() {
-        return await this.generateResponse(
-            'Donne-moi des conseils pour mieux apprendre',
-            'support'
-        );
-    }
-
-    getFallbackResponse(responseType = null) {
-        const fallbacks = {
-            'explication': [
-                "Je vais préparer une explication détaillée. En attendant, pourriez-vous préciser ce que vous ne comprenez pas exactement ? 🤔",
-                "Ce concept est intéressant ! Pour mieux vous expliquer, dites-moi quelle partie vous semble la plus complexe. 📚"
-            ],
-            'exercice': [
-                "Je prépare un exercice adapté à votre niveau. Quel type d'exercice préférez-vous : pratique ou théorique ? ✨",
-                "Excellente idée ! Je vous propose un exercice dans quelques instants. En attendant, avez-vous une préférence pour le format ? 🎯"
-            ],
-            'question': [
-                "Je réfléchis à des questions pertinentes... En attendant, qu'aimeriez-vous approfondir ? ❓",
-                "Parfait ! Je prépare quelques questions pour tester votre compréhension. Quel aspect du sujet vous intéresse le plus ? 💭"
-            ],
-            'correction': [
-                "Je vais analyser votre texte et vous proposer des améliorations. Pourriez-vous préciser ce que vous voulez améliorer ? 📝",
-                "Merci pour votre texte ! Je vous prépare des suggestions constructives. Quel est l'objectif principal de ce texte ? ✍️"
-            ],
-            'support': [
-                "Je vous prépare des ressources et conseils adaptés. Quelles sont vos difficultés actuelles ? 🌟",
-                "Excellente initiative ! Voici quelques conseils pour commencer, je compléterai ensuite selon vos besoins. 🚀"
-            ],
-            'general': [
-                "Je réfléchis à votre demande... Pourriez-vous la reformuler ou ajouter des détails ? 💡",
-                "Intéressant ! Je prépare une réponse adaptée. En attendant, avez-vous d'autres questions ? 🤗",
-                "Merci pour votre message ! Je suis en train d'analyser votre demande pour vous répondre au mieux. ⏳"
-            ]
-        };
-        
-        const type = responseType || 'general';
-        const list = fallbacks[type] || fallbacks.general;
-        return list[Math.floor(Math.random() * list.length)];
-    }
-
-    addToContext(role, content, isSystem = false) {
-        this.context.push({
-            role: isSystem ? 'system' : role,
-            content: content,
-            timestamp: Date.now(),
-            userType: this.userType
+        // Onglets
+        this.aiTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => this.switchTab(e.target.closest('.ai-tab')));
         });
         
-        // Limiter la taille du contexte
-        if (this.context.length > this.maxContextLength * 2) {
-            // Garder les messages système et les plus récents
-            const systemMessages = this.context.filter(msg => msg.role === 'system');
-            const recentMessages = this.context
-                .filter(msg => msg.role !== 'system')
-                .slice(-this.maxContextLength);
-            
-            this.context = [...systemMessages, ...recentMessages];
-        }
-    }
-
-    updateStats(responseType) {
-        this.stats.messagesSent++;
+        // Boutons d'action
+        this.aiActionBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => this.selectAction(e.currentTarget));
+        });
         
-        switch(responseType) {
-            case 'explication':
-            case 'exercice':
-            case 'question':
-                this.stats.questionsAnswered++;
-                break;
-            case 'correction':
-            case 'support':
-                this.stats.suggestionsGiven++;
-                break;
+        // Envoi du message
+        this.aiSendBtn?.addEventListener('click', () => this.sendMessage());
+        this.aiInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.sendMessage();
+            }
+        });
+        
+        // Fermer le panel avec Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.closePanel();
+            }
+        });
+        
+        console.log('ChatAIManager initialisé');
+    }
+    
+    /**
+     * Basculer le panneau ouvert/fermé
+     */
+    togglePanel() {
+        if (this.isOpen) {
+            this.closePanel();
+        } else {
+            this.openPanel();
         }
     }
-
-    saveContext() {
+    
+    /**
+     * Ouvrir le panneau
+     */
+    openPanel() {
+        this.isOpen = true;
+        this.aiPanel?.classList.remove('hidden');
+        this.aiFloatingBtn?.classList.add('active');
+        this.aiInput?.focus();
+        if (this.aiBadge) {
+            this.aiBadge.style.display = 'none';
+        }
+    }
+    
+    /**
+     * Fermer le panneau
+     */
+    closePanel() {
+        this.isOpen = false;
+        this.aiPanel?.classList.add('hidden');
+        this.aiFloatingBtn?.classList.remove('active');
+    }
+    
+    /**
+     * Changer d'onglet
+     */
+    switchTab(tabBtn) {
+        if (!tabBtn) return;
+        
+        // Retirer la classe active de tous les onglets
+        this.aiTabs.forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.ai-tab-content').forEach(c => c.classList.add('hidden'));
+        
+        // Ajouter la classe active au nouvel onglet
+        tabBtn.classList.add('active');
+        const tabName = tabBtn.dataset.tab;
+        const tabContent = document.getElementById(`ai-tab-${tabName}`);
+        if (tabContent) {
+            tabContent.classList.remove('hidden');
+        }
+    }
+    
+    /**
+     * Sélectionner une action
+     */
+    selectAction(btn) {
+        // Retirer la classe active de tous les boutons
+        this.aiActionBtns.forEach(b => b.classList.remove('active'));
+        
+        // Ajouter la classe active au bouton cliqué
+        btn.classList.add('active');
+        
+        // Définir l'action actuelle
+        this.currentAction = btn.dataset.action;
+        
+        // Remplir le placeholder en fonction de l'action
+        const placeholders = {
+            'explain': 'Explique ce concept...',
+            'exercise': 'Génère un exercice sur...',
+            'questions': 'Pose-moi des questions sur...',
+            'correct': 'Corrige mon texte...',
+            'summarize': 'Résume ce concept...',
+            'resources': 'Trouve des ressources sur...'
+        };
+        
+        this.aiInput.placeholder = placeholders[this.currentAction] || 'Posez votre question à l\'assistant IA...';
+        this.aiInput.focus();
+    }
+    
+    /**
+     * Envoyer un message à l'IA
+     */
+    async sendMessage() {
+        const message = this.aiInput?.value.trim();
+        
+        if (!message) {
+            this.showError('Veuillez entrer un message');
+            return;
+        }
+        
+        if (this.isLoading) {
+            this.showError('Une requête est en cours...');
+            return;
+        }
+        
+        // Préparer le prompt en fonction de l'action
+        const fullPrompt = this.buildPrompt(message);
+        
+        // Afficher le message et commencer le chargement
+        this.displayUserMessage(message);
+        this.showLoading();
+        this.isLoading = true;
+        
         try {
-            const key = `chat_ai_context_${this.userType}_${this.subject}`;
-            const data = {
-                context: this.context,
-                timestamp: Date.now()
-            };
-            localStorage.setItem(key, JSON.stringify(data));
+            // Appeler l'API OpenRouter
+            const response = await this.callOpenRouter(fullPrompt);
+            
+            // Afficher la réponse
+            this.displayAIResponse(response);
+            
+            // Ajouter à l'historique
+            this.addToHistory({
+                userMessage: message,
+                aiResponse: response,
+                action: this.currentAction
+            });
+            
         } catch (error) {
-            console.warn('Impossible de sauvegarder le contexte:', error);
+            console.error('Erreur API:', error);
+            this.showError(`Erreur: ${error.message}`);
+        } finally {
+            this.isLoading = false;
+            this.aiInput.value = '';
+            this.hideLoading();
         }
     }
-
-    loadContext() {
-        try {
-            const key = `chat_ai_context_${this.userType}_${this.subject}`;
-            const saved = localStorage.getItem(key);
-            if (saved) {
-                const data = JSON.parse(saved);
-                // Garder seulement les contextes récents (moins de 24h)
-                if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
-                    this.context = data.context;
+    
+    /**
+     * Construire le prompt en fonction de l'action
+     */
+    buildPrompt(userMessage) {
+        const systemPrompts = {
+            'explain': `Tu es un tuteur expert en sciences. Explique le concept suivant de manière claire et pédagogique, avec des exemples si possible. Réponds en français.`,
+            'exercise': `Tu es un professeur créatif. Crée un exercice pratique et intéressant sur le sujet suivant. Inclus des instructions claires et une difficulté progressive. Réponds en français.`,
+            'questions': `Tu es un tuteur qui pose des questions pertinentes pour tester la compréhension. Pose 3-4 questions intelligentes sur le sujet suivant, sans donner les réponses. Réponds en français.`,
+            'correct': `Tu es un correcteur expert. Corrige le texte suivant en français. Signale les erreurs grammaticales, orthographiques et les suggestions d'amélioration. Réponds en français.`,
+            'summarize': `Tu es un expert en synthèse. Résume le concept suivant en points clés de manière concise et claire. Réponds en français.`,
+            'resources': `Tu es un conseiller pédagogique. Suggère des ressources d'apprentissage appropriées pour le sujet suivant. Réponds en français.`
+        };
+        
+        const systemPrompt = systemPrompts[this.currentAction] || systemPrompts['explain'];
+        
+        return `${systemPrompt}\n\nSujet: ${userMessage}`;
+    }
+    
+    /**
+     * Appeler l'API OpenRouter
+     */
+    async callOpenRouter(prompt) {
+        const requestBody = {
+            model: this.model,
+            messages: [
+                {
+                    role: 'user',
+                    content: prompt
                 }
-            }
-        } catch (error) {
-            console.warn('Impossible de charger le contexte:', error);
-            this.context = [];
-        }
-    }
-
-    saveStats() {
-        try {
-            localStorage.setItem(`chat_ai_stats_${this.userType}`, JSON.stringify(this.stats));
-        } catch (error) {
-            console.warn('Impossible de sauvegarder les statistiques:', error);
-        }
-    }
-
-    loadStats() {
-        try {
-            const saved = localStorage.getItem(`chat_ai_stats_${this.userType}`);
-            if (saved) {
-                this.stats = JSON.parse(saved);
-            }
-        } catch (error) {
-            console.warn('Impossible de charger les statistiques:', error);
-        }
-    }
-
-    clearContext() {
-        this.context = [];
-        const key = `chat_ai_context_${this.userType}_${this.subject}`;
-        localStorage.removeItem(key);
-        console.log('Contexte ChatAI effacé');
-    }
-
-    resetStats() {
-        this.stats = {
-            messagesSent: 0,
-            suggestionsGiven: 0,
-            questionsAnswered: 0
+            ],
+            temperature: this.temperature,
+            max_tokens: this.maxTokens
         };
-        localStorage.removeItem(`chat_ai_stats_${this.userType}`);
+        
+        const response = await fetch(this.apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.apiKey}`,
+                'HTTP-Referer': window.location.origin,
+                'X-Title': 'EduConnect Africa - Tutoring Room'
+            },
+            body: JSON.stringify(requestBody)
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error?.message || `HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data.choices || !data.choices[0]?.message?.content) {
+            throw new Error('Réponse invalide de l\'API');
+        }
+        
+        return data.choices[0].message.content;
     }
-
-    setApiKey(apiKey) {
-        this.apiKey = apiKey;
-        localStorage.setItem('openai_api_key', apiKey);
-        this.isEnabled = true;
-        console.log('Clé API mise à jour');
+    
+    /**
+     * Afficher le message de l'utilisateur
+     */
+    displayUserMessage(message) {
+        const messageEl = document.createElement('div');
+        messageEl.className = 'ai-response';
+        messageEl.innerHTML = `
+            <h5><i class="fas fa-user"></i> Vous</h5>
+            <p>${this.escapeHtml(message)}</p>
+        `;
+        
+        this.aiResponse?.parentElement?.insertBefore(messageEl, this.aiResponse);
     }
-
-    setSubject(subject) {
-        this.subject = subject;
-        console.log(`Sujet ChatAI mis à jour: ${subject}`);
+    
+    /**
+     * Afficher la réponse de l'IA
+     */
+    displayAIResponse(response) {
+        if (!this.aiResponse) return;
+        
+        this.aiResponse.classList.remove('hidden', 'loading');
+        this.aiResponse.innerHTML = `
+            <h5><i class="fas fa-robot"></i> EduAssist</h5>
+            <p>${this.formatResponse(response)}</p>
+            <div class="ai-response-actions">
+                <button onclick="chatAIManager.copyToClipboard('${this.escapeHtmlAttribute(response)}')">
+                    <i class="fas fa-copy"></i> Copier
+                </button>
+                <button onclick="chatAIManager.expandResponse()">
+                    <i class="fas fa-expand"></i> Agrandir
+                </button>
+            </div>
+        `;
     }
-
-    setUserType(userType) {
-        this.userType = userType;
-        console.log(`Type utilisateur ChatAI mis à jour: ${userType}`);
+    
+    /**
+     * Formater la réponse pour l'affichage
+     */
+    formatResponse(response) {
+        return this.escapeHtml(response)
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>');
     }
-
-    toggle() {
-        this.isEnabled = !this.isEnabled;
-        localStorage.setItem('chat_ai_enabled', this.isEnabled.toString());
-        console.log(`ChatAI ${this.isEnabled ? 'activé' : 'désactivé'}`);
-        return this.isEnabled;
+    
+    /**
+     * Afficher le chargement
+     */
+    showLoading() {
+        if (!this.aiResponse) return;
+        
+        this.aiResponse.classList.remove('hidden');
+        this.aiResponse.classList.add('loading');
+        this.aiResponse.innerHTML = `
+            <div style="text-align: center; padding: 20px;">
+                <div style="width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top: 4px solid #1a3b52; border-radius: 50%; margin: 0 auto 15px; animation: spin 1s linear infinite;"></div>
+                <p>Génération en cours...</p>
+                <p style="color: #6b7280; font-size: 0.9rem;">L'assistant réfléchit à votre question</p>
+            </div>
+        `;
     }
-
-    getStats() {
-        return {
-            ...this.stats,
-            isEnabled: this.isEnabled,
-            subject: this.subject,
-            userType: this.userType,
-            contextSize: this.context.length
-        };
+    
+    /**
+     * Masquer le chargement
+     */
+    hideLoading() {
+        if (this.aiResponse?.classList.contains('loading')) {
+            this.aiResponse.classList.remove('loading');
+        }
+    }
+    
+    /**
+     * Afficher une erreur
+     */
+    showError(message) {
+        if (!this.aiResponse) return;
+        
+        this.aiResponse.classList.remove('hidden');
+        this.aiResponse.classList.add('ai-error');
+        this.aiResponse.innerHTML = `
+            <h5><i class="fas fa-exclamation-circle"></i> Erreur</h5>
+            <p>${this.escapeHtml(message)}</p>
+        `;
+    }
+    
+    /**
+     * Copier le texte au presse-papiers
+     */
+    copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            this.showNotification('Copié au presse-papiers', 'success');
+        }).catch(err => {
+            console.error('Erreur copie:', err);
+            this.showNotification('Erreur lors de la copie', 'error');
+        });
+    }
+    
+    /**
+     * Agrandir la réponse
+     */
+    expandResponse() {
+        if (this.aiPanel?.style.width === '90vw') {
+            this.aiPanel.style.width = '380px';
+        } else {
+            this.aiPanel.style.width = '90vw';
+            this.aiPanel.style.maxHeight = '90vh';
+        }
+    }
+    
+    /**
+     * Ajouter à l'historique
+     */
+    addToHistory(entry) {
+        this.conversationHistory.push(entry);
+        if (this.conversationHistory.length > this.maxHistoryLength) {
+            this.conversationHistory.shift();
+        }
+        this.updateHistoryTabs();
+    }
+    
+    /**
+     * Mettre à jour les onglets avec l'historique
+     */
+    updateHistoryTabs() {
+        const explanationsList = document.getElementById('explanations-list');
+        const exercisesList = document.getElementById('exercises-list');
+        
+        if (explanationsList || exercisesList) {
+            // Implémenter la logique pour afficher l'historique
+            console.log('Historique mis à jour:', this.conversationHistory);
+        }
+    }
+    
+    /**
+     * Afficher une notification
+     */
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `ai-notification ${type}`;
+        notification.innerHTML = `<strong>${message}</strong>`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+    
+    /**
+     * Échapper le HTML
+     */
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    /**
+     * Échapper HTML pour attributs
+     */
+    escapeHtmlAttribute(text) {
+        return text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+    
+    /**
+     * Setter pour changer de modèle
+     */
+    setModel(modelId) {
+        this.model = modelId;
+        console.log('Modèle changé à:', modelId);
+    }
+    
+    /**
+     * Setter pour changer la température
+     */
+    setTemperature(temp) {
+        this.temperature = Math.max(0, Math.min(1, temp));
+    }
+    
+    /**
+     * Setter pour changer le max tokens
+     */
+    setMaxTokens(tokens) {
+        this.maxTokens = Math.max(100, Math.min(2000, tokens));
     }
 }
 
-// Singleton pour l'instance unique
-let chatAIInstance = null;
-
-function getChatAI(options = {}) {
-    if (!chatAIInstance) {
-        chatAIInstance = new ChatAI(options);
+// Initialiser le gestionnaire du chat IA
+let chatAIManager;
+document.addEventListener('DOMContentLoaded', () => {
+    if (!chatAIManager) {
+        chatAIManager = new ChatAIManager();
+        console.log('ChatAIManager global initialisé');
     }
-    return chatAIInstance;
-}
-
-// Exporter
-window.ChatAI = ChatAI;
-window.getChatAI = getChatAI;
+});
