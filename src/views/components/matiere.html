@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr" class="bg-gray-50">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Matières</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+      // Importer le controller des matières
+      import { MatiereController } from "../../Controller/MatiereController.js";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById("matieres-container");
+        if (container) {
+          const controller = new MatiereController(container);
+          controller.init();
+        }
+      });
+    </script>
+  </head>
+  <body class="min-h-screen bg-gray-50">
+    <header class="text-white bg-indigo-600 shadow">
+      <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <h1 class="text-2xl font-bold">Gestion des Matières</h1>
+      </div>
+    </header>
+
+    <main class="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div id="matieres-container" class="space-y-8">
+        <!-- Le formulaire + tableau seront injectés ici -->
+        <div class="py-12 text-center">
+          <div
+            class="inline-block w-48 h-8 bg-gray-300 rounded animate-pulse"
+          ></div>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer"></div>
+  </body>
+</html>

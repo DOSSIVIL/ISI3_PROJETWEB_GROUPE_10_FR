@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mon Dashboard - EduConnect</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="40x40"
+      href="../../../Images/Logo.png"
+    />
+    <!-- <link rel="stylesheet" href="../../style.css" /> -->
+
+    <link rel="apple-touch-icon" href="../../../public/Images/Logo.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body
+    class="min-h-screen font-sans bg-linear-to-br from-gray-50 via-white to-gray-100"
+  >
+    <!-- Header fixe -->
+    <!-- <header
+      class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 shadow-sm bg-white/80 backdrop-blur-md"
+    >
+      <div
+        class="flex items-center justify-between px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="flex items-center justify-center w-10 h-10 text-xl font-bold text-white rounded-xl bg-linear-to-br from-yellow-400 to-pink-500"
+          >
+            ECA
+          </div>
+          <h1 class="text-xl font-bold text-gray-800">EduConnect</h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="hidden text-sm text-gray-600 sm:inline"
+            >Niveau : L3 • Filière : Informatique</span
+          >
+          <button
+            class="px-4 py-2 text-sm font-medium text-white transition rounded-full bg-linear-to-r from-yellow-500 to-pink-500 hover:brightness-110"
+          >
+            <i class="mr-2 fas fa-user-circle"></i> Profil
+          </button>
+        </div>
+      </div>
+    </header> -->
+
+    <!-- Contenu principal avec padding top pour le header fixe -->
+    <main class="px-4 pt-20 pb-12 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+      <!-- Section 1 : Accueil / Stats rapides -->
+      <section class="mb-10">
+        <h2 class="mb-2 text-2xl font-bold text-gray-800 sm:text-3xl">
+          Bienvenue, [Prénom] !
+        </h2>
+        <p class="mb-6 text-gray-600">
+          Voici ton espace étudiant – reste motivé et organisé 💪
+        </p>
+
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div
+            class="p-5 transition bg-white border border-gray-100 shadow-md rounded-2xl hover:shadow-lg"
+          >
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-sm text-gray-500">Séances prévues</p>
+              <i class="text-xl text-yellow-500 fas fa-calendar-check"></i>
+            </div>
+            <p class="text-3xl font-bold text-gray-800">3</p>
+            <p class="mt-1 text-xs text-green-600">Cette semaine</p>
+          </div>
+
+          <div
+            class="p-5 transition bg-white border border-gray-100 shadow-md rounded-2xl hover:shadow-lg"
+          >
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-sm text-gray-500">Matières suivies</p>
+              <i class="text-xl text-pink-500 fas fa-book"></i>
+            </div>
+            <p class="text-3xl font-bold text-gray-800">7</p>
+            <p class="mt-1 text-xs text-blue-600">Actives</p>
+          </div>
+
+          <div
+            class="p-5 transition bg-white border border-gray-100 shadow-md rounded-2xl hover:shadow-lg"
+          >
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-sm text-gray-500">Questions IA</p>
+              <i class="text-xl text-purple-500 fas fa-robot"></i>
+            </div>
+            <p class="text-3xl font-bold text-gray-800">42</p>
+            <p class="mt-1 text-xs text-purple-600">Posées ce mois-ci</p>
+          </div>
+
+          <div
+            class="p-5 transition bg-white border border-gray-100 shadow-md rounded-2xl hover:shadow-lg"
+          >
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-sm text-gray-500">Progression</p>
+              <i class="text-xl text-green-500 fas fa-chart-line"></i>
+            </div>
+            <p class="text-3xl font-bold text-green-600">78%</p>
+            <p class="mt-1 text-xs text-green-700">Moyenne générale</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2 : Prochaines séances -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">
+            Prochaines séances de tutorat
+          </h3>
+          <a
+            href="#"
+            class="flex items-center gap-1 text-sm font-medium text-yellow-600 hover:text-yellow-700"
+          >
+            Voir tout <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Carte séance -->
+          <div
+            class="overflow-hidden transition bg-white border border-gray-100 shadow-md rounded-2xl hover:shadow-xl"
+          >
+            <div
+              class="px-5 py-3 text-white bg-linear-to-r from-yellow-500 to-pink-500"
+            >
+              <h4 class="font-semibold">Mathématiques – Analyse</h4>
+            </div>
+            <div class="p-5">
+              <div class="flex items-center gap-3 mb-3">
+                <i class="text-yellow-600 fas fa-calendar-alt"></i>
+                <span class="text-gray-700">Mercredi 8 janvier 2026</span>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <i class="text-pink-600 fas fa-clock"></i>
+                <span class="text-gray-700">14:00 – 15:30</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="text-purple-600 fas fa-user-tie"></i>
+                <span class="text-gray-700">Tuteur : M. Kamga</span>
+              </div>
+              <button
+                class="w-full py-2 mt-4 font-medium text-white transition bg-linear-to-r from-yellow-500 to-pink-500 rounded-xl hover:brightness-110"
+              >
+                Rejoindre la séance
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3 : Mes matières -->
+      <section class="mb-10">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">
+            Mes matières suivies
+          </h3>
+          <a
+            href="#"
+            class="flex items-center gap-1 text-sm font-medium text-yellow-600 hover:text-yellow-700"
+          >
+            Gérer <i class="fas fa-cog"></i>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div
+            class="p-5 text-center transition bg-white border border-gray-100 shadow-sm rounded-xl hover:shadow-md"
+          >
+            <i class="mb-3 text-4xl text-yellow-500 fas fa-square-root-alt"></i>
+            <h4 class="font-medium text-gray-800">Mathématiques</h4>
+            <p class="mt-1 text-xs text-gray-500">Niveau L3</p>
+          </div>
+
+          <div
+            class="p-5 text-center transition bg-white border border-gray-100 shadow-sm rounded-xl hover:shadow-md"
+          >
+            <i class="mb-3 text-4xl text-pink-500 fas fa-atom"></i>
+            <h4 class="font-medium text-gray-800">Physique</h4>
+            <p class="mt-1 text-xs text-gray-500">Mécanique</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4 : Dernières questions à l'IA -->
+      <section>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">
+            Dernières questions à l'IA
+          </h3>
+          <a
+            href="assistantAi.html"
+            class="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white transition rounded-full bg-linear-to-r from-purple-500 to-indigo-500 hover:brightness-110"
+          >
+            <i class="fas fa-robot"></i> Parler à l'assistant
+          </a>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
+            <p class="mb-2 text-sm text-gray-600">Il y a 2h</p>
+            <p class="font-medium text-gray-800">
+              "Explique-moi la photosynthèse en 5 points simples"
+            </p>
+            <p class="mt-2 text-sm text-gray-500 line-clamp-2">
+              La photosynthèse est le processus par lequel les plantes...
+            </p>
+          </div>
+
+          <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-xl">
+            <p class="mb-2 text-sm text-gray-600">Hier</p>
+            <p class="font-medium text-gray-800">
+              "Comment réviser efficacement pour un examen de 3h ?"
+            </p>
+            <p class="mt-2 text-sm text-gray-500 line-clamp-2">
+              1. Planifie tes révisions en blocs de 50 min...
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
