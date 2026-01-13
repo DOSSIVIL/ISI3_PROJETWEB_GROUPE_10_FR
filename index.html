@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/views/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png"  sizes="40x40"  href="./Images/Logo.png">
@@ -1042,7 +1044,960 @@
     <script src="/src/views/components/header.js"></script>
     
     <!-- Le contenu principal sera injecté ici -->
-    <main id="app"></main>
+    <div class="pt-10 pb-32 px-6 md:px-12 lg:px-1">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Section principale -->
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 md:p-12 lg:p-24 mb-8 md:mb-[-4rem] lg:mb-[-8rem] relative z-0" style="min-height: 400px;">
+                <div class="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+                    
+                    <!-- Texte -->
+                    <div>
+                        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                            <span class="typing-animation word-1" style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span>
+                            <span class="typing-animation word-2" style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                            <span class="typing-animation word-3" style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                            <h2 class="text-xl dark:text-gray-200 mt-2"><span>L'éducation connectée, accessible à chacun.</span></h2>
+                        </h1>
+                       
+                        <h3 class="text-base md:text-lg text-gray-900 dark:text-gray-300 leading-relaxed">
+                            Une plateforme collaborative unique qui connecte étudiants et tuteurs à travers le tutorat en temps réel, l'intelligence artificielle et des ressources pédagogiques pensées pour l'Afrique.
+                        </h3>
+                    </div>
+    
+                    <!-- Image -->
+                    <div class="relative flex justify-center lg:justify-end items-center mt-6 lg:mt-0">
+                        <div>
+                            <img 
+                                src="../../../Images/Logo.png" 
+                                alt="Logo EduConnect Africa"
+                                class="w-full max-w-xs md:max-w-sm lg:max-w-md"
+                            />
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+    
+            <!-- Cartes Étudiants et Tuteurs avec images collées -->
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto relative z-10 mt-8 md:mt-0">
+                
+                <!-- Colonne Étudiants -->
+                <div class="relative">
+                    <!-- Image SVG collée à la carte - ajusté pour mobile -->
+                    <div class="flex justify-center mb-0">
+                        <img 
+                            src="/svg/learner-2.svg" 
+                            alt="Étudiant" 
+                            class="w-32 h-82 md:w-90 md:h-36 -mb-15 md:-mb-15"
+                        />
+                    </div>
+                    
+                    <!-- Carte Étudiants -->
+                    <div class="bg-white dark:bg-gray-800 border-t-4 border-yellow-400 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 pt-12 md:pt-12">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-yellow-400 rounded-full p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Étudiants</h2>
+                        </div>
+                        
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 text-sm leading-relaxed">
+                            Accédez à un soutien académique personnalisé avec des tuteurs bénévoles et un assistant IA disponible 24/7. Séances de tutorat en temps réel, assistant IA pour toutes les matières, choisissez votre tuteur selon vos besoins.
+                        </p>
+                        
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white font-semibold px-3 py-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
+                                Créer mon compte
+                            </button>
+                            <button class="flex-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-semibold px-3 py-2.5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-all duration-300 border-2 border-purple-200 dark:border-purple-700 text-xs">
+                                Découvrir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Colonne Tuteurs -->
+                <div class="relative">
+                    <!-- Image SVG collée à la carte - ajusté pour mobile -->
+                    <div class="flex justify-center mb-0">
+                        <img 
+                            src="/svg/educator-2.svg" 
+                            alt="Tuteur" 
+                            class="w-32 h-82 md:w-90 md:h-36 -mb-15 md:-mb-15"
+                        />
+                    </div>
+                    
+                    <!-- Carte Tuteurs -->
+                    <div class="bg-white dark:bg-gray-800 border-t-4 border-blue-400 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 pt-12 md:pt-12">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-blue-400 rounded-full p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Tuteurs</h2>
+                        </div>
+                        
+                        <p class="text-gray-700 dark:text-gray-300 mb-9 text-sm leading-relaxed">
+                            Partagez vos connaissances et aidez les étudiants à surmonter les défis éducatifs en Afrique. Rejoignez une communauté de tuteurs bénévoles, système pair-à-pair efficace, communication en temps réel.
+                        </p>
+                        
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white font-semibold px-3 py-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
+                                Devenir tuteur
+                            </button>
+                            <button class="flex-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-semibold px-3 py-2.5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-all duration-300 border-2 border-purple-200 dark:border-purple-700 text-xs">
+                                En savoir plus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+    <section class="py-16 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Titre principal -->
+            <div class="text-center mb-16">
+                <h9 class="text-2xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
+                     <span class="text-purple-600">.Apprendre .Enseigner .Progresser.</span>
+                </h9>
+                <p class="text-lg md:text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+                    Avec EduConnect Africa, découvrez une nouvelle façon d'apprendre : 
+                    tutorat personnalisé, assistance IA 24/7, et ressources adaptées au contexte africain.
+                </p>
+            </div>
+
+            <!-- Grille des 3 fonctionnalités -->
+            <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+                
+                <!-- Carte 1 : Apprenez -->
+                <div class="group">
+                   
+                    <div class=" flex items-center justify-center ">
+                        <img 
+                            src="../../../svg/c.svg" 
+                            alt="Étudiant en apprentissage"
+                            class="w-48 h-48 object-contain"
+                        />
+                    </div>
+                    
+                    <!-- Contenu -->
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">
+                            Apprenez
+                        </h3>
+                        <p class="text-xl font-semibold text-purple-600 mb-3">
+                            où que vous soyez
+                        </p>
+                        <p class="text-gray-700 leading-relaxed">
+                            Accédez à votre formation 100% en ligne depuis votre téléphone, ordinateur ou tablette. 
+                            En ville, à la campagne, à la maison... Partout !
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Carte 2 : Un mentor -->
+                <div class="group">
+                    <!-- Image circulaire avec fond -->
+                    <div class=" flex items-center justify-center ">
+                        <img 
+                        src="../../../svg/b.svg"  
+                            alt="Tutorat en ligne"
+                            class="w-48 h-48 object-contain"
+                        />
+                    </div>
+                    
+                    <!-- Contenu -->
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">
+                            Un tuteur
+                        </h3>
+                        <p class="text-xl font-semibold text-purple-600 mb-3">
+                            pour vous accompagner
+                        </p>
+                        <p class="text-gray-700 leading-relaxed">
+                            Bénéficiez des conseils d'un tuteur bénévole qualifié qui vous aide à progresser 
+                            en temps réel via texte, audio ou vidéo.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Carte 3 : Assistant IA -->
+                <div class="group">
+                    <!-- Image circulaire avec fond -->
+                    <!--<div class="bg-purple-50 rounded-full w-64 h-64 mx-auto mb-8 flex items-center justify-center shadow-lg group-hover:shadow-2xl transition-all duration-300">--->
+                    <div class="flex items-center justify-center">
+                        <img 
+                                src="/Images/10312453.jpg" 
+                                alt="Intelligence artificielle"
+                                class="w-48 h-48 rounded-full object-cover"
+                        />
+                    </div>
+                        
+                    
+                    <!-- Contenu -->
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">
+                            Assistant IA
+                        </h3>
+                        <p class="text-xl font-semibold text-purple-600 mb-3">
+                            disponible 24H/7J
+                        </p>
+                        <p class="text-gray-700 leading-relaxed">
+                            Posez vos questions à tout moment à notre assistant intelligent 
+                            en Mathématiques, Physique, Sciences, Littérature et Informatique.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+          
+
+        </div>
+    </section>
+    <section class="py-12 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">
+                    <span class="text-purple-600">Choisissez votre domaine d'étude </span>
+                </h2>
+            </div>
+    
+            <div class="slider-container overflow-hidden relative py-6">
+                
+                <div class="slider-track flex space-x-8">
+                    
+                    <div class="flex-shrink-0 flex space-x-8 slider-content">
+                        
+                        <div class="group bg-gradient-to-tr from-red-100 to-red-50 text-red-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-red-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-red-600 transform group-hover:rotate-6 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16.5 10.5L7.5 19.5"></path>
+                                    <path d="M7.5 10.5L16.5 19.5"></path>
+                                    <path d="M5.5 12h2"></path>
+                                    <path d="M16.5 4v1.5"></path>
+                                    <path d="M16.5 22v-1.5"></path>
+                                    <path d="M2.5 16h1.5"></path>
+                                    <path d="M20.5 16h1.5"></path>
+                                </svg>
+                                <span class="text-lg font-semibold">Mathématiques</span>
+                            </div>
+                        </div>
+    
+                        <div class="group bg-gradient-to-tr from-cyan-100 to-cyan-50 text-cyan-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-cyan-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-cyan-600 transform group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2v2"></path>
+                                    <path d="M12 20v2"></path>
+                                    <path d="M20 12h2"></path>
+                                    <path d="M2 12h2"></path>
+                                    <path d="M18.3 5.7l-1.4 1.4"></path>
+                                    <path d="M6.3 16.3l-1.4 1.4"></path>
+                                    <path d="M18.3 18.3l-1.4-1.4"></path>
+                                    <path d="M6.3 7.7l-1.4-1.4"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <span class="text-lg font-semibold">Physique</span>
+                            </div>
+                        </div>
+    
+                        <div class="group bg-gradient-to-tr from-green-100 to-green-50 text-green-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-green-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-green-600 transform group-hover:-translate-y-1 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 3v18h18"></path>
+                                    <path d="M18 18L13 18C13 18 13 13 8 13"></path>
+                                    <path d="M18 8l-5 5"></path>
+                                    <path d="M16 16L19 13"></path>
+                                    <circle cx="16.5" cy="7.5" r="1.5"></circle>
+                                </svg>
+                                <span class="text-lg font-semibold">Sciences de la Terre</span>
+                            </div>
+                        </div>
+    
+                        <div class="group bg-gradient-to-tr from-yellow-100 to-yellow-50 text-yellow-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-yellow-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-yellow-600 transform group-hover:animate-bounce transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5V4.5A2.5 2.5 0 0 1 6.5 2z"></path>
+                                    <path d="M10 8h6"></path>
+                                    <path d="M10 12h6"></path>
+                                    <path d="M10 16h6"></path>
+                                </svg>
+                                <span class="text-lg font-semibold">Littérature camerounaise</span>
+                            </div>
+                        </div>
+    
+                        <div class="group bg-gradient-to-tr from-purple-100 to-purple-50 text-purple-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-purple-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-purple-600 transform group-hover:translate-x-1 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 18h2a1 1 0 0 0 1 -1v-12a1 1 0 0 0 -1 -1h-14a1 1 0 0 0 -1 1v12a1 1 0 0 0 1 1h2"></path>
+                                    <path d="M10 13l-2 2l2 2"></path>
+                                    <path d="M14 13l2 2l-2 2"></path>
+                                </svg>
+                                <span class="text-lg font-semibold">Informatique</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-shrink-0 flex space-x-8 slider-content">
+                        <div class="group bg-gradient-to-tr from-red-100 to-red-50 text-red-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-red-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-red-600 transform group-hover:rotate-6 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16.5 10.5L7.5 19.5"></path>
+                                    <path d="M7.5 10.5L16.5 19.5"></path>
+                                    <path d="M5.5 12h2"></path>
+                                    <path d="M16.5 4v1.5"></path>
+                                    <path d="M16.5 22v-1.5"></path>
+                                    <path d="M2.5 16h1.5"></path>
+                                    <path d="M20.5 16h1.5"></path>
+                                </svg>
+                                <span class="text-lg font-semibold">Mathématiques</span>
+                            </div>
+                        </div>
+    
+                        <div class="group bg-gradient-to-tr from-cyan-100 to-cyan-50 text-cyan-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-cyan-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-cyan-600 transform group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2v2"></path>
+                                    <path d="M12 20v2"></path>
+                                    <path d="M20 12h2"></path>
+                                    <path d="M2 12h2"></path>
+                                    <path d="M18.3 5.7l-1.4 1.4"></path>
+                                    <path d="M6.3 16.3l-1.4 1.4"></path>
+                                    <path d="M18.3 18.3l-1.4-1.4"></path>
+                                    <path d="M6.3 7.7l-1.4-1.4"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <span class="text-lg font-semibold">Physique</span>
+                            </div>
+                        </div>
+    
+                        <div class="group bg-gradient-to-tr from-green-100 to-green-50 text-green-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-green-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-green-600 transform group-hover:-translate-y-1 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 3v18h18"></path>
+                                    <path d="M18 18L13 18C13 18 13 13 8 13"></path>
+                                    <path d="M18 8l-5 5"></path>
+                                    <path d="M16 16L19 13"></path>
+                                    <circle cx="16.5" cy="7.5" r="1.5"></circle>
+                                </svg>
+                                <span class="text-lg font-semibold">Sciences de la Terre</span>
+                            </div>
+                        </div>
+    
+                        <div class="group bg-gradient-to-tr from-yellow-100 to-yellow-50 text-yellow-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-yellow-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-yellow-600 transform group-hover:animate-bounce transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5V4.5A2.5 2.5 0 0 1 6.5 2z"></path>
+                                    <path d="M10 8h6"></path>
+                                    <path d="M10 12h6"></path>
+                                    <path d="M10 16h6"></path>
+                                </svg>
+                                <span class="text-lg font-semibold">Littérature camerounaise</span>
+                            </div>
+                        </div>
+    
+                        <div class="group bg-gradient-to-tr from-purple-100 to-purple-50 text-purple-800 p-4 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 w-48 md:w-56 flex items-center justify-center border-t-4 border-purple-400">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-6 h-6 text-purple-600 transform group-hover:translate-x-1 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 18h2a1 1 0 0 0 1 -1v-12a1 1 0 0 0 -1 -1h-14a1 1 0 0 0 -1 1v12a1 1 0 0 0 1 1h2"></path>
+                                    <path d="M10 13l-2 2l2 2"></path>
+                                    <path d="M14 13l2 2l-2 2"></path>
+                                </svg>
+                                <span class="text-lg font-semibold">Informatique</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    <span class="text-purple-600">Comment Nous Fonctionnons ?</span>
+                </h2>
+                <p class="text-lg text-gray-700 max-w-3xl mx-auto">
+                    Accédez à un soutien éducatif complet en seulement trois étapes simples et rapides.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-10 lg:gap-16">
+                
+                <div class="group relative text-center p-6 bg-white rounded-xl shadow-lg border-t-4 border-yellow-400 transform hover:scale-[1.02] transition-transform duration-300">
+                    
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-yellow-400 w-12 h-12 flex items-center justify-center rounded-full text-white text-2xl font-bold shadow-xl">1</div>
+                    
+                    <div class="mt-8 mb-4">
+                        <svg class="w-12 h-12 text-yellow-500 mx-auto transform group-hover:rotate-12 transition-transform duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                            <path d="M21 21l-6-6"></path>
+                            <path d="M14 6h-8a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-4"></path>
+                            <path d="M9 12l2 2l4 -4"></path>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">
+                        Trouvez Votre Guide
+                    </h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Choisissez une matière (Maths, Littérature, etc.) et consultez la liste des tuteurs bénévoles disponibles.
+                    </p>
+                    
+                    <div class="md:hidden absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-gray-300">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </div>
+                    <div class="hidden md:block absolute top-1/2 right-0 w-8 h-1 bg-gray-300 transform translate-x-full"></div>
+                </div>
+
+                <div class="group relative text-center p-6 bg-white rounded-xl shadow-lg border-t-4 border-purple-400 transform hover:scale-[1.02] transition-transform duration-300">
+                    
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-purple-600 w-12 h-12 flex items-center justify-center rounded-full text-white text-2xl font-bold shadow-xl">2</div>
+                    
+                    <div class="mt-8 mb-4">
+                        <svg class="w-12 h-12 text-purple-600 mx-auto transform group-hover:scale-110 transition-transform duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1 -4 4a4 4 0 0 1 -4 -4v-2a4 4 0 0 1 4 -4z"></path>
+                            <path d="M4 14a8 8 0 0 0 8 8a8 8 0 0 0 8 -8"></path>
+                            <path d="M12 18h.01"></path> 
+                            <path d="M15 15.5l-3 3l-3 -3"></path>
+                        </svg>
+                    </div>
+    
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">
+                        Apprenez en Direct
+                    </h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Connectez-vous instantanément par vidéo, audio ou texte pour des sessions de tutorat en temps réel (via Peer.js).
+                    </p>
+
+                    <div class="md:hidden absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-gray-300">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </div>
+                    <div class="hidden md:block absolute top-1/2 right-0 w-8 h-1 bg-gray-300 transform translate-x-full"></div>
+                </div>
+
+                <div class="group relative text-center p-6 bg-white rounded-xl shadow-lg border-t-4 border-blue-400 transform hover:scale-[1.02] transition-transform duration-300">
+                    
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-400 w-12 h-12 flex items-center justify-center rounded-full text-white text-2xl font-bold shadow-xl">3</div>
+                    
+                    <div class="mt-8 mb-4">
+                        <svg class="w-12 h-12 text-blue-500 mx-auto transform group-hover:animate-pulse transition-transform duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 4a2 2 0 0 1 2 2v5a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-5a2 2 0 0 1 2 -2h12z"></path>
+                            <path d="M12 13v9"></path>
+                            <path d="M14 22h-4"></path>
+                            <path d="M8 10h.01"></path>
+                            <path d="M16 10h.01"></path>
+                            <path d="M17 17l-2.5 -2.5"></path>
+                            <path d="M9 17l2.5 -2.5"></path>
+                        </svg>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">
+                        Explorez avec l'IA
+                    </h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Obtenez des explications instantanées et un soutien pédagogique 24/7 grâce à notre tuteur virtuel IA multilingue.
+                    </p>
+                    
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!--Il Parlent de nius nos utilisareurs -->
+    <section class="max-w-6xl mx-auto py-30">
+    
+        <!-- Header -->
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            
+            <span class="text-purple-600">Ils parlent de Nous</span>
+          </h2>
+          <p class="text-lg text-gray-700 max-w-3xl mx-auto">
+            Découvrez comment notre plateforme collaborative transforme l'éducation en Afrique
+          </p>
+          
+          <!-- Pause/Play Button -->
+          <button id="pause-play-btn" class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 rounded-full shadow-sm hover:shadow transition-all duration-300">
+            <i id="pause-icon" class="fas fa-pause text-blue-600"></i>
+            <i id="play-icon" class="fas fa-play text-blue-600 hidden"></i>
+            <span class="text-sm font-medium text-gray-700" id="pause-text">Pause</span>
+          </button>
+        </div>
+    
+        <!-- Carousel Container -->
+<div class="relative overflow-hidden py-6">
+  
+    <!-- Gradient Overlays -->
+    <div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 to-transparent dark:from-gray-800 dark:to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 to-transparent dark:from-gray-800 dark:to-transparent z-10 pointer-events-none"></div>
+    
+    <!-- Carousel Track -->
+  <div id="carousel-track" class="carousel-track rounded-900xl shadow-xl">
+    <!-- Cards will be dynamically inserted here -->
+  </div>
+    
+  </div>
+  
+  <!-- Navigation & Dots - Enhanced -->
+  <div class="flex flex-col md:flex-row justify-between items-center gap-8 mt-16 pt-8 border-t border-gray-100 dark:border-gray-700">
+      <!-- Left: Stats -->
+      <div class="flex items-center gap-6">
+          <div class="text-center">
+              <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">98%</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Satisfaction</div>
+          </div>
+          <div class="h-10 w-px bg-gradient-to-b from-gray-200 to-transparent dark:from-gray-600 dark:to-transparent"></div>
+          <div class="text-center">
+              <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">1K+</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Témoignages</div>
+          </div>
+      </div>
+      
+      <!-- Center: Dots -->
+      <div class="flex items-center gap-8">
+          <button id="prev-btn" class="group flex items-center justify-center w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 border border-gray-200 dark:border-gray-600 hover:border-blue-200 dark:hover:border-blue-700 rounded-full shadow-md hover:shadow-xl dark:shadow-gray-900/30 transition-all duration-300 transform hover:-translate-x-1">
+              <i class="fas fa-chevron-left text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 text-lg transition-transform group-hover:-translate-x-1"></i>
+          </button>
+          
+          <div id="dots-container" class="flex gap-3 mx-4">
+              <!-- Dots will be dynamically inserted here -->
+              <div class="dot-placeholder w-20 h-1 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+          </div>
+          
+          <button id="next-btn" class="group flex items-center justify-center w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 border border-gray-200 dark:border-gray-600 hover:border-blue-200 dark:hover:border-blue-700 rounded-full shadow-md hover:shadow-xl dark:shadow-gray-900/30 transition-all duration-300 transform hover:translate-x-1">
+              <i class="fas fa-chevron-right text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 text-lg transition-transform group-hover:translate-x-1"></i>
+          </button>
+      </div>
+      
+      <!-- Right: Auto-play Indicator -->
+      <div class="flex items-center gap-3">
+          <div class="relative">
+              <div class="w-3 h-3 bg-green-400 dark:bg-green-500 rounded-full animate-pulse"></div>
+              <div class="absolute inset-0 w-3 h-3 bg-green-400 dark:bg-green-500 rounded-full animate-ping opacity-75"></div>
+          </div>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Défilement automatique</span>
+      </div>
+  </div>
+    </section>
+       <!-- Call to Action avec image à gauche -->
+       <div class="mt-1">
+        <div class="@container">
+            <div class="flex flex-col @sm:flex-row items-center gap-4 @sm:gap-5 @md:gap-6 @lg:gap-8 bg-white dark:bg-gray-800 rounded-xl @sm:rounded-2xl p-4 @sm:p-6 @md:p-8 border border-gray-200 dark:border-gray-700 max-w-5xl mx-auto shadow-sm hover:shadow-md transition-shadow duration-200">
+                
+                <!-- Image -->
+                <div class="flex-shrink-0">
+                    <div class="w-20 h-20 @sm:w-24 @sm:h-24 @md:w-28 @md:h-28">
+                        <img src="/svg/g.avif" 
+                            alt="Témoignage"
+                            class="w-full h-full object-cover rounded-full border-3 @sm:border-4 border-white dark:border-gray-800 shadow-md">
+                    </div>
+                </div>
+                
+                <!-- Texte -->
+                <div class="flex-1 text-center @sm:text-left min-w-0 px-2 @sm:px-0">
+                    <h3 class="text-xl @sm:text-2xl @md:text-3xl font-bold text-gray-900 dark:text-white mb-1 @sm:mb-2">
+                        Partagez votre expérience
+                    </h3>
+                    <p class="text-sm @sm:text-base @md:text-lg text-gray-600 dark:text-gray-400">
+                        Rejoignez notre communauté
+                    </p>
+                </div>
+                
+                <!-- Bouton -->
+                <div class="w-full @sm:w-auto flex-shrink-0">
+                    <button class="w-full @sm:w-auto flex items-center justify-center gap-2 @md:gap-3 px-5 @sm:px-6 @md:px-8 py-3 @md:py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 active:from-blue-800 active:to-purple-800 text-white text-sm @sm:text-base font-semibold rounded-lg @sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-edit text-base @md:text-lg"></i>
+                        <span>Ajouter un témoignage</span>
+                        <i class="fas fa-arrow-right text-sm @md:text-base hidden @md:inline-block"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+      <!-- Impact en chiffres de l'applications -->
+      <section id="stats-section" class="py-16 md:py-24  overflow-hidden mt-8">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <h2 class="text-2xl md:text-4xl font-extrabold text-center mb-12 text-gray-900 leading-tight">
+                <span class="text-purple-600">Notre Impact en Chiffres</span>
+            </h2>
+    
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    
+                <div class="stat-card bg-white p-6 rounded-2xl shadow-xl transform hover:scale-[1.02] transition-transform duration-500 ease-in-out border-t-4 border-indigo-600">
+                    <div class="text-5xl md:text-6xl font-extrabold text-indigo-600 mb-2">
+                        <span class="count-up" data-target="150">0</span>+
+                    </div>
+                    <p class="text-lg font-semibold text-gray-700">Étudiants actifs</p>
+                    <p class="text-sm text-gray-500 mt-1">L'avenir en mouvement</p>
+                </div>
+    
+                <div class="stat-card bg-white p-6 rounded-2xl shadow-xl transform hover:scale-[1.02] transition-transform duration-500 ease-in-out border-t-4 border-emerald-600">
+                    <div class="text-5xl md:text-6xl font-extrabold text-emerald-600 mb-2">
+                        <span class="count-up" data-target="25">0</span>+
+                    </div>
+                    <p class="text-lg font-semibold text-gray-700">Tuteurs bénévoles</p>
+                    <p class="text-sm text-gray-500 mt-1">Des passionnés engagés</p>
+                </div>
+    
+                <div class="stat-card bg-white p-6 rounded-2xl shadow-xl transform hover:scale-[1.02] transition-transform duration-500 ease-in-out border-t-4 border-pink-600">
+                    <div class="text-5xl md:text-6xl font-extrabold text-pink-600 mb-2">
+                        <span class="count-up" data-target="24">0</span>
+                    </div>
+                    <p class="text-lg font-semibold text-gray-700 mb-3">Pays d'Afrique</p>
+                    <div id="country-animation" class="h-8 overflow-hidden text-sm font-medium text-gray-600 flex items-center justify-center">
+                        <span>Cliquez pour voir les pays</span>
+                    </div>
+                </div>
+    
+                <div class="stat-card bg-white p-6 rounded-2xl shadow-xl transform hover:scale-[1.02] transition-transform duration-500 ease-in-out border-t-4 border-amber-600">
+                    <div class="text-5xl md:text-6xl font-extrabold text-amber-600 mb-2">
+                        <span class="count-up" data-target="5">0</span>
+                    </div>
+                    <p class="text-lg font-semibold text-gray-700 mb-3">Matières clés</p>
+                    <div id="subject-animation" class="h-8 overflow-hidden text-sm font-medium text-gray-600 flex items-center justify-center">
+                        <span>Cliquez pour voir les matières</span>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </section>
+    <section class="py-12 md:py-16 lg:py-20 px-4">
+        <div class="max-w-6xl mx-auto relative">
+            
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-10 lg:p-12 border border-gray-200 dark:border-gray-700 shadow-lg relative overflow-hidden">
+                
+                <!-- Image en arrière-plan intégrée dans le cadre -->
+                <div class="absolute top-0 right-0 -mt-4 -mr-4 opacity-20 dark:opacity-10 pointer-events-none">
+                    <img src="/svg/a.svg" alt="Décoration" class="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
+                </div>
+                
+                <!-- En-tête -->
+                <div class="text-center mb-8 md:mb-10 relative">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4">
+                        <i class="fas fa-comments text-blue-600 dark:text-blue-400"></i>
+                        <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">Forum de Discussion</span>
+                    </div>
+                    
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        Échangez avec des étudiants du monde entier
+                    </h2>
+                    
+                    <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                        Posez vos questions, partagez vos connaissances et discutez avec d'autres étudiants dans notre forum organisé par matières et catégories.
+                    </p>
+                </div>
+    
+                <!-- Catégories disponibles -->
+                <div class="mb-8">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                        Catégories disponibles
+                    </h3>
+                    
+                    <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+                        <span class="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm md:text-base font-medium">
+                            Mathématiques
+                        </span>
+                        <span class="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm md:text-base font-medium">
+                            Physique
+                        </span>
+                        <span class="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg text-sm md:text-base font-medium">
+                            Sciences de la Terre
+                        </span>
+                        <span class="px-4 py-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-sm md:text-base font-medium">
+                            Littérature Camerounaise
+                        </span>
+                        <span class="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm md:text-base font-medium">
+                            Informatique
+                        </span>
+                    </div>
+                </div>
+    
+                <!-- Avantages -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+                    <div class="text-center p-4">
+                        <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-users text-2xl text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Communauté mondiale</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Connectez-vous avec des étudiants de tous les continents
+                        </p>
+                    </div>
+                    
+                    <div class="text-center p-4">
+                        <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-lightbulb text-2xl text-purple-600 dark:text-purple-400"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Partage de connaissances</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Apprenez et enseignez dans un environnement collaboratif
+                        </p>
+                    </div>
+                    
+                    <div class="text-center p-4">
+                        <div class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-globe-africa text-2xl text-green-600 dark:text-green-400"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Depuis chez vous</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Traversez l'Afrique et le monde sans bouger de chez vous
+                        </p>
+                    </div>
+                </div>
+    
+                <!-- Bouton d'action -->
+                <div class="text-center">
+                    <button class="px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-base md:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                        Rejoindre le forum
+                    </button>
+                </div>
+    
+            </div>
+        </div>
+    </section>
+    <!-- Call to Action Époustouflant -->
+<div class="relative py-20 px-4 overflow-hidden">
+    <!-- Éléments décoratifs animés -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-10 left-1/4 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full animate-pulse"></div>
+        <div class="absolute bottom-10 right-1/4 w-96 h-96 bg-gradient-to-l from-amber-400/5 to-yellow-400/5 rounded-full animate-ping" style="animation-duration: 3s"></div>
+        <div class="absolute top-1/2 left-10 w-40 h-40 bg-gradient-to-br from-green-400/5 to-emerald-400/5 rounded-full animate-bounce" style="animation-duration: 6s"></div>
+    </div>
+    
+    <!-- Lignes de connexion -->
+    <div class="absolute inset-0 pointer-events-none">
+        <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.1" />
+                    <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="#ec4899" stop-opacity="0.1" />
+                </linearGradient>
+            </defs>
+            <path d="M0,300 Q150,150 300,300 T600,300" stroke="url(#lineGradient)" stroke-width="2" fill="none" class="animate-dash" />
+            <path d="M100,500 Q250,350 400,500 T700,500" stroke="url(#lineGradient)" stroke-width="2" fill="none" class="animate-dash" style="animation-delay: 1s" />
+        </svg>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="relative max-w-6xl mx-auto">
+        <!-- Badge animé -->
+        <div class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-white/80 to-gray-50/80 backdrop-blur-sm rounded-full border border-gray-200/50 shadow-lg mb-10 animate-bounce" style="animation-duration: 2s">
+            <i class="fas fa-bolt text-yellow-500 animate-pulse"></i>
+            <span class="text-sm font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                MOMENT DÉCISIF
+            </span>
+            <i class="fas fa-bolt text-yellow-500 animate-pulse"></i>
+        </div>
+
+        <!-- Titre principal -->
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight">
+           
+            <span class="relative inline-block">
+                <span class="relative z-10 text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text animate-gradient bg-[length:200%_auto]">
+                    Prêt à transformer votre Education ?
+                </span>
+                <span class="absolute -bottom-2 left-0 w-full h-3 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 rounded-full opacity-60 animate-pulse"></span>
+            </span>
+           
+        </h2>
+
+        <!-- Description -->
+        <p class="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in">
+            Rejoignez <span class="font-bold text-blue-600">154+ étudiants</span> qui ont déjà fait le choix de Nous Rejoindre .
+            
+        </p>
+
+        <!-- Statistiques en temps réel -->
+        <div class="flex flex-wrap justify-center gap-8 mb-14 animate-slide-up">
+            <div class="text-center">
+                <div class="text-3xl font-bold text-blue-600 mb-2 animate-count" data-target="10847">154</div>
+                <div class="text-gray-500">Étudiinscrits</div>
+            </div>
+            <div class="h-12 w-px bg-gradient-to-b from-gray-300 to-transparent"></div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2 animate-count" data-target="94">24</div>
+                <div class="text-gray-500">Tuteurs</div>
+            </div>
+            <div class="h-12 w-px bg-gradient-to-b from-gray-300 to-transparent"></div>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-pink-600 mb-2 animate-count" data-target="24">5</div>
+                <div class="text-gray-500">Matières</div>
+            </div>
+        </div>
+
+        <!-- Boutons CTA -->
+        <div class="flex flex-col sm:flex-row justify-center gap-6 animate-slide-up" style="animation-delay: 0.2s">
+            <!-- Bouton Principal -->
+            <a href="#" class="group relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-bold py-5 px-12 rounded-2xl text-xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-1">
+                <!-- Effet de particules -->
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -top-4 -left-4 w-8 h-8 bg-white/30 rounded-full animate-float" style="animation-delay: 0s"></div>
+                    <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-white/20 rounded-full animate-float" style="animation-delay: 0.5s"></div>
+                </div>
+                
+                <!-- Effet de brillance -->
+                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                
+                <!-- Contenu du bouton -->
+                <div class="relative flex items-center justify-center gap-4">
+                    <i class="fas fa-rocket text-2xl group-hover:rotate-45 transition-transform duration-500"></i>
+                    <span class="text-lg font-bold">Commencer maintenant</span>
+                    <div class="relative">
+                        <i class="fas fa-arrow-right text-xl group-hover:translate-x-2 transition-transform duration-300"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                    </div>
+                </div>
+                
+               
+            </a>
+
+            <!-- Bouton Secondaire -->
+            <a href="#" class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/60 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 hover:border-purple-300 dark:hover:border-purple-500 text-gray-800 dark:text-gray-200 hover:text-purple-700 dark:hover:text-purple-400 font-bold py-5 px-10 rounded-2xl text-xl shadow-lg dark:shadow-gray-900/30 hover:shadow-xl dark:hover:shadow-purple-900/20 transition-all duration-500 transform hover:-translate-y-1">
+                <!-- Effet de fond -->
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-purple-50/50 dark:via-purple-900/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                
+                <!-- Contenu du bouton -->
+                <div class="relative flex items-center justify-center gap-3">
+                    <i class="fas fa-play-circle text-2xl text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform duration-300"></i>
+                    <span class="text-lg font-semibold">Voir la démo</span>
+                    <i class="fas fa-external-link-alt text-sm text-gray-400 dark:text-gray-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors"></i>
+                </div>
+            </a>
+        </div>
+
+           <!-- Témoignage rapide -->
+        <div class="relative mt-12 pt-10 border-t border-gray-100/50 dark:border-gray-700/30 animate-fade-in" style="animation-delay: 0.4s">
+
+            <div class="flex items-center justify-center gap-4 relative z-10">
+            <div class="text-black dark:text-white italic text-sm font-medium
+                        bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl
+                        border-l-4 border-yellow-500 transform hover:scale-[1.02]
+                        transition-transform duration-500 ease-in-out max-w-xl text-center">
+                
+                <i class="fas fa-quote-left text-yellow-500 mr-2"></i>
+                L'éducation est l'arme la plus puissante qu'on puisse utiliser pour changer le monde
+                <i class="fas fa-quote-right text-pink-500 ml-2"></i>
+
+                <div class="text-xs text-gray-600 dark:text-gray-400 mt-2 font-normal">
+                    — Nelson Mandela
+                </div>
+            </div>
+            </div>
+
+        <!-- Image décorative -->
+        <div class="absolute bottom-[-80px] left-1/2 -translate-x-1/2 z-0 opacity-30 pointer-events-none">
+        <img src="/svg/shape-blue-blob-2.svg"
+                alt=""
+                class="w-96 md:w-[277px] lg:w-[277px]">
+        </div>
+        </div>
+
+    </div>
+
+    <!-- Animation CSS -->
+    <style>
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -1000;
+            }
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes countUp {
+            from { content: "0"; }
+        }
+        
+        .animate-dash {
+            stroke-dasharray: 10;
+            animation: dash 20s linear infinite;
+        }
+        
+        .animate-gradient {
+            background-size: 200% auto;
+            animation: gradient 3s ease infinite;
+        }
+        
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+        }
+        
+        .animate-count {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+
+    <!-- Script pour le compteur -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation des compteurs
+            const counters = document.querySelectorAll('.animate-count');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000; // 2 secondes
+                const step = target / (duration / 16); // 60fps
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.floor(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target.toLocaleString();
+                    }
+                };
+                
+                // Déclencher après un délai
+                setTimeout(updateCounter, 500);
+            });
+        });
+    </script>
+</div>
+      
+      <script src="/src/views/components/script.js"></script>
     
     <!-- FOOTER COMPLET -->
 <footer class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white mt-16 relative overflow-hidden">
