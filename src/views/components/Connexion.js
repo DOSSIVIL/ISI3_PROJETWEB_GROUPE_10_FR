@@ -615,7 +615,7 @@ async function handleLogin(e) {
             const redirectToken = btoa(Date.now() + '|' + sessionId);
             sessionStorage.setItem('redirect_token', redirectToken);
             
-            let redirectUrl = '/src/views/templates/etudiantDashboard.html';
+            let redirectUrl = '/src/views/templates/dashboardTutor.html';
             if (userRole === 'enseignant') {
                 redirectUrl = `/src/views/templates/dashboardTutor.html?token=${redirectToken}`;
             } else if (userRole === 'etudiant') {

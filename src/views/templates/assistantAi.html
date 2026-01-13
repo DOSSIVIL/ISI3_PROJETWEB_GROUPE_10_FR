@@ -1,77 +1,666 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Assistant IA - EduConnect</title>
-    <link rel="stylesheet" href="../../style.css" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="40x40"
-      href="../../../Images/Logo.png"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-  </head>
-  <body
-    class="min-h-screen text-gray-100 bg-linear-to-br from-gray-900 via-gray-800 to-gray-900"
-  >
-    <!-- Loader simple -->
-    <div
-      id="loader"
-      class="fixed inset-0 z-50 flex items-center justify-center"
-    >
-      <div class="text-center">
-        <div class="relative w-24 h-24 mx-auto mb-6">
-          <div
-            class="absolute inset-0 border-4 border-solid rounded-full border-t-yellow-500 border-r-pink-500 border-b-yellow-500 border-l-pink-500 animate-spin"
-          ></div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <i class="text-5xl text-yellow-500 fas fa-book-open"></i>
-          </div>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        /* Couleurs personnalisées */
+        :root {
+            --primary-gradient: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            --secondary-gradient: linear-gradient(90deg, #3b82f6, #2563eb);
+            --accent-gradient: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .gradient-edu {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-connect {
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-africa {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+        
+        .bg-gradient-secondary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        
+        /* Styles pour les catégories - TOUS EN BLEU */
+        .category-math { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .category-physics { background: linear-gradient(135deg, #2563eb, #1e40af); }
+        .category-earth { background: linear-gradient(135deg, #1d4ed8, #1e3a8a); }
+        .category-literature { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+        .category-informatique { background: linear-gradient(135deg, #93c5fd, #2563eb); }
+        
+        .category-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #3b82f6;
+        }
+        
+        /* Animation de frappe */
+        .typing-dots {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Scrollbar personnalisée */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Glass effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Animation slide */
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Sidebar réduit */
+        .sidebar-collapsed {
+            width: 64px !important;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar-expanded {
+            width: 280px !important;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar-content-collapsed {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s;
+        }
+        
+        .sidebar-content-expanded {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+        
+        /* Optimisations mobiles avancées */
+        @media (max-width: 768px) {
+            .sidebar-mobile-hidden {
+                transform: translateX(-100%);
+                width: 85vw !important;
+            }
+            
+            .sidebar-mobile-show {
+                transform: translateX(0);
+                width: 85vw !important;
+            }
+            
+            .input-responsive {
+                font-size: 16px !important;
+                padding: 14px 16px !important;
+                line-height: 1.5 !important;
+            }
+            
+            .btn-responsive {
+                padding: 14px 16px !important;
+                font-size: 15px !important;
+                min-height: 48px !important;
+            }
+            
+            .text-responsive {
+                font-size: 14px !important;
+                line-height: 1.4 !important;
+            }
+            
+            .text-responsive-lg {
+                font-size: 17px !important;
+                line-height: 1.4 !important;
+            }
+            
+            .text-responsive-sm {
+                font-size: 13px !important;
+            }
+            
+            .category-btn {
+                padding: 16px 8px !important;
+                font-size: 13px !important;
+                min-height: 48px !important;
+            }
+            
+            /* Empêche le "bounce" sur iOS */
+            html, body {
+                height: 100%;
+                overflow: hidden;
+                position: fixed;
+                width: 100%;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            #messagesContainer {
+                padding-bottom: 0 !important;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+            
+            /* Améliore l'espacement sur les petits écrans */
+            .message-container {
+                margin-bottom: 12px !important;
+            }
+            
+            /* Zone de texte optimisée pour mobile */
+            textarea {
+                max-height: 120px;
+                min-height: 60px;
+                line-height: 1.4 !important;
+            }
+            
+            /* Header compact sur mobile */
+            header {
+                padding: 10px 12px !important;
+            }
+            
+            /* Ajuste la hauteur de la zone de messages */
+            .h-calc-mobile {
+                height: calc(100vh - 136px) !important;
+            }
+            
+            /* Masquer certains éléments sur mobile */
+            .hide-on-mobile {
+                display: none !important;
+            }
+            
+            /* Améliorer les boutons tactiles */
+            button, [role="button"] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
+        /* Améliorations pour les très petits écrans */
+        @media (max-width: 360px) {
+            .category-btn {
+                font-size: 12px !important;
+                padding: 14px 6px !important;
+            }
+            
+            .text-responsive {
+                font-size: 13px !important;
+            }
+            
+            .text-responsive-lg {
+                font-size: 16px !important;
+            }
+        }
+        
+        /* Mode paysage sur mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .h-calc-mobile {
+                height: calc(100vh - 120px) !important;
+            }
+            
+            header {
+                padding: 8px 12px !important;
+            }
+            
+            .category-btn {
+                padding: 10px 6px !important;
+                min-height: 40px !important;
+            }
+            
+            .btn-responsive {
+                padding: 10px 14px !important;
+                min-height: 40px !important;
+            }
+        }
+        
+        /* Support notch et safe areas iOS */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            
+            .sticky-bottom {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+            }
+        }
+        
+        /* Améliorations tactiles */
+        @media (hover: none) and (pointer: coarse) {
+            button, 
+            .category-btn,
+            .conversation-item {
+                min-height: 48px;
+                min-width: 48px;
+            }
+            
+            .category-btn {
+                padding: 16px 8px !important;
+            }
+            
+            /* Feedback tactile */
+            button:active, 
+            .category-btn:active {
+                transform: scale(0.97);
+                transition: transform 0.1s;
+            }
+            
+            /* Désactiver le highlight bleu sur iOS */
+            * {
+                -webkit-tap-highlight-color: transparent;
+            }
+        }
+        
+        /* Dark mode safe */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #111827 !important;
+            }
+        }
+        
+        /* Amélioration des transitions */
+        * {
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        
+        /* Style pour la zone de messages vide */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60%;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        /* Loading shimmer */
+        .shimmer {
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.05) 25%, 
+                rgba(255,255,255,0.1) 50%, 
+                rgba(255,255,255,0.05) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Badge de notification */
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+    
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 touch-manipulation select-none">
+    <!-- Loader -->
+    <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div class="text-center px-4">
+            <div class="relative w-20 h-20 mx-auto mb-6">
+                <div class="absolute inset-0 border-4 border-solid rounded-full border-t-[#3b82f6] border-r-[#2563eb] border-b-[#1d4ed8] border-l-[#60a5fa] animate-spin"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="text-4xl" style="background: linear-gradient(90deg, #3b82f6, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🤖</i>
+                </div>
+            </div>
+            <p class="text-lg font-medium text-white text-responsive-lg mb-2">Chargement d'EduConnect...</p>
+            <p class="text-sm text-gray-400 text-responsive">Initialisation de l'assistant IA</p>
         </div>
-        <p class="font-medium text-gray-800">Chargement de l'assistant...</p>
-      </div>
     </div>
 
-    <!-- Conteneur principal (masqué au départ) -->
-    <div id="assistant-ai-container" style="display: none"></div>
-
-    <script type="module">
-      import { AssistantIAController } from "../../Controller/assistantAiController.js";
-
-      document.addEventListener("DOMContentLoaded", async () => {
-        const container = document.getElementById("assistant-ai-container");
-        const loader = document.getElementById("loader");
-
-        try {
-          const controller = new AssistantIAController(container);
-          await controller.init();
-
-          // Cacher le loader et afficher le contenu
-          loader.style.display = "none";
-          container.style.display = "block";
-        } catch (err) {
-          console.error("Erreur:", err);
-
-          // Afficher un message d'erreur simple
-          loader.innerHTML = `
-                    <div class="p-8 text-center">
-                        <i class="mb-4 text-4xl text-red-500 fas fa-exclamation-triangle"></i>
-                        <h3 class="mb-2 text-xl font-bold text-gray-800">Erreur de chargement</h3>
-                        <p class="mb-4 text-gray-600">${
-                          err.message || "Veuillez réessayer"
-                        }</p>
-                        <button onclick="location.reload()" class="px-4 py-2 text-white bg-blue-500 rounded">
-                            Réessayer
+    <!-- Conteneur principal -->
+    <div id="main-container" class="hidden h-screen overflow-hidden">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-gradient-primary shadow-lg">
+            <div class="px-3 md:px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <!-- Bouton historique et logo -->
+                    <div class="flex items-center space-x-3">
+                        <!-- Bouton historique (toujours visible) -->
+                        <button onclick="toggleHistory()" id="historyToggle" class="p-2.5 rounded-lg glass-effect hover:bg-gray-800/50 active:scale-95 transition-all">
+                            <i class="text-lg md:text-xl text-white fas fa-history"></i>
+                            <span id="historyBadge" class="notification-badge hidden">0</span>
                         </button>
+                        
+                        <!-- Logo et titre -->
+                        <div class="flex items-center space-x-2 md:space-x-3">
+                            <div class="p-1.5 md:p-2 rounded-lg glass-effect">
+                                <i class="text-xl md:text-2xl" style="background: linear-gradient(90deg, #3b82f6, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🤖</i>
+                            </div>
+                            <div class="hidden sm:block">
+                              <h1 class="text-lg sm:text-xl lg:text-2xl font-bold whitespace-nowrap">
+                                <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                                <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                              </h1>
+                                <p class="text-xs text-gray-300 text-responsive-sm">Assistant IA Éducatif</p>
+                            </div>
+                        </div>
                     </div>
-                `;
-        }
-      });
-    </script>
-  </body>
+
+                    <!-- Indicateur de statut et info utilisateur -->
+                    <div class="flex items-center space-x-2 md:space-x-3">
+                        <div id="userInfo" class="hidden px-2.5 py-1.5 md:px-3 md:py-2 text-sm rounded-lg glass-effect">
+                            <i class="mr-1.5 md:mr-2 fas fa-user" style="color: #60a5fa"></i>
+                            <span id="userName" class="font-medium text-white text-responsive-sm truncate max-w-[100px] md:max-w-[150px]"></span>
+                        </div>
+                        <div class="hidden sm:block px-2.5 py-1.5 md:px-3 md:py-2 text-sm rounded-lg glass-effect">
+                            <i class="mr-1.5 md:mr-2 fas fa-bolt" style="color: #60a5fa"></i>
+                            <span class="font-medium text-white text-responsive-sm">Mistral 7B</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenu principal -->
+        <div class="flex flex-1 h-[calc(100vh-68px)] md:h-[calc(100vh-68px)]">
+            <!-- Sidebar - Historique des conversations (réduisible) -->
+            <aside id="sidebar" class="absolute md:relative inset-y-0 left-0 z-30 bg-gray-900/95 backdrop-blur-xl lg:bg-gray-900/90 sidebar-expanded sidebar-mobile-hidden transition-all duration-300 ease-in-out border-r border-gray-700/50 overflow-hidden">
+                <div class="flex flex-col h-full">
+                    <!-- En-tête sidebar avec bouton de réduction -->
+                    <div class="flex items-center justify-between p-3 md:p-4 border-b border-gray-700/50">
+                        <h2 class="text-base md:text-lg font-bold text-white sidebar-content-expanded">
+                            <i class="mr-2 fas fa-history"></i>Historique
+                        </h2>
+                        <div class="flex items-center space-x-1">
+                            <!-- Bouton pour réduire/étendre -->
+                            <button onclick="toggleSidebarSize()" class="p-1.5 md:p-2 rounded-lg hover:bg-gray-800/50 transition-colors sidebar-content-expanded">
+                                <i id="sidebarToggleIcon" class="text-base md:text-lg text-white fas fa-chevron-left"></i>
+                            </button>
+                            <!-- Bouton de fermeture mobile -->
+                            <button onclick="toggleHistory()" class="p-1.5 md:p-2 rounded-lg hover:bg-gray-800/50 transition-colors md:hidden">
+                                <i class="text-base md:text-lg text-white fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenu du sidebar (caché quand réduit) -->
+                    <div class="flex-1 p-3 md:p-4 overflow-y-auto custom-scrollbar sidebar-content-expanded">
+                        <!-- Bouton Nouvelle Conversation -->
+                        <button onclick="newConversation()" class="w-full px-3 py-2.5 md:px-4 md:py-3 mb-3 md:mb-4 text-sm font-medium text-white transition-all rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#1d4ed8] hover:opacity-90 active:scale-95 btn-responsive">
+                            <i class="mr-2 fas fa-plus"></i>Nouvelle conversation
+                        </button>
+
+                        <!-- Liste des conversations -->
+                        <h3 class="mb-2 md:mb-3 text-xs md:text-sm font-medium text-gray-400">Conversations récentes</h3>
+                        <div id="conversationsList" class="space-y-1.5 md:space-y-2">
+                            <!-- Les conversations seront ajoutées ici dynamiquement -->
+                            <div class="p-3 text-sm text-center text-gray-400">
+                                Aucune conversation
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistiques (caché quand réduit) -->
+                    <div class="p-3 md:p-4 border-t border-gray-700/50 sidebar-content-expanded">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="p-2 text-center rounded-lg glass-effect">
+                                <div class="text-lg md:text-xl font-bold text-white" id="totalConversations">0</div>
+                                <div class="text-xs text-gray-400 text-responsive-sm">Conversations</div>
+                            </div>
+                            <div class="p-2 text-center rounded-lg glass-effect">
+                                <div class="text-lg md:text-xl font-bold text-white" id="totalMessages">0</div>
+                                <div class="text-xs text-gray-400 text-responsive-sm">Messages</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Version réduite du sidebar -->
+                    <div id="sidebarCollapsedContent" class="sidebar-content-collapsed absolute inset-0 flex flex-col items-center pt-6 space-y-4">
+                        <button onclick="toggleHistory()" class="p-3 rounded-lg glass-effect hover:bg-gray-800/50">
+                            <i class="text-xl text-white fas fa-bars"></i>
+                        </button>
+                        <button onclick="newConversation()" class="p-3 rounded-lg glass-effect hover:bg-gray-800/50">
+                            <i class="text-xl text-white fas fa-plus" style="color: #3b82f6"></i>
+                        </button>
+                        <div class="flex-1"></div>
+                        <div class="p-2">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#3b82f6] to-[#1d4ed8] flex items-center justify-center">
+                                <span class="text-xs font-bold text-white" id="collapsedConversationCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Overlay pour mobile -->
+            <div id="sidebarOverlay" class="fixed inset-0 z-20 hidden bg-black/70 backdrop-blur-sm md:hidden" onclick="toggleHistory()"></div>
+
+            <!-- Contenu central -->
+            <main class="flex-1 flex flex-col overflow-hidden">
+                <!-- Section catégories -->
+                <div class="p-3 md:p-4 bg-gray-800/40 border-b border-gray-700/50">
+                    <div class="flex flex-col space-y-3 md:space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="text-base md:text-lg" style="color: #60a5fa"></i>
+                            <h3 class="text-xs md:text-sm font-medium text-gray-300 text-responsive">Sélectionnez une catégorie :</h3>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5 md:gap-2">
+                            <button onclick="selectCategory('mathematiques')" class="category-btn p-2 md:p-3 rounded-lg text-white font-medium transition-all hover:scale-[1.02] active:scale-95 category-math btn-responsive">
+                                <i class="mr-1.5 md:mr-2 fas fa-calculator"></i>
+                                <span class="truncate">Maths</span>
+                            </button>
+                            <button onclick="selectCategory('physique')" class="category-btn p-2 md:p-3 rounded-lg text-white font-medium transition-all hover:scale-[1.02] active:scale-95 category-physics btn-responsive">
+                                <i class="mr-1.5 md:mr-2 fas fa-atom"></i>
+                                <span class="truncate">Physique</span>
+                            </button>
+                            <button onclick="selectCategory('terre')" class="category-btn p-2 md:p-3 rounded-lg text-white font-medium transition-all hover:scale-[1.02] active:scale-95 category-earth btn-responsive">
+                                <i class="mr-1.5 md:mr-2 fas fa-globe-africa"></i>
+                                <span class="truncate">Sciences Terre</span>
+                            </button>
+                            <button onclick="selectCategory('litterature')" class="category-btn p-2 md:p-3 rounded-lg text-white font-medium transition-all hover:scale-[1.02] active:scale-95 category-literature btn-responsive">
+                                <i class="mr-1.5 md:mr-2 fas fa-book-open"></i>
+                                <span class="truncate">Littérature</span>
+                            </button>
+                            <button onclick="selectCategory('informatique')" class="category-btn p-2 md:p-3 rounded-lg text-white font-medium transition-all hover:scale-[1.02] active:scale-95 category-informatique btn-responsive">
+                                <i class="mr-1.5 md:mr-2 fas fa-laptop-code"></i>
+                                <span class="truncate">Info</span>
+                            </button>
+                        </div>
+                        <div id="selectedCategory" class="hidden">
+                            <div class="inline-flex items-center px-2.5 py-1 text-xs md:text-sm rounded-full bg-gradient-to-r from-[#3b82f6] to-[#1d4ed8]">
+                                <span id="categoryName" class="font-medium text-white"></span>
+                                <button onclick="clearCategory()" class="ml-1.5 md:ml-2 text-white hover:text-gray-300">
+                                    <i class="fas fa-times text-xs md:text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zone de messages -->
+                <div id="messagesContainer" class="flex-1 p-3 md:p-4 overflow-y-auto custom-scrollbar h-calc-mobile">
+                    <div id="messages" class="space-y-3 md:space-y-4 max-w-4xl mx-auto">
+                        <!-- Message de bienvenue -->
+                        <div class="p-3 md:p-4 lg:p-6 rounded-2xl glass-effect slide-up message-container">
+                            <div class="flex items-start space-x-3 md:space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="p-2 md:p-3 rounded-full" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+                                        <i class="text-lg md:text-xl lg:text-2xl text-white fas fa-robot"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="mb-1.5 md:mb-2 text-base md:text-lg lg:text-xl font-bold text-white">
+                                      <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                                      <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                                    </h3>
+                                    <p class="text-gray-300 text-responsive mb-2">
+                                        Bienvenue ! Je suis votre assistant éducatif basé sur Mistral 7B.
+                                    </p>
+                                    <p class="text-white font-medium mb-1.5 text-responsive">Pour commencer :</p>
+                                    <ol class="ml-4 text-gray-300 text-responsive list-decimal space-y-0.5">
+                                        <li>Sélectionnez une catégorie ci-dessus</li>
+                                        <li>Posez votre question dans la zone de texte</li>
+                                        <li>Je vous répondrai dans le contexte choisi</li>
+                                    </ol>
+                                    <div class="flex items-start mt-2.5 md:mt-3 text-xs md:text-sm" style="color: #60a5fa">
+                                        <i class="mr-1.5 md:mr-2 fas fa-lightbulb mt-0.5"></i>
+                                        <span class="text-responsive-sm">Catégories : Maths, Physique, Sciences Terre, Littérature, Informatique</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zone de saisie fixe en bas -->
+                <div class="sticky bottom-0 left-0 right-0 p-3 md:p-4 bg-gradient-to-t from-gray-900/95 via-gray-900/90 to-transparent border-t border-gray-700/50 sticky-bottom">
+                    <div class="max-w-4xl mx-auto">
+                        <!-- Indicateur de catégorie -->
+                        <div id="categoryIndicator" class="hidden mb-2 md:mb-3">
+                            <div class="inline-flex items-center px-2.5 py-1 text-xs md:text-sm rounded-full glass-effect">
+                                <i class="mr-1.5 md:mr-2 text-white" id="categoryIcon"></i>
+                                <span id="currentCategory" class="font-medium text-white text-responsive-sm"></span>
+                                <span class="mx-1.5 text-gray-400">•</span>
+                                <span class="text-gray-300 text-responsive-sm">Prêt à répondre</span>
+                            </div>
+                        </div>
+
+                        <!-- Zone de texte et boutons -->
+                        <div class="relative">
+                            <textarea id="prompt" rows="1"
+                                      class="w-full px-3 md:px-4 py-2.5 md:py-3 pr-20 md:pr-24 text-white placeholder-gray-400 bg-gray-800/60 border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:border-transparent resize-none input-responsive"
+                                      placeholder="Posez votre question..."
+                                      maxlength="1000"></textarea>
+                            
+                            <div class="absolute bottom-1.5 md:bottom-2 right-1.5 md:right-2 flex space-x-1 md:space-x-2">
+                                <button onclick="clearChat()" class="p-1.5 md:p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors">
+                                    <i class="text-base md:text-lg fas fa-trash-alt"></i>
+                                </button>
+                                <!-- Bouton Envoyer -->
+                                <button onclick="sendMessage()" id="sendBtn" 
+                                        class="px-3 md:px-4 py-1.5 md:py-2 font-medium text-white transition-all rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#1d4ed8] hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed btn-responsive">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span class="hidden md:inline ml-1.5">Envoyer</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Compteur de caractères -->
+                            <div class="absolute bottom-1.5 md:bottom-2 left-1.5 md:left-2">
+                                <span id="charCount" class="text-xs text-gray-400">0/1000</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Indicateur de frappe -->
+                        <div id="typingIndicator" class="hidden mt-2 md:mt-3 ml-3 md:ml-4">
+                            <div class="flex items-center space-x-1.5 md:space-x-2">
+                                <div class="typing-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="text-xs md:text-sm text-gray-400 text-responsive">L'assistant rédige une réponse...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Toast notifications -->
+        <div id="toast" class="fixed bottom-4 right-4 z-50 hidden max-w-xs md:max-w-sm">
+            <div class="px-4 md:px-6 py-3 md:py-4 text-white rounded-xl shadow-2xl" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+                <div class="flex items-center space-x-2 md:space-x-3">
+                    <i id="toastIcon" class="text-lg md:text-xl"></i>
+                    <div class="flex-1 min-w-0">
+                        <p id="toastMessage" class="font-medium text-responsive truncate"></p>
+                    </div>
+                    <button onclick="hideToast()" class="ml-2 md:ml-4 text-white hover:text-gray-200 flex-shrink-0">
+                        <i class="fas fa-times text-sm md:text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <script src="/src/Service/assistant_aiService.js"></script>
+</body>
 </html>

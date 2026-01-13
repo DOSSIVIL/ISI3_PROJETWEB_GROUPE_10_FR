@@ -1,871 +1,1222 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenRouter AI - Interface de Test</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Assistant IA - EduConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
+        /* Couleurs personnalisées */
         :root {
-            --primary: #7c3aed;
-            --primary-dark: #5b21b6;
-            --secondary: #10b981;
-            --dark: #1f2937;
-            --light: #f9fafb;
-            --gray: #6b7280;
-            --gray-light: #e5e7eb;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --primary-gradient: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            --secondary-gradient: linear-gradient(90deg, #3b82f6, #2563eb);
+            --accent-gradient: linear-gradient(90deg, #3b82f6, #60a5fa);
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .gradient-edu {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--dark);
+        .gradient-connect {
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+        .gradient-africa {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+        
+        .bg-gradient-secondary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        
+        /* Styles pour les catégories - TOUS EN BLEU */
+        .category-math { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .category-physics { background: linear-gradient(135deg, #2563eb, #1e40af); }
+        .category-earth { background: linear-gradient(135deg, #1d4ed8, #1e3a8a); }
+        .category-literature { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+        .category-informatique { background: linear-gradient(135deg, #93c5fd, #2563eb); }
+        
+        .category-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
             color: white;
-            padding: 2.5rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            opacity: 0.1;
-        }
-        
-        .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 0.5rem;
-            position: relative;
-        }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-        
-        .model-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 0.5rem 1.2rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            position: relative;
+            gap: 4px;
+            background: #3b82f6;
         }
         
-        /* Main Content */
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            padding: 2.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Configuration Panel */
-        .config-panel {
-            background: var(--light);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 2px solid var(--gray-light);
-        }
-        
-        .config-panel h2 {
-            color: var(--primary);
-            margin-bottom: 1.5rem;
+        /* Animation de frappe */
+        .typing-dots {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 4px;
         }
         
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .input-group input,
-        .input-group select,
-        .input-group textarea {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 2px solid var(--gray-light);
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s;
-            background: white;
-        }
-        
-        .input-group input:focus,
-        .input-group select:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-        }
-        
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .slider-value {
-            min-width: 3rem;
-            text-align: center;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        
-        input[type="range"] {
-            flex: 1;
-            height: 8px;
-            -webkit-appearance: none;
-            background: var(--gray-light);
-            border-radius: 4px;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 22px;
-            height: 22px;
-            background: var(--primary);
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background-color: #9ca3af;
             border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s;
+            animation: typing 1.4s infinite ease-in-out;
         }
         
-        input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            background: var(--primary-dark);
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
         }
         
-        .preset-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.8rem;
-            margin-top: 1rem;
+        /* Scrollbar personnalisée */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
         }
         
-        .preset-btn {
-            padding: 0.7rem;
-            background: white;
-            border: 2px solid var(--gray-light);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .preset-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        
-        .preset-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        /* Response Panel */
-        .response-panel {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .response-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .response-header h2 {
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 0.8rem;
-        }
-        
-        .btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
         }
         
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
-        }
-        
-        .btn-primary:disabled {
-            background: var(--gray);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .btn-secondary {
-            background: var(--light);
-            color: var(--dark);
-            border: 2px solid var(--gray-light);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--gray-light);
-        }
-        
-        .response-box {
-            flex: 1;
-            background: var(--light);
-            border: 2px solid var(--gray-light);
-            border-radius: 15px;
-            padding: 1.5rem;
-            overflow-y: auto;
-            min-height: 400px;
-            font-size: 1.05rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-        
-        .response-box:empty::before {
-            content: 'La réponse apparaîtra ici...';
-            color: var(--gray);
-            font-style: italic;
-        }
-        
-        /* Loading */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-            background: var(--light);
-            border-radius: 15px;
-            margin-bottom: 1rem;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--gray-light);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            margin: 0 auto 1rem;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Stats */
-        .stats {
-            background: var(--light);
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 10px;
-            padding: 1.2rem;
-            margin-top: 1.5rem;
-            display: none;
-            border-left: 4px solid var(--primary);
         }
         
-        .stats.show {
-            display: block;
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+        /* Glass effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .stat-item {
-            text-align: center;
-            padding: 0.8rem;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid var(--gray-light);
+        /* Animation slide */
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
         }
         
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.3rem;
-        }
-        
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-        
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 1.5rem;
-            color: var(--gray);
-            font-size: 0.9rem;
-            border-top: 1px solid var(--gray-light);
-            background: var(--light);
-        }
-        
-        /* Alert */
-        .alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            background: white;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: none;
-            align-items: center;
-            gap: 0.8rem;
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-            border-left: 4px solid var(--primary);
-        }
-        
-        @keyframes slideIn {
+        @keyframes slideUp {
             from {
-                transform: translateX(100%);
                 opacity: 0;
+                transform: translateY(20px);
             }
             to {
-                transform: translateX(0);
                 opacity: 1;
+                transform: translateY(0);
             }
         }
         
-        .alert.success {
-            border-left-color: var(--secondary);
+        /* Optimisations mobiles */
+        @media (max-width: 768px) {
+            .sidebar-mobile-hidden {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar-mobile-show {
+                transform: translateX(0);
+            }
+            
+            .input-responsive {
+                font-size: 16px !important; /* Empêche le zoom sur iOS */
+            }
+            
+            .btn-responsive {
+                padding: 12px 16px !important;
+                font-size: 14px !important;
+            }
+            
+            .text-responsive {
+                font-size: 14px !important;
+            }
+            
+            .text-responsive-lg {
+                font-size: 16px !important;
+            }
+            
+            /* Empêche le "bounce" sur iOS */
+            body {
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Meilleur clavier mobile */
+            textarea {
+                max-height: 150px;
+            }
         }
         
-        .alert.error {
-            border-left-color: var(--danger);
+        /* Améliorations tactiles */
+        @media (hover: none) and (pointer: coarse) {
+            button, 
+            .category-btn,
+            .conversation-item {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .category-btn {
+                padding: 16px 12px !important;
+            }
         }
         
-        .alert.warning {
-            border-left-color: var(--warning);
-        }
-        
-        .alert-icon {
-            font-size: 1.5rem;
-        }
-        
-        .close-alert {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--gray);
-            padding: 0 0.2rem;
-        }
-        
-        /* Model Cards */
-        .model-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .model-card {
-            padding: 1.2rem;
-            background: white;
-            border: 2px solid var(--gray-light);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        
-        .model-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-        
-        .model-card.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .model-name {
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-        
-        .model-provider {
-            font-size: 0.8rem;
-            opacity: 0.8;
+        /* Dark mode safe */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #111827 !important;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🤖 OpenRouter AI Playground</h1>
-            <p>Testez différents modèles d'IA avec l'API OpenRouter</p>
-            <div class="model-badge">
-                <span>🔑 Clé API configurée</span>
-            </div>
-        </div>
-        
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Configuration Panel -->
-            <div class="config-panel">
-                <h2>⚙️ Configuration</h2>
-                
-                <div class="input-group">
-                    <label for="apiKey">🔑 Clé API OpenRouter</label>
-                    <input type="password" id="apiKey" value="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" placeholder="Votre clé API">
-                </div>
-                
-                <div class="input-group">
-                    <label for="modelSelect">🤖 Modèle IA</label>
-                    <select id="modelSelect">
-                        <option value="mistralai/mistral-7b-instruct:free">Mistral 7B Instruct (Gratuit)</option>
-                        <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                        <option value="google/gemini-pro">Gemini Pro</option>
-                        <option value="meta-llama/llama-2-13b-chat">Llama 2 13B Chat</option>
-                        <option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
-                    </select>
-                </div>
-                
-                <div class="input-group">
-                    <label>🎯 Modèles populaires</label>
-                    <div class="model-cards">
-                        <div class="model-card active" data-model="mistralai/mistral-7b-instruct:free">
-                            <div class="model-name">Mistral 7B</div>
-                            <div class="model-provider">Gratuit</div>
-                        </div>
-                        <div class="model-card" data-model="openai/gpt-3.5-turbo">
-                            <div class="model-name">GPT-3.5 Turbo</div>
-                            <div class="model-provider">OpenAI</div>
-                        </div>
-                        <div class="model-card" data-model="google/gemini-pro">
-                            <div class="model-name">Gemini Pro</div>
-                            <div class="model-provider">Google</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <label for="temperature">🌡️ Température</label>
-                    <div class="slider-container">
-                        <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
-                        <span class="slider-value" id="tempValue">0.7</span>
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <label for="maxTokens">📏 Tokens maximum</label>
-                    <div class="slider-container">
-                        <input type="range" id="maxTokens" min="100" max="2000" step="100" value="400">
-                        <span class="slider-value" id="tokensValue">400</span>
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <label for="prompt">💬 Prompt utilisateur</label>
-                    <textarea id="prompt" rows="8" placeholder="Écrivez votre message ici...">Explique la différence entre Python et JavaScript en 5 points, en français.</textarea>
-                </div>
-                
-                <div class="input-group">
-                    <label>📋 Exemples rapides</label>
-                    <div class="preset-buttons">
-                        <button class="preset-btn" data-preset="python_js">Python vs JS</button>
-                        <button class="preset-btn" data-preset="code">Code Python</button>
-                        <button class="preset-btn" data-preset="story">Histoire</button>
-                        <button class="preset-btn" data-preset="email">Email</button>
-                        <button class="preset-btn" data-preset="explain">Explication</button>
-                        <button class="preset-btn" data-preset="creative">Créatif</button>
-                    </div>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 touch-manipulation">
+    <!-- Loader -->
+    <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div class="text-center">
+            <div class="relative w-24 h-24 mx-auto mb-6">
+                <div class="absolute inset-0 border-4 border-solid rounded-full border-t-[#3b82f6] border-r-[#2563eb] border-b-[#1d4ed8] border-l-[#60a5fa] animate-spin"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="text-5xl" style="background: linear-gradient(90deg, #3b82f6, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🤖</i>
                 </div>
             </div>
-            
-            <!-- Response Panel -->
-            <div class="response-panel">
-                <div class="response-header">
-                    <h2>🤖 Réponse</h2>
-                    <div class="action-buttons">
-                        <button class="btn btn-secondary" id="clearBtn">
-                            🗑️ Effacer
-                        </button>
-                        <button class="btn btn-primary" id="sendBtn">
-                            🚀 Envoyer
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <p>Génération en cours...</p>
-                    <p style="color: var(--gray); font-size: 0.9rem;">Veuillez patienter quelques secondes</p>
-                </div>
-                
-                <div class="response-box" id="responseBox"></div>
-                
-                <div class="stats" id="stats">
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-value" id="totalTokens">0</div>
-                            <div class="stat-label">Tokens totaux</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="promptTokens">0</div>
-                            <div class="stat-label">Prompt tokens</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="completionTokens">0</div>
-                            <div class="stat-label">Réponse tokens</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="responseTime">0</div>
-                            <div class="stat-label">ms</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            <p>Powered by OpenRouter API | Clé API préconfigurée | Interface créée avec HTML/CSS/JS</p>
-            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--gray);">
-                ℹ️ Utilisez cette interface pour tester différents modèles d'IA via OpenRouter
-            </p>
+            <p class="text-xl font-medium text-white text-responsive-lg">Chargement d'EduConnect...</p>
+            <p class="mt-2 text-sm text-gray-400 text-responsive">Initialisation de l'assistant IA</p>
         </div>
     </div>
-    
-    <!-- Alert Container -->
-    <div class="alert" id="alert">
-        <span class="alert-icon">ℹ️</span>
-        <span id="alertMessage">Message</span>
-        <button class="close-alert" onclick="closeAlert()">×</button>
+
+    <!-- Conteneur principal -->
+    <div id="main-container" class="hidden h-screen overflow-hidden">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-gradient-primary">
+            <div class="px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <!-- Logo et titre -->
+                    <div class="flex items-center space-x-4">
+                        <button onclick="toggleSidebar()" class="p-3 rounded-lg glass-effect lg:hidden">
+                            <i class="text-xl text-white fas fa-bars"></i>
+                        </button>
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2 rounded-lg glass-effect">
+                                <i class="text-2xl" style="background: linear-gradient(90deg, #3b82f6, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🤖</i>
+                            </div>
+                            <div>
+                                <h1 class="text-lg sm:text-xl lg:text-2xl font-bold whitespace-nowrap">
+                                    <span class="gradient-edu">Edu</span><span class="gradient-connect">Connect</span>
+                                    <span class="gradient-africa">Africa</span>
+                                </h1>
+                                <p class="text-xs text-gray-300 text-responsive">Assistant IA Éducatif</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Indicateur de statut et info utilisateur -->
+                    <div class="flex items-center space-x-3">
+                        <div id="userInfo" class="hidden px-3 py-2 text-sm rounded-lg glass-effect">
+                            <i class="mr-2 fas fa-user" style="color: #60a5fa"></i>
+                            <span id="userName" class="font-medium text-white text-responsive"></span>
+                        </div>
+                        <div class="hidden px-3 py-2 text-sm rounded-lg md:block glass-effect">
+                            <i class="mr-2 fas fa-bolt" style="color: #60a5fa"></i>
+                            <span class="font-medium text-white text-responsive">Mistral 7B</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenu principal -->
+        <div class="flex flex-1 h-[calc(100vh-68px)]">
+            <!-- Sidebar - Historique des conversations (dépliable) -->
+            <aside id="sidebar" class="absolute inset-y-0 left-0 z-30 w-64 transform bg-gray-900/95 backdrop-blur-lg lg:relative lg:translate-x-0 sidebar-mobile-hidden transition-transform duration-300 ease-in-out border-r border-gray-700">
+                <div class="flex flex-col h-full">
+                    <!-- En-tête sidebar avec bouton de fermeture -->
+                    <div class="flex items-center justify-between p-4 border-b border-gray-700">
+                        <h2 class="text-lg font-bold text-white">
+                            <i class="mr-2 fas fa-history"></i>Historique
+                        </h2>
+                        <button onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-800 lg:hidden">
+                            <i class="text-lg text-white fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex-1 p-4 overflow-y-auto custom-scrollbar">
+                        <!-- Bouton Nouvelle Conversation EN BLEU -->
+                        <button onclick="newConversation()" class="w-full px-4 py-3 mb-4 text-sm font-medium text-white transition-all rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#1d4ed8] hover:opacity-90 active:scale-95 btn-responsive">
+                            <i class="mr-2 fas fa-plus"></i>Nouvelle conversation
+                        </button>
+
+                        <!-- Liste des conversations -->
+                        <h3 class="mb-3 text-sm font-medium text-gray-400">Conversations récentes</h3>
+                        <div id="conversationsList" class="space-y-2">
+                            <!-- Les conversations seront ajoutées ici dynamiquement -->
+                            <div class="p-3 text-sm text-center text-gray-400">
+                                Aucune conversation précédente
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistiques -->
+                    <div class="p-4 border-t border-gray-700">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="p-2 text-center rounded-lg glass-effect">
+                                <div class="text-xl font-bold text-white" id="totalConversations">0</div>
+                                <div class="text-xs text-gray-400 text-responsive">Conversations</div>
+                            </div>
+                            <div class="p-2 text-center rounded-lg glass-effect">
+                                <div class="text-xl font-bold text-white" id="totalMessages">0</div>
+                                <div class="text-xs text-gray-400 text-responsive">Messages</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Overlay pour mobile -->
+            <div id="sidebarOverlay" class="fixed inset-0 z-20 hidden bg-black bg-opacity-50 lg:hidden" onclick="toggleSidebar()"></div>
+
+            <!-- Contenu central -->
+            <main class="flex-1 flex flex-col overflow-hidden">
+                <!-- Section catégories -->
+                <div class="p-4 bg-gray-800/50 border-b border-gray-700">
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="text-lg" style="color: #60a5fa"></i>
+                            <h3 class="text-sm font-medium text-gray-300 text-responsive">Sélectionnez une catégorie :</h3>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                            <button onclick="selectCategory('mathematiques')" class="category-btn p-3 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 category-math btn-responsive">
+                                <i class="mr-2 fas fa-calculator"></i>Mathématiques
+                            </button>
+                            <button onclick="selectCategory('physique')" class="category-btn p-3 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 category-physics btn-responsive">
+                                <i class="mr-2 fas fa-atom"></i>Physique
+                            </button>
+                            <button onclick="selectCategory('terre')" class="category-btn p-3 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 category-earth btn-responsive">
+                                <i class="mr-2 fas fa-globe-africa"></i>Sciences de la Terre
+                            </button>
+                            <button onclick="selectCategory('litterature')" class="category-btn p-3 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 category-literature btn-responsive">
+                                <i class="mr-2 fas fa-book-open"></i>Littérature camerounaise
+                            </button>
+                            <button onclick="selectCategory('informatique')" class="category-btn p-3 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 category-informatique btn-responsive">
+                                <i class="mr-2 fas fa-laptop-code"></i>Informatique
+                            </button>
+                        </div>
+                        <div id="selectedCategory" class="hidden mt-2">
+                            <div class="inline-flex items-center px-3 py-1 text-sm rounded-full bg-blue-500">
+                                <span id="categoryName" class="font-medium text-white"></span>
+                                <button onclick="clearCategory()" class="ml-2 text-white hover:text-gray-300">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zone de messages -->
+                <div id="messagesContainer" class="flex-1 p-4 overflow-y-auto custom-scrollbar">
+                    <div id="messages" class="space-y-4 max-w-4xl mx-auto">
+                        <!-- Message de bienvenue -->
+                        <div class="p-4 md:p-6 rounded-2xl glass-effect slide-up">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="p-3 rounded-full" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+                                        <i class="text-2xl text-white fas fa-robot"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="mb-2 text-lg md:text-xl font-bold text-white">
+                                        <span class="gradient-edu">Edu</span><span class="gradient-connect">Connect</span> Assistant IA
+                                    </h3>
+                                    <p class="text-gray-300 text-responsive">
+                                        Bienvenue ! Je suis votre assistant éducatif basé sur Mistral 7B.
+                                        <br><br>
+                                        <strong class="text-white">Pour commencer :</strong>
+                                    </p>
+                                    <ol class="mt-2 ml-4 text-gray-300 text-responsive list-decimal">
+                                        <li>Sélectionnez une catégorie ci-dessus</li>
+                                        <li>Posez votre question dans la zone de texte en bas</li>
+                                        <li>Je vous répondrai dans le contexte de la catégorie choisie</li>
+                                    </ol>
+                                    <div class="flex items-center mt-4 text-sm" style="color: #60a5fa">
+                                        <i class="mr-2 fas fa-lightbulb"></i>
+                                        <span class="text-responsive">Les catégories disponibles : Mathématiques, Physique, Sciences de la Terre, Littérature camerounaise, Informatique</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zone de saisie fixe en bas -->
+                <div class="sticky bottom-0 left-0 right-0 p-3 md:p-4 bg-gradient-to-t from-gray-900 to-transparent border-t border-gray-700">
+                    <div class="max-w-4xl mx-auto">
+                        <!-- Indicateur de catégorie -->
+                        <div id="categoryIndicator" class="hidden mb-3">
+                            <div class="inline-flex items-center px-3 py-1 text-sm rounded-full glass-effect">
+                                <i class="mr-2 text-white" id="categoryIcon"></i>
+                                <span id="currentCategory" class="font-medium text-white text-responsive"></span>
+                                <span class="mx-2 text-gray-400">•</span>
+                                <span class="text-gray-300 text-responsive">Prêt à répondre</span>
+                            </div>
+                        </div>
+
+                        <!-- Zone de texte et boutons -->
+                        <div class="relative">
+                            <textarea id="prompt" rows="2"
+                                      class="w-full px-4 py-3 pr-24 text-white placeholder-gray-500 bg-gray-800/70 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:border-transparent resize-none input-responsive"
+                                      placeholder="Posez votre question à l'assistant..."
+                                      maxlength="1000"></textarea>
+                            
+                            <div class="absolute bottom-2 right-2 flex space-x-2">
+                                <button onclick="clearChat()" class="p-2 text-gray-400 transition-colors rounded-lg hover:text-white hover:bg-gray-700/50">
+                                    <i class="text-lg fas fa-trash-alt"></i>
+                                </button>
+                                <!-- Bouton Envoyer EN BLEU -->
+                                <button onclick="sendMessage()" id="sendBtn" 
+                                        class="px-4 py-2 font-medium text-white transition-all rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#1d4ed8] hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed btn-responsive">
+                                    <i class="mr-2 fas fa-paper-plane"></i><span class="hidden sm:inline">Envoyer</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Compteur de caractères -->
+                            <div class="absolute bottom-2 left-2">
+                                <span id="charCount" class="text-xs text-gray-400">0/1000</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Indicateur de frappe -->
+                        <div id="typingIndicator" class="hidden mt-3 ml-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="typing-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="text-sm text-gray-400 text-responsive">L'assistant rédige une réponse...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Toast notifications -->
+        <div id="toast" class="fixed bottom-4 right-4 z-50 hidden max-w-sm">
+            <div class="px-6 py-4 text-white rounded-xl shadow-2xl" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+                <div class="flex items-center space-x-3">
+                    <i id="toastIcon" class="text-xl"></i>
+                    <div class="flex-1">
+                        <p id="toastMessage" class="font-medium text-responsive"></p>
+                    </div>
+                    <button onclick="hideToast()" class="ml-4 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Configuration
-        const API_KEY = "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";
+        // ==================== CONFIGURATION FIREBASE ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
+            authDomain: "achitectureweb-groupe-10.firebaseapp.com",
+            projectId: "achitectureweb-groupe-10",
+            storageBucket: "achitectureweb-groupe-10.firebasestorage.app",
+            messagingSenderId: "646899550480",
+            appId: "1:646899550480:web:687fd4f4b2e0ca646efd95"
+        };
+
+        // Variables globales pour Firebase
+        let firebaseApp = null;
+        let firebaseAuth = null;
+        let firebaseDb = null;
+        let firebaseInitialized = false;
+        
+        // Configuration API OpenRouter
+        const API_KEY = "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";
         const API_URL = "https://openrouter.ai/api/v1/chat/completions";
+        const MODEL = "mistralai/mistral-7b-instruct:free";
         
-        // Éléments DOM
-        const elements = {
-            apiKey: document.getElementById('apiKey'),
-            modelSelect: document.getElementById('modelSelect'),
-            temperature: document.getElementById('temperature'),
-            maxTokens: document.getElementById('maxTokens'),
-            prompt: document.getElementById('prompt'),
-            sendBtn: document.getElementById('sendBtn'),
-            clearBtn: document.getElementById('clearBtn'),
-            responseBox: document.getElementById('responseBox'),
-            loading: document.getElementById('loading'),
-            stats: document.getElementById('stats'),
-            totalTokens: document.getElementById('totalTokens'),
-            promptTokens: document.getElementById('promptTokens'),
-            completionTokens: document.getElementById('completionTokens'),
-            responseTime: document.getElementById('responseTime'),
-            tempValue: document.getElementById('tempValue'),
-            tokensValue: document.getElementById('tokensValue'),
-            alert: document.getElementById('alert'),
-            alertMessage: document.getElementById('alertMessage'),
-            modelCards: document.querySelectorAll('.model-card'),
-            presetButtons: document.querySelectorAll('.preset-btn')
+        // Configuration des catégories
+        const categories = {
+            mathematiques: {
+                name: "Mathématiques",
+                icon: "fa-calculator",
+                color: "#3b82f6",
+                context: "Vous êtes un expert en mathématiques. Répondez aux questions de manière précise et détaillée, avec des explications claires et des exemples concrets quand nécessaire."
+            },
+            physique: {
+                name: "Physique",
+                icon: "fa-atom",
+                color: "#2563eb",
+                context: "Vous êtes un expert en physique. Fournissez des explications scientifiques précises, utilisez des formules appropriées et expliquez les concepts physiques de manière accessible."
+            },
+            terre: {
+                name: "Sciences de la Terre",
+                icon: "fa-globe-africa",
+                color: "#1d4ed8",
+                context: "Vous êtes un expert en sciences de la Terre. Parlez de géologie, météorologie, océanographie et environnement avec un accent particulier sur l'Afrique et le Cameroun."
+            },
+            litterature: {
+                name: "Littérature camerounaise",
+                icon: "fa-book-open",
+                color: "#60a5fa",
+                context: "Vous êtes un expert en littérature camerounaise. Parlez des auteurs, œuvres, mouvements littéraires et spécificités culturelles du Cameroun. Mentionnez des auteurs comme Mongo Beti, Ferdinand Oyono, etc."
+            },
+            informatique: {
+                name: "Informatique",
+                icon: "fa-laptop-code",
+                color: "#93c5fd",
+                context: "Vous êtes un expert en informatique. Répondez aux questions sur la programmation, les technologies, les concepts informatiques avec des exemples pratiques et du code quand nécessaire."
+            }
         };
         
-        // Presets de prompts
-        const presets = {
-            python_js: "Explique la différence entre Python et JavaScript en 5 points, en français.",
-            code: "Écris une fonction Python qui calcule la suite de Fibonacci jusqu'au n-ième terme.",
-            story: "Raconte une courte histoire de science-fiction sur un voyage dans le temps.",
-            email: "Rédige un email professionnel pour annuler une réunion.",
-            explain: "Explique le principe de la blockchain en termes simples.",
-            creative: "Imagine une nouvelle invention technologique qui pourrait changer le monde."
-        };
-        
-        // Exemples de modèles
-        const models = [
-            { id: "mistralai/mistral-7b-instruct:free", name: "Mistral 7B", provider: "Gratuit" },
-            { id: "openai/gpt-3.5-turbo", name: "GPT-3.5 Turbo", provider: "OpenAI" },
-            { id: "google/gemini-pro", name: "Gemini Pro", provider: "Google" },
-            { id: "meta-llama/llama-2-13b-chat", name: "Llama 2 13B", provider: "Meta" },
-            { id: "anthropic/claude-3-haiku", name: "Claude 3 Haiku", provider: "Anthropic" }
-        ];
-        
-        // Initialisation
-        function init() {
-            // Mettre à jour les valeurs des sliders
-            elements.tempValue.textContent = elements.temperature.value;
-            elements.tokensValue.textContent = elements.maxTokens.value;
-            
-            // Configurer les événements des sliders
-            elements.temperature.addEventListener('input', (e) => {
-                elements.tempValue.textContent = e.target.value;
-            });
-            
-            elements.maxTokens.addEventListener('input', (e) => {
-                elements.tokensValue.textContent = e.target.value;
-            });
-            
-            // Événement pour les cartes de modèle
-            elements.modelCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    // Retirer la classe active de toutes les cartes
-                    elements.modelCards.forEach(c => c.classList.remove('active'));
-                    // Ajouter la classe active à la carte cliquée
-                    card.classList.add('active');
-                    // Mettre à jour le select
-                    const model = card.dataset.model;
-                    elements.modelSelect.value = model;
-                    
-                    showAlert(`Modèle changé: ${model.split('/')[1]}`, 'success');
-                });
-            });
-            
-            // Événement pour les boutons de preset
-            elements.presetButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const preset = btn.dataset.preset;
-                    if (presets[preset]) {
-                        elements.prompt.value = presets[preset];
-                        
-                        // Mettre en surbrillance le bouton actif
-                        elements.presetButtons.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        
-                        showAlert(`Preset "${btn.textContent}" chargé`, 'success');
+        // Variables globales
+        let currentCategory = null;
+        let currentConversationId = null;
+        let conversations = [];
+        let isLoading = false;
+        let currentUser = null;
+        let userData = null;
+
+        // ==================== INITIALISATION FIREBASE ====================
+        async function initFirebase() {
+            try {
+                // Vérifier si Firebase est déjà initialisé
+                if (!firebase.apps.length) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                } else {
+                    firebaseApp = firebase.app();
+                }
+                
+                firebaseAuth = firebase.auth();
+                firebaseDb = firebase.firestore();
+                firebaseInitialized = true;
+                
+                console.log("✅ Firebase initialisé avec succès");
+                
+                // Vérifier l'état d'authentification
+                firebaseAuth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        currentUser = user;
+                        await loadUserData(user.uid);
+                        await loadUserConversations(user.uid);
+                        updateUserInfo();
+                    } else {
+                        // Rediriger vers la page de connexion si non authentifié
+                        showToast("Veuillez vous connecter pour utiliser l'assistant", "warning");
+                        setTimeout(() => {
+                            window.location.href = "/src/views/templates/Connexion.html";
+                        }, 2000);
                     }
                 });
-            });
+                
+            } catch (error) {
+                console.error("❌ Erreur d'initialisation Firebase:", error);
+                showToast("Erreur de connexion au service", "error");
+            }
+        }
+
+        // ==================== CHARGEMENT DES DONNÉES UTILISATEUR ====================
+        async function loadUserData(userId) {
+            try {
+                const db = firebase.firestore();
+                
+                // Essayer d'abord la collection enseignants
+                let userRef = db.collection('enseignants').doc(userId);
+                let userDoc = await userRef.get();
+                
+                if (userDoc.exists) {
+                    userData = userDoc.data();
+                    userData.role = 'enseignant';
+                    return;
+                }
+                
+                // Essayer la collection etudiants
+                userRef = db.collection('etudiants').doc(userId);
+                userDoc = await userRef.get();
+                
+                if (userDoc.exists) {
+                    userData = userDoc.data();
+                    userData.role = 'etudiant';
+                    return;
+                }
+                
+                console.warn("Aucun profil trouvé pour l'utilisateur");
+                userData = {
+                    display_name: currentUser.email.split('@')[0],
+                    role: 'utilisateur'
+                };
+                
+            } catch (error) {
+                console.error("Erreur lors du chargement des données utilisateur:", error);
+                userData = {
+                    display_name: currentUser.email.split('@')[0],
+                    role: 'utilisateur'
+                };
+            }
+        }
+
+        // ==================== GESTION DES CONVERSATIONS FIREBASE ====================
+        async function saveConversationToFirebase(conversationData) {
+            if (!firebaseInitialized || !currentUser) return null;
             
-            // Événement pour le bouton d'envoi
-            elements.sendBtn.addEventListener('click', sendRequest);
+            try {
+                const db = firebase.firestore();
+                const conversationsRef = db.collection('assistantIA');
+                
+                const conversation = {
+                    userId: currentUser.uid,
+                    userName: userData?.display_name || currentUser.email,
+                    userEmail: currentUser.email,
+                    userRole: userData?.role || 'utilisateur',
+                    category: conversationData.category,
+                    question: conversationData.question,
+                    response: conversationData.response,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdAt: new Date().toISOString(),
+                    conversationId: conversationData.conversationId
+                };
+                
+                const docRef = await conversationsRef.add(conversation);
+                console.log("✅ Conversation sauvegardée dans Firebase avec ID:", docRef.id);
+                
+                return docRef.id;
+                
+            } catch (error) {
+                console.error("❌ Erreur lors de la sauvegarde dans Firebase:", error);
+                showToast("Erreur lors de la sauvegarde de la conversation", "error");
+                return null;
+            }
+        }
+
+        async function loadUserConversations(userId) {
+            if (!firebaseInitialized || !userId) return;
             
-            // Événement pour le bouton d'effacement
-            elements.clearBtn.addEventListener('click', () => {
-                elements.responseBox.textContent = '';
-                elements.stats.classList.remove('show');
-                showAlert('Réponse effacée', 'warning');
-            });
+            try {
+                const db = firebase.firestore();
+                const conversationsRef = db.collection('assistantIA');
+                
+                const querySnapshot = await conversationsRef
+                    .where('userId', '==', userId)
+                    .orderBy('timestamp', 'desc')
+                    .limit(50)
+                    .get();
+                
+                conversations = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    conversations.push({
+                        id: doc.id,
+                        firestoreId: doc.id,
+                        title: data.question.substring(0, 30) + (data.question.length > 30 ? '...' : ''),
+                        category: data.category,
+                        timestamp: data.createdAt || data.timestamp?.toDate().toISOString(),
+                        messages: [
+                            { role: 'user', content: data.question, timestamp: data.createdAt },
+                            { role: 'assistant', content: data.response, timestamp: data.createdAt }
+                        ]
+                    });
+                });
+                
+                // Mettre à jour l'interface
+                loadConversations();
+                showToast(`Chargement de ${conversations.length} conversations`, "info");
+                
+            } catch (error) {
+                console.error("❌ Erreur lors du chargement des conversations:", error);
+                showToast("Erreur lors du chargement de l'historique", "error");
+            }
+        }
+
+        // ==================== INITIALISATION ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialiser Firebase
+            await initFirebase();
             
-            // Événement pour Ctrl+Enter
-            elements.prompt.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.key === 'Enter') {
-                    sendRequest();
+            // Configurer le compteur de caractères
+            const promptInput = document.getElementById('prompt');
+            const charCount = document.getElementById('charCount');
+            
+            promptInput.addEventListener('input', () => {
+                const length = promptInput.value.length;
+                charCount.textContent = `${length}/1000`;
+                
+                if (length > 950) {
+                    charCount.style.color = '#ef4444';
+                } else if (length > 800) {
+                    charCount.style.color = '#f59e0b';
+                } else {
+                    charCount.style.color = '#9ca3af';
                 }
             });
             
-            showAlert('Interface OpenRouter prête !', 'success');
+            // Configurer la saisie (Ctrl+Enter pour envoyer)
+            promptInput.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Cacher le loader et afficher l'interface
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-container').classList.remove('hidden');
+                
+                if (currentUser) {
+                    showToast(`Bienvenue ${userData?.display_name || currentUser.email} !`, 'info');
+                }
+            }, 1500);
+        });
+
+        // ==================== FONCTIONS UTILISATEUR ====================
+        function updateUserInfo() {
+            if (!userData && !currentUser) return;
+            
+            const userInfoDiv = document.getElementById('userInfo');
+            const userNameSpan = document.getElementById('userName');
+            
+            if (userData?.display_name) {
+                userNameSpan.textContent = userData.display_name;
+                userInfoDiv.classList.remove('hidden');
+            } else if (currentUser?.email) {
+                userNameSpan.textContent = currentUser.email.split('@')[0];
+                userInfoDiv.classList.remove('hidden');
+            }
+        }
+
+        // ==================== GESTION DES CATÉGORIES ====================
+        function selectCategory(categoryKey) {
+            if (categories[categoryKey]) {
+                currentCategory = categoryKey;
+                
+                // Mettre à jour l'interface
+                const category = categories[categoryKey];
+                document.getElementById('categoryIndicator').classList.remove('hidden');
+                document.getElementById('currentCategory').textContent = category.name;
+                document.getElementById('categoryIcon').className = `fas ${category.icon}`;
+                document.getElementById('categoryIcon').style.color = category.color;
+                
+                // Ajouter un badge de catégorie dans le chat
+                addCategoryMessage(category.name, category.color);
+                
+                showToast(`Catégorie sélectionnée : ${category.name}`, 'success');
+            }
         }
         
-        // Fonction pour envoyer la requête
-        async function sendRequest() {
-            const apiKey = elements.apiKey.value.trim();
-            const model = elements.modelSelect.value;
-            const temperature = parseFloat(elements.temperature.value);
-            const maxTokens = parseInt(elements.maxTokens.value);
-            const prompt = elements.prompt.value.trim();
+        function clearCategory() {
+            currentCategory = null;
+            document.getElementById('categoryIndicator').classList.add('hidden');
+            showToast('Catégorie désélectionnée', 'warning');
+        }
+        
+        function addCategoryMessage(categoryName, color) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'slide-up';
+            messageDiv.innerHTML = `
+                <div class="inline-flex items-center px-4 py-2 mb-4 rounded-lg" style="background: ${color}20; border-left: 4px solid ${color}">
+                    <i class="mr-2" style="color: ${color}"></i>
+                    <span class="font-medium text-white">Mode : ${categoryName}</span>
+                    <span class="ml-2 text-sm text-gray-300 text-responsive">• L'assistant répondra dans ce contexte</span>
+                </div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        // ==================== GESTION DES CONVERSATIONS ====================
+        function newConversation() {
+            currentConversationId = Date.now().toString();
             
-            // Validation
-            if (!apiKey) {
-                showAlert('Veuillez entrer votre clé API', 'error');
+            // Effacer le chat
+            document.getElementById('messages').innerHTML = `
+                <div class="p-4 md:p-6 rounded-2xl glass-effect slide-up">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="p-3 rounded-full" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+                                <i class="text-2xl text-white fas fa-robot"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="mb-2 text-lg md:text-xl font-bold text-white">
+                                <span class="gradient-edu">Edu</span><span class="gradient-connect">Connect</span> Assistant IA
+                            </h3>
+                            <p class="text-gray-300 text-responsive">
+                                Nouvelle conversation créée !
+                                <br><br>
+                                <strong class="text-white">Pour commencer :</strong>
+                            </p>
+                            <ol class="mt-2 ml-4 text-gray-300 text-responsive list-decimal">
+                                <li>Sélectionnez une catégorie ci-dessus</li>
+                                <li>Posez votre question dans la zone de texte en bas</li>
+                                <li>Je vous répondrai dans le contexte de la catégorie choisie</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (currentCategory) {
+                const category = categories[currentCategory];
+                addCategoryMessage(category.name, category.color);
+            }
+            
+            showToast('Nouvelle conversation créée', 'success');
+            toggleSidebar(); // Fermer le sidebar sur mobile
+        }
+        
+        function loadConversations() {
+            const listDiv = document.getElementById('conversationsList');
+            const totalMessages = conversations.reduce((total, conv) => total + conv.messages.length, 0);
+            
+            // Mettre à jour les statistiques
+            document.getElementById('totalConversations').textContent = conversations.length;
+            document.getElementById('totalMessages').textContent = totalMessages;
+            
+            if (conversations.length === 0) {
+                listDiv.innerHTML = '<div class="p-3 text-sm text-center text-gray-400">Aucune conversation précédente</div>';
                 return;
             }
             
+            listDiv.innerHTML = conversations.map(conv => `
+                <div onclick="loadFirebaseConversation('${conv.id}')" class="p-3 rounded-lg cursor-pointer glass-effect hover:bg-gray-800/50 transition-colors ${currentConversationId === conv.id ? 'ring-2 ring-[#3b82f6]' : ''}">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-sm font-medium text-white truncate text-responsive">${conv.title}</span>
+                        <span class="text-xs text-gray-400">${formatDate(conv.timestamp)}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-400 text-responsive">
+                            ${conv.messages.length} message${conv.messages.length > 1 ? 's' : ''}
+                        </span>
+                        ${conv.category ? `
+                            <div class="category-badge" style="background: ${categories[conv.category]?.color || '#3b82f6'}">
+                                <i class="fas ${categories[conv.category]?.icon || 'fa-tag'}"></i>
+                                <span class="hidden sm:inline">${categories[conv.category]?.name?.substring(0, 3) || ''}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function loadFirebaseConversation(firestoreId) {
+            try {
+                if (!firebaseInitialized) return;
+                
+                const db = firebase.firestore();
+                const conversationRef = db.collection('assistantIA').doc(firestoreId);
+                const conversationDoc = await conversationRef.get();
+                
+                if (!conversationDoc.exists) {
+                    showToast("Conversation non trouvée", "error");
+                    return;
+                }
+                
+                const data = conversationDoc.data();
+                
+                // Charger la conversation dans l'interface
+                currentConversationId = firestoreId;
+                currentCategory = data.category;
+                
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML = '';
+                
+                // Afficher les messages
+                addUserMessage(data.question, true, data.createdAt);
+                addAIMessage(data.response, true, data.createdAt);
+                
+                // Mettre à jour l'interface
+                if (currentCategory) {
+                    const category = categories[currentCategory];
+                    document.getElementById('categoryIndicator').classList.remove('hidden');
+                    document.getElementById('currentCategory').textContent = category.name;
+                    document.getElementById('categoryIcon').className = `fas ${category.icon}`;
+                    document.getElementById('categoryIcon').style.color = category.color;
+                }
+                
+                showToast(`Conversation chargée`, 'info');
+                toggleSidebar(); // Fermer le sidebar sur mobile
+                
+            } catch (error) {
+                console.error("Erreur lors du chargement de la conversation:", error);
+                showToast("Erreur lors du chargement de la conversation", "error");
+            }
+        }
+
+        // ==================== FONCTION POUR ENVOYER UN MESSAGE ====================
+        async function sendMessage() {
+            if (isLoading) return;
+            
+            if (!currentUser) {
+                showToast('Veuillez vous connecter pour utiliser l\'assistant', 'warning');
+                return;
+            }
+            
+            if (!currentCategory) {
+                showToast('Veuillez d\'abord sélectionner une catégorie', 'warning');
+                return;
+            }
+            
+            const prompt = document.getElementById('prompt').value.trim();
             if (!prompt) {
-                showAlert('Veuillez entrer un prompt', 'error');
+                showToast('Veuillez entrer un message', 'warning');
                 return;
             }
             
-            // Afficher le chargement
-            elements.loading.style.display = 'block';
-            elements.sendBtn.disabled = true;
-            elements.responseBox.textContent = '';
+            // Créer une nouvelle conversation si nécessaire
+            if (!currentConversationId) {
+                newConversation();
+            }
+            
+            // Ajouter le message utilisateur avec l'heure
+            const userTimestamp = new Date();
+            addUserMessage(prompt, false, userTimestamp.toISOString());
+            
+            // Effacer le champ de saisie
+            document.getElementById('prompt').value = '';
+            document.getElementById('charCount').textContent = '0/1000';
+            document.getElementById('charCount').style.color = '#9ca3af';
+            
+            // Afficher l'indicateur de frappe
+            document.getElementById('typingIndicator').classList.remove('hidden');
+            
+            isLoading = true;
+            document.getElementById('sendBtn').disabled = true;
+            
+            // Préparer le contexte de la catégorie
+            const category = categories[currentCategory];
+            const systemPrompt = category.context + "\n\nRéponds en français de manière claire et détaillée.";
             
             // Préparer les données
             const requestData = {
-                model: model,
+                model: MODEL,
                 messages: [
+                    {
+                        role: "system",
+                        content: systemPrompt
+                    },
                     {
                         role: "user",
                         content: prompt
                     }
                 ],
-                temperature: temperature,
-                max_tokens: maxTokens
+                temperature: 0.7,
+                max_tokens: 400
             };
-            
-            const startTime = Date.now();
             
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`,
+                        'Authorization': `Bearer ${API_KEY}`,
                         'HTTP-Referer': window.location.origin,
-                        'X-Title': 'OpenRouter Playground'
+                        'X-Title': 'EduConnect Africa'
                     },
                     body: JSON.stringify(requestData)
                 });
                 
                 const data = await response.json();
-                const endTime = Date.now();
                 
                 if (!response.ok) {
-                    throw new Error(data.error?.message || `HTTP ${response.status}`);
+                    throw new Error(data.error?.message || `Erreur HTTP ${response.status}`);
                 }
                 
-                // Afficher la réponse
+                // Retirer l'indicateur de frappe
+                document.getElementById('typingIndicator').classList.add('hidden');
+                
+                // Afficher la réponse avec l'heure
                 if (data.choices && data.choices[0]) {
                     const content = data.choices[0].message.content;
-                    elements.responseBox.textContent = content;
+                    const aiTimestamp = new Date();
+                    addAIMessage(content, false, aiTimestamp.toISOString());
                     
-                    // Afficher les statistiques
-                    if (data.usage) {
-                        elements.totalTokens.textContent = data.usage.total_tokens || 0;
-                        elements.promptTokens.textContent = data.usage.prompt_tokens || 0;
-                        elements.completionTokens.textContent = data.usage.completion_tokens || 0;
-                        elements.responseTime.textContent = endTime - startTime;
-                        elements.stats.classList.add('show');
-                    }
+                    // Sauvegarder la conversation dans Firebase
+                    const conversationData = {
+                        conversationId: currentConversationId,
+                        category: currentCategory,
+                        question: prompt,
+                        response: content
+                    };
                     
-                    showAlert(`Réponse reçue en ${endTime - startTime}ms`, 'success');
+                    await saveConversationToFirebase(conversationData);
+                    
+                    // Recharger les conversations
+                    await loadUserConversations(currentUser.uid);
+                    
+                    showToast(`Réponse reçue (${data.usage?.total_tokens || 0} tokens)`, 'success');
                 } else {
                     throw new Error('Aucune réponse générée');
                 }
                 
             } catch (error) {
                 console.error('Erreur:', error);
-                elements.responseBox.textContent = `❌ Erreur: ${error.message}\n\nVérifiez:\n1. Votre clé API\n2. Votre connexion internet\n3. Les limites du modèle`;
-                showAlert(`Erreur: ${error.message}`, 'error');
+                document.getElementById('typingIndicator').classList.add('hidden');
+                const errorTimestamp = new Date();
+                addAIMessage(`❌ Désolé, une erreur s'est produite :\n\n${error.message}\n\nVeuillez réessayer.`, false, errorTimestamp.toISOString());
+                showToast(`Erreur: ${error.message}`, 'error');
             } finally {
-                // Cacher le chargement
-                elements.loading.style.display = 'none';
-                elements.sendBtn.disabled = false;
+                isLoading = false;
+                document.getElementById('sendBtn').disabled = false;
+                scrollToBottom();
+            }
+        }
+
+        // ==================== FONCTIONS POUR GÉRER LES MESSAGES ====================
+        function addUserMessage(content, fromHistory = false, timestamp = null) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            const time = timestamp ? new Date(timestamp) : new Date();
+            const timeString = formatTime(time);
+            
+            messageDiv.className = `slide-up ${fromHistory ? '' : 'ml-auto max-w-3/4'}`;
+            messageDiv.innerHTML = `
+                <div class="flex ${fromHistory ? '' : 'justify-end'}">
+                    <div class="${fromHistory ? 'bg-gray-800/50' : 'bg-gradient-to-r from-[#3b82f6] to-[#1d4ed8]'} p-3 md:p-4 rounded-2xl ${fromHistory ? 'max-w-full' : 'max-w-3/4'}" style="${fromHistory ? '' : 'border-top-right-radius: 4px;'}">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-medium ${fromHistory ? 'text-gray-400' : 'text-white'}">
+                                <i class="mr-1 fas fa-user"></i>Vous
+                            </span>
+                            <span class="text-xs ${fromHistory ? 'text-gray-500' : 'text-blue-100'}">${timeString}</span>
+                        </div>
+                        <p class="text-white whitespace-pre-wrap text-responsive">${escapeHtml(content)}</p>
+                        ${!fromHistory && currentCategory ? `
+                            <div class="mt-2 flex justify-end">
+                                <div class="category-badge" style="background: ${categories[currentCategory]?.color || '#3b82f6'}">
+                                    <i class="fas ${categories[currentCategory]?.icon || 'fa-tag'}"></i>
+                                    <span>${categories[currentCategory]?.name?.substring(0, 3) || ''}</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            if (!fromHistory) scrollToBottom();
+        }
+        
+        function addAIMessage(content, fromHistory = false, timestamp = null) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            const time = timestamp ? new Date(timestamp) : new Date();
+            const timeString = formatTime(time);
+            
+            messageDiv.className = 'slide-up';
+            messageDiv.innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                        <div class="p-3 rounded-full" style="background: ${categories[currentCategory]?.color || '#3b82f6'}">
+                            <i class="text-lg text-white fas fa-robot"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-medium text-gray-400">
+                                <i class="mr-1 ${categories[currentCategory]?.icon || 'fa-robot'}"></i>
+                                ${categories[currentCategory]?.name || 'Assistant'} • Mistral 7B
+                            </span>
+                            <span class="text-xs text-gray-500">${timeString}</span>
+                        </div>
+                        <div class="p-3 md:p-4 rounded-xl glass-effect">
+                            <div class="text-gray-300 whitespace-pre-wrap text-responsive">${formatResponse(content)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            if (!fromHistory) scrollToBottom();
+        }
+
+        // ==================== FONCTIONS UTILITAIRES ====================
+        function clearChat() {
+            if (confirm('Voulez-vous vraiment effacer cette conversation ?')) {
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML = `
+                    <div class="p-4 md:p-6 rounded-2xl glass-effect slide-up">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="p-3 rounded-full" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+                                    <i class="text-2xl text-white fas fa-robot"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="mb-2 text-lg md:text-xl font-bold text-white">
+                                    <span class="gradient-edu">Edu</span><span class="gradient-connect">Connect</span> Assistant IA
+                                </h3>
+                                <p class="text-gray-300 text-responsive">
+                                    Conversation effacée.
+                                    <br><br>
+                                    <strong class="text-white">Pour recommencer :</strong>
+                                </p>
+                                <ol class="mt-2 ml-4 text-gray-300 text-responsive list-decimal">
+                                    <li>Sélectionnez une catégorie ci-dessus</li>
+                                    <li>Posez votre question dans la zone de texte en bas</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                if (currentCategory) {
+                    const category = categories[currentCategory];
+                    addCategoryMessage(category.name, category.color);
+                }
+                
+                showToast('Conversation effacée', 'warning');
             }
         }
         
-        // Fonction pour afficher les alertes
-        function showAlert(message, type = 'info') {
-            elements.alert.className = `alert ${type}`;
-            elements.alertMessage.textContent = message;
-            elements.alert.style.display = 'flex';
+        function formatResponse(text) {
+            return escapeHtml(text)
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+                .replace(/^### (.*$)/gm, '<h3 class="text-lg font-bold mt-4 mb-2 text-white">$1</h3>')
+                .replace(/^## (.*$)/gm, '<h2 class="text-xl font-bold mt-6 mb-3 text-white">$1</h2>')
+                .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mt-8 mb-4 text-white">$1</h1>')
+                .replace(/^- (.*$)/gm, '<li class="ml-4">$1</li>')
+                .replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 bg-gray-800 rounded text-sm">$1</code>');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function formatTime(date) {
+            return date.toLocaleTimeString('fr-FR', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false
+            });
+        }
+        
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            const now = new Date();
+            const diff = now - date;
             
-            // Masquer automatiquement après 5 secondes
+            if (diff < 86400000) { // Moins d'un jour
+                return formatTime(date);
+            } else {
+                return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+            }
+        }
+        
+        function scrollToBottom() {
+            const container = document.getElementById('messagesContainer');
             setTimeout(() => {
-                closeAlert();
-            }, 5000);
+                container.scrollTo({
+                    top: container.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
         }
         
-        // Fonction pour fermer l'alerte
-        function closeAlert() {
-            elements.alert.style.display = 'none';
+        // ==================== GESTION DU SIDEBAR ====================
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (sidebar.classList.contains('sidebar-mobile-hidden')) {
+                sidebar.classList.remove('sidebar-mobile-hidden');
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Empêche le scroll du body
+            } else {
+                sidebar.classList.add('sidebar-mobile-hidden');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = ''; // Rétablit le scroll
+            }
         }
-        
-        // Fonction pour exporter la conversation
-        function exportConversation() {
-            const content = elements.responseBox.textContent;
-            if (!content) {
-                showAlert('Aucune réponse à exporter', 'warning');
-                return;
+
+        // ==================== FONCTIONS POUR LES NOTIFICATIONS ====================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            switch(type) {
+                case 'success':
+                    toastIcon.className = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    toastIcon.className = 'fas fa-exclamation-circle';
+                    break;
+                case 'warning':
+                    toastIcon.className = 'fas fa-exclamation-triangle';
+                    break;
+                default:
+                    toastIcon.className = 'fas fa-info-circle';
             }
             
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `openrouter_response_${Date.now()}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
             
-            showAlert('Réponse exportée', 'success');
+            setTimeout(() => hideToast(), 4000);
         }
         
-        // Ajouter le bouton d'export
-        const exportBtn = document.createElement('button');
-        exportBtn.className = 'btn btn-secondary';
-        exportBtn.innerHTML = '💾 Exporter';
-        exportBtn.onclick = exportConversation;
-        elements.actionButtons = document.querySelector('.action-buttons');
-        elements.actionButtons.insertBefore(exportBtn, elements.sendBtn);
+        function hideToast() {
+            document.getElementById('toast').classList.add('hidden');
+        }
+
+        // ==================== GESTION DU RESPONSIVE ====================
+        function handleResize() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (window.innerWidth >= 1024) {
+                // Sur desktop, toujours montrer le sidebar
+                sidebar.classList.remove('sidebar-mobile-hidden');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            } else {
+                // Sur mobile, cacher le sidebar
+                sidebar.classList.add('sidebar-mobile-hidden');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
         
-        // Initialiser l'application
-        document.addEventListener('DOMContentLoaded', init);
+        // Écouter les changements de taille
+        window.addEventListener('resize', handleResize);
+        // Initialiser
+        handleResize();
+
+        // ==================== GESTION DES TOUCHES ====================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                if (!sidebar.classList.contains('sidebar-mobile-hidden')) {
+                    toggleSidebar();
+                }
+            }
+        });
     </script>
 </body>
 </html>
