@@ -6,1125 +6,244 @@
     <title>Forum - EduConnect Africa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-blue: #3b82f6;
-            --secondary-blue: #1d4ed8;
-            --accent-orange: #f97316;
-            --accent-yellow: #f59e0b;
-            --light-bg: #f8fafc;
-            --dark-bg: #0f172a;
-        }
-        
-        .category-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        .category-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
-        }
-        .blue-gradient-border {
-            position: relative;
-            border: 2px solid transparent;
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(to right, var(--primary-blue), #60a5fa) border-box;
-        }
-        .dark .blue-gradient-border {
-            background: linear-gradient(#1e293b, #1e293b) padding-box,
-                        linear-gradient(to right, var(--primary-blue), #60a5fa) border-box;
-        }
-        .orange-gradient-border {
-            position: relative;
-            border: 2px solid transparent;
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(to right, var(--accent-orange), var(--accent-yellow)) border-box;
-        }
-        .dark .orange-gradient-border {
-            background: linear-gradient(#1e293b, #1e293b) padding-box,
-                        linear-gradient(to right, var(--accent-orange), var(--accent-yellow)) border-box;
-        }
-        .topic-item {
-            transition: all 0.2s ease;
-            border-radius: 12px;
-        }
-        .topic-item:hover {
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
-            padding-left: 20px;
-        }
-        .icon-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-        }
-        .category-card:hover .icon-circle {
-            transform: scale(1.1) rotate(5deg);
-        }
-        .section-title {
-            position: relative;
-            padding-bottom: 12px;
-        }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            border-radius: 2px;
-        }
-        .blue-section::after {
-            background: linear-gradient(to right, var(--primary-blue), #60a5fa);
-        }
-        .orange-section::after {
-            background: linear-gradient(to right, var(--accent-orange), var(--accent-yellow));
-        }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .search-input {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
-            backdrop-filter: blur(10px);
-        }
-        .nav-link {
-            position: relative;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(to right, var(--primary-blue), var(--accent-orange));
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        .active-nav-link {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            color: white;
-            border-radius: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-slate-50 dark:from-slate-900 dark:to-slate-800 transition-colors duration-500 min-h-screen">
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <!-- Header/Navbar -->
-    <header class="fixed w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50">
-        <nav class="container mx-auto px-4 py-4">
+    <header class="fixed w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <nav class="container mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
-                <!-- Logo amélioré -->
-                <a href="index.html" class="flex items-center space-x-2 group">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-orange-500 flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">E</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
-                            EduConnect
-                        </span>
-                        <span class="text-xs text-slate-600 dark:text-slate-400">Africa</span>
-                    </div>
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-1 text-2xl font-bold">
+                    <span class="bg-gradient-to-r from-[#ff3131] to-[#ff914d] bg-clip-text text-transparent">Edu</span>
+                    <span class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] bg-clip-text text-transparent">Connect</span>
+                    <span class="bg-gradient-to-r from-[#8c52ff] to-[#ff914d] bg-clip-text text-transparent">Africa</span>
                 </a>
 
                 <!-- Navigation Desktop -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html" class="nav-link text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-sm font-medium px-3 py-2">
-                        <i class="fas fa-home mr-2"></i>Accueil
-                    </a>
-                    <a href="forum.html" class="active-nav-link text-white px-3 py-2 text-sm font-semibold shadow-lg">
-                        <i class="fas fa-comments mr-2"></i>Forum
-                    </a>
-                    <a href="mes-interventions.html" class="nav-link text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-sm font-medium px-3 py-2">
-                        <i class="fas fa-user-edit mr-2"></i>Mes interventions
-                    </a>
-                    <a href="sujets-suivis.html" class="nav-link text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 text-sm font-medium px-3 py-2">
-                        <i class="fas fa-star mr-2"></i>Sujets suivis
-                    </a>
+                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-[#8c52ff] dark:hover:text-[#5ce1e6] transition">Home</a>
+                    <a href="forum.html" class="text-[#8c52ff] dark:text-[#5ce1e6] font-semibold transition">Forum</a>
                     
-                    <!-- Dark Mode Toggle amélioré -->
-                    <button id="darkModeToggle" class="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
-                        <i class="fas fa-moon text-blue-600 dark:text-yellow-400 text-sm"></i>
+                    <!-- Barre de recherche -->
+                    <div class="relative">
+                        <input type="text" 
+                               placeholder="Rechercher..." 
+                               class="pl-10 pr-4 py-2 w-64 bg-gray-100 dark:bg-gray-800 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8c52ff]">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-moon text-gray-700 dark:text-yellow-300"></i>
                     </button>
                 </div>
 
                 <!-- Menu Mobile -->
-                <button id="mobileMenuBtn" class="md:hidden p-3 rounded-xl bg-gradient-to-br from-blue-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-lg">
-                    <i class="fas fa-bars text-blue-600 dark:text-slate-300"></i>
+                <button id="mobileMenuBtn" class="md:hidden text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </nav>
     </header>
 
-    <!-- Menu Mobile -->
-    <div id="mobileMenu" class="hidden md:hidden fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm pt-20">
-        <div class="bg-white dark:bg-slate-800 p-8 space-y-6 rounded-t-3xl shadow-2xl">
-            <a href="index.html" class="flex items-center text-slate-700 dark:text-slate-300 hover:text-blue-600 py-3 text-lg font-medium transition-all duration-300 hover:pl-4">
-                <i class="fas fa-home mr-3 w-6"></i>Accueil
-            </a>
-            <a href="forum.html" class="flex items-center bg-gradient-to-r from-blue-500 to-orange-500 text-white py-3 px-4 rounded-xl text-lg font-semibold transition-all duration-300">
-                <i class="fas fa-comments mr-3 w-6"></i>Forum
-            </a>
-            <a href="mes-interventions.html" class="flex items-center text-slate-700 dark:text-slate-300 hover:text-blue-600 py-3 text-lg font-medium transition-all duration-300 hover:pl-4">
-                <i class="fas fa-user-edit mr-3 w-6"></i>Mes interventions
-            </a>
-            <a href="sujets-suivis.html" class="flex items-center text-slate-700 dark:text-slate-300 hover:text-blue-600 py-3 text-lg font-medium transition-all duration-300 hover:pl-4">
-                <i class="fas fa-star mr-3 w-6"></i>Sujets suivis
-            </a>
-        </div>
-    </div>
-
-    <!-- Navigation secondaire et recherche -->
-    <div class="pt-24 bg-transparent">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12">
-                <!-- Titre principal amélioré -->
-                <div class="text-center lg:text-left">
-                    <h1 class="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent mb-4">
-                        Forum Académique
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl">
-                        Partagez vos connaissances, posez vos questions et collaborez avec la communauté estudiantine africaine
-                    </p>
-                </div>
-
-                <!-- Barre de recherche améliorée -->
-                <div class="relative w-full lg:w-96">
-                    <div class="relative">
-                        <input type="text" 
-                               id="searchInput"
-                               placeholder="Rechercher une discussion, un sujet..." 
-                               class="w-full pl-12 pr-6 py-4 search-input rounded-2xl border-0 focus:outline-none focus:ring-4 focus:ring-blue-500/30 text-slate-900 dark:text-white text-base">
-                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-500 text-lg"></i>
-                        <button class="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-lg bg-gradient-to-r from-blue-500 to-orange-500 text-white hover:shadow-lg transition-all duration-300">
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tabs améliorées -->
-            <div class="flex gap-2 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-2 max-w-md mb-8">
-                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-medium bg-gradient-to-r from-blue-500 to-orange-500 text-white shadow-lg">
-                    <i class="fas fa-layer-group mr-2"></i>Tous les forums
-                </button>
-                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all duration-300">
-                    <i class="fas fa-fire mr-2"></i>Populaires
-                </button>
-                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all duration-300">
-                    <i class="fas fa-clock mr-2"></i>Récents
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Contenu principal -->
-    <main class="py-12 container mx-auto px-4">
-        <!-- Section Sciences Exactes -->
-        <div class="mb-16">
-            <div class="flex items-center justify-between mb-10">
-                <div>
-                    <h2 class="section-title blue-section text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
-                        <span class="bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                            Sciences Exactes
-                        </span>
-                    </h2>
-                    <p class="text-slate-600 dark:text-slate-400 mt-2">Mathématiques, physique, chimie et sciences fondamentales</p>
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] bg-clip-text text-transparent">Forum Éducatif</span>
+            </h1>
+            <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Rejoignez les discussions, partagez vos connaissances et collaborez avec d'autres étudiants passionnés par les sciences et la littérature.
+            </p>
+        </div>
+
+        <!-- Catégories -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <!-- Mathématiques -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-calculator text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Mathématiques</h2>
                 </div>
-                <div class="animate-float">
-                    <i class="fas fa-atom text-4xl text-blue-500"></i>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=math&topic=algebre" class="block">
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-4 rounded-xl border border-purple-200 dark:border-purple-800 hover:border-purple-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Algèbre Linéaire</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Des difficultés avec les matrices, les espaces vectoriels ou les valeurs propres ? Discutez-en ici !</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=math&topic=analyse" class="block">
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-4 rounded-xl border border-purple-200 dark:border-purple-800 hover:border-purple-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Analyse Complexe</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Théorème des résidus, fonctions holomorphes, intégrales complexes... Entraidez-vous !</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Un souci avec les démonstrations de théorèmes d'algèbre linéaire ? Partagez vos difficultés et trouvez des solutions collaboratives !
                 </div>
             </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Mathématiques -->
-                <div class="category-card bg-white dark:bg-slate-800 blue-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('mathematiques')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-blue-500 to-cyan-400 shadow-lg mr-6">
-                                <i class="fas fa-calculator text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Mathématiques</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Algèbre, analyse, géométrie et mathématiques appliquées
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 245 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('mathematiques', 'algebre-lineaire', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-cube text-blue-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Algèbre Linéaire</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Matrices, espaces vectoriels, valeurs propres</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">156 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('mathematiques', 'analyse-complexe', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                                <i class="fas fa-infinity text-blue-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Analyse Complexe</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Fonctions holomorphes, intégrales complexes</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-blue-500"></i>
-                                        Dernière activité : Il y a 2 heures
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Physique -->
-                <div class="category-card bg-white dark:bg-slate-800 blue-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('physique')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-indigo-500 to-blue-400 shadow-lg mr-6">
-                                <i class="fas fa-atom text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Physique</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Mécanique quantique, relativité, thermodynamique
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 198 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('physique', 'mecanique-quantique', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-atom text-indigo-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Mécanique Quantique</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Équation de Schrödinger, principe d'incertitude</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">112 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('physique', 'relativite-generale', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                                                <i class="fas fa-globe text-indigo-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Relativité Générale</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Espace-temps courbe, équations d'Einstein</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-indigo-500"></i>
-                                        Dernière activité : Il y a 5 heures
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Physique -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-atom text-white text-2xl"></i>
                     </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Physique</h2>
                 </div>
-
-                <!-- Chimie -->
-                <div class="category-card bg-white dark:bg-slate-800 blue-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('chimie')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-cyan-500 to-blue-400 shadow-lg mr-6">
-                                <i class="fas fa-flask text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Chimie</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Chimie organique, minérale, analytique et biochimie
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 167 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('chimie', 'chimie-organique', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-atom text-cyan-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Chimie Organique</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Réactions organiques, stéréochimie, synthèse</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">89 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('chimie', 'biochimie', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
-                                                <i class="fas fa-dna text-cyan-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Biochimie</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Métabolisme, enzymologie, biologie moléculaire</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-cyan-500"></i>
-                                        Dernière activité : Il y a 1 jour
-                                    </div>
-                                </div>
-                            </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=physique&topic=mecanique" class="block">
+                        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-4 rounded-xl border border-blue-200 dark:border-blue-800 hover:border-blue-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Mécanique Quantique</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Équation de Schrödinger, principe d'incertitude, spin des particules...</p>
                         </div>
-                    </div>
+                    </a>
+                    
+                    <a href="chat.html?category=physique&topic=relativite" class="block">
+                        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-4 rounded-xl border border-blue-200 dark:border-blue-800 hover:border-blue-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Relativité Générale</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Espace-temps courbe, équations d'Einstein, trous noirs...</p>
+                        </div>
+                    </a>
                 </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Des problèmes avec les concepts de la mécanique quantique ? Rejoignez la discussion et éclaircissez vos doutes avec la communauté !
+                </div>
+            </div>
 
-                <!-- Informatique -->
-                <div class="category-card bg-white dark:bg-slate-800 blue-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('informatique')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-blue-600 to-blue-400 shadow-lg mr-6">
-                                <i class="fas fa-laptop-code text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Informatique</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Programmation, développement web, IA et technologies
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 312 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('informatique', 'developpement-web', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-code text-blue-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Développement Web</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">HTML, CSS, JavaScript, frameworks modernes</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">189 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('informatique', 'intelligence-artificielle', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                                <i class="fas fa-robot text-blue-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Intelligence Artificielle</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Machine Learning, Deep Learning, applications</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-blue-500"></i>
-                                        Dernière activité : Il y a 30 minutes
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Sciences de la Terre -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-globe-africa text-white text-2xl"></i>
                     </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Sciences de la Terre</h2>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=terre&topic=geologie" class="block">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 p-4 rounded-xl border border-green-200 dark:border-green-800 hover:border-green-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Géologie Africaine</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Formations géologiques, ressources minières, tectonique des plaques...</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=terre&topic=climat" class="block">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 p-4 rounded-xl border border-green-200 dark:border-green-800 hover:border-green-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Climatologie Tropicale</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Changements climatiques en Afrique, moussons, désertification...</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Des questions sur les formations géologiques spécifiques à l'Afrique ? Explorez ce sujet fascinant avec d'autres passionnés !
+                </div>
+            </div>
+
+            <!-- Littérature Camerounaise -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-book-open text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Littérature Camerounaise</h2>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=litterature&topic=classiques" class="block">
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 p-4 rounded-xl border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Auteurs Classiques</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Mongo Beti, Ferdinand Oyono, Francis Bebey, leurs œuvres et influences...</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=litterature&topic=contemporains" class="block">
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 p-4 rounded-xl border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Écrivains Contemporains</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Léonora Miano, Eugène Ébodé, nouvelles tendances littéraires...</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Une analyse difficile d'une œuvre de Mongo Beti ? Discutez des thèmes, du style et du contexte historique avec d'autres lecteurs !
+                </div>
+            </div>
+
+            <!-- Informatique -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-laptop-code text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Informatique</h2>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=informatique&topic=web" class="block">
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 hover:border-indigo-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Développement Web</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">HTML, CSS, JavaScript, frameworks modernes, bonnes pratiques...</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=informatique&topic=ia" class="block">
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 hover:border-indigo-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Intelligence Artificielle</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Machine Learning, Deep Learning, applications en Afrique...</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Un bug dans votre code JavaScript ou une question sur React ? La communauté est là pour vous aider à résoudre vos problèmes techniques !
                 </div>
             </div>
         </div>
 
-        <!-- Section Sciences Humaines et Sociales -->
-        <div class="mb-16">
-            <div class="flex items-center justify-between mb-10">
-                <div>
-                    <h2 class="section-title orange-section text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
-                        <span class="bg-gradient-to-r from-orange-600 to-yellow-500 bg-clip-text text-transparent">
-                            Sciences Humaines & Sociales
-                        </span>
-                    </h2>
-                    <p class="text-slate-600 dark:text-slate-400 mt-2">Littérature, philosophie, histoire et sciences sociales</p>
+        <!-- Section statistiques -->
+        <div class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] rounded-2xl p-8 text-white mb-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl font-bold">500+</div>
+                    <div class="text-sm opacity-90">Étudiants actifs</div>
                 </div>
-                <div class="animate-float">
-                    <i class="fas fa-book-open text-4xl text-orange-500"></i>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">1200+</div>
+                    <div class="text-sm opacity-90">Discussions</div>
                 </div>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Littérature -->
-                <div class="category-card bg-white dark:bg-slate-800 orange-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('litterature')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-orange-500 to-yellow-400 shadow-lg mr-6">
-                                <i class="fas fa-book-open text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Littérature Africaine</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Auteurs classiques et contemporains, analyse d'œuvres
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 167 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('litterature', 'auteurs-classiques', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-scroll text-orange-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Auteurs Classiques</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Mongo Beti, Ferdinand Oyono, Francis Bebey</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">94 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('litterature', 'ecrivains-contemporains', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                                                <i class="fas fa-pen-fancy text-orange-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Écrivains Contemporains</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Léonora Miano, Eugène Ébodé, nouvelles tendances</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-orange-500"></i>
-                                        Dernière activité : Il y a 3 heures
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">5</div>
+                    <div class="text-sm opacity-90">Catégories</div>
                 </div>
-
-                <!-- Histoire -->
-                <div class="category-card bg-white dark:bg-slate-800 orange-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('histoire')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-amber-500 to-orange-400 shadow-lg mr-6">
-                                <i class="fas fa-landmark text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Histoire Africaine</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Civilisations anciennes, colonisation, histoire contemporaine
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 134 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('histoire', 'civilisations-africaines', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-crown text-amber-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Civilisations Africaines</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Royaumes anciens, empires médiévaux</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">78 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('histoire', 'post-independances', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                                                <i class="fas fa-flag text-amber-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Période Post-Indépendances</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Développement, défis et perspectives</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-amber-500"></i>
-                                        Dernière activité : Il y a 2 jours
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">24/7</div>
+                    <div class="text-sm opacity-90">Support communautaire</div>
                 </div>
-
-                <!-- Sciences Économiques -->
-                <div class="category-card bg-white dark:bg-slate-800 orange-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('economie')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-yellow-500 to-orange-400 shadow-lg mr-6">
-                                <i class="fas fa-chart-line text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Sciences Économiques</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Macroéconomie, microéconomie, développement économique
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 156 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('economie', 'developpement-afrique', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-globe-africa text-yellow-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Développement en Afrique</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Croissance économique, enjeux continentaux</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">102 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('economie', 'economie-internationale', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-                                                <i class="fas fa-exchange-alt text-yellow-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Économie Internationale</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Commerce international, relations économiques</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-yellow-500"></i>
-                                        Dernière activité : Il y a 4 heures
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Droit et Sciences Politiques -->
-                <div class="category-card bg-white dark:bg-slate-800 orange-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('droit')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-red-500 to-orange-400 shadow-lg mr-6">
-                                <i class="fas fa-balance-scale text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Droit & Sciences Politiques</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Droit africain, systèmes politiques, gouvernance
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 145 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('droit', 'droit-africain', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-gavel text-red-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Droit Africain</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Systèmes juridiques, OHADA, intégration</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">87 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('droit', 'sciences-politiques', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                                                <i class="fas fa-university text-red-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Sciences Politiques</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Systèmes politiques, démocratie, gouvernance</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-red-500"></i>
-                                        Dernière activité : Il y a 6 heures
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section Santé et Médecine -->
-        <div class="mb-16">
-            <div class="flex items-center justify-between mb-10">
-                <div>
-                    <h2 class="section-title text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
-                        <span class="bg-gradient-to-r from-emerald-600 to-green-400 bg-clip-text text-transparent">
-                            Santé & Médecine
-                        </span>
-                    </h2>
-                    <p class="text-slate-600 dark:text-slate-400 mt-2">Médecine, santé publique, biologie et sciences médicales</p>
-                </div>
-                <div class="animate-float">
-                    <i class="fas fa-heartbeat text-4xl text-emerald-500"></i>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Médecine -->
-                <div class="category-card bg-white dark:bg-slate-800 blue-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('medecine')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-emerald-500 to-green-400 shadow-lg mr-6">
-                                <i class="fas fa-stethoscope text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Médecine</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Anatomie, physiologie, pathologies et traitements
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 187 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('medecine', 'sante-publique-afrique', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-hospital text-emerald-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Santé Publique en Afrique</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Systèmes de santé, maladies endémiques</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">112 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('medecine', 'medecine-tropicale', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                                                <i class="fas fa-bug text-emerald-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Médecine Tropicale</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Maladies tropicales, parasitologie</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-emerald-500"></i>
-                                        Dernière activité : Il y a 3 heures
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Biologie -->
-                <div class="category-card bg-white dark:bg-slate-800 blue-gradient-border p-0 cursor-pointer" onclick="navigateToCategory('biologie')">
-                    <div class="p-8">
-                        <div class="flex items-start">
-                            <div class="icon-circle bg-gradient-to-br from-green-500 to-emerald-400 shadow-lg mr-6">
-                                <i class="fas fa-dna text-white text-2xl"></i>
-                            </div>
-                            
-                            <div class="flex-grow">
-                                <div class="flex items-start justify-between mb-4">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Biologie</h3>
-                                        <p class="text-sm text-slate-600 dark:text-slate-400">
-                                            Biologie cellulaire, génétique, écologie et évolution
-                                        </p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 font-medium">
-                                            <i class="fas fa-comments mr-1"></i> 156 discussions
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="space-y-4 mt-6">
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('biologie', 'genetique', event)">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                                                    <i class="fas fa-dna text-green-500"></i>
-                                                </div>
-                                                <div>
-                                                    <span class="font-semibold text-slate-900 dark:text-white">Génétique et Biologie Moléculaire</span>
-                                                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">ADN, gènes, biotechnologies</p>
-                                                </div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">98 sujets</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="topic-item block p-4" onclick="navigateToTopic('biologie', 'ecologie-afrique', event)">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                                                <i class="fas fa-leaf text-green-500"></i>
-                                            </div>
-                                            <div>
-                                                <span class="font-semibold text-slate-900 dark:text-white">Écologie Africaine</span>
-                                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Biodiversité, écosystèmes, conservation</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                        <i class="fas fa-clock mr-2 text-green-500"></i>
-                                        Dernière activité : Il y a 1 jour
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Call to Action amélioré -->
-        <div class="bg-gradient-to-r from-blue-500/10 via-orange-500/10 to-yellow-500/10 dark:from-blue-500/20 dark:via-orange-500/20 dark:to-yellow-500/20 rounded-3xl p-12 text-center border-2 border-blue-200/50 dark:border-blue-800/30">
-            <div class="max-w-2xl mx-auto">
-                <div class="w-20 h-20 rounded-2xl bg-gradient-to-r from-blue-500 to-orange-500 flex items-center justify-center mx-auto mb-6 shadow-lg">
-                    <i class="fas fa-comment-medical text-white text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-                    Vous ne trouvez pas votre sujet ?
-                </h3>
-                <p class="text-slate-600 dark:text-slate-400 mb-8 text-lg">
-                    Créez une nouvelle discussion et lancez le débat avec la communauté !
-                </p>
-                <button onclick="createNewDiscussion()" class="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-orange-500 text-white font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300 shadow-lg">
-                    <i class="fas fa-plus-circle mr-2"></i>Démarrer une nouvelle discussion
-                </button>
             </div>
         </div>
     </main>
 
-    <!-- Footer amélioré -->
-    <footer class="mt-16 pt-12 pb-8 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/30 backdrop-blur-sm">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
-                <!-- Logo footer -->
-                <div class="text-center md:text-left">
-                    <a href="index.html" class="flex flex-col items-center md:items-start group">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-orange-500 group-hover:scale-110 transition-transform duration-300"></div>
-                            <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-yellow-500 to-blue-500 group-hover:scale-110 transition-transform duration-300"></div>
-                        </div>
-                        <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
-                            EduConnect Africa
-                        </span>
-                    </a>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">
-                        Connecter les esprits, éclairer l'avenir
-                    </p>
-                </div>
+    <!-- Footer sera chargé par JS -->
+    <div id="footer-container"></div>
 
-                <!-- Liens footer -->
-                <div class="flex flex-wrap justify-center gap-8">
-                    <div class="text-center">
-                        <h4 class="font-semibold text-slate-900 dark:text-white mb-4">Forum</h4>
-                        <div class="space-y-2">
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">Toutes les catégories</a>
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">Discussions récentes</a>
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">Meilleurs contributeurs</a>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <h4 class="font-semibold text-slate-900 dark:text-white mb-4">Support</h4>
-                        <div class="space-y-2">
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">Centre d'aide</a>
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">FAQ</a>
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">Nous contacter</a>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center">
-                        <h4 class="font-semibold text-slate-900 dark:text-white mb-4">Communauté</h4>
-                        <div class="space-y-2">
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">Événements</a>
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">Blog</a>
-                            <a href="#" class="block text-slate-600 dark:text-slate-400 hover:text-blue-600 text-sm">Mentorat</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Social -->
-                <div class="flex space-x-4">
-                    <a href="#" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-white dark:from-slate-800 dark:to-slate-700 flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg hover:shadow-blue-500/20">
-                        <i class="fab fa-twitter text-blue-500"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-white dark:from-slate-800 dark:to-slate-700 flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg hover:shadow-orange-500/20">
-                        <i class="fab fa-linkedin text-blue-700"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-white dark:from-slate-800 dark:to-slate-700 flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg hover:shadow-yellow-500/20">
-                        <i class="fab fa-facebook text-blue-600"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Copyright -->
-            <div class="mt-12 pt-8 border-t border-slate-200/50 dark:border-slate-700/50 text-center">
-                <p class="text-slate-600 dark:text-slate-400 text-sm">
-                    &copy; 2025 EduConnect Africa. Une plateforme pour l'excellence académique africaine.
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Navigation functions
-        function navigateToCategory(categoryId) {
-            // Simule la navigation vers la page de discussion de la catégorie
-            // En production, remplacer par une redirection réelle
-            window.location.href = `discussion.html?category=${categoryId}`;
-        }
-
-        function navigateToTopic(categoryId, topicId, event) {
-            // Empêche la propagation du clic pour éviter d'ouvrir la catégorie
-            event.stopPropagation();
-            
-            // Simule la navigation vers la page de discussion spécifique
-            // En production, remplacer par une redirection réelle
-            window.location.href = `discussion.html?category=${categoryId}&topic=${topicId}`;
-        }
-
-        function createNewDiscussion() {
-            // Simule la création d'une nouvelle discussion
-            // En production, rediriger vers un formulaire de création
-            alert("Redirection vers la page de création d'une nouvelle discussion...");
-            // window.location.href = "nouvelle-discussion.html";
-        }
-
-        // Dark Mode Toggle
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const html = document.documentElement;
-        const themeIcon = darkModeToggle.querySelector('i');
-        
-        // Vérifier la préférence sauvegardée
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        html.classList.toggle('dark', savedTheme === 'dark');
-        themeIcon.classList.toggle('fa-sun', savedTheme === 'dark');
-        themeIcon.classList.toggle('fa-moon', savedTheme !== 'dark');
-        
-        darkModeToggle.addEventListener('click', () => {
-            html.classList.toggle('dark');
-            const theme = html.classList.contains('dark') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            
-            // Changer l'icône
-            themeIcon.classList.toggle('fa-sun');
-            themeIcon.classList.toggle('fa-moon');
-        });
-
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            mobileMenuBtn.querySelector('i').classList.toggle('fa-bars');
-            mobileMenuBtn.querySelector('i').classList.toggle('fa-times');
-        });
-
-        // Fermer le menu mobile au clic à l'extérieur
-        mobileMenu.addEventListener('click', (e) => {
-            if (e.target === mobileMenu) {
-                mobileMenu.classList.add('hidden');
-                mobileMenuBtn.querySelector('i').classList.add('fa-bars');
-                mobileMenuBtn.querySelector('i').classList.remove('fa-times');
-            }
-        });
-
-        // Recherche améliorée
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            const categories = document.querySelectorAll('.category-card');
-            
-            if (searchTerm === '') {
-                categories.forEach(category => {
-                    category.style.opacity = '1';
-                    category.style.transform = 'none';
-                });
-                return;
-            }
-            
-            categories.forEach(category => {
-                const text = category.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
-                    category.style.opacity = '1';
-                    category.style.transform = 'none';
-                } else {
-                    category.style.opacity = '0.3';
-                    category.style.transform = 'scale(0.98)';
-                }
-            });
-        });
-
-        // Animation au scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observer les cartes
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(card);
-        });
-
-        // Ajouter des événements de clic pour toutes les cartes
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.style.cursor = 'pointer';
-        });
-    </script>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/footer-loader.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
