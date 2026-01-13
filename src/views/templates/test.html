@@ -1,301 +1,871 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="fr"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Mes Étudiants - EduConnect Africa</title>
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<!-- Material Symbols -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Tailwind Configuration -->
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#36e27b",
-                        "background-light": "#f6f8f7",
-                        "background-dark": "#112117",
-                        "surface-dark": "#1a2e22",
-                        "border-dark": "#254632",
-                    },
-                    fontFamily: {
-                        "display": ["Spline Sans", "sans-serif"],
-                        "body": ["Noto Sans", "sans-serif"],
-                    },
-                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
-                },
-            },
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenRouter AI - Interface de Test</title>
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --secondary: #10b981;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --gray-light: #e5e7eb;
+            --danger: #ef4444;
+            --warning: #f59e0b;
         }
-    </script>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.1;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .model-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            position: relative;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Configuration Panel */
+        .config-panel {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid var(--gray-light);
+        }
+        
+        .config-panel h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .slider-value {
+            min-width: 3rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: var(--gray-light);
+            border-radius: 4px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--primary-dark);
+        }
+        
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        .preset-btn {
+            padding: 0.7rem;
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .preset-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .preset-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Response Panel */
+        .response-panel {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .response-header h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid var(--gray-light);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-light);
+        }
+        
+        .response-box {
+            flex: 1;
+            background: var(--light);
+            border: 2px solid var(--gray-light);
+            border-radius: 15px;
+            padding: 1.5rem;
+            overflow-y: auto;
+            min-height: 400px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .response-box:empty::before {
+            content: 'La réponse apparaîtra ici...';
+            color: var(--gray);
+            font-style: italic;
+        }
+        
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background: var(--light);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Stats */
+        .stats {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-top: 1.5rem;
+            display: none;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stats.show {
+            display: block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--gray-light);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--gray-light);
+            background: var(--light);
+        }
+        
+        /* Alert */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            align-items: center;
+            gap: 0.8rem;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .alert.success {
+            border-left-color: var(--secondary);
+        }
+        
+        .alert.error {
+            border-left-color: var(--danger);
+        }
+        
+        .alert.warning {
+            border-left-color: var(--warning);
+        }
+        
+        .alert-icon {
+            font-size: 1.5rem;
+        }
+        
+        .close-alert {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--gray);
+            padding: 0 0.2rem;
+        }
+        
+        /* Model Cards */
+        .model-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .model-card {
+            padding: 1.2rem;
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .model-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .model-card.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .model-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .model-provider {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+    </style>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white overflow-x-hidden min-h-screen flex flex-col">
-<!-- Main Content -->
-<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 md:p-8 lg:p-12">
-<div class="max-w-[1200px] mx-auto flex flex-col gap-8">
-<!-- Breadcrumbs -->
-<div class="flex items-center gap-2 text-sm">
-<a class="text-[#95c6a9] hover:text-primary transition-colors font-medium" href="#">Tableau de bord</a>
-<span class="material-symbols-outlined text-[#95c6a9] text-[16px]">chevron_right</span>
-<span class="text-white font-medium">Mes Étudiants</span>
-</div>
-<!-- Page Heading & Action -->
-<div class="flex flex-wrap justify-between items-end gap-4">
-<div class="flex flex-col gap-2">
-<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">Mes Étudiants</h1>
-<p class="text-[#95c6a9] text-base font-normal max-w-xl">
-                            Gérez votre liste d'étudiants, suivez leurs progrès académiques et planifiez vos prochaines sessions de tutorat.
-                        </p>
-</div>
-<button class="flex items-center justify-center gap-2 rounded-full h-12 px-6 bg-primary hover:bg-green-400 text-background-dark text-sm font-bold tracking-[0.015em] transition-all transform hover:scale-105 shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-lg">add</span>
-<span>Ajouter un étudiant</span>
-</button>
-</div>
-<!-- Stats Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-<div class="flex flex-col gap-1 rounded-xl p-6 bg-surface-dark border border-border-dark shadow-sm">
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-primary">groups</span>
-<p class="text-[#95c6a9] text-sm font-medium uppercase tracking-wider">Total Étudiants</p>
-</div>
-<p class="text-white text-3xl font-bold">24</p>
-</div>
-<div class="flex flex-col gap-1 rounded-xl p-6 bg-surface-dark border border-border-dark shadow-sm">
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-primary">event_available</span>
-<p class="text-[#95c6a9] text-sm font-medium uppercase tracking-wider">Sessions Actives</p>
-</div>
-<p class="text-white text-3xl font-bold">5</p>
-</div>
-<div class="flex flex-col gap-1 rounded-xl p-6 bg-surface-dark border border-border-dark shadow-sm">
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-primary">trending_up</span>
-<p class="text-[#95c6a9] text-sm font-medium uppercase tracking-wider">Moyenne Globale</p>
-</div>
-<p class="text-white text-3xl font-bold">14.5<span class="text-lg text-[#95c6a9] font-normal">/20</span></p>
-</div>
-</div>
-<!-- Filters & Toolbar -->
-<div class="flex flex-col lg:flex-row gap-4 justify-between items-center bg-surface-dark p-2 rounded-xl border border-border-dark">
-<!-- Search -->
-<div class="relative w-full lg:w-96">
-<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-<span class="material-symbols-outlined text-[#95c6a9]">search</span>
-</div>
-<input class="block w-full pl-10 pr-3 py-3 rounded-full bg-background-dark border-border-dark placeholder-[#5a7c68] text-white focus:ring-primary focus:border-primary sm:text-sm" placeholder="Rechercher par nom ou classe..." type="text"/>
-</div>
-<!-- Filter Actions -->
-<div class="flex gap-2 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
-<select class="rounded-full bg-background-dark border-border-dark text-white text-sm py-2.5 px-4 focus:ring-primary focus:border-primary cursor-pointer min-w-[140px]">
-<option value="">Toutes les matières</option>
-<option value="maths">Mathématiques</option>
-<option value="physique">Physique-Chimie</option>
-<option value="svt">SVT</option>
-</select>
-<select class="rounded-full bg-background-dark border-border-dark text-white text-sm py-2.5 px-4 focus:ring-primary focus:border-primary cursor-pointer min-w-[130px]">
-<option value="">Niveau</option>
-<option value="seconde">Seconde</option>
-<option value="premiere">Première</option>
-<option value="terminale">Terminale</option>
-</select>
-<div class="h-10 w-px bg-border-dark mx-2 hidden lg:block"></div>
-<button aria-label="List View" class="flex items-center justify-center size-10 rounded-full bg-primary text-background-dark hover:bg-white transition-colors">
-<span class="material-symbols-outlined">view_list</span>
-</button>
-<button aria-label="Grid View" class="flex items-center justify-center size-10 rounded-full bg-background-dark text-[#95c6a9] hover:text-white border border-border-dark transition-colors">
-<span class="material-symbols-outlined">grid_view</span>
-</button>
-</div>
-</div>
-<!-- Student List -->
-<div class="flex flex-col gap-4">
-<!-- Student Card 1 -->
-<div class="group flex flex-col md:flex-row items-start md:items-center gap-4 p-5 rounded-2xl bg-surface-dark border border-border-dark hover:border-primary/50 transition-all duration-300">
-<!-- Avatar -->
-<div class="relative shrink-0">
-<div class="bg-center bg-no-repeat bg-cover rounded-full size-14 border-2 border-border-dark group-hover:border-primary transition-colors" data-alt="Student portrait Aissatou" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDKN2FDLs-EePPSaMW09_Fz9lctbShKPGHi70Tjyd2ImGT9ylW9UQAEYYF--LE2H82PSm_nRkD_9G_GdX0TDQNRCQsr2ubEBR12TjNsuMUTDZ1itxo1wMUyB8qnR4acELtfXkEU-lJ2j44IubAAvTkqKKkBC1-FcISvWqkmpBb4UHZjOSlqJyTUxXMblOZpocR_x5LQyoAf3Ri4ISNGWiNSZhNmKRvo-tRKRjVx3rM5Z0ie1fMFV6La-xhRJ61H8bagGKEKOGLTRjIJ");'></div>
-<div class="absolute bottom-0 right-0 size-3.5 bg-primary border-2 border-surface-dark rounded-full"></div>
-</div>
-<!-- Info -->
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2 mb-1">
-<h3 class="text-white text-lg font-bold truncate">Aïssatou Ndiaye</h3>
-<span class="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#254632] text-primary uppercase tracking-wide">Terminale S2</span>
-</div>
-<div class="flex flex-wrap gap-2 text-sm text-[#95c6a9]">
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">book</span> Maths, Physique</span>
-<span class="hidden sm:inline text-border-dark">•</span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">history</span> 2j ago</span>
-</div>
-</div>
-<!-- Stats (Desktop) -->
-<div class="hidden lg:flex items-center gap-8 px-4 border-l border-border-dark/50">
-<div class="flex flex-col items-center gap-1 w-24">
-<span class="text-xs text-[#95c6a9] font-medium uppercase">Sessions</span>
-<span class="text-white font-bold">12 / 20</span>
-<div class="w-full h-1.5 bg-background-dark rounded-full overflow-hidden mt-1">
-<div class="h-full bg-primary w-[60%]"></div>
-</div>
-</div>
-<div class="flex flex-col items-center gap-1">
-<span class="text-xs text-[#95c6a9] font-medium uppercase">Moyenne</span>
-<span class="text-white font-bold text-lg">16.5</span>
-</div>
-</div>
-<!-- Actions -->
-<div class="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 justify-end">
-<button class="p-2 rounded-full text-[#95c6a9] hover:text-white hover:bg-background-dark transition-colors" title="Historique">
-<span class="material-symbols-outlined">history</span>
-</button>
-<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-background-dark border border-border-dark text-white text-sm font-semibold hover:bg-primary hover:text-background-dark hover:border-primary transition-colors">
-<span>Voir le profil</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-<!-- Student Card 2 -->
-<div class="group flex flex-col md:flex-row items-start md:items-center gap-4 p-5 rounded-2xl bg-surface-dark border border-border-dark hover:border-primary/50 transition-all duration-300">
-<div class="relative shrink-0">
-<div class="bg-center bg-no-repeat bg-cover rounded-full size-14 border-2 border-border-dark group-hover:border-primary transition-colors" data-alt="Student portrait Moussa" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCoe59L2toXqeugXo8xa7OoDhuOAPBWJ651R8FqMo_Spfbq5QvZkGkAiCngq77S7Ol3ziFncuGtaqvoe5K6-gB05e0rSB_vNJUep4V6RMCmnh_oz2wQ_2yW_mKrIc-V4Ws_pKezvhFlMU86Hkzc2fp7YotkdI-kUuLzKXp7Cax1rHxmiQvANLxM-SM9U2sCeF3hWBGaKyI9mQE-5VGSCqJ4KkpBapMg1ZfbwZEHPueuQfbu8pOj9jC-y2qTb1Iet9mnw1tjPjPa9IT1");'></div>
-<div class="absolute bottom-0 right-0 size-3.5 bg-primary border-2 border-surface-dark rounded-full"></div>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2 mb-1">
-<h3 class="text-white text-lg font-bold truncate">Moussa Koné</h3>
-<span class="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#254632] text-primary uppercase tracking-wide">Première L</span>
-</div>
-<div class="flex flex-wrap gap-2 text-sm text-[#95c6a9]">
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">book</span> Français, Philo</span>
-<span class="hidden sm:inline text-border-dark">•</span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">history</span> 5h ago</span>
-</div>
-</div>
-<div class="hidden lg:flex items-center gap-8 px-4 border-l border-border-dark/50">
-<div class="flex flex-col items-center gap-1 w-24">
-<span class="text-xs text-[#95c6a9] font-medium uppercase">Sessions</span>
-<span class="text-white font-bold">8 / 15</span>
-<div class="w-full h-1.5 bg-background-dark rounded-full overflow-hidden mt-1">
-<div class="h-full bg-primary w-[53%]"></div>
-</div>
-</div>
-<div class="flex flex-col items-center gap-1">
-<span class="text-xs text-[#95c6a9] font-medium uppercase">Moyenne</span>
-<span class="text-white font-bold text-lg">14.0</span>
-</div>
-</div>
-<div class="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 justify-end">
-<button class="p-2 rounded-full text-[#95c6a9] hover:text-white hover:bg-background-dark transition-colors" title="Historique">
-<span class="material-symbols-outlined">history</span>
-</button>
-<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-background-dark border border-border-dark text-white text-sm font-semibold hover:bg-primary hover:text-background-dark hover:border-primary transition-colors">
-<span>Voir le profil</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-<!-- Student Card 3 -->
-<div class="group flex flex-col md:flex-row items-start md:items-center gap-4 p-5 rounded-2xl bg-surface-dark border border-border-dark hover:border-primary/50 transition-all duration-300">
-<div class="relative shrink-0">
-<div class="bg-center bg-no-repeat bg-cover rounded-full size-14 border-2 border-border-dark group-hover:border-primary transition-colors" data-alt="Student portrait Fatou" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDsyiSk9YFz3fIprYwd332I_vyG_DG7L1qXBkTOt_aZT9gYesMd7ZsXR4cnxOsAaZX6P2lCR4R2QD2yEuqzI7TKbTDFnMYQVV-sJShRskqbZrWPhqQPtos9rLtvVYH66yrd9ytuPzFeUbvN2IO1lzWQJqqwCYpIrDNRr6TPZ90dhJx2pZYOi2mTGc48xtXKTYSYP72mXTMNVM4539NfIGv3BXK8tAULmKm424TicskNWW9fqcwGbi0yOf_PSXwpaa7L2om9bxuiTwaW");'></div>
-<div class="absolute bottom-0 right-0 size-3.5 bg-yellow-500 border-2 border-surface-dark rounded-full"></div>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2 mb-1">
-<h3 class="text-white text-lg font-bold truncate">Fatou Cissé</h3>
-<span class="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#254632] text-primary uppercase tracking-wide">Seconde S</span>
-</div>
-<div class="flex flex-wrap gap-2 text-sm text-[#95c6a9]">
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">book</span> Maths, SVT</span>
-<span class="hidden sm:inline text-border-dark">•</span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">history</span> 1sem ago</span>
-</div>
-</div>
-<div class="hidden lg:flex items-center gap-8 px-4 border-l border-border-dark/50">
-<div class="flex flex-col items-center gap-1 w-24">
-<span class="text-xs text-[#95c6a9] font-medium uppercase">Sessions</span>
-<span class="text-white font-bold">2 / 10</span>
-<div class="w-full h-1.5 bg-background-dark rounded-full overflow-hidden mt-1">
-<div class="h-full bg-yellow-500 w-[20%]"></div>
-</div>
-</div>
-<div class="flex flex-col items-center gap-1">
-<span class="text-xs text-[#95c6a9] font-medium uppercase">Moyenne</span>
-<span class="text-white font-bold text-lg">11.5</span>
-</div>
-</div>
-<div class="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 justify-end">
-<button class="p-2 rounded-full text-[#95c6a9] hover:text-white hover:bg-background-dark transition-colors" title="Historique">
-<span class="material-symbols-outlined">history</span>
-</button>
-<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-background-dark border border-border-dark text-white text-sm font-semibold hover:bg-primary hover:text-background-dark hover:border-primary transition-colors">
-<span>Voir le profil</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-<!-- Student Card 4 -->
-<div class="group flex flex-col md:flex-row items-start md:items-center gap-4 p-5 rounded-2xl bg-surface-dark border border-border-dark hover:border-primary/50 transition-all duration-300">
-<div class="relative shrink-0">
-<div class="bg-center bg-no-repeat bg-cover rounded-full size-14 border-2 border-border-dark group-hover:border-primary transition-colors" data-alt="Student portrait Jean" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzXccshh3l3Uu1RaTtOcsuF4hG9H7BgYFBgekI6Fbpm08d0BvEZPGEtkeGRtP7u0du0Gw-sVUzIT-LW0wopxDOuUtCG6hGaNozi8xIOl5ez9S3B02WFL56Es6CvESFr-xC8KKzUzmQzH1ZSN0nlg4zjaMrzqVvqsQSWKahrlNcJErZ3LfIzXwDwTxe7pUi6oE-i3Sn8MGhD2tXNJmOB_gpfPMQeofQRz3kRnU1YUGJrbj3D90nE3_iOsqIV3tpdaHguNz_SBV7uz8r");'></div>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2 mb-1">
-<h3 class="text-white text-lg font-bold truncate">Jean Baptiste</h3>
-<span class="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#254632] text-primary uppercase tracking-wide">Terminale S1</span>
-</div>
-<div class="flex flex-wrap gap-2 text-sm text-[#95c6a9]">
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">book</span> Physique, Info</span>
-<span class="hidden sm:inline text-border-dark">•</span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">history</span> 3j ago</span>
-</div>
-</div>
-<div class="hidden lg:flex items-center gap-8 px-4 border-l border-border-dark/50">
-<div class="flex flex-col items-center gap-1 w-24">
-<span class="text-xs text-[#95c6a9] font-medium uppercase">Sessions</span>
-<span class="text-white font-bold">15 / 20</span>
-<div class="w-full h-1.5 bg-background-dark rounded-full overflow-hidden mt-1">
-<div class="h-full bg-primary w-[75%]"></div>
-</div>
-</div>
-<div class="flex flex-col items-center gap-1">
-<span class="text-xs text-[#95c6a9] font-medium uppercase">Moyenne</span>
-<span class="text-white font-bold text-lg">15.8</span>
-</div>
-</div>
-<div class="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0 justify-end">
-<button class="p-2 rounded-full text-[#95c6a9] hover:text-white hover:bg-background-dark transition-colors" title="Historique">
-<span class="material-symbols-outlined">history</span>
-</button>
-<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-background-dark border border-border-dark text-white text-sm font-semibold hover:bg-primary hover:text-background-dark hover:border-primary transition-colors">
-<span>Voir le profil</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Pagination (Simple) -->
-<div class="flex justify-center mt-6">
-<nav class="flex items-center gap-2">
-<button class="size-10 flex items-center justify-center rounded-full bg-surface-dark text-[#95c6a9] hover:text-white border border-border-dark disabled:opacity-50">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button class="size-10 flex items-center justify-center rounded-full bg-primary text-background-dark font-bold">1</button>
-<button class="size-10 flex items-center justify-center rounded-full bg-surface-dark text-[#95c6a9] hover:text-white border border-border-dark hover:bg-surface-dark/80">2</button>
-<button class="size-10 flex items-center justify-center rounded-full bg-surface-dark text-[#95c6a9] hover:text-white border border-border-dark hover:bg-surface-dark/80">3</button>
-<button class="size-10 flex items-center justify-center rounded-full bg-surface-dark text-[#95c6a9] hover:text-white border border-border-dark">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
-</nav>
-</div>
-</div>
-</main>
-</div>
-</body></html>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 OpenRouter AI Playground</h1>
+            <p>Testez différents modèles d'IA avec l'API OpenRouter</p>
+            <div class="model-badge">
+                <span>🔑 Clé API configurée</span>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Configuration Panel -->
+            <div class="config-panel">
+                <h2>⚙️ Configuration</h2>
+                
+                <div class="input-group">
+                    <label for="apiKey">🔑 Clé API OpenRouter</label>
+                    <input type="password" id="apiKey" value="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" placeholder="Votre clé API">
+                </div>
+                
+                <div class="input-group">
+                    <label for="modelSelect">🤖 Modèle IA</label>
+                    <select id="modelSelect">
+                        <option value="mistralai/mistral-7b-instruct:free">Mistral 7B Instruct (Gratuit)</option>
+                        <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        <option value="google/gemini-pro">Gemini Pro</option>
+                        <option value="meta-llama/llama-2-13b-chat">Llama 2 13B Chat</option>
+                        <option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>🎯 Modèles populaires</label>
+                    <div class="model-cards">
+                        <div class="model-card active" data-model="mistralai/mistral-7b-instruct:free">
+                            <div class="model-name">Mistral 7B</div>
+                            <div class="model-provider">Gratuit</div>
+                        </div>
+                        <div class="model-card" data-model="openai/gpt-3.5-turbo">
+                            <div class="model-name">GPT-3.5 Turbo</div>
+                            <div class="model-provider">OpenAI</div>
+                        </div>
+                        <div class="model-card" data-model="google/gemini-pro">
+                            <div class="model-name">Gemini Pro</div>
+                            <div class="model-provider">Google</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="temperature">🌡️ Température</label>
+                    <div class="slider-container">
+                        <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+                        <span class="slider-value" id="tempValue">0.7</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="maxTokens">📏 Tokens maximum</label>
+                    <div class="slider-container">
+                        <input type="range" id="maxTokens" min="100" max="2000" step="100" value="400">
+                        <span class="slider-value" id="tokensValue">400</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="prompt">💬 Prompt utilisateur</label>
+                    <textarea id="prompt" rows="8" placeholder="Écrivez votre message ici...">Explique la différence entre Python et JavaScript en 5 points, en français.</textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>📋 Exemples rapides</label>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-preset="python_js">Python vs JS</button>
+                        <button class="preset-btn" data-preset="code">Code Python</button>
+                        <button class="preset-btn" data-preset="story">Histoire</button>
+                        <button class="preset-btn" data-preset="email">Email</button>
+                        <button class="preset-btn" data-preset="explain">Explication</button>
+                        <button class="preset-btn" data-preset="creative">Créatif</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Response Panel -->
+            <div class="response-panel">
+                <div class="response-header">
+                    <h2>🤖 Réponse</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="clearBtn">
+                            🗑️ Effacer
+                        </button>
+                        <button class="btn btn-primary" id="sendBtn">
+                            🚀 Envoyer
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Génération en cours...</p>
+                    <p style="color: var(--gray); font-size: 0.9rem;">Veuillez patienter quelques secondes</p>
+                </div>
+                
+                <div class="response-box" id="responseBox"></div>
+                
+                <div class="stats" id="stats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalTokens">0</div>
+                            <div class="stat-label">Tokens totaux</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="promptTokens">0</div>
+                            <div class="stat-label">Prompt tokens</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="completionTokens">0</div>
+                            <div class="stat-label">Réponse tokens</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="responseTime">0</div>
+                            <div class="stat-label">ms</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Powered by OpenRouter API | Clé API préconfigurée | Interface créée avec HTML/CSS/JS</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--gray);">
+                ℹ️ Utilisez cette interface pour tester différents modèles d'IA via OpenRouter
+            </p>
+        </div>
+    </div>
+    
+    <!-- Alert Container -->
+    <div class="alert" id="alert">
+        <span class="alert-icon">ℹ️</span>
+        <span id="alertMessage">Message</span>
+        <button class="close-alert" onclick="closeAlert()">×</button>
+    </div>
+
+    <script>
+        // Configuration
+        const API_KEY = "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";
+        const API_URL = "https://openrouter.ai/api/v1/chat/completions";
+        
+        // Éléments DOM
+        const elements = {
+            apiKey: document.getElementById('apiKey'),
+            modelSelect: document.getElementById('modelSelect'),
+            temperature: document.getElementById('temperature'),
+            maxTokens: document.getElementById('maxTokens'),
+            prompt: document.getElementById('prompt'),
+            sendBtn: document.getElementById('sendBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+            responseBox: document.getElementById('responseBox'),
+            loading: document.getElementById('loading'),
+            stats: document.getElementById('stats'),
+            totalTokens: document.getElementById('totalTokens'),
+            promptTokens: document.getElementById('promptTokens'),
+            completionTokens: document.getElementById('completionTokens'),
+            responseTime: document.getElementById('responseTime'),
+            tempValue: document.getElementById('tempValue'),
+            tokensValue: document.getElementById('tokensValue'),
+            alert: document.getElementById('alert'),
+            alertMessage: document.getElementById('alertMessage'),
+            modelCards: document.querySelectorAll('.model-card'),
+            presetButtons: document.querySelectorAll('.preset-btn')
+        };
+        
+        // Presets de prompts
+        const presets = {
+            python_js: "Explique la différence entre Python et JavaScript en 5 points, en français.",
+            code: "Écris une fonction Python qui calcule la suite de Fibonacci jusqu'au n-ième terme.",
+            story: "Raconte une courte histoire de science-fiction sur un voyage dans le temps.",
+            email: "Rédige un email professionnel pour annuler une réunion.",
+            explain: "Explique le principe de la blockchain en termes simples.",
+            creative: "Imagine une nouvelle invention technologique qui pourrait changer le monde."
+        };
+        
+        // Exemples de modèles
+        const models = [
+            { id: "mistralai/mistral-7b-instruct:free", name: "Mistral 7B", provider: "Gratuit" },
+            { id: "openai/gpt-3.5-turbo", name: "GPT-3.5 Turbo", provider: "OpenAI" },
+            { id: "google/gemini-pro", name: "Gemini Pro", provider: "Google" },
+            { id: "meta-llama/llama-2-13b-chat", name: "Llama 2 13B", provider: "Meta" },
+            { id: "anthropic/claude-3-haiku", name: "Claude 3 Haiku", provider: "Anthropic" }
+        ];
+        
+        // Initialisation
+        function init() {
+            // Mettre à jour les valeurs des sliders
+            elements.tempValue.textContent = elements.temperature.value;
+            elements.tokensValue.textContent = elements.maxTokens.value;
+            
+            // Configurer les événements des sliders
+            elements.temperature.addEventListener('input', (e) => {
+                elements.tempValue.textContent = e.target.value;
+            });
+            
+            elements.maxTokens.addEventListener('input', (e) => {
+                elements.tokensValue.textContent = e.target.value;
+            });
+            
+            // Événement pour les cartes de modèle
+            elements.modelCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // Retirer la classe active de toutes les cartes
+                    elements.modelCards.forEach(c => c.classList.remove('active'));
+                    // Ajouter la classe active à la carte cliquée
+                    card.classList.add('active');
+                    // Mettre à jour le select
+                    const model = card.dataset.model;
+                    elements.modelSelect.value = model;
+                    
+                    showAlert(`Modèle changé: ${model.split('/')[1]}`, 'success');
+                });
+            });
+            
+            // Événement pour les boutons de preset
+            elements.presetButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const preset = btn.dataset.preset;
+                    if (presets[preset]) {
+                        elements.prompt.value = presets[preset];
+                        
+                        // Mettre en surbrillance le bouton actif
+                        elements.presetButtons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        
+                        showAlert(`Preset "${btn.textContent}" chargé`, 'success');
+                    }
+                });
+            });
+            
+            // Événement pour le bouton d'envoi
+            elements.sendBtn.addEventListener('click', sendRequest);
+            
+            // Événement pour le bouton d'effacement
+            elements.clearBtn.addEventListener('click', () => {
+                elements.responseBox.textContent = '';
+                elements.stats.classList.remove('show');
+                showAlert('Réponse effacée', 'warning');
+            });
+            
+            // Événement pour Ctrl+Enter
+            elements.prompt.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    sendRequest();
+                }
+            });
+            
+            showAlert('Interface OpenRouter prête !', 'success');
+        }
+        
+        // Fonction pour envoyer la requête
+        async function sendRequest() {
+            const apiKey = elements.apiKey.value.trim();
+            const model = elements.modelSelect.value;
+            const temperature = parseFloat(elements.temperature.value);
+            const maxTokens = parseInt(elements.maxTokens.value);
+            const prompt = elements.prompt.value.trim();
+            
+            // Validation
+            if (!apiKey) {
+                showAlert('Veuillez entrer votre clé API', 'error');
+                return;
+            }
+            
+            if (!prompt) {
+                showAlert('Veuillez entrer un prompt', 'error');
+                return;
+            }
+            
+            // Afficher le chargement
+            elements.loading.style.display = 'block';
+            elements.sendBtn.disabled = true;
+            elements.responseBox.textContent = '';
+            
+            // Préparer les données
+            const requestData = {
+                model: model,
+                messages: [
+                    {
+                        role: "user",
+                        content: prompt
+                    }
+                ],
+                temperature: temperature,
+                max_tokens: maxTokens
+            };
+            
+            const startTime = Date.now();
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                        'HTTP-Referer': window.location.origin,
+                        'X-Title': 'OpenRouter Playground'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const data = await response.json();
+                const endTime = Date.now();
+                
+                if (!response.ok) {
+                    throw new Error(data.error?.message || `HTTP ${response.status}`);
+                }
+                
+                // Afficher la réponse
+                if (data.choices && data.choices[0]) {
+                    const content = data.choices[0].message.content;
+                    elements.responseBox.textContent = content;
+                    
+                    // Afficher les statistiques
+                    if (data.usage) {
+                        elements.totalTokens.textContent = data.usage.total_tokens || 0;
+                        elements.promptTokens.textContent = data.usage.prompt_tokens || 0;
+                        elements.completionTokens.textContent = data.usage.completion_tokens || 0;
+                        elements.responseTime.textContent = endTime - startTime;
+                        elements.stats.classList.add('show');
+                    }
+                    
+                    showAlert(`Réponse reçue en ${endTime - startTime}ms`, 'success');
+                } else {
+                    throw new Error('Aucune réponse générée');
+                }
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                elements.responseBox.textContent = `❌ Erreur: ${error.message}\n\nVérifiez:\n1. Votre clé API\n2. Votre connexion internet\n3. Les limites du modèle`;
+                showAlert(`Erreur: ${error.message}`, 'error');
+            } finally {
+                // Cacher le chargement
+                elements.loading.style.display = 'none';
+                elements.sendBtn.disabled = false;
+            }
+        }
+        
+        // Fonction pour afficher les alertes
+        function showAlert(message, type = 'info') {
+            elements.alert.className = `alert ${type}`;
+            elements.alertMessage.textContent = message;
+            elements.alert.style.display = 'flex';
+            
+            // Masquer automatiquement après 5 secondes
+            setTimeout(() => {
+                closeAlert();
+            }, 5000);
+        }
+        
+        // Fonction pour fermer l'alerte
+        function closeAlert() {
+            elements.alert.style.display = 'none';
+        }
+        
+        // Fonction pour exporter la conversation
+        function exportConversation() {
+            const content = elements.responseBox.textContent;
+            if (!content) {
+                showAlert('Aucune réponse à exporter', 'warning');
+                return;
+            }
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `openrouter_response_${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showAlert('Réponse exportée', 'success');
+        }
+        
+        // Ajouter le bouton d'export
+        const exportBtn = document.createElement('button');
+        exportBtn.className = 'btn btn-secondary';
+        exportBtn.innerHTML = '💾 Exporter';
+        exportBtn.onclick = exportConversation;
+        elements.actionButtons = document.querySelector('.action-buttons');
+        elements.actionButtons.insertBefore(exportBtn, elements.sendBtn);
+        
+        // Initialiser l'application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistant IA - EduConnect</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="40x40"
+      href="../../../Images/Logo.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body
+    class="min-h-screen text-gray-100 bg-linear-to-br from-gray-900 via-gray-800 to-gray-900"
+  >
+    <!-- Loader simple -->
+    <div
+      id="loader"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+    >
+      <div class="text-center">
+        <div class="relative w-24 h-24 mx-auto mb-6">
+          <div
+            class="absolute inset-0 border-4 border-solid rounded-full border-t-yellow-500 border-r-pink-500 border-b-yellow-500 border-l-pink-500 animate-spin"
+          ></div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <i class="text-5xl text-yellow-500 fas fa-book-open"></i>
+          </div>
+        </div>
+        <p class="font-medium text-gray-800">Chargement de l'assistant...</p>
+      </div>
+    </div>
+
+    <!-- Conteneur principal (masqué au départ) -->
+    <div id="assistant-ai-container" style="display: none"></div>
+
+    <script type="module">
+      import { AssistantIAController } from "../../Controller/assistantAiController.js";
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const container = document.getElementById("assistant-ai-container");
+        const loader = document.getElementById("loader");
+
+        try {
+          const controller = new AssistantIAController(container);
+          await controller.init();
+
+          // Cacher le loader et afficher le contenu
+          loader.style.display = "none";
+          container.style.display = "block";
+        } catch (err) {
+          console.error("Erreur:", err);
+
+          // Afficher un message d'erreur simple
+          loader.innerHTML = `
+                    <div class="p-8 text-center">
+                        <i class="mb-4 text-4xl text-red-500 fas fa-exclamation-triangle"></i>
+                        <h3 class="mb-2 text-xl font-bold text-gray-800">Erreur de chargement</h3>
+                        <p class="mb-4 text-gray-600">${
+                          err.message || "Veuillez réessayer"
+                        }</p>
+                        <button onclick="location.reload()" class="px-4 py-2 text-white bg-blue-500 rounded">
+                            Réessayer
+                        </button>
+                    </div>
+                `;
+        }
+      });
+    </script>
+  </body>
+</html>

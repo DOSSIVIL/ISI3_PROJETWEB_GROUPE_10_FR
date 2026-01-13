@@ -10,87 +10,119 @@
 
 <body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
     
-    <div class="pt-20 pb-32 px-6 md:px-12 lg:px-1">
+    <div class="pt-10 pb-32 px-6 md:px-12 lg:px-1">
         <div class="max-w-7xl mx-auto">
             
-            <div class="bg-white/40 backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-12 lg:p-24 mb-8 md:mb-[-4rem] lg:mb-[-8rem] relative z-0" style="min-height: 400px;">
-                <div class="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center lg:mt-[-3rem]">
+            <!-- Section principale -->
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 md:p-12 lg:p-24 mb-8 md:mb-[-4rem] lg:mb-[-8rem] relative z-0" style="min-height: 400px;">
+                <div class="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
                     
+                    <!-- Texte -->
                     <div>
-                        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-6 leading-tight">
-                            <span class="typing-animation word-1" style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span class="typing-animation word-2" style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
-                            <span class="typing-animation word-3" style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>    <h2 class="text-xl"><span>L’éducation connectée, accessible à chacun.</span></h2> 
-                            
+                        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                            <span class="typing-animation word-1" style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span>
+                            <span class="typing-animation word-2" style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                            <span class="typing-animation word-3" style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                            <h2 class="text-xl dark:text-gray-200 mt-2"><span>L'éducation connectée, accessible à chacun.</span></h2>
                         </h1>
                        
-                        <h3 class="text-base md:text-lg text-gray-900 leading-relaxed">
+                        <h3 class="text-base md:text-lg text-gray-900 dark:text-gray-300 leading-relaxed">
                             Une plateforme collaborative unique qui connecte étudiants et tuteurs à travers le tutorat en temps réel, l'intelligence artificielle et des ressources pédagogiques pensées pour l'Afrique.
                         </h3>
                     </div>
-
+    
+                    <!-- Image -->
                     <div class="relative flex justify-center lg:justify-end items-center mt-6 lg:mt-0">
                         <div>
                             <img 
                                 src="../../../Images/Logo.png" 
-                                alt="Étudiant souriant avec ordinateur portable"
+                                alt="Logo EduConnect Africa"
                                 class="w-full max-w-xs md:max-w-sm lg:max-w-md"
                             />
                         </div>
                     </div>
-
+    
                 </div>
             </div>
-
-            <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto relative z-10 mt-8 md:mt-0">
-                <div class="bg-gradient-to-br from-yellow-50 to-orange-50 border-t-4 border-yellow-400 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-                    <div class="flex items-center mb-3">
-                        <div class="bg-yellow-400 rounded-full p-2 mr-3">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-900">Étudiants</h2>
+    
+            <!-- Cartes Étudiants et Tuteurs avec images collées -->
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto relative z-10 mt-8 md:mt-0">
+                
+                <!-- Colonne Étudiants -->
+                <div class="relative">
+                    <!-- Image SVG collée à la carte - ajusté pour mobile -->
+                    <div class="flex justify-center mb-0">
+                        <img 
+                            src="/svg/learner-2.svg" 
+                            alt="Étudiant" 
+                            class="w-32 h-82 md:w-90 md:h-36 -mb-15 md:-mb-15"
+                        />
                     </div>
                     
-                    <p class="text-gray-700 mb-4 text-sm leading-relaxed">
-                        Accédez à un soutien académique personnalisé avec des tuteurs bénévoles et un assistant IA disponible 24/7. Séances de tutorat en temps réel, assistant IA pour toutes les matières, choisissez votre tuteur selon vos besoins.
-                    </p>
-                    
-                    <div class="flex gap-2">
-                        <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-3 py-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
-                            Créer mon compte
-                        </button>
-                        <button class="flex-1 text-purple-600 hover:text-purple-700 font-semibold px-3 py-2.5 rounded-lg hover:bg-purple-50 transition-all duration-300 border-2 border-purple-200 text-xs">
-                            Découvrir
-                        </button>
+                    <!-- Carte Étudiants -->
+                    <div class="bg-white dark:bg-gray-800 border-t-4 border-yellow-400 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 pt-12 md:pt-12">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-yellow-400 rounded-full p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Étudiants</h2>
+                        </div>
+                        
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 text-sm leading-relaxed">
+                            Accédez à un soutien académique personnalisé avec des tuteurs bénévoles et un assistant IA disponible 24/7. Séances de tutorat en temps réel, assistant IA pour toutes les matières, choisissez votre tuteur selon vos besoins.
+                        </p>
+                        
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white font-semibold px-3 py-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
+                                Créer mon compte
+                            </button>
+                            <button class="flex-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-semibold px-3 py-2.5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-all duration-300 border-2 border-purple-200 dark:border-purple-700 text-xs">
+                                Découvrir
+                            </button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 border-t-4 border-blue-400 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-                    <div class="flex items-center mb-3">
-                        <div class="bg-blue-400 rounded-full p-2 mr-3">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-900">Tuteurs</h2>
+    
+                <!-- Colonne Tuteurs -->
+                <div class="relative">
+                    <!-- Image SVG collée à la carte - ajusté pour mobile -->
+                    <div class="flex justify-center mb-0">
+                        <img 
+                            src="/svg/educator-2.svg" 
+                            alt="Tuteur" 
+                            class="w-32 h-82 md:w-90 md:h-36 -mb-15 md:-mb-15"
+                        />
                     </div>
                     
-                    <p class="text-gray-700 mb-9 text-sm leading-relaxed">
-                        Partagez vos connaissances et aidez les étudiants à surmonter les défis éducatifs en Afrique. Rejoignez une communauté de tuteurs bénévoles, système pair-à-pair efficace, communication en temps réel.
-                    </p>
-                    
-                    <div class="flex gap-2">
-                        <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-3 py-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
-                            Devenir tuteur
-                        </button>
-                        <button class="flex-1 text-purple-600 hover:text-purple-700 font-semibold px-3 py-2.5 rounded-lg hover:bg-purple-50 transition-all duration-300 border-2 border-purple-200 text-xs">
-                            En savoir plus
-                        </button>
+                    <!-- Carte Tuteurs -->
+                    <div class="bg-white dark:bg-gray-800 border-t-4 border-blue-400 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 pt-12 md:pt-12">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-blue-400 rounded-full p-2 mr-3">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Tuteurs</h2>
+                        </div>
+                        
+                        <p class="text-gray-700 dark:text-gray-300 mb-9 text-sm leading-relaxed">
+                            Partagez vos connaissances et aidez les étudiants à surmonter les défis éducatifs en Afrique. Rejoignez une communauté de tuteurs bénévoles, système pair-à-pair efficace, communication en temps réel.
+                        </p>
+                        
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white font-semibold px-3 py-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
+                                Devenir tuteur
+                            </button>
+                            <button class="flex-1 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-semibold px-3 py-2.5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-all duration-300 border-2 border-purple-200 dark:border-purple-700 text-xs">
+                                En savoir plus
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
+    
         </div>
     </div>
     <section class="py-16 px-6 md:px-12">
@@ -168,11 +200,12 @@
                     <!--<div class="bg-purple-50 rounded-full w-64 h-64 mx-auto mb-8 flex items-center justify-center shadow-lg group-hover:shadow-2xl transition-all duration-300">--->
                     <div class="flex items-center justify-center">
                         <img 
-                            src="../../../public/Images/10312453.jpg" 
-                            alt="Intelligence artificielle"
-                            class="w-48 h-48 object-contain"
+                                src="/Images/10312453.jpg" 
+                                alt="Intelligence artificielle"
+                                class="w-48 h-48 rounded-full object-cover"
                         />
                     </div>
+                        
                     
                     <!-- Contenu -->
                     <div class="text-center">
@@ -195,11 +228,11 @@
 
         </div>
     </section>
-    <section class="py-12 px-6 md:px-12 bg-white/50 backdrop-blur-sm">
+    <section class="py-12 px-6 md:px-12">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-12">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900">
-                    <span class="text-purple-600">Choisissez</span> votre domaine d'étude
+                    <span class="text-purple-600">Choisissez votre domaine d'étude </span>
                 </h2>
             </div>
     
@@ -354,12 +387,12 @@
         </div>
     </section>
 
-    <section class="py-16 px-6 md:px-12 bg-white/70 backdrop-blur-sm">
+    <section class="py-16 px-6 md:px-12">
         <div class="max-w-7xl mx-auto">
             
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                    Comment <span class="text-purple-600">EduConnect Africa</span> fonctionne ?
+                    <span class="text-purple-600">Comment Nous Fonctionnons ?</span>
                 </h2>
                 <p class="text-lg text-gray-700 max-w-3xl mx-auto">
                     Accédez à un soutien éducatif complet en seulement trois étapes simples et rapides.
@@ -454,10 +487,10 @@
         <!-- Header -->
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Ils parlent de 
-            <span class="simple-gradient-text">EduConnect Africa</span>
+            
+            <span class="text-purple-600">Ils parlent de Nous</span>
           </h2>
-          <p class="text-gray-600 max-w-2xl mx-auto">
+          <p class="text-lg text-gray-700 max-w-3xl mx-auto">
             Découvrez comment notre plateforme collaborative transforme l'éducation en Afrique
           </p>
           
@@ -470,80 +503,101 @@
         </div>
     
         <!-- Carousel Container -->
-        <div class="relative overflow-hidden py-6">
+<div class="relative overflow-hidden py-6">
+  
+    <!-- Gradient Overlays -->
+    <div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 to-transparent dark:from-gray-800 dark:to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 to-transparent dark:from-gray-800 dark:to-transparent z-10 pointer-events-none"></div>
+    
+    <!-- Carousel Track -->
+  <div id="carousel-track" class="carousel-track rounded-900xl shadow-xl">
+    <!-- Cards will be dynamically inserted here -->
+  </div>
+    
+  </div>
+  
+  <!-- Navigation & Dots - Enhanced -->
+  <div class="flex flex-col md:flex-row justify-between items-center gap-8 mt-16 pt-8 border-t border-gray-100 dark:border-gray-700">
+      <!-- Left: Stats -->
+      <div class="flex items-center gap-6">
+          <div class="text-center">
+              <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">98%</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Satisfaction</div>
+          </div>
+          <div class="h-10 w-px bg-gradient-to-b from-gray-200 to-transparent dark:from-gray-600 dark:to-transparent"></div>
+          <div class="text-center">
+              <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">1K+</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Témoignages</div>
+          </div>
+      </div>
+      
+      <!-- Center: Dots -->
+      <div class="flex items-center gap-8">
+          <button id="prev-btn" class="group flex items-center justify-center w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 border border-gray-200 dark:border-gray-600 hover:border-blue-200 dark:hover:border-blue-700 rounded-full shadow-md hover:shadow-xl dark:shadow-gray-900/30 transition-all duration-300 transform hover:-translate-x-1">
+              <i class="fas fa-chevron-left text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 text-lg transition-transform group-hover:-translate-x-1"></i>
+          </button>
           
-          <!-- Gradient Overlays -->
-          <div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
-          <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none"></div>
-          
-          <!-- Carousel Track -->
-          <div id="carousel-track" class="carousel-track">
-            <!-- Cards will be dynamically inserted here -->
+          <div id="dots-container" class="flex gap-3 mx-4">
+              <!-- Dots will be dynamically inserted here -->
+              <div class="dot-placeholder w-20 h-1 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
           </div>
           
-        </div>
-    
-    <!-- Navigation & Dots - Enhanced -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-8 mt-16 pt-8 border-t border-gray-100">
-        <!-- Left: Stats -->
-        <div class="flex items-center gap-6">
-            <div class="text-center">
-                <div class="text-3xl font-bold text-blue-600">98%</div>
-                <div class="text-sm text-gray-500">Satisfaction</div>
+          <button id="next-btn" class="group flex items-center justify-center w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 border border-gray-200 dark:border-gray-600 hover:border-blue-200 dark:hover:border-blue-700 rounded-full shadow-md hover:shadow-xl dark:shadow-gray-900/30 transition-all duration-300 transform hover:translate-x-1">
+              <i class="fas fa-chevron-right text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 text-lg transition-transform group-hover:translate-x-1"></i>
+          </button>
+      </div>
+      
+      <!-- Right: Auto-play Indicator -->
+      <div class="flex items-center gap-3">
+          <div class="relative">
+              <div class="w-3 h-3 bg-green-400 dark:bg-green-500 rounded-full animate-pulse"></div>
+              <div class="absolute inset-0 w-3 h-3 bg-green-400 dark:bg-green-500 rounded-full animate-ping opacity-75"></div>
+          </div>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Défilement automatique</span>
+      </div>
+  </div>
+    </section>
+       <!-- Call to Action avec image à gauche -->
+       <div class="mt-1">
+        <div class="@container">
+            <div class="flex flex-col @sm:flex-row items-center gap-4 @sm:gap-5 @md:gap-6 @lg:gap-8 bg-white dark:bg-gray-800 rounded-xl @sm:rounded-2xl p-4 @sm:p-6 @md:p-8 border border-gray-200 dark:border-gray-700 max-w-5xl mx-auto shadow-sm hover:shadow-md transition-shadow duration-200">
+                
+                <!-- Image -->
+                <div class="flex-shrink-0">
+                    <div class="w-20 h-20 @sm:w-24 @sm:h-24 @md:w-28 @md:h-28">
+                        <img src="/svg/g.avif" 
+                            alt="Témoignage"
+                            class="w-full h-full object-cover rounded-full border-3 @sm:border-4 border-white dark:border-gray-800 shadow-md">
+                    </div>
+                </div>
+                
+                <!-- Texte -->
+                <div class="flex-1 text-center @sm:text-left min-w-0 px-2 @sm:px-0">
+                    <h3 class="text-xl @sm:text-2xl @md:text-3xl font-bold text-gray-900 dark:text-white mb-1 @sm:mb-2">
+                        Partagez votre expérience
+                    </h3>
+                    <p class="text-sm @sm:text-base @md:text-lg text-gray-600 dark:text-gray-400">
+                        Rejoignez notre communauté
+                    </p>
+                </div>
+                
+                <!-- Bouton -->
+                <div class="w-full @sm:w-auto flex-shrink-0">
+                    <button class="w-full @sm:w-auto flex items-center justify-center gap-2 @md:gap-3 px-5 @sm:px-6 @md:px-8 py-3 @md:py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 active:from-blue-800 active:to-purple-800 text-white text-sm @sm:text-base font-semibold rounded-lg @sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 whitespace-nowrap">
+                        <i class="fas fa-edit text-base @md:text-lg"></i>
+                        <span>Ajouter un témoignage</span>
+                        <i class="fas fa-arrow-right text-sm @md:text-base hidden @md:inline-block"></i>
+                    </button>
+                </div>
             </div>
-            <div class="h-10 w-px bg-gradient-to-b from-gray-200 to-transparent"></div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-purple-600">1K+</div>
-                <div class="text-sm text-gray-500">Témoignages</div>
-            </div>
-        </div>
-        
-        <!-- Center: Dots -->
-        <div class="flex items-center gap-8">
-            <button id="prev-btn" class="group flex items-center justify-center w-12 h-12 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 border border-gray-200 hover:border-blue-200 rounded-full shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-x-1">
-                <i class="fas fa-chevron-left text-gray-700 group-hover:text-blue-600 text-lg transition-transform group-hover:-translate-x-1"></i>
-            </button>
-            
-            <div id="dots-container" class="flex gap-3 mx-4">
-                <!-- Dots will be dynamically inserted here -->
-                <div class="dot-placeholder w-20 h-1 bg-gray-200 rounded-full animate-pulse"></div>
-            </div>
-            
-            <button id="next-btn" class="group flex items-center justify-center w-12 h-12 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 border border-gray-200 hover:border-blue-200 rounded-full shadow-md hover:shadow-xl transition-all duration-300 transform hover:translate-x-1">
-                <i class="fas fa-chevron-right text-gray-700 group-hover:text-blue-600 text-lg transition-transform group-hover:translate-x-1"></i>
-            </button>
-        </div>
-        
-        <!-- Right: Auto-play Indicator -->
-        <div class="flex items-center gap-3">
-            <div class="relative">
-                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <div class="absolute inset-0 w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
-            </div>
-            <span class="text-sm font-medium text-gray-600">Défilement automatique</span>
-        </div>
-    </div>
-      </section>
-       <!-- Call to Action -->
-    <div class="mt-1 text-center">
-        <div class="inline-flex flex-col md:flex-row items-center gap-6 bg-gradient-to-r from-blue-50/50 to-purple-50/50 rounded-2xl p-8 border border-blue-100/50">
-            <div class="text-left">
-                <h3 class="text-xl font-bold text-gray-900 mb-2">Partagez votre expérience</h3>
-                <p class="text-gray-600">Rejoignez notre communauté de témoignages</p>
-            </div>
-            <button class="group flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
-                <i class="fas fa-edit group-hover:rotate-12 transition-transform"></i>
-                <span>Ajouter un témoignage</span>
-                <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-            </button>
         </div>
     </div>
       
       <!-- Impact en chiffres de l'applications -->
-      <section id="stats-section" class="py-16 md:py-24 bg-gray-50 overflow-hidden mt-8">
+      <section id="stats-section" class="py-16 md:py-24  overflow-hidden mt-8">
         <div class="container mx-auto px-4 max-w-7xl">
-            <h2 class="text-3xl md:text-5xl font-extrabold text-center mb-12 text-gray-900 leading-tight">
-                Notre Impact en Chiffres
+            <h2 class="text-2xl md:text-4xl font-extrabold text-center mb-12 text-gray-900 leading-tight">
+                <span class="text-purple-600">Notre Impact en Chiffres</span>
             </h2>
     
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -587,6 +641,100 @@
             </div>
         </div>
     </section>
+    <section class="py-12 md:py-16 lg:py-20 px-4">
+        <div class="max-w-6xl mx-auto relative">
+            
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-10 lg:p-12 border border-gray-200 dark:border-gray-700 shadow-lg relative overflow-hidden">
+                
+                <!-- Image en arrière-plan intégrée dans le cadre -->
+                <div class="absolute top-0 right-0 -mt-4 -mr-4 opacity-20 dark:opacity-10 pointer-events-none">
+                    <img src="/svg/a.svg" alt="Décoration" class="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
+                </div>
+                
+                <!-- En-tête -->
+                <div class="text-center mb-8 md:mb-10 relative">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4">
+                        <i class="fas fa-comments text-blue-600 dark:text-blue-400"></i>
+                        <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">Forum de Discussion</span>
+                    </div>
+                    
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        Échangez avec des étudiants du monde entier
+                    </h2>
+                    
+                    <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                        Posez vos questions, partagez vos connaissances et discutez avec d'autres étudiants dans notre forum organisé par matières et catégories.
+                    </p>
+                </div>
+    
+                <!-- Catégories disponibles -->
+                <div class="mb-8">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                        Catégories disponibles
+                    </h3>
+                    
+                    <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+                        <span class="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm md:text-base font-medium">
+                            Mathématiques
+                        </span>
+                        <span class="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-sm md:text-base font-medium">
+                            Physique
+                        </span>
+                        <span class="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg text-sm md:text-base font-medium">
+                            Sciences de la Terre
+                        </span>
+                        <span class="px-4 py-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-sm md:text-base font-medium">
+                            Littérature Camerounaise
+                        </span>
+                        <span class="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-sm md:text-base font-medium">
+                            Informatique
+                        </span>
+                    </div>
+                </div>
+    
+                <!-- Avantages -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+                    <div class="text-center p-4">
+                        <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-users text-2xl text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Communauté mondiale</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Connectez-vous avec des étudiants de tous les continents
+                        </p>
+                    </div>
+                    
+                    <div class="text-center p-4">
+                        <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-lightbulb text-2xl text-purple-600 dark:text-purple-400"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Partage de connaissances</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Apprenez et enseignez dans un environnement collaboratif
+                        </p>
+                    </div>
+                    
+                    <div class="text-center p-4">
+                        <div class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-globe-africa text-2xl text-green-600 dark:text-green-400"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Depuis chez vous</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Traversez l'Afrique et le monde sans bouger de chez vous
+                        </p>
+                    </div>
+                </div>
+    
+                <!-- Bouton d'action -->
+                <div class="text-center">
+                    <button class="px-6 md:px-8 py-3 md:py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-base md:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                        Rejoindre le forum
+                    </button>
+                </div>
+    
+            </div>
+        </div>
+    </section>
     <!-- Call to Action Époustouflant -->
 <div class="relative py-20 px-4 overflow-hidden">
     <!-- Éléments décoratifs animés -->
@@ -623,15 +771,15 @@
         </div>
 
         <!-- Titre principal -->
-        <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-8 leading-tight">
-            Prêt à 
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight">
+           
             <span class="relative inline-block">
                 <span class="relative z-10 text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text animate-gradient bg-[length:200%_auto]">
-                    transformer
+                    Prêt à transformer votre Education ?
                 </span>
                 <span class="absolute -bottom-2 left-0 w-full h-3 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 rounded-full opacity-60 animate-pulse"></span>
             </span>
-            votre Education ?
+           
         </h2>
 
         <!-- Description -->
@@ -685,33 +833,46 @@
             </a>
 
             <!-- Bouton Secondaire -->
-            <a href="#" class="group relative overflow-hidden bg-white/80 backdrop-blur-sm hover:bg-white border-2 border-gray-200 hover:border-purple-300 text-gray-800 hover:text-purple-700 font-bold py-5 px-10 rounded-2xl text-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
+            <a href="#" class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/60 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 hover:border-purple-300 dark:hover:border-purple-500 text-gray-800 dark:text-gray-200 hover:text-purple-700 dark:hover:text-purple-400 font-bold py-5 px-10 rounded-2xl text-xl shadow-lg dark:shadow-gray-900/30 hover:shadow-xl dark:hover:shadow-purple-900/20 transition-all duration-500 transform hover:-translate-y-1">
                 <!-- Effet de fond -->
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-purple-50/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-purple-50/50 dark:via-purple-900/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                 
                 <!-- Contenu du bouton -->
                 <div class="relative flex items-center justify-center gap-3">
-                    <i class="fas fa-play-circle text-2xl text-purple-600 group-hover:scale-110 transition-transform duration-300"></i>
+                    <i class="fas fa-play-circle text-2xl text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform duration-300"></i>
                     <span class="text-lg font-semibold">Voir la démo</span>
-                    <i class="fas fa-external-link-alt text-sm text-gray-400 group-hover:text-purple-500 transition-colors"></i>
+                    <i class="fas fa-external-link-alt text-sm text-gray-400 dark:text-gray-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors"></i>
                 </div>
-                
-               
             </a>
         </div>
 
-        <!-- Témoignage rapide -->
-        <div class="mt-12 pt-10 border-t border-gray-100/50 animate-fade-in" style="animation-delay: 0.4s">
-            <div class="flex items-center justify-center gap-4">
+           <!-- Témoignage rapide -->
+        <div class="relative mt-12 pt-10 border-t border-gray-100/50 dark:border-gray-700/30 animate-fade-in" style="animation-delay: 0.4s">
+
+            <div class="flex items-center justify-center gap-4 relative z-10">
+            <div class="text-black dark:text-white italic text-sm font-medium
+                        bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl
+                        border-l-4 border-yellow-500 transform hover:scale-[1.02]
+                        transition-transform duration-500 ease-in-out max-w-xl text-center">
                 
-                <div class="text-gray-700 italic text-sm font-medium bg-gradient-to-r from-yellow-50 to-pink-50 p-4 rounded-xl border-l-4 border-yellow-500">
-                    <i class="fas fa-quote-left text-yellow-500 mr-2"></i>
-                    L'éducation est l'arme la plus puissante qu'on puisse utiliser pour changer le monde
-                    <i class="fas fa-quote-right text-pink-500 ml-2"></i>
-                    <div class="text-xs text-gray-600 mt-2 font-normal">— Nelson Mandela</div>
+                <i class="fas fa-quote-left text-yellow-500 mr-2"></i>
+                L'éducation est l'arme la plus puissante qu'on puisse utiliser pour changer le monde
+                <i class="fas fa-quote-right text-pink-500 ml-2"></i>
+
+                <div class="text-xs text-gray-600 dark:text-gray-400 mt-2 font-normal">
+                    — Nelson Mandela
                 </div>
             </div>
+            </div>
+
+        <!-- Image décorative -->
+        <div class="absolute bottom-[-80px] left-1/2 -translate-x-1/2 z-0 opacity-30 pointer-events-none">
+        <img src="/svg/shape-blue-blob-2.svg"
+                alt=""
+                class="w-96 md:w-[277px] lg:w-[277px]">
         </div>
+        </div>
+
     </div>
 
     <!-- Animation CSS -->

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Tuteur - EduConnect Africa</title>
+    <link rel="stylesheet" href="/src/style.css">
+    
+    <!-- CDN nécessaires -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
+    <link rel="stylesheet" href="/src/views/css/Inscription_Tu.css">
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Section Image avec dégradé -->
+        <div class="hidden lg:flex lg:w-1/2 gradient-bg items-center justify-center p-12 relative">
+            <!-- Bouton retour -->
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+            
+            <div class="text-center text-white z-10 relative">
+                <!-- Icônes flottantes décoratives -->
+                <i class="fas fa-chalkboard-teacher floating-icon text-yellow-500 text-4xl" style="top: 10%; left: 15%; animation-delay: 0s;"></i>
+                <i class="fas fa-graduation-cap floating-icon text-pink-500 text-5xl" style="top: 20%; right: 20%; animation-delay: 1s;"></i>
+                <i class="fas fa-award floating-icon text-yellow-400 text-3xl" style="bottom: 25%; left: 10%; animation-delay: 2s;"></i>
+                <i class="fas fa-user-graduate floating-icon text-pink-400 text-4xl" style="bottom: 15%; right: 15%; animation-delay: 1.5s;"></i>
+                
+                <div class="mb-8">
+                    <img 
+                        src="../../../Images/Logo.png" 
+                        alt="Logo EduConnect Africa"
+                        class="w-85 h-34 object-contain mx-auto"
+                    />
+                </div>
+                
+                <h1 class="text-5xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">
+                    Devenez Tuteur sur <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                    <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                </h1>
+                <p class="text-2xl mb-12 text-gray-200">Partagez vos connaissances et inspirez la prochaine génération</p>
+                
+                <div class="grid grid-cols-3 gap-8 mt-16">
+                    <div class="text-center group cursor-pointer">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
+                            <i class="fas fa-chalkboard-teacher text-5xl mb-3 text-yellow-400"></i>
+                            <p class="text-sm font-medium">Enseignement</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center group cursor-pointer">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
+                            <i class="fas fa-handshake text-5xl mb-3 text-pink-400"></i>
+                            <p class="text-sm font-medium">Mentorat</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center group cursor-pointer">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
+                            <i class="fas fa-brain text-5xl mb-3 text-cyan-300 drop-shadow-lg"></i>
+                            <p class="text-sm font-medium">Expertise</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Formulaire Responsive -->
+        <div class="w-full lg:w-1/2 form-section px-4 sm:px-6 lg:px-8">
+            <div class="form-container max-w-2xl mx-auto relative">
+                <!-- Icône Home (mobile seulement) -->
+                <div class="absolute -top-4 -left-4 lg:hidden">
+                    <a href="/" 
+                    class="home-icon-mobile group relative flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-50 to-gray-50 hover:from-blue-100 hover:to-gray-100 rounded-full transition-all duration-300 shadow-md hover:shadow-lg border border-gray-200"
+                    aria-label="Retour à l'accueil">
+                        <i class="fas fa-home text-blue-600 group-hover:text-blue-700 text-lg"></i>
+                        
+                        <!-- Tooltip (message au survol) -->
+                        <div class="home-tooltip absolute left-full top-1/2 ml-3 transform -translate-y-1/2 bg-gray-900 text-white text-xs font-medium py-2 px-3 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 whitespace-nowrap z-50 shadow-xl">
+                            Retour à l'accueil
+                            <!-- Pointe de la tooltip -->
+                            <div class="absolute -left-1 top-1/2 transform -translate-y-1/2 w-0 h-0 border-t-2 border-b-2 border-r-2 border-t-transparent border-b-transparent border-r-gray-900"></div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Logo et titre -->
+                <div class="text-center mb-6 sm:mb-8">
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+                        Inscription Tuteur
+                    </h2>
+                    <p class="text-gray-600 text-base sm:text-lg mb-2">
+                        Rejoignez notre équipe d'experts
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-1 text-lg sm:text-xl">
+                        <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span>
+                        <span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                        <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+                    </div>
+                </div>
+
+                <!-- Formulaire -->
+                <form id="tutorRegistrationForm" class="space-y-4 sm:space-y-5">
+                    <!-- Nom et Prénom -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-user label-icon"></i>Nom
+                            </label>
+                            <input type="text" id="name" name="nom" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white text-sm sm:text-base"
+                                placeholder="Votre nom">
+                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        </div>
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-user label-icon"></i>Prénom
+                            </label>
+                            <input type="text" id="prenom" name="prenom" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white text-sm sm:text-base"
+                                placeholder="Votre prénom">
+                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        </div>
+                    </div>
+
+                    <!-- Sexe -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-venus-mars label-icon"></i>Sexe
+                        </label>
+                        <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
+                            <label class="flex items-center cursor-pointer group">
+                                <input type="radio" name="sexe" value="masculin" required class="radio-custom">
+                                <span class="ml-3 text-sm sm:text-base text-gray-700 font-medium group-hover:text-yellow-600 transition">Masculin</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer group">
+                                <input type="radio" name="sexe" value="feminin" required class="radio-custom">
+                                <span class="ml-3 text-sm sm:text-base text-gray-700 font-medium group-hover:text-pink-600 transition">Féminin</span>
+                            </label>
+                        </div>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                    </div>
+
+                    <!-- Niveau d'études / Diplôme -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-graduation-cap label-icon"></i>Niveau d'études / Diplôme
+                        </label>
+                        <select id="diplome" name="diplome" required
+                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white appearance-none cursor-pointer text-sm sm:text-base">
+                            <option value="">Sélectionnez votre niveau</option>
+                            <option value="bac+5">Bac+5 (Master)</option>
+                            <option value="ingenieur">Ingénieur</option>
+                            <option value="phd">PhD / Doctorat</option>
+                            <option value="professeur">Professeur</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                    </div>
+
+                    <!-- Matières enseignées -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-book label-icon"></i>Matières enseignées
+                        </label>
+                        
+                        <!-- Champ avec matières sélectionnées -->
+                        <div id="selectedMatieresContainer" class="w-full min-h-[50px] px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl bg-white text-sm sm:text-base flex flex-wrap gap-2 items-center">
+                            <span id="placeholderText" class="text-gray-400">Sélectionnez vos matières ci-dessous...</span>
+                        </div>
+                        
+                        <!-- Liste des matières disponibles -->
+                        <div class="mt-3 flex flex-wrap gap-2" id="matieresDisponibles">
+                            <button type="button" class="matiere-btn" data-matiere="mathematiques" data-icon="📐">
+                                <i class="fas fa-square-root-alt mr-1"></i> Mathématiques
+                            </button>
+                            <button type="button" class="matiere-btn" data-matiere="physique" data-icon="⚛️">
+                                <i class="fas fa-atom mr-1"></i> Physique
+                            </button>
+                            <button type="button" class="matiere-btn" data-matiere="sciences-terre" data-icon="🌍">
+                                <i class="fas fa-globe mr-1"></i> Sciences de la Terre
+                            </button>
+                            <button type="button" class="matiere-btn" data-matiere="litterature" data-icon="📚">
+                                <i class="fas fa-book-open mr-1"></i> Littérature camerounaise
+                            </button>
+                            <button type="button" class="matiere-btn" data-matiere="informatique" data-icon="💻">
+                                <i class="fas fa-laptop-code mr-1"></i> Informatique
+                            </button>
+                        </div>
+                        
+                        <input type="hidden" id="matieres" name="matieres" required>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                    </div>
+
+                    <!-- Langue -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-language label-icon"></i>Langue
+                        </label>
+                        <select id="langue" name="langue" required
+                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white appearance-none cursor-pointer text-sm sm:text-base">
+                            <option value="">Sélectionnez une langue</option>
+                            <option value="francais">🇫🇷 Français</option>
+                            <option value="anglais">🇬🇧 Anglais</option>
+                        </select>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-envelope label-icon"></i>Email
+                        </label>
+                        <div class="relative">
+                            <input type="email" id="email" name="email" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white pr-10 sm:pr-12 text-sm sm:text-base"
+                                placeholder="exemple@email.com">
+                            <i class="fas fa-at absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 text-sm sm:text-base"></i>
+                        </div>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        <p class="success-message text-green-600 text-xs mt-2 hidden font-medium success-pulse">
+                            <i class="fas fa-check-circle"></i> Email valide et vérifié
+                        </p>
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-lock label-icon"></i>Mot de passe
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white pr-10 sm:pr-12 text-sm sm:text-base"
+                                placeholder="Créez un mot de passe sécurisé">
+                            <i class="fas fa-eye eye-toggle absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 cursor-pointer text-sm sm:text-base"></i>
+                        </div>
+                        
+                        <!-- Barre de force du mot de passe -->
+                        <div class="password-strength-container mt-3">
+                            <div class="password-strength-bar-container">
+                                <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-xs sm:text-sm" id="passwordStrengthText">Force du mot de passe</span>
+                                <span class="text-xs sm:text-sm font-bold" id="passwordScore"></span>
+                            </div>
+                            
+                            <!-- Exigences du mot de passe -->
+                            <div class="password-requirements mt-3 space-y-1.5">
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqLength"></i>
+                                    <span class="text-xs sm:text-sm">Au moins 8 caractères</span>
+                                </div>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqUppercase"></i>
+                                    <span class="text-xs sm:text-sm">Une lettre majuscule</span>
+                                </div>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqLowercase"></i>
+                                    <span class="text-xs sm:text-sm">Une lettre minuscule</span>
+                                </div>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqNumber"></i>
+                                    <span class="text-xs sm:text-sm">Un chiffre</span>
+                                </div>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqSpecial"></i>
+                                    <span class="text-xs sm:text-sm">Un caractère spécial (!@#$%^&*)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation du mot de passe -->
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-lock label-icon"></i>Confirmer le mot de passe
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="confirmPassword" name="confirmPassword" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white pr-10 sm:pr-12 text-sm sm:text-base"
+                                placeholder="Répétez votre mot de passe">
+                            <i class="fas fa-eye eye-toggle absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 cursor-pointer text-sm sm:text-base"></i>
+                        </div>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        
+                        <!-- Message de correspondance des mots de passe -->
+                        <div class="mt-2" id="passwordMatchMessage"></div>
+                    </div>
+
+                    <!-- Bouton Submit -->
+                    <div class="pt-2">
+                        <button type="submit" id="submitBtn"
+                            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all hover:from-blue-700 hover:to-blue-800 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <span id="btnText">
+                                <i class="fas fa-user-tie mr-2"></i> Devenir Tuteur
+                            </span>
+                            <span id="btnLoader" class="hidden">
+                                <i class="fas fa-spinner fa-spin mr-2"></i> Inscription en cours...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Lien de connexion -->
+                <div class="text-center mt-6 sm:mt-8 pb-6 pt-4 border-t border-gray-200">
+                    <p class="text-gray-600 text-sm sm:text-base">
+                        Déjà inscrit comme tuteur ?
+                        <a href="../templates/Connexion.html" class="font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent hover:from-yellow-700 hover:to-pink-700 transition-all">
+                            Connectez-vous ici
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+   <script src="/src/views/components/Inscription.js"></script> 
+</body>
+</html>

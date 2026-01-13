@@ -4,324 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription Étudiant - EduConnect Africa</title>
-     <link rel="stylesheet" href="/src/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .gradient-bg {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .gradient-bg::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-        
-        .gradient-bg::after {
-            content: '';
-            position: absolute;
-            bottom: -50%;
-            left: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
-            animation: pulse 10s ease-in-out infinite reverse;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.2) translate(10%, 10%); }
-        }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .input-focus:focus {
-            border-color: #f59e0b;
-            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .input-field {
-            transition: all 0.3s ease;
-            border: 2px solid #e5e7eb;
-        }
-        
-        .input-field:hover {
-            border-color: #f59e0b;
-        }
-        
-        .country-dropdown {
-            max-height: 280px;
-            overflow-y: auto;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border: 2px solid #f59e0b;
-        }
-        
-        .country-dropdown::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .country-dropdown::-webkit-scrollbar-track {
-            background: #f3f4f6;
-        }
-        
-        .country-dropdown::-webkit-scrollbar-thumb {
-            background: #f59e0b;
-            border-radius: 4px;
-        }
-        
-        .country-item {
-            transition: all 0.2s ease;
-        }
-        
-        .country-item:hover {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), rgba(236, 72, 153, 0.1));
-            transform: translateX(5px);
-        }
-        
-        .error-shake {
-            animation: shake 0.4s;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-            20%, 40%, 60%, 80% { transform: translateX(8px); }
-        }
-        
-        .btn-gradient {
-            background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-        }
-        
-        .btn-gradient:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-        }
-        
-        .btn-gradient:active {
-            transform: translateY(-1px);
-        }
-        
-        .radio-custom {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #d1d5db;
-            border-radius: 50%;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .radio-custom:checked {
-            border-color: #f59e0b;
-            background: #f59e0b;
-        }
-        
-        .radio-custom:checked::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-        }
-        
-        .floating-icon {
-            position: absolute;
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        
-        .label-icon {
-            color: #f59e0b;
-            margin-right: 8px;
-            font-size: 16px;
-        }
-        
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 20px;
-            padding-right: 40px;
-        }
-        
-        .success-pulse {
-            animation: successPulse 0.5s ease;
-        }
-        
-        @keyframes successPulse {
-            0% { transform: scale(0.95); opacity: 0; }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        /* Styles pour la force du mot de passe */
-        .password-strength-container {
-            margin-top: 8px;
-        }
-        
-        .password-strength-bar-container {
-            height: 8px;
-            background-color: #e5e7eb;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 6px;
-        }
-        
-        .password-strength-bar {
-            height: 100%;
-            width: 0%;
-            border-radius: 4px;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background-color: #ef4444; /* Couleur par défaut - rouge */
-        }
-        
-        /* Classes pour les différentes forces (sans dégradé) */
-        .password-strength-bar.strength-weak {
-            background-color: #ef4444; /* Rouge */
-        }
-        
-        .password-strength-bar.strength-medium {
-            background-color: #f59e0b; /* Orange */
-        }
-        
-        .password-strength-bar.strength-strong {
-            background-color: #10b981; /* Vert */
-        }
-        
-        .password-strength-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .password-strength-text {
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .strength-weak { 
-            color: #ef4444; 
-        }
-        
-        .strength-medium { 
-            color: #f59e0b; 
-        }
-        
-        .strength-strong { 
-            color: #10b981; 
-        }
-        
-        .password-score {
-            font-size: 11px;
-            font-weight: bold;
-        }
-        
-        .password-match-message {
-            font-size: 12px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .match-error {
-            color: #ef4444;
-        }
-        
-        .match-success {
-            color: #10b981;
-        }
-        
-        .password-requirements {
-            background-color: #f9fafb;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 8px;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .requirement {
-            display: flex;
-            align-items: center;
-            margin-bottom: 6px;
-            font-size: 11px;
-            transition: all 0.3s ease;
-        }
-        
-        .requirement:last-child {
-            margin-bottom: 0;
-        }
-        
-        .requirement-met {
-            color: #10b981;
-        }
-        
-        .requirement-not-met {
-            color: #9ca3af;
-        }
-        
-        .requirement-icon {
-            margin-right: 6px;
-            font-size: 10px;
-        }
-        
-        .eye-toggle {
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        
-        .eye-toggle:hover {
-            color: #f59e0b;
-        }
-        
-        /* Animation pour la barre de force */
-        @keyframes barFill {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(0%); }
-        }
-        
-        /* Animation pour le texte */
-        @keyframes textPop {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-    </style>
+    <link rel="stylesheet" href="../../style.css">
+    <!-- CDN nécessaires -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="/src/views/css/Inscription_Et.css">
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800">
     <div class="flex min-h-screen">
         <!-- Section Image avec dégradé -->
         <div class="hidden lg:flex lg:w-1/2 gradient-bg items-center justify-center p-12 relative">
+            <!-- Bouton retour -->
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Retour
+            </a>
+            
             <div class="text-center text-white z-10 relative">
                 <!-- Icônes flottantes décoratives -->
                 <i class="fas fa-book floating-icon text-yellow-500 text-3xl" style="top: 10%; left: 15%; animation-delay: 0s;"></i>
@@ -334,7 +35,7 @@
                         <img 
                             src="../../../Images/Logo.png" 
                             alt="Logo EduConnect Africa"
-                            class="w-25 h-34 object-contain mx-auto"
+                            class="w-85 h-34 object-contain mx-auto"
                         />
                     </div>
                 </div>
@@ -342,236 +43,320 @@
                     Bienvenue sur  <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
                     <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
                 </h1>
-                <p class="text-2xl mb-12 text-gray-200">Votre portail éducatif pour l'excellence académique</p>
+                <p class="text-2xl mb-12 text-gray-200 dark:text-gray-300">Votre portail éducatif pour l'excellence académique</p>
                 
                 <div class="grid grid-cols-3 gap-8 mt-16">
                     <div class="text-center group cursor-pointer">
-                        <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:bg-opacity-20 group-hover:scale-110">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
                             <i class="fas fa-book-open text-5xl mb-3 text-yellow-400"></i>
                             <p class="text-sm font-medium">Cours en ligne</p>
                         </div>
                     </div>
                     <div class="text-center group cursor-pointer">
-                        <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:bg-opacity-20 group-hover:scale-110">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
                             <i class="fas fa-users text-5xl mb-3 text-pink-400"></i>
-                            <p class="text-sm font-medium">Communauté</p>
+                            <p class="text-sm font-medium">TuTeur</p>
                         </div>
                     </div>
                     <div class="text-center group cursor-pointer">
-                        <div class="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:bg-opacity-20 group-hover:scale-110">
+                        <div class="border border-white border-opacity-30 p-6 rounded-2xl backdrop-blur-sm transition-all duration-300 group-hover:border-opacity-50 group-hover:scale-110">
                             <i class="fas fa-brain text-5xl mb-3 text-cyan-300 drop-shadow-lg"></i>
-                            <p class="text-sm font-medium">Assistant IA </p>
+                            <p class="text-sm font-medium">Assistant IA</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Section Formulaire -->
-        <div class="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
-            <div class="max-w-md w-full">
-                <!-- Logo -->
-                <div class="text-center mb-10">
-                    
-                    <h2 class="text-4xl font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent mb-3">
-                        Créer un compte
-                    </h2>
-                    <p class="text-gray-600 text-lg">Rejoignez la communauté</p> <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
-                    <span style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Africa</span>
+        <!-- Section Formulaire Responsive -->
+        <div class="w-full lg:w-1/2 form-section px-4 sm:px-6 lg:px-8">
+            <div class="form-container max-w-2xl mx-auto relative">
+                <!-- Icône Home (mobile seulement) -->
+                <div class="absolute -top-4 -left-4 lg:hidden">
+                    <a href="/" 
+                    class="home-icon-mobile group relative flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-50 to-gray-50 hover:from-blue-100 hover:to-gray-100 rounded-full transition-all duration-300 shadow-md hover:shadow-lg border border-gray-200"
+                    aria-label="Retour à l'accueil">
+                        <i class="fas fa-home text-blue-600 group-hover:text-blue-700 text-lg"></i>
+                        
+                        <!-- Tooltip (message au survol) -->
+                        <div class="home-tooltip absolute left-full top-1/2 ml-3 transform -translate-y-1/2 bg-gray-900 text-white text-xs font-medium py-2 px-3 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 whitespace-nowrap z-50 shadow-xl">
+                            Retour à l'accueil
+                            <!-- Pointe de la tooltip -->
+                            <div class="absolute -left-1 top-1/2 transform -translate-y-1/2 w-0 h-0 border-t-2 border-b-2 border-r-2 border-t-transparent border-b-transparent border-r-gray-900"></div>
+                        </div>
+                    </a>
                 </div>
 
-                <!-- Formulaire -->
-                <form id="registrationForm" class="space-y-6">
+                <!-- Logo et titre -->
+                <div class="text-center form-title mb-6 sm:mb-8">
+                    <h2 class="text-2xl sm:text-3xl position:center text-4xl font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+                        Créer un compte 
+                    </h2>
+                    <h2 class="text-2xl sm:text-3xl position:center font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+                        Etudiant
+                    </h2>
+                    
+                    <!-- Indicateur d'étape -->
+                    <div class="step-indicator flex justify-center space-x-4 mt-6">
+                        <div class="step active flex flex-col items-center">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold text-sm">
+                                1
+                            </div>
+                            <span class="text-xs mt-2 text-gray-700 dark:text-gray-300 font-medium">Informations</span>
+                        </div>
+                        <div class="step-line w-12 h-1 bg-gray-300 dark:bg-gray-600 mt-4"></div>
+                        <div class="step flex flex-col items-center">
+                            <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold text-sm">
+                                2
+                            </div>
+                            <span class="text-xs mt-2 text-gray-500 dark:text-gray-500 font-medium">Détails</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 1 - Informations de base -->
+                <form id="registrationForm" class="space-y-4 sm:space-y-5" data-step="1">
                     <!-- Nom et Prénom -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <div class="form-row grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                 <i class="fas fa-user label-icon"></i>Nom
                             </label>
-                            <input type="text" id="nom" name="nom" required
-                                class="w-full px-4 py-3 input-field rounded-xl input-focus outline-none bg-white"
+                            <input type="text" id="name" name="name" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 text-sm sm:text-base dark:border-gray-600"
                                 placeholder="Votre nom">
                             <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                         </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                 <i class="fas fa-user label-icon"></i>Prénom
                             </label>
                             <input type="text" id="prenom" name="prenom" required
-                                class="w-full px-4 py-3 input-field rounded-xl input-focus outline-none bg-white"
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 text-sm sm:text-base dark:border-gray-600"
                                 placeholder="Votre prénom">
                             <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                         </div>
                     </div>
 
                     <!-- Sexe -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                             <i class="fas fa-venus-mars label-icon"></i>Sexe
                         </label>
-                        <div class="flex gap-8">
+                        <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
                             <label class="flex items-center cursor-pointer group">
                                 <input type="radio" name="sexe" value="masculin" required class="radio-custom">
-                                <span class="ml-3 text-gray-700 font-medium group-hover:text-yellow-600 transition">Masculin</span>
+                                <span class="ml-3 text-sm sm:text-base text-gray-700 dark:text-gray-300 font-medium group-hover:text-yellow-600 dark:group-hover:text-yellow-500 transition">Masculin</span>
                             </label>
                             <label class="flex items-center cursor-pointer group">
                                 <input type="radio" name="sexe" value="feminin" required class="radio-custom">
-                                <span class="ml-3 text-gray-700 font-medium group-hover:text-pink-600 transition">Féminin</span>
+                                <span class="ml-3 text-sm sm:text-base text-gray-700 dark:text-gray-300 font-medium group-hover:text-pink-600 dark:group-hover:text-pink-500 transition">Féminin</span>
                             </label>
                         </div>
                         <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                     </div>
 
                     <!-- Email -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             <i class="fas fa-envelope label-icon"></i>Email
                         </label>
                         <div class="relative">
                             <input type="email" id="email" name="email" required
-                                class="w-full px-4 py-3 input-field rounded-xl input-focus outline-none bg-white pr-12"
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
                                 placeholder="exemple@email.com">
-                            <i class="fas fa-at absolute right-4 top-4 text-gray-400"></i>
+                            <i class="fas fa-at absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 text-sm sm:text-base"></i>
                         </div>
                         <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
-                        <p class="success-message text-green-600 text-xs mt-2 hidden font-medium success-pulse">
+                        <p class="success-message text-green-600 dark:text-green-400 text-xs mt-2 hidden font-medium success-pulse">
                             <i class="fas fa-check-circle"></i> Email valide et vérifié
                         </p>
                     </div>
 
                     <!-- Mot de passe -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             <i class="fas fa-lock label-icon"></i>Mot de passe
                         </label>
                         <div class="relative">
                             <input type="password" id="password" name="password" required
-                                class="w-full px-4 py-3 input-field rounded-xl input-focus outline-none bg-white pr-12"
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
                                 placeholder="Créez un mot de passe sécurisé">
-                            <i class="fas fa-eye eye-toggle absolute right-4 top-4 text-gray-400"></i>
+                            <i class="fas fa-eye eye-toggle absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 cursor-pointer text-sm sm:text-base"></i>
                         </div>
                         
                         <!-- Barre de force du mot de passe -->
-                        <div class="password-strength-container">
+                        <div class="password-strength-container mt-3">
                             <div class="password-strength-bar-container">
                                 <div class="password-strength-bar" id="passwordStrengthBar"></div>
                             </div>
-                            <div class="password-strength-info">
-                                <span class="password-strength-text" id="passwordStrengthText">Force du mot de passe</span>
-                                <span class="password-score" id="passwordScore"></span>
+                            <div class="password-strength-info flex justify-between items-center mt-2">
+                                <span class="password-strength-text text-xs sm:text-sm dark:text-gray-400" id="passwordStrengthText">Force du mot de passe</span>
+                                <span class="password-score text-xs sm:text-sm font-bold" id="passwordScore"></span>
                             </div>
                             
                             <!-- Exigences du mot de passe -->
-                            <div class="password-requirements mt-2">
-                                <div class="requirement">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met" id="reqLength"></i>
-                                    <span>Au moins 8 caractères</span>
+                            <div class="password-requirements mt-3 space-y-1.5">
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqLength"></i>
+                                    <span class="text-xs sm:text-sm dark:text-gray-400">Au moins 8 caractères</span>
                                 </div>
-                                <div class="requirement">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met" id="reqUppercase"></i>
-                                    <span>Une lettre majuscule</span>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqUppercase"></i>
+                                    <span class="text-xs sm:text-sm dark:text-gray-400">Une lettre majuscule</span>
                                 </div>
-                                <div class="requirement">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met" id="reqLowercase"></i>
-                                    <span>Une lettre minuscule</span>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqLowercase"></i>
+                                    <span class="text-xs sm:text-sm dark:text-gray-400">Une lettre minuscule</span>
                                 </div>
-                                <div class="requirement">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met" id="reqNumber"></i>
-                                    <span>Un chiffre</span>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqNumber"></i>
+                                    <span class="text-xs sm:text-sm dark:text-gray-400">Un chiffre</span>
                                 </div>
-                                <div class="requirement">
-                                    <i class="fas fa-circle requirement-icon requirement-not-met" id="reqSpecial"></i>
-                                    <span>Un caractère spécial (!@#$%^&*)</span>
+                                <div class="requirement flex items-center gap-2">
+                                    <i class="fas fa-circle requirement-icon requirement-not-met text-xs" id="reqSpecial"></i>
+                                    <span class="text-xs sm:text-sm dark:text-gray-400">Un caractère spécial (!@#$%^&*)</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Confirmation du mot de passe -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             <i class="fas fa-lock label-icon"></i>Confirmer le mot de passe
                         </label>
                         <div class="relative">
                             <input type="password" id="confirmPassword" name="confirmPassword" required
-                                class="w-full px-4 py-3 input-field rounded-xl input-focus outline-none bg-white pr-12"
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
                                 placeholder="Répétez votre mot de passe">
-                            <i class="fas fa-eye eye-toggle absolute right-4 top-4 text-gray-400"></i>
+                            <i class="fas fa-eye eye-toggle absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 cursor-pointer text-sm sm:text-base"></i>
                         </div>
                         <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                         
                         <!-- Message de correspondance des mots de passe -->
-                        <div class="password-match-message" id="passwordMatchMessage">
+                        <div class="password-match-message mt-2" id="passwordMatchMessage">
                             <!-- Le message sera ajouté dynamiquement -->
                         </div>
                     </div>
 
+                    <!-- Boutons Navigation Étape 1 -->
+                    <div class="form-actions pt-4 flex justify-end">
+                        <button type="button" id="nextBtn"
+                            class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Suivant <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- ÉTAPE 2 - Détails supplémentaires (cachée par défaut) -->
+                
+                <form id="registrationFormStep2" class="space-y-4 sm:space-y-5 hidden" data-step="2">
                     <!-- Langue -->
-                    <div class="py-5">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <div class="form-field">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             <i class="fas fa-language label-icon"></i>Langue
                         </label>
                         <select id="langue" name="langue" required
-                            class="w-full px-4 py-3 input-field rounded-xl input-focus outline-none bg-white appearance-none cursor-pointer">
+                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600">
                             <option value="">Sélectionnez une langue</option>
                             <option value="francais">🇫🇷 Français</option>
                             <option value="anglais">🇬🇧 Anglais</option>
                         </select>
                         <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                     </div>
-
+                
+                    <!-- NOUVEAU: Type d'étude et Niveau sur la même ligne -->
+                    <div class="form-row grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <!-- Type d'étude -->
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-graduation-cap label-icon"></i>Type d'étude
+                            </label>
+                            <select id="typeEtude" name="typeEtude" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600">
+                                <option value="">Sélectionnez un type</option>
+                                <option value="universitaire">Universitaire</option>
+                                <option value="secondaire">Secondaire</option>
+                                <option value="autre">Autre formation</option>
+                            </select>
+                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        </div>
+                
+                        <!-- Niveau d'étude -->
+                        <div class="form-field">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-chart-line label-icon"></i>Niveau d'étude
+                            </label>
+                            <select id="niveauEtude" name="niveauEtude" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 appearance-none cursor-pointer text-sm sm:text-base dark:border-gray-600">
+                                <option value="">Sélectionnez d'abord le type</option>
+                                <!-- Les options seront mises à jour dynamiquement -->
+                            </select>
+                            <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
+                        </div>
+                    </div>
+                
                     <!-- Pays -->
-                    <div class="relative py-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <div class="form-field relative">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             <i class="fas fa-globe-africa label-icon"></i>Pays
                         </label>
                         <div class="relative">
                             <input type="text" id="paysInput" autocomplete="off"
-                                class="w-full px-4 py-3 input-field rounded-xl input-focus outline-none bg-white pr-12"
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
                                 placeholder="Rechercher votre pays...">
-                            <i class="fas fa-search absolute right-4 top-4 text-gray-400"></i>
+                            <i class="fas fa-search absolute right-3 sm:right-4 top-3 sm:top-4 text-gray-400 text-sm sm:text-base"></i>
                         </div>
                         <input type="hidden" id="paysSelected" name="pays">
-                        <div id="paysDropdown" class="absolute z-10 w-full country-dropdown rounded-xl shadow-2xl mt-2 hidden">
+                        <div id="paysDropdown" class="absolute z-10 w-full country-dropdown rounded-xl shadow-2xl mt-2 hidden max-h-60 overflow-y-auto dark:bg-gray-800 dark:border dark:border-gray-700">
                             <div id="paysResults" class="py-2"></div>
                         </div>
                         <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                     </div>
-
-                     <!-- Téléphone -->
-                    <div class="mt-8">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1 lg:mb-2">
+                
+                    <!-- Téléphone -->
+                    <div class="form-field phone-section">
+                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             <i class="fas fa-phone label-icon"></i>Téléphone
                         </label>
-                        <div class="flex flex-col lg:flex-row gap-3 ">
+                        <div class="phone-input-group flex gap-2">
                             <input type="text" id="countryCode" readonly
-                                class="w-full lg:w-24 px-4 py-3 input-field rounded-xl bg-gradient-to-br from-yellow-50 to-pink-50 text-center font-bold text-gray-700 text-sm lg:text-base"
+                                class="country-code-input w-16 sm:w-20 px-2 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl bg-gradient-to-br from-yellow-50 to-pink-50 dark:from-yellow-900/30 dark:to-pink-900/30 text-center font-bold text-gray-700 dark:text-gray-300 text-sm sm:text-base dark:border-gray-600"
                                 placeholder="+___">
-                            <input type="tel" id="telephone" name="telephone" required
-                                class="w-full px-4 py-3 input-field rounded-xl input-focus outline-none bg-white pr-12"
+                            <input type="tel" id="phone" name="telephone" required
+                                class="w-full px-3 sm:px-4 py-2.5 sm:py-3 input-field rounded-xl input-focus outline-none bg-white dark:bg-gray-800 dark:text-gray-100 pr-10 sm:pr-12 text-sm sm:text-base dark:border-gray-600"
                                 placeholder="Numéro de téléphone">
                         </div>
-                        <p class="error-message text-red-500 text-xs mt-1 lg:mt-2 hidden font-medium"></p>
+                        <p class="error-message text-red-500 text-xs mt-2 hidden font-medium"></p>
                     </div>
+                
+                    <!-- Boutons Navigation Étape 2 -->
+                    <div class="form-actions pt-6 flex flex-col-reverse sm:flex-row sm:justify-between gap-4">
 
-                    <!-- Bouton Submit -->
-                    <button type="submit" id="submitBtn"
-                        class="w-full btn-gradient text-white py-4 mt-4 rounded-xl font-bold text-lg">
-                        <span id="btnText">
-                            <i class="fas fa-user-plus mr-2"></i> S'inscrire maintenant
-                        </span>
-                        <span id="btnLoader" class="hidden">
-                            <i class="fas fa-spinner fa-spin mr-2"></i> Inscription en cours...
-                        </span>
-                    </button>
+                        <button type="button" id="backBtn"
+                            class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-8 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Retour
+                        </button>
+                        
+                        <button type="submit" id="submitBtn"
+                            class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-10 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center">
+                            <span id="btnText" class="flex items-center">
+                                <i class="fas fa-user-plus mr-2"></i> S'inscrire
+                            </span>
+                            <span id="btnLoader" class="hidden items-center">
+                                <i class="fas fa-spinner fa-spin mr-2"></i> Inscription...
+                            </span>
+                        </button>
+                    </div>
                 </form>
 
                 <!-- Lien de connexion -->
-                <div class="mt-6 lg:mt-8 text-center">
-                    <p class="text-gray-600 text-sm lg:text-base">
-                         déjà un compte ?
-                        <a href="#" class="font-bold bg-gradient-to-r from-yellow-600 to-pink-600 bg-clip-text text-transparent hover:from-yellow-700 hover:to-pink-700 transition-all">
-                            Connectez-vous ici 
+                <div class="login-link text-center mt-6 sm:mt-8 pb-6">
+                    <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+                        Déjà un compte ?
+                        <a href="../templates/Connexion.html" class="font-bold bg-gradient-to-r from-yellow-600 to-pink-600 dark:from-yellow-500 dark:to-pink-500 bg-clip-text text-transparent hover:from-yellow-700 hover:to-pink-700 transition-all">
+                            Connectez-vous ici
                         </a>
                     </p>
                 </div>
@@ -579,6 +364,6 @@
         </div>
     </div>
 
-    <script src="../components/Inscription.js"></script>
+    <script src="/src/views/components/Inscription_Et.js"></script>
 </body>
 </html>
