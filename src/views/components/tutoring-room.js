@@ -501,390 +501,315 @@ class TutoringRoomManager {
             }
         });
         
-        // Afficher/masquer le placeholder vidéo
-        const studentPlaceholder = document.getElementById('student-placeholder');
-        const studentVideo = document.getElementById('student-video');
-        
-        if (studentPlaceholder) {
-            studentPlaceholder.style.display = this.isVideoOff ? 'flex' : 'none';
-        }
-        if (studentVideo) {
-            studentVideo.style.display = this.isVideoOff ? 'none' : 'block';
-        }
-        
-        // Notification
-        const status = this.isVideoOff ? 'désactivée' : 'activée';
-        if (typeof showNotification === 'function') {
-            showNotification('Vidéo ' + status, 'Votre caméra est ' + status, 'info');
+      // scripts/tutoring-room.js
+// Gestionnaire complet de la salle de tutorat
+
+class TutoringRoomManager {
+    constructor() {
+        this.sessionId = this.generateSessionId();
+        this.tutor = null;
+        this.messages = [];
+        this.isAudioMuted = false;
+        this.isVideoOff = false;
+        this.sessionTimer = null;
+        this.sessionSeconds = 0;
+
+        this.peerManager = null;
+        this.firebaseManager = null;
+        this.firebaseSessionId = null;
+        this.chatListener = null;
+        this.whiteboardManager = null;
+
+        this.init();
+    }
+
+    generateSessionId() {
+        return 'session_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    /* =============================
+       INITIALISATION
+    ============================== */
+    async init() {
+        try {
+            await this.loadSessionData();
+            this.initializeUI();
+            this.setupEventListeners();
+            this.startSessionTimer();
+            await this.initializePeerConnection();
+            await this.initializeFirebase();
+            this.simulateLoading();
+
+            setTimeout(() => {
+                if (typeof showNotification === 'function') {
+                    showNotification(
+                        'Session démarrée',
+                        `Connecté avec ${this.tutor?.name || 'le tuteur'}`,
+                        'success'
+                    );
+                }
+            }, 1500);
+
+        } catch (error) {
+            console.error(error);
+            this.showError('Impossible de démarrer la session');
         }
     }
 
-    async sendMessage() {
-        const chatInput = document.getElementById('chat-input');
-        if (!chatInput) return;
-        
-        const messageContent = chatInput.value.trim();
-        if (!messageContent) return;
-        
-        // Créer l'objet message
-        const messageData = {
-            id: Date.now().toString(),
-            sender: "student",
-            name: "Vous",
-            content: messageContent,
-            type: "text",
-            timestamp: new Date()
-        };
-        
-        // 1. Envoyer via Peer.js (P2P)
-        if (this.peerManager) {
-            this.peerManager.sendMessage('chat_message', {
-                content: messageContent,
-                sender: 'student',
-                timestamp: Date.now()
-            });
-        }
-        
-        // 2. Envoyer via Firebase
-        if (this.firebaseManager && this.firebaseSessionId) {
-            try {
-                await this.firebaseManager.sendChatMessage(this.firebaseSessionId, messageData);
-            } catch (error) {
-                console.error('Erreur d\'envoi Firebase:', error);
-                // Fallback local
-                this.addMessageLocally(messageData);
-            }
+    async loadSessionData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tutorId = urlParams.get('tutor') || '1';
+
+        if (typeof MockData !== 'undefined' && MockData.getTutorById) {
+            this.tutor = MockData.getTutorById(parseInt(tutorId));
         } else {
-            // 3. Fallback local
-            this.addMessageLocally(messageData);
-            this.simulateTutorResponse();
+            this.tutor = {
+                id: tutorId,
+                name: "Dr. Marie Curie",
+                subjectName: "Physique",
+                avatar: "MC",
+                peerId: "tutor_" + tutorId
+            };
         }
-        
-        // Effacer le champ de saisie
-        chatInput.value = '';
+
+        this.messages = this.getDefaultMessages();
+    }
+
+    getDefaultMessages() {
+        return [
+            {
+                id: 1,
+                sender: "tutor",
+                name: "Dr. Marie Curie",
+                time: "10:00",
+                content: "Bonjour ! Comment puis-je vous aider ?",
+                type: "text"
+            }
+        ];
+    }
+
+    /* =============================
+       UI
+    ============================== */
+    initializeUI() {
+        this.updateTutorInfo();
+        this.renderMessages();
+        this.updateControlStates();
+        this.simulateTyping();
+    }
+
+    updateTutorInfo() {
+        document.querySelectorAll('#tutor-name, #tutor-name-display')
+            .forEach(el => el && (el.textContent = this.tutor.name));
+
+        const badge = document.querySelector('.subject-badge');
+        if (badge) badge.textContent = this.tutor.subjectName;
+
+        const avatar = document.querySelector('.tutor-avatar');
+        if (avatar) avatar.textContent = this.tutor.avatar;
+    }
+
+    /* =============================
+       PEER.JS
+    ============================== */
+    async initializePeerConnection() {
+        if (typeof Peer === 'undefined') return;
+
+        this.peerManager = new PeerManager();
+        const stream = await this.peerManager.startLocalStream();
+        if (!stream) return;
+
+        const tutorPeerId = this.tutor.peerId;
+        if (tutorPeerId) {
+            await this.peerManager.connectToTutor(tutorPeerId);
+        }
+    }
+
+    /* =============================
+       FIREBASE
+    ============================== */
+    async initializeFirebase() {
+        if (typeof FirebaseManager === 'undefined') return;
+
+        this.firebaseManager = new FirebaseManager();
+
+        this.firebaseSessionId = await this.firebaseManager.createSession(
+            this.tutor.id.toString(),
+            'student_' + Math.random().toString(36).substr(2, 9)
+        );
+
+        if (!this.firebaseSessionId) return;
+
+        const messages = await this.firebaseManager.getChatMessages(this.firebaseSessionId);
+        if (messages.length) {
+            this.messages = messages.map(m => this.formatFirebaseMessage(m));
+            this.renderMessages();
+        }
+
+        this.chatListener = this.firebaseManager.setupChatListener(
+            this.firebaseSessionId,
+            (message) => this.handleIncomingMessage(message)
+        );
+    }
+
+    formatFirebaseMessage(message) {
+        return {
+            id: message.id,
+            sender: message.sender,
+            name: message.name,
+            time: new Date(message.timestamp?.toDate()).toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            }),
+            content: message.content,
+            type: message.type || 'text'
+        };
+    }
+
+    handleIncomingMessage(message) {
+        if (this.messages.some(m => m.id === message.id)) return;
+        const formatted = this.formatFirebaseMessage(message);
+        this.messages.push(formatted);
+        this.renderMessage(formatted);
         this.scrollChatToBottom();
     }
 
-    addMessageLocally(messageData) {
-        // Formater le message pour l'affichage local
-        const localMessage = {
-            ...messageData,
-            time: new Date(messageData.timestamp).toLocaleTimeString('fr-FR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+    /* =============================
+       CHAT
+    ============================== */
+    async sendMessage() {
+        const input = document.getElementById('chat-input');
+        if (!input || !input.value.trim()) return;
+
+        const message = {
+            id: Date.now().toString(),
+            sender: "student",
+            name: "Vous",
+            content: input.value.trim(),
+            type: "text",
+            timestamp: new Date()
+        };
+
+        if (this.peerManager) {
+            this.peerManager.sendMessage('chat_message', message);
+        }
+
+        if (this.firebaseManager && this.firebaseSessionId) {
+            await this.firebaseManager.sendChatMessage(this.firebaseSessionId, message);
+        } else {
+            this.addMessageLocally(message);
+            this.simulateTutorResponse();
+        }
+
+        input.value = '';
+        this.scrollChatToBottom();
+    }
+
+    addMessageLocally(message) {
+        const local = {
+            ...message,
+            time: new Date(message.timestamp).toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
             })
         };
-        
-        this.messages.push(localMessage);
-        this.renderMessage(localMessage);
+        this.messages.push(local);
+        this.renderMessage(local);
     }
 
     renderMessages() {
-        const chatMessages = document.getElementById('chat-messages');
-        if (!chatMessages) return;
-        
-        // Effacer les messages existants
-        chatMessages.innerHTML = '';
-        
-        // Afficher tous les messages
-        this.messages.forEach(message => {
-            this.renderMessage(message);
-        });
-        
-        // Faire défiler vers le bas
+        const container = document.getElementById('chat-messages');
+        if (!container) return;
+        container.innerHTML = '';
+        this.messages.forEach(m => this.renderMessage(m));
         this.scrollChatToBottom();
     }
 
     renderMessage(message) {
-        const chatMessages = document.getElementById('chat-messages');
-        if (!chatMessages) return;
-        
-        const messageClass = message.sender === 'tutor' ? 'tutor-message' : 
-                           message.sender === 'student' ? 'student-message' : 'system-message';
-        
-        const messageElement = document.createElement('div');
-        messageElement.className = `message ${messageClass}`;
-        messageElement.innerHTML = `
+        const container = document.getElementById('chat-messages');
+        if (!container) return;
+
+        const div = document.createElement('div');
+        div.className = `message ${message.sender}-message`;
+        div.innerHTML = `
             <div class="message-header">
                 <strong>${message.name}</strong> • ${message.time}
             </div>
-            <div class="message-content">
-                ${message.content}
-            </div>
+            <div class="message-content">${message.content}</div>
         `;
-        
-        chatMessages.appendChild(messageElement);
+        container.appendChild(div);
     }
 
-    simulateTutorResponse() {
-        // Afficher l'indicateur de frappe
-        this.showTypingIndicator();
-        
-        // Réponse après un délai
-        setTimeout(() => {
-            this.hideTypingIndicator();
-            
-            const responses = [
-                "Je vois. Pouvez-vous me montrer l'exercice sur lequel vous bloquez ?",
-                "C'est une bonne question. Laissez-moi vous expliquer cela plus en détail.",
-                "Je comprends votre difficulté. Souhaitez-vous que nous reprenions depuis le début ?",
-                "Très bien. J'ai noté votre question. Continuons avec l'explication.",
-                "Excellent point ! Cela mérite une démonstration étape par étape."
-            ];
-            
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            
-            const tutorMessage = {
-                id: Date.now() + 1,
-                sender: "tutor",
-                name: this.tutor?.name || "Tuteur",
-                time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-                content: randomResponse,
-                type: "text",
-                timestamp: new Date()
-            };
-            
-            // Envoyer via Peer.js si disponible
-            if (this.peerManager) {
-                this.peerManager.sendMessage('chat_message', {
-                    content: randomResponse,
-                    sender: 'tutor',
-                    timestamp: Date.now()
-                });
-            }
-            
-            // Envoyer via Firebase si disponible
-            if (this.firebaseManager && this.firebaseSessionId) {
-                this.firebaseManager.sendChatMessage(this.firebaseSessionId, tutorMessage);
-            } else {
-                // Fallback local
-                this.addMessageLocally(tutorMessage);
-            }
-            
-        }, 2000 + Math.random() * 2000);
-    }
+    /* =============================
+       UTILITAIRES
+    ============================== */
+    setupEventListeners() {
+        document.getElementById('send-btn')?.addEventListener('click', () => this.sendMessage());
+        document.getElementById('chat-input')?.addEventListener('keypress', e => {
+            if (e.key === 'Enter') this.sendMessage();
+        });
 
-    showTypingIndicator() {
-        const typingIndicator = document.getElementById('typing-indicator');
-        if (typingIndicator) {
-            typingIndicator.style.display = 'flex';
-        }
-    }
-
-    hideTypingIndicator() {
-        const typingIndicator = document.getElementById('typing-indicator');
-        if (typingIndicator) {
-            typingIndicator.style.display = 'none';
-        }
-    }
-
-    simulateTyping() {
-        // Simuler occasionnellement que le tuteur tape
-        setInterval(() => {
-            if (Math.random() < 0.3 && !document.getElementById('typing-indicator')?.style.display) {
-                this.showTypingIndicator();
-                setTimeout(() => this.hideTypingIndicator(), 1500 + Math.random() * 2000);
-            }
-        }, 10000);
+        window.addEventListener('beforeunload', () => this.cleanup());
     }
 
     scrollChatToBottom() {
-        const chatMessages = document.getElementById('chat-messages');
-        if (chatMessages) {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+        const el = document.getElementById('chat-messages');
+        if (el) el.scrollTop = el.scrollHeight;
     }
 
-    shareScreen() {
-        if (this.peerManager) {
-            this.peerManager.shareScreen();
-        } else {
-            if (typeof showNotification === 'function') {
-                showNotification('Partage d\'écran', 'Nécessite l\'intégration de Peer.js', 'info');
-            }
-        }
+    simulateTutorResponse() {
+        setTimeout(() => {
+            this.addMessageLocally({
+                id: Date.now() + 1,
+                sender: "tutor",
+                name: this.tutor.name,
+                content: "Très bonne question, regardons cela ensemble.",
+                type: "text",
+                timestamp: new Date()
+            });
+        }, 2000);
     }
 
-    toggleRecording() {
-        const recordBtn = document.getElementById('record-btn');
-        if (!recordBtn) return;
-        
-        const isRecording = recordBtn.classList.contains('recording');
-        
-        if (isRecording) {
-            // Arrêter l'enregistrement
-            recordBtn.classList.remove('recording');
-            const icon = recordBtn.querySelector('i');
-            if (icon) {
-                icon.className = 'fas fa-circle';
-            }
-            
-            if (typeof showNotification === 'function') {
-                showNotification('Enregistrement arrêté', 'La session a été enregistrée', 'success');
-            }
-        } else {
-            // Démarrer l'enregistrement
-            recordBtn.classList.add('recording');
-            const icon = recordBtn.querySelector('i');
-            if (icon) {
-                icon.className = 'fas fa-stop';
-            }
-            
-            if (typeof showNotification === 'function') {
-                showNotification('Enregistrement démarré', 'La session est en cours d\'enregistrement', 'success');
-            }
-        }
-    }
-
-    leaveSession() {
-        if (confirm('Êtes-vous sûr de vouloir quitter la session ?')) {
-            // Nettoyer les ressources
-            this.cleanup();
-            
-            // Redirection
-            setTimeout(() => {
-                window.location.href = 'tutor-list.html';
-            }, 1000);
-        }
-    }
-
-    openWhiteboard() {
-        // Initialiser le tableau blanc si ce n'est pas déjà fait
-        if (!this.whiteboardManager && typeof WhiteboardManager !== 'undefined') {
-            this.whiteboardManager = new WhiteboardManager();
-        }
-        
-        if (this.whiteboardManager) {
-            this.whiteboardManager.open();
-        } else {
-            if (typeof showNotification === 'function') {
-                showNotification('Tableau blanc', 'Fonctionnalité à implémenter avec Canvas API', 'info');
-            }
-        }
+    simulateTyping() {
+        setInterval(() => {
+            const indicator = document.getElementById('typing-indicator');
+            if (!indicator) return;
+            indicator.style.display = 'flex';
+            setTimeout(() => indicator.style.display = 'none', 1500);
+        }, 12000);
     }
 
     startSessionTimer() {
-        const timerElement = document.getElementById('session-timer');
-        if (!timerElement) return;
-        
+        const el = document.getElementById('session-timer');
+        if (!el) return;
+
         this.sessionTimer = setInterval(() => {
             this.sessionSeconds++;
-            
-            const hours = Math.floor(this.sessionSeconds / 3600);
-            const minutes = Math.floor((this.sessionSeconds % 3600) / 60);
-            const seconds = this.sessionSeconds % 60;
-            
-            timerElement.textContent = 
-                `${hours.toString().padStart(2, '0')}:` +
-                `${minutes.toString().padStart(2, '0')}:` +
-                `${seconds.toString().padStart(2, '0')}`;
-                
+            const m = Math.floor(this.sessionSeconds / 60);
+            const s = this.sessionSeconds % 60;
+            el.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }, 1000);
     }
 
-    simulateLoading() {
-        const videoLoading = document.getElementById('video-loading');
-        const tutorPlaceholder = document.getElementById('tutor-placeholder');
-        
-        if (videoLoading && tutorPlaceholder) {
-            // Masquer le chargement après délai
-            setTimeout(() => {
-                if (videoLoading) {
-                    videoLoading.style.display = 'none';
-                }
-                if (tutorPlaceholder) {
-                    tutorPlaceholder.style.display = 'flex';
-                }
-                
-                // Simuler la connexion vidéo
-                setTimeout(() => {
-                    if (typeof showNotification === 'function') {
-                        showNotification('Prêt pour la connexion', 'Appuyez sur "Rejoindre la session" pour démarrer', 'info');
-                    }
-                }, 1000);
-                
-            }, 2000);
-        }
-    }
-
-    updateControlStates() {
-        // Mettre à jour les états des boutons audio/vidéo
-        const audioBtns = document.querySelectorAll('#toggle-audio, #toggle-audio-btn');
-        const videoBtns = document.querySelectorAll('#toggle-video, #toggle-video-btn');
-        
-        audioBtns.forEach(btn => {
-            if (btn) {
-                btn.classList.toggle('muted', this.isAudioMuted);
-                const icon = btn.querySelector('i');
-                if (icon) {
-                    icon.className = this.isAudioMuted ? 'fas fa-microphone-slash' : 'fas fa-microphone';
-                }
-            }
-        });
-        
-        videoBtns.forEach(btn => {
-            if (btn) {
-                btn.classList.toggle('muted', this.isVideoOff);
-                const icon = btn.querySelector('i');
-                if (icon) {
-                    icon.className = this.isVideoOff ? 'fas fa-video-slash' : 'fas fa-video';
-                }
-            }
-        });
-    }
-
-    showError(message) {
-        const mainContent = document.querySelector('main');
-        if (mainContent) {
-            mainContent.innerHTML = `
-                <div class="text-center py-12">
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">Erreur de session</h3>
-                    <p class="text-gray-300 mb-4">${message}</p>
-                    <div class="flex justify-center gap-4">
-                        <button onclick="window.location.reload()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-redo mr-2"></i>Réessayer
-                        </button>
-                        <button onclick="window.location.href='tutor-list.html'" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
-                            <i class="fas fa-arrow-left mr-2"></i>Retour aux tuteurs
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-    }
-
     cleanup() {
-        // Arrêter le timer
-        if (this.sessionTimer) {
-            clearInterval(this.sessionTimer);
-        }
-        
-        // Fermer les connexions Peer.js
-        if (this.peerManager) {
-            this.peerManager.disconnect();
-        }
-        
-        // Fermer les listeners Firebase
-        if (this.chatListener) {
-            this.chatListener();
-        }
-        
-        // Fermer la session Firebase
+        if (this.sessionTimer) clearInterval(this.sessionTimer);
+        if (this.peerManager) this.peerManager.disconnect();
+        if (this.chatListener) this.chatListener();
         if (this.firebaseManager && this.firebaseSessionId) {
             this.firebaseManager.closeSession(this.firebaseSessionId);
         }
-        
-        // Fermer le tableau blanc
-        if (this.whiteboardManager) {
-            this.whiteboardManager.close();
-        }
+        if (this.whiteboardManager) this.whiteboardManager.close();
+    }
+
+    showError(message) {
+        document.querySelector('main').innerHTML = `<p>${message}</p>`;
     }
 }
 
-// Initialiser quand le DOM est chargé
+/* =============================
+   BOOTSTRAP
 document.addEventListener('DOMContentLoaded', () => {
     window.tutoringRoomManager = new TutoringRoomManager();
-});
+}); 
+}
+}
