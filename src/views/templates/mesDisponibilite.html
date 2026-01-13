@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disponibilité des Cours</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .main-header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .main-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .header-title p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .stats-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stats-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                flex-direction: row;
+            }
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            flex: 2;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-header {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        @media (min-width: 640px) {
+            .calendar-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .current-date {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        .today-btn {
+            background: #10b981;
+        }
+
+        .today-btn:hover {
+            background: #059669;
+        }
+
+        /* Calendar */
+        .calendar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 12px 0;
+            border-radius: 8px 8px 0 0;
+            font-size: 14px;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e2e8f0;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .calendar-day {
+            background: white;
+            min-height: 100px;
+            padding: 10px;
+            position: relative;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-day {
+                min-height: 80px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calendar-day {
+                min-height: 60px;
+                padding: 6px;
+            }
+        }
+
+        .calendar-day:hover {
+            background: #f8fafc;
+            transform: scale(1.02);
+            z-index: 1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .day-number {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #1e293b;
+            align-self: flex-start;
+        }
+
+        .today .day-number {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .inactive {
+            background: #f8fafc;
+        }
+
+        .inactive .day-number {
+            color: #94a3b8;
+            opacity: 0.6;
+        }
+
+        /* Session Badges */
+        .session-badge {
+            padding: 4px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            transition: all 0.2s;
+            line-height: 1.2;
+            border-left-width: 3px;
+            border-left-style: solid;
+        }
+
+        .session-badge:hover {
+            transform: translateX(3px);
+        }
+
+        .session-confirmed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border-left-color: #047857;
+        }
+
+        .session-cancelled {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border-left-color: #b91c1c;
+        }
+
+        .session-modified {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-left-color: #b45309;
+        }
+
+        .session-time {
+            font-size: 10px;
+            opacity: 0.9;
+            display: block;
+            margin-top: 1px;
+            font-weight: 500;
+        }
+
+        /* Planning Section */
+        .planning-section {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #8b5cf6;
+            background: white;
+            color: #8b5cf6;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Sessions List */
+        .sessions-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 500px;
+            padding-right: 4px;
+        }
+
+        .no-sessions {
+            text-align: center;
+            color: #64748b;
+            padding: 40px 20px;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .session-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 5px solid #8b5cf6;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .session-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .session-card.cancelled {
+            opacity: 0.7;
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .session-card.modified {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .session-card.confirmed {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .session-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        @media (min-width: 640px) {
+            .session-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+        }
+
+        .session-subject {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 15px;
+        }
+
+        .session-date {
+            color: #64748b;
+            font-size: 12px;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        .session-time-range {
+            color: #8b5cf6;
+            font-weight: 600;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .session-code {
+            background: #1e293b;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            display: inline-block;
+            margin-top: 8px;
+            word-break: break-all;
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-direction: column;
+        }
+
+        @media (min-width: 480px) {
+            .session-actions {
+                flex-direction: row;
+            }
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .modify-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .modify-btn:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            transform: translateY(-1px);
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .selected-date-modal {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e293b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            padding-right: 40px;
+        }
+
+        .time-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (min-width: 480px) {
+            .time-inputs {
+                flex-direction: row;
+                gap: 16px;
+            }
+        }
+
+        .code-section {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .generated-code {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 2px dashed #8b5cf6;
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .generate-code-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .generate-code-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (min-width: 480px) {
+            .modal-footer {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-size: 15px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        @media (min-width: 480px) {
+            .btn {
+                flex: none;
+            }
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+        }
+
+        /* Scrollbar */
+        .sessions-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sessions-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+        
+        .sessions-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        
+        .sessions-list::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .stats-card {
+                min-width: auto;
+            }
+            
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            body {
+                padding: 10px;
+            }
+            
+            .calendar-section,
+            .planning-section {
+                padding: 16px;
+            }
+            
+            .calendar-weekdays {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-title">
+                <h1>Gestion des Disponibilités</h1>
+                <p id="currentDateDisplay">Mercredi 14 Décembre 2025</p>
+            </div>
+            <div class="header-actions">
+                <div class="stats-card">
+                    <div class="stats-number" id="totalSessions">0</div>
+                    <div class="stats-label">Sessions planifiées</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Calendar Section -->
+            <section class="calendar-section">
+                <div class="calendar-header">
+                    <div class="current-date">
+                        <i class="fas fa-calendar-alt text-purple-600"></i>
+                        <span id="currentMonthYear">Janvier 2024</span>
+                    </div>
+                    <div class="calendar-nav">
+                        <button class="nav-btn" id="prevMonth">
+                            <i class="fas fa-chevron-left"></i>
+                            <span class="nav-text">Précédent</span>
+                        </button>
+                        <button class="nav-btn today-btn" id="todayBtn">
+                            <i class="fas fa-calendar-day"></i>
+                            <span class="nav-text">Aujourd'hui</span>
+                        </button>
+                        <button class="nav-btn" id="nextMonth">
+                            <span class="nav-text">Suivant</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar">
+                    <div class="calendar-weekdays">
+                        <div>Lun</div>
+                        <div>Mar</div>
+                        <div>Mer</div>
+                        <div>Jeu</div>
+                        <div>Ven</div>
+                        <div>Sam</div>
+                        <div>Dim</div>
+                    </div>
+                    <div class="calendar-days" id="calendarDays">
+                        <!-- Les jours seront générés par JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Planning Section -->
+            <section class="planning-section">
+                <h2 class="section-title">
+                    <i class="fas fa-clipboard-list text-purple-600"></i>
+                    Planning des Cours
+                </h2>
+                
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">Tous</button>
+                    <button class="filter-btn" data-filter="confirmed">Confirmés</button>
+                    <button class="filter-btn" data-filter="modified">Modifiés</button>
+                    <button class="filter-btn" data-filter="cancelled">Annulés</button>
+                </div>
+                
+                <div class="sessions-list" id="sessionsList">
+                    <!-- Les sessions seront affichées ici -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Session Modal -->
+    <div class="modal" id="sessionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Planifier une Session</h2>
+                <div class="selected-date-modal" id="selectedDateModal">Date sélectionnée: 15 Janvier 2024</div>
+            </div>
+            <div class="modal-body">
+                <form id="sessionForm">
+                    <div class="form-group">
+                        <label for="subject">
+                            <i class="fas fa-book"></i>
+                            Matière
+                        </label>
+                        <select id="subject" class="form-control form-select" required>
+                            <option value="">Sélectionnez une matière</option>
+                            <option value="Mathématiques">Mathématiques</option>
+                            <option value="Physique">Physique</option>
+                            <option value="Sciences de la Terre">Sciences de la Terre</option>
+                            <option value="Littérature camerounaise">Littérature camerounaise</option>
+                            <option value="Informatique">Informatique</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="time-inputs">
+                            <div style="flex: 1;">
+                                <label for="startTime">
+                                    <i class="fas fa-clock"></i>
+                                    Heure de début
+                                </label>
+                                <input type="time" id="startTime" class="form-control" required>
+                            </div>
+                            <div style="flex: 1;">
+                                <label for="endTime">
+                                    <i class="fas fa-clock"></i>
+                                    Heure de fin
+                                </label>
+                                <input type="time" id="endTime" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="code-section">
+                        <label>
+                            <i class="fas fa-key"></i>
+                            Code de session unique
+                        </label>
+                        <div class="generated-code" id="generatedCode">
+                            Cliquez sur "Générer le code" pour créer un identifiant unique
+                        </div>
+                        <button type="button" class="generate-code-btn" id="generateCodeBtn">
+                            <i class="fas fa-cogs"></i>
+                            Générer le code unique
+                        </button>
+                    </div>
+                    
+                    <input type="hidden" id="sessionId">
+                    <input type="hidden" id="selectedDate">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="cancelModalBtn">
+                    <i class="fas fa-times"></i>
+                    Annuler
+                </button>
+                <button class="btn btn-confirm" id="confirmBtn">
+                    <i class="fas fa-check"></i>
+                    Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentDate = new Date();
+        let selectedDate = null;
+        let sessions = JSON.parse(localStorage.getItem('classCalendarSessions')) || [];
+        let editingSessionId = null;
+        let currentFilter = 'all';
+
+        // Matières disponibles
+        const subjects = [
+            "Mathématiques",
+            "Physique", 
+            "Sciences de la Terre",
+            "Littérature camerounaise",
+            "Informatique"
+        ];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentDateDisplay();
+            renderCalendar(currentDate);
+            setupEventListeners();
+            renderSessionsList();
+            updateCurrentDateHeader();
+            updateStats();
+            
+            // Initialiser les filtres
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderSessionsList();
+                });
+            });
+        });
+
+        // Mettre à jour les statistiques
+        function updateStats() {
+            const totalSessions = sessions.filter(s => s.status !== 'cancelled').length;
+            document.getElementById('totalSessions').textContent = totalSessions;
+        }
+
+        // Mettre à jour la date dans le header
+        function updateCurrentDateHeader() {
+            const today = new Date();
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            const formattedDate = today.toLocaleDateString('fr-FR', options);
+            document.getElementById('currentDateDisplay').textContent = formattedDate;
+        }
+
+        // Mettre à jour l'affichage de la date actuelle
+        function updateCurrentDateDisplay() {
+            const options = { year: 'numeric', month: 'long' };
+            document.getElementById('currentMonthYear').textContent = 
+                currentDate.toLocaleDateString('fr-FR', options);
+        }
+
+        // Rendu du calendrier
+        function renderCalendar(date) {
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+            
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            let firstDayIndex = firstDay.getDay();
+            firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+            
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            
+            // Jours du mois précédent
+            for (let i = firstDayIndex; i > 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day inactive';
+                day.innerHTML = `<div class="day-number">${prevMonthLastDay - i + 1}</div>`;
+                calendarDays.appendChild(day);
+            }
+            
+            // Jours du mois actuel
+            const today = new Date();
+            const isToday = (day) => {
+                return day === today.getDate() && 
+                       month === today.getMonth() && 
+                       year === today.getFullYear();
+            };
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                if (isToday(day)) {
+                    dayElement.classList.add('today');
+                }
+                
+                dayElement.innerHTML = `<div class="day-number">${day}</div>`;
+                dayElement.dataset.date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                // Ajouter les sessions pour ce jour
+                const daySessions = sessions.filter(s => s.date === dayElement.dataset.date && s.status !== 'cancelled');
+                daySessions.forEach(session => {
+                    const badge = document.createElement('div');
+                    badge.className = `session-badge session-${session.status}`;
+                    badge.innerHTML = `
+                        <div>${session.subject.substring(0, 10)}${session.subject.length > 10 ? '...' : ''}</div>
+                        <span class="session-time">${session.startTime}</span>
+                    `;
+                    badge.dataset.sessionId = session.id;
+                    badge.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        editSession(session.id);
+                    });
+                    dayElement.appendChild(badge);
+                });
+                
+                dayElement.addEventListener('click', () => openSessionModal(dayElement.dataset.date));
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Jours du mois suivant
+            const totalCells = 42;
+            const daysInCalendar = firstDayIndex + lastDay.getDate();
+            const remainingCells = totalCells - daysInCalendar;
+            
+            for (let i = 1; i <= remainingCells; i++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day inactive';
+                day.innerHTML = `<div class="day-number">${i}</div>`;
+                calendarDays.appendChild(day);
+            }
+        }
+
+        // Rendre la liste des sessions
+        function renderSessionsList() {
+            const sessionsList = document.getElementById('sessionsList');
+            sessionsList.innerHTML = '';
+            
+            // Filtrer les sessions selon le filtre actif
+            let filteredSessions = sessions;
+            if (currentFilter !== 'all') {
+                filteredSessions = sessions.filter(s => s.status === currentFilter);
+            }
+            
+            // Trier par date et heure (les plus récentes en premier)
+            filteredSessions.sort((a, b) => {
+                const dateCompare = new Date(b.date) - new Date(a.date);
+                if (dateCompare !== 0) return dateCompare;
+                return b.startTime.localeCompare(a.startTime);
+            });
+            
+            if (filteredSessions.length === 0) {
+                sessionsList.innerHTML = `
+                    <div class="no-sessions">
+                        <i class="fas fa-calendar-times fa-3x" style="margin-bottom: 15px; color: #94a3b8;"></i>
+                        <p>Aucune session ${currentFilter !== 'all' ? currentFilter : 'planifiée'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredSessions.forEach(session => {
+                const dateObj = new Date(session.date + 'T00:00:00');
+                const dateStr = dateObj.toLocaleDateString('fr-FR', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short'
+                });
+                
+                const sessionCard = document.createElement('div');
+                sessionCard.className = `session-card ${session.status}`;
+                sessionCard.innerHTML = `
+                    <div class="session-header">
+                        <div class="session-subject">${session.subject}</div>
+                        <div class="session-date">${dateStr}</div>
+                    </div>
+                    <div class="session-time-range">
+                        <i class="far fa-clock"></i>
+                        ${session.startTime} - ${session.endTime}
+                    </div>
+                    <div class="session-code">${session.code}</div>
+                    ${session.status !== 'cancelled' ? `
+                    <div class="session-actions">
+                        <button class="action-btn modify-btn" onclick="editSession('${session.id}')">
+                            <i class="fas fa-edit"></i>
+                            Modifier
+                        </button>
+                        <button class="action-btn cancel-btn" onclick="cancelSessionFromList('${session.id}')">
+                            <i class="fas fa-times"></i>
+                            Annuler
+                        </button>
+                    </div>
+                    ` : ''}
+                `;
+                
+                sessionsList.appendChild(sessionCard);
+            });
+        }
+
+        // Ouvrir le modal pour planifier/éditer une session
+        function openSessionModal(date, sessionId = null) {
+            selectedDate = date;
+            editingSessionId = sessionId;
+            
+            const modal = document.getElementById('sessionModal');
+            const dateObj = new Date(date + 'T00:00:00');
+            const dateStr = dateObj.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            document.getElementById('selectedDateModal').textContent = `Date sélectionnée: ${dateStr}`;
+            document.getElementById('selectedDate').value = date;
+            
+            // Réinitialiser le formulaire
+            document.getElementById('sessionForm').reset();
+            document.getElementById('generatedCode').textContent = 'Cliquez sur "Générer le code" pour créer un identifiant unique';
+            
+            // Si on modifie une session existante
+            if (sessionId) {
+                const session = sessions.find(s => s.id === sessionId);
+                if (session) {
+                    document.getElementById('subject').value = session.subject;
+                    document.getElementById('startTime').value = session.startTime;
+                    document.getElementById('endTime').value = session.endTime;
+                    document.getElementById('sessionId').value = session.id;
+                    document.getElementById('generatedCode').textContent = session.code;
+                }
+            }
+            
+            modal.classList.add('active');
+        }
+
+        // Fermer le modal
+        function closeSessionModal() {
+            document.getElementById('sessionModal').classList.remove('active');
+            editingSessionId = null;
+        }
+
+        // Générer un code unique
+        function generateUniqueCode() {
+            const timestamp = Date.now().toString(36);
+            const randomStr = Math.random().toString(36).substring(2, 8);
+            const sessionCode = `COURS-${timestamp}-${randomStr}`.toUpperCase();
+            
+            document.getElementById('generatedCode').textContent = sessionCode;
+            return sessionCode;
+        }
+
+        // Éditer une session existante
+        function editSession(sessionId) {
+            const session = sessions.find(s => s.id === sessionId);
+            if (session) {
+                openSessionModal(session.date, sessionId);
+            }
+        }
+
+        // Annuler une session depuis la liste
+        function cancelSessionFromList(sessionId) {
+            if (confirm('Voulez-vous vraiment annuler cette session ?')) {
+                const sessionIndex = sessions.findIndex(s => s.id === sessionId);
+                if (sessionIndex !== -1) {
+                    sessions[sessionIndex].status = 'cancelled';
+                    saveSessions();
+                    renderCalendar(currentDate);
+                    renderSessionsList();
+                    updateStats();
+                    alert('Session annulée avec succès !');
+                }
+            }
+        }
+
+        // Confirmer une nouvelle session
+        function confirmSession() {
+            const subject = document.getElementById('subject').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            let code = document.getElementById('generatedCode').textContent;
+            
+            if (!subject || !startTime || !endTime) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            if (code === 'Cliquez sur "Générer le code" pour créer un identifiant unique') {
+                alert('Veuillez générer un code unique pour la session');
+                return;
+            }
+            
+            // Si c'est une modification, garder le même code
+            if (!editingSessionId) {
+                code = generateUniqueCode();
+            }
+            
+            if (editingSessionId) {
+                // Modification d'une session existante
+                const sessionIndex = sessions.findIndex(s => s.id === editingSessionId);
+                if (sessionIndex !== -1) {
+                    sessions[sessionIndex].subject = subject;
+                    sessions[sessionIndex].startTime = startTime;
+                    sessions[sessionIndex].endTime = endTime;
+                    sessions[sessionIndex].code = code;
+                    sessions[sessionIndex].status = sessions[sessionIndex].status === 'confirmed' ? 'modified' : sessions[sessionIndex].status;
+                }
+            } else {
+                // Nouvelle session
+                const sessionId = 'session-' + Date.now();
+                
+                const newSession = {
+                    id: sessionId,
+                    date: selectedDate,
+                    subject: subject,
+                    startTime: startTime,
+                    endTime: endTime,
+                    code: code,
+                    status: 'confirmed'
+                };
+                
+                sessions.push(newSession);
+            }
+            
+            saveSessions();
+            renderCalendar(currentDate);
+            renderSessionsList();
+            updateStats();
+            closeSessionModal();
+            
+            alert(editingSessionId ? 'Session modifiée avec succès!' : 'Session planifiée avec succès!');
+        }
+
+        // Sauvegarder les sessions
+        function saveSessions() {
+            localStorage.setItem('classCalendarSessions', JSON.stringify(sessions));
+        }
+
+        // Configurer les écouteurs d'événements
+        function setupEventListeners() {
+            // Navigation du calendrier
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                updateCurrentDateDisplay();
+                renderCalendar(currentDate);
+            });
+            
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                updateCurrentDateDisplay();
+                renderCalendar(currentDate);
+            });
+            
+            document.getElementById('todayBtn').addEventListener('click', () => {
+                currentDate = new Date();
+                updateCurrentDateDisplay();
+                renderCalendar(currentDate);
+            });
+            
+            // Boutons du modal
+            document.getElementById('generateCodeBtn').addEventListener('click', generateUniqueCode);
+            document.getElementById('confirmBtn').addEventListener('click', confirmSession);
+            document.getElementById('cancelModalBtn').addEventListener('click', closeSessionModal);
+            
+            // Fermer le modal en cliquant à l'extérieur
+            document.getElementById('sessionModal').addEventListener('click', (e) => {
+                if (e.target.id === 'sessionModal') {
+                    closeSessionModal();
+                }
+            });
+            
+            // Empêcher la fermeture lors du clic dans le modal
+            document.querySelector('.modal-content').addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Validation des heures
+            document.getElementById('endTime').addEventListener('change', function() {
+                const startTime = document.getElementById('startTime').value;
+                const endTime = this.value;
+                
+                if (startTime && endTime && startTime >= endTime) {
+                    alert("L'heure de fin doit être après l'heure de début");
+                    this.value = '';
+                }
+            });
+            
+            // Gestion responsive pour les boutons
+            function updateButtonText() {
+                const navTexts = document.querySelectorAll('.nav-text');
+                if (window.innerWidth < 640) {
+                    navTexts.forEach(text => text.style.display = 'none');
+                } else {
+                    navTexts.forEach(text => text.style.display = 'inline');
+                }
+            }
+            
+            updateButtonText();
+            window.addEventListener('resize', updateButtonText);
+        }
+        
+        // Fonctions globales pour les boutons inline
+        window.editSession = editSession;
+        window.cancelSessionFromList = cancelSessionFromList;
+    </script>
+</body>
+</html>

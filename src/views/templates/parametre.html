@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect Africa - Paramètres & Sécurité</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+        }
+        
+        .gradient-bg-hover:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%);
+        }
+        
+        .gradient-orange {
+            background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+        }
+        
+        .gradient-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        }
+        
+        .gradient-yellow {
+            background: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
+        }
+        
+        .gradient-purple {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+        }
+        
+        .shadow-purple {
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.08);
+        }
+        
+        .shadow-purple-md {
+            box-shadow: 0 4px 20px 0 rgba(139, 92, 246, 0.2);
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .hover-scale:hover {
+            transform: translateY(-2px);
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        
+        .material-symbols-outlined.fill {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-gray-50">
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-20 md:pb-8">
+                <div class="max-w-4xl mx-auto flex flex-col gap-6 md:gap-8">
+                    <!-- Page Header -->
+                    <div class="flex flex-col gap-2">
+                        <h1 class="text-gray-800 text-2xl md:text-3xl lg:text-4xl font-bold md:font-black tracking-tight">Paramètres & Sécurité</h1>
+                        <p class="text-gray-600 text-sm md:text-base">Gérez vos informations de connexion, votre mot de passe et vos préférences de confidentialité.</p>
+                    </div>
+
+                    <!-- Profile Card -->
+                    <div class="bg-white border border-gray-200 rounded-xl p-4 md:p-6 lg:p-8 shadow-sm hover-scale">
+                        <div class="flex flex-col sm:flex-row gap-4 md:gap-6 items-center md:items-start">
+                            <!-- Profile Picture -->
+                            <div class="relative group">
+                                <div class="bg-center bg-no-repeat bg-cover rounded-full w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 border-4 border-white shadow-md" style='background-image: url("https://i.pravatar.cc/150?img=16");'>
+                                </div>
+                                <button class="absolute bottom-0 right-0 gradient-bg text-white p-1.5 md:p-2 rounded-full hover:opacity-90 transition-colors shadow-lg border-2 border-white">
+                                    <span class="material-symbols-outlined text-[14px] md:text-[16px] lg:text-[18px]">edit</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Profile Info -->
+                            <div class="flex flex-col text-center sm:text-left flex-1">
+                                <div class="flex flex-col md:flex-row md:items-center gap-2 mb-1">
+                                    <h2 class="text-gray-800 text-xl md:text-2xl font-bold">Dr. Kouassi Jean</h2>
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold w-fit mx-auto sm:mx-0 border border-purple-200">
+                                        <span class="material-symbols-outlined text-[12px] md:text-[14px] fill">verified</span>
+                                        Vérifié
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 text-sm md:text-base mb-2">Professeur Certifié - Mathématiques</p>
+                                <p class="text-gray-500 text-xs md:text-sm">Membre depuis Janvier 2024 • Abidjan, Côte d'Ivoire</p>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div class="flex items-center gap-3 mt-2 sm:mt-0">
+                                <button class="px-4 py-2.5 rounded-full border border-gray-300 text-gray-600 text-sm font-semibold hover:bg-purple-50 hover:text-purple-700 hover:border-purple-500 transition-colors whitespace-nowrap">
+                                    Voir profil public
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <div class="border-b border-gray-200">
+                        <div class="flex gap-4 md:gap-6 overflow-x-auto pb-px">
+                            <button class="flex items-center gap-2 pb-3 border-b-2 border-transparent text-gray-600 hover:text-gray-800 transition-colors whitespace-nowrap group">
+                                <span class="material-symbols-outlined text-[18px] md:text-[20px] group-hover:text-purple-600">person</span>
+                                <span class="text-sm font-bold">Mon Profil</span>
+                            </button>
+                            <button class="flex items-center gap-2 pb-3 border-b-2 border-purple-600 text-purple-600 transition-colors whitespace-nowrap">
+                                <span class="material-symbols-outlined text-[18px] md:text-[20px] fill">lock</span>
+                                <span class="text-sm font-bold">Sécurité & Connexion</span>
+                            </button>
+                            <button class="flex items-center gap-2 pb-3 border-b-2 border-transparent text-gray-600 hover:text-gray-800 transition-colors whitespace-nowrap group">
+                                <span class="material-symbols-outlined text-[18px] md:text-[20px] group-hover:text-purple-600">notifications</span>
+                                <span class="text-sm font-bold">Notifications</span>
+                            </button>
+                            <button class="flex items-center gap-2 pb-3 border-b-2 border-transparent text-gray-600 hover:text-gray-800 transition-colors whitespace-nowrap group">
+                                <span class="material-symbols-outlined text-[18px] md:text-[20px] group-hover:text-purple-600">credit_card</span>
+                                <span class="text-sm font-bold">Facturation</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="flex flex-col gap-6 md:gap-8">
+                        <!-- Login Information -->
+                        <section class="flex flex-col gap-4">
+                            <h3 class="text-gray-800 text-lg font-bold flex items-center gap-2">
+                                <span class="material-symbols-outlined text-purple-600">badge</span>
+                                Informations de Connexion
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4 md:p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-gray-700 text-sm font-medium">Adresse Email</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-500">mail</span>
+                                        <input class="w-full bg-white text-gray-800 pl-10 md:pl-12 pr-3 md:pr-4 py-2.5 md:py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder:text-gray-400 text-sm md:text-base" type="email" value="dr.kouassi@educonnect.africa">
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <label class="text-gray-700 text-sm font-medium">Numéro de téléphone</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-500">call</span>
+                                        <input class="w-full bg-white text-gray-800 pl-10 md:pl-12 pr-3 md:pr-4 py-2.5 md:py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder:text-gray-400 text-sm md:text-base" type="tel" value="+225 07 12 34 56 78">
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2 md:col-span-2">
+                                    <label class="text-gray-700 text-sm font-medium">Réseaux Sociaux Liés</label>
+                                    <div class="flex flex-col sm:flex-row gap-3">
+                                        <button class="flex items-center justify-center gap-2 md:gap-3 px-3 md:px-4 py-2.5 md:py-3 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-purple-50 hover:border-purple-500 transition-colors shadow-sm text-sm">
+                                            <svg class="w-4 h-4 md:w-5 md:h-5 fill-current" viewBox="0 0 24 24"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"></path></svg>
+                                            Google (Lié)
+                                        </button>
+                                        <button class="flex items-center justify-center gap-2 md:gap-3 px-3 md:px-4 py-2.5 md:py-3 bg-white border border-gray-300 rounded-lg text-gray-600 hover:text-purple-700 hover:bg-purple-50 hover:border-purple-500 transition-colors shadow-sm text-sm">
+                                            <svg class="w-4 h-4 md:w-5 md:h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+                                            Lier LinkedIn
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Password & Authentication -->
+                        <section class="flex flex-col gap-4">
+                            <h3 class="text-gray-800 text-lg font-bold flex items-center gap-2">
+                                <span class="material-symbols-outlined text-purple-600">encrypted</span>
+                                Mot de passe & Authentification
+                            </h3>
+                            <div class="flex flex-col gap-4 md:gap-6 p-4 md:p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                    <div class="md:col-span-2">
+                                        <label class="text-gray-700 text-sm font-medium">Mot de passe actuel</label>
+                                        <input class="w-full mt-2 bg-white text-gray-800 px-3 md:px-4 py-2.5 md:py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder:text-gray-400 text-sm md:text-base" placeholder="••••••••••••" type="password">
+                                    </div>
+                                    <div>
+                                        <label class="text-gray-700 text-sm font-medium">Nouveau mot de passe</label>
+                                        <input class="w-full mt-2 bg-white text-gray-800 px-3 md:px-4 py-2.5 md:py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all text-sm md:text-base" type="password">
+                                    </div>
+                                    <div>
+                                        <label class="text-gray-700 text-sm font-medium">Confirmer le nouveau mot de passe</label>
+                                        <input class="w-full mt-2 bg-white text-gray-800 px-3 md:px-4 py-2.5 md:py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all text-sm md:text-base" type="password">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <p class="text-xs text-gray-600 flex items-start md:items-center gap-1 bg-purple-50 p-2 md:p-3 rounded-lg border border-purple-100">
+                                            <span class="material-symbols-outlined text-[14px] md:text-[16px] text-purple-600 mt-0.5 md:mt-0">info</span>
+                                            <span class="flex-1">Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="h-px bg-gray-200 w-full"></div>
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                    <div class="flex gap-3 md:gap-4">
+                                        <div class="size-8 md:size-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
+                                            <span class="material-symbols-outlined text-[16px] md:text-[18px]">phonelink_lock</span>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <p class="text-gray-800 font-semibold text-sm md:text-base">Authentification à deux facteurs (2FA)</p>
+                                            <p class="text-gray-600 text-xs md:text-sm">Ajoutez une couche de sécurité supplémentaire à votre compte.</p>
+                                        </div>
+                                    </div>
+                                    <label class="switch shrink-0">
+                                        <input checked type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Privacy & Preferences -->
+                        <section class="flex flex-col gap-4">
+                            <h3 class="text-gray-800 text-lg font-bold flex items-center gap-2">
+                                <span class="material-symbols-outlined text-purple-600">visibility</span>
+                                Confidentialité & Préférences
+                            </h3>
+                            <div class="flex flex-col bg-white rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-200 shadow-sm">
+                                <div class="flex items-center justify-between p-4 md:p-6 hover:bg-purple-50/50 transition-colors">
+                                    <div class="flex flex-col pr-4">
+                                        <p class="text-gray-800 font-semibold text-sm md:text-base">Profil Public</p>
+                                        <p class="text-gray-600 text-xs md:text-sm">Rendre votre profil visible aux étudiants non connectés.</p>
+                                    </div>
+                                    <label class="switch shrink-0">
+                                        <input checked type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between p-4 md:p-6 hover:bg-purple-50/50 transition-colors">
+                                    <div class="flex flex-col pr-4">
+                                        <p class="text-gray-800 font-semibold text-sm md:text-base">Notifications par Email</p>
+                                        <p class="text-gray-600 text-xs md:text-sm">Recevoir un email pour les nouvelles demandes de cours.</p>
+                                    </div>
+                                    <label class="switch shrink-0">
+                                        <input checked type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between p-4 md:p-6 hover:bg-purple-50/50 transition-colors">
+                                    <div class="flex flex-col pr-4">
+                                        <p class="text-gray-800 font-semibold text-sm md:text-base">Notifications SMS</p>
+                                        <p class="text-gray-600 text-xs md:text-sm">Recevoir des rappels de cours par SMS.</p>
+                                    </div>
+                                    <label class="switch shrink-0">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Danger Zone -->
+                        <section class="flex flex-col gap-4 mt-2 md:mt-4">
+                            <div class="p-4 md:p-6 rounded-xl border border-red-200 bg-red-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4">
+                                <div class="flex flex-col">
+                                    <p class="text-red-700 font-bold flex items-center gap-2 text-sm md:text-base">
+                                        <span class="material-symbols-outlined text-red-600">warning</span>
+                                        Zone de danger
+                                    </p>
+                                    <p class="text-red-600/70 text-xs md:text-sm">Supprimer définitivement votre compte et toutes vos données.</p>
+                                </div>
+                                <button class="px-4 md:px-6 py-2 rounded-full border border-red-300 bg-white text-red-600 hover:bg-red-50 transition-colors text-sm font-semibold whitespace-nowrap shadow-sm mt-2 sm:mt-0">
+                                    Supprimer le compte
+                                </button>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Save Bar -->
+                    <div class="sticky bottom-4 z-10">
+                        <div class="bg-white/90 backdrop-blur-md border border-gray-200 p-3 md:p-4 rounded-xl md:rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-3 shadow-lg">
+                            <p class="text-xs md:text-sm text-gray-600 hidden sm:block">Dernière sauvegarde : Aujourd'hui à 14:30</p>
+                            <div class="flex gap-3 w-full sm:w-auto justify-end">
+                                <button class="flex-1 sm:flex-none px-4 md:px-6 py-2.5 md:py-3 rounded-full text-gray-600 font-medium hover:bg-purple-50 transition-colors text-sm md:text-base">
+                                    Annuler
+                                </button>
+                                <button class="flex-1 sm:flex-none px-4 md:px-8 py-2.5 md:py-3 rounded-full gradient-bg text-white font-bold shadow-lg hover:opacity-90 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm md:text-base">
+                                    <span class="material-symbols-outlined text-[16px] md:text-[20px]">save</span>
+                                    Enregistrer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -75,7 +75,7 @@ const testimonials = [
       const card = document.createElement('div');
       card.className = 'testimonial-card bg-white rounded-2xl shadow-lg hover:shadow-2xl border-2 border-transparent hover:border-blue-200 overflow-hidden transition-all duration-300 hover:scale-105 cursor-pointer backdrop-blur-sm';
       card.style.animationDelay = `${(index % testimonials.length) * 0.1}s`;
-      card.style.background = 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)';
+      card.style.background = 'transparent';
       
       card.innerHTML = `
         <!-- Barre de gradient supérieure -->

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect Africa - Accueil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <nav class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-1 text-2xl font-bold">
+                    <span class="bg-gradient-to-r from-[#ff3131] to-[#ff914d] bg-clip-text text-transparent">Edu</span>
+                    <span class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] bg-clip-text text-transparent">Connect</span>
+                    <span class="bg-gradient-to-r from-[#8c52ff] to-[#ff914d] bg-clip-text text-transparent">Africa</span>
+                </a>
+
+                <!-- Navigation Desktop -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-[#8c52ff] dark:hover:text-[#5ce1e6] transition">Home</a>
+                    <a href="forum.html" class="text-gray-700 dark:text-gray-300 hover:text-[#8c52ff] dark:hover:text-[#5ce1e6] transition">Forum</a>
+                    
+                    <!-- Barre de recherche -->
+                    <div class="relative">
+                        <input type="text" 
+                               placeholder="Rechercher..." 
+                               class="pl-10 pr-4 py-2 w-64 bg-gray-100 dark:bg-gray-800 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8c52ff]">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-moon text-gray-700 dark:text-yellow-300"></i>
+                    </button>
+                </div>
+
+                <!-- Menu Mobile -->
+                <button id="mobileMenuBtn" class="md:hidden text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-4">
+                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-[#8c52ff]">Home</a>
+                    <a href="forum.html" class="text-gray-700 dark:text-gray-300 hover:text-[#8c52ff]">Forum</a>
+                    
+                    <div class="relative mt-2">
+                        <input type="text" 
+                               placeholder="Rechercher..." 
+                               class="pl-10 pr-4 py-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full border">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700 dark:text-gray-300">Mode sombre</span>
+                        <button id="darkModeToggleMobile" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800">
+                            <i class="fas fa-moon text-gray-700 dark:text-yellow-300"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="pt-24 pb-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-[#ff3131] to-[#ff914d] bg-clip-text text-transparent">Connectez-vous</span>
+                    <span class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] bg-clip-text text-transparent">aux Savoirs</span>
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+                    Une plateforme d'échange éducative où les étudiants africains partagent, discutent et collaborent sur diverses disciplines académiques.
+                </p>
+                <a href="forum.html" class="inline-block bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] text-white font-semibold px-8 py-3 rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    Accéder au Forum <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer sera chargé par JS -->
+    <div id="footer-container"></div>
+
+    <script src="js/dark-mode.js"></script>
+    <script src="js/footer-loader.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

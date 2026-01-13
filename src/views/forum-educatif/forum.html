@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - EduConnect Africa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <nav class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-1 text-2xl font-bold">
+                    <span class="bg-gradient-to-r from-[#ff3131] to-[#ff914d] bg-clip-text text-transparent">Edu</span>
+                    <span class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] bg-clip-text text-transparent">Connect</span>
+                    <span class="bg-gradient-to-r from-[#8c52ff] to-[#ff914d] bg-clip-text text-transparent">Africa</span>
+                </a>
+
+                <!-- Navigation Desktop -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-[#8c52ff] dark:hover:text-[#5ce1e6] transition">Home</a>
+                    <a href="forum.html" class="text-[#8c52ff] dark:text-[#5ce1e6] font-semibold transition">Forum</a>
+                    
+                    <!-- Barre de recherche -->
+                    <div class="relative">
+                        <input type="text" 
+                               placeholder="Rechercher..." 
+                               class="pl-10 pr-4 py-2 w-64 bg-gray-100 dark:bg-gray-800 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8c52ff]">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-moon text-gray-700 dark:text-yellow-300"></i>
+                    </button>
+                </div>
+
+                <!-- Menu Mobile -->
+                <button id="mobileMenuBtn" class="md:hidden text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] bg-clip-text text-transparent">Forum Éducatif</span>
+            </h1>
+            <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Rejoignez les discussions, partagez vos connaissances et collaborez avec d'autres étudiants passionnés par les sciences et la littérature.
+            </p>
+        </div>
+
+        <!-- Catégories -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <!-- Mathématiques -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-calculator text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Mathématiques</h2>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=math&topic=algebre" class="block">
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-4 rounded-xl border border-purple-200 dark:border-purple-800 hover:border-purple-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Algèbre Linéaire</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Des difficultés avec les matrices, les espaces vectoriels ou les valeurs propres ? Discutez-en ici !</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=math&topic=analyse" class="block">
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-4 rounded-xl border border-purple-200 dark:border-purple-800 hover:border-purple-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Analyse Complexe</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Théorème des résidus, fonctions holomorphes, intégrales complexes... Entraidez-vous !</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Un souci avec les démonstrations de théorèmes d'algèbre linéaire ? Partagez vos difficultés et trouvez des solutions collaboratives !
+                </div>
+            </div>
+
+            <!-- Physique -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-atom text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Physique</h2>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=physique&topic=mecanique" class="block">
+                        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-4 rounded-xl border border-blue-200 dark:border-blue-800 hover:border-blue-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Mécanique Quantique</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Équation de Schrödinger, principe d'incertitude, spin des particules...</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=physique&topic=relativite" class="block">
+                        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-4 rounded-xl border border-blue-200 dark:border-blue-800 hover:border-blue-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Relativité Générale</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Espace-temps courbe, équations d'Einstein, trous noirs...</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Des problèmes avec les concepts de la mécanique quantique ? Rejoignez la discussion et éclaircissez vos doutes avec la communauté !
+                </div>
+            </div>
+
+            <!-- Sciences de la Terre -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-globe-africa text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Sciences de la Terre</h2>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=terre&topic=geologie" class="block">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 p-4 rounded-xl border border-green-200 dark:border-green-800 hover:border-green-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Géologie Africaine</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Formations géologiques, ressources minières, tectonique des plaques...</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=terre&topic=climat" class="block">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 p-4 rounded-xl border border-green-200 dark:border-green-800 hover:border-green-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Climatologie Tropicale</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Changements climatiques en Afrique, moussons, désertification...</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Des questions sur les formations géologiques spécifiques à l'Afrique ? Explorez ce sujet fascinant avec d'autres passionnés !
+                </div>
+            </div>
+
+            <!-- Littérature Camerounaise -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-book-open text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Littérature Camerounaise</h2>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=litterature&topic=classiques" class="block">
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 p-4 rounded-xl border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Auteurs Classiques</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Mongo Beti, Ferdinand Oyono, Francis Bebey, leurs œuvres et influences...</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=litterature&topic=contemporains" class="block">
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 p-4 rounded-xl border border-amber-200 dark:border-amber-800 hover:border-amber-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Écrivains Contemporains</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Léonora Miano, Eugène Ébodé, nouvelles tendances littéraires...</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Une analyse difficile d'une œuvre de Mongo Beti ? Discutez des thèmes, du style et du contexte historique avec d'autres lecteurs !
+                </div>
+            </div>
+
+            <!-- Informatique -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mr-4">
+                        <i class="fas fa-laptop-code text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Informatique</h2>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <a href="chat.html?category=informatique&topic=web" class="block">
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 hover:border-indigo-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Développement Web</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">HTML, CSS, JavaScript, frameworks modernes, bonnes pratiques...</p>
+                        </div>
+                    </a>
+                    
+                    <a href="chat.html?category=informatique&topic=ia" class="block">
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 hover:border-indigo-400 transition">
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Intelligence Artificielle</h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm">Machine Learning, Deep Learning, applications en Afrique...</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Un bug dans votre code JavaScript ou une question sur React ? La communauté est là pour vous aider à résoudre vos problèmes techniques !
+                </div>
+            </div>
+        </div>
+
+        <!-- Section statistiques -->
+        <div class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] rounded-2xl p-8 text-white mb-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl font-bold">500+</div>
+                    <div class="text-sm opacity-90">Étudiants actifs</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">1200+</div>
+                    <div class="text-sm opacity-90">Discussions</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">5</div>
+                    <div class="text-sm opacity-90">Catégories</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold">24/7</div>
+                    <div class="text-sm opacity-90">Support communautaire</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer sera chargé par JS -->
+    <div id="footer-container"></div>
+
+    <script src="js/dark-mode.js"></script>
+    <script src="js/footer-loader.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

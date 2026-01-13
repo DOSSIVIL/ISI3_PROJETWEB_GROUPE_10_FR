@@ -1,6 +1,9 @@
 @import "tailwindcss";
+@import "/node_modules/@fortawesome/fontawesome-free/css/all.min.css";
 
-.logo {
-    width: 1020px;   /* augmente la valeur pour agrandir */
-    height: 20000px;   /* garde les proportions */
+@font-face {
+  font-family: "Poppins";
+  src: url("/font/Poppins-SemiBoldItalic.ttf") format("woff2"),
+    url("/font/Poppins-Thin.ttf") format("woff2"),
+    url("/font/Poppins-ThinItalic.ttf") format("woff2");
 }

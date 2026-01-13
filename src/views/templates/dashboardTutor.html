@@ -1,0 +1,3243 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect Africa - Tableau de Bord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        /* Styles globaux existants... */
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dark .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .hover-scale:hover {
+            transform: translateY(-2px);
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: white;
+        }
+
+        .dark .sidebar-item.active {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Fixe la sidebar en hauteur */
+        .sidebar-container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 16rem;
+            overflow-y: auto;
+            z-index: 30;
+        }
+
+        /* Ajuste le contenu principal pour la sidebar fixe */
+        .main-content {
+            margin-left: 16rem;
+            width: calc(100% - 16rem);
+            min-height: 100vh;
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar-container {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            
+            .sidebar-container.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
+        /* Espace principal pour le contenu */
+        .content-space {
+            min-height: calc(100vh - 73px);
+            padding: 1rem;
+        }
+
+        /* Sur écran large, ajuster le padding */
+        @media (min-width: 1024px) {
+            .content-space {
+                padding: 1.5rem 2rem;
+            }
+        }
+
+        /* Scroll personnalisé */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        /* Animation de chargement */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* ==================== NOUVEAUX STYLES DISPONIBILITÉ ==================== */
+        /* Grid pour deux sections */
+        .disponibilite-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .disponibilite-grid {
+                grid-template-columns: 1.2fr 0.8fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Section Calendrier */
+        .calendar-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+
+        .dark .calendar-section {
+            background: #1e293b;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .current-date {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dark .current-date {
+            color: #f1f5f9;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: white;
+            color: #8b5cf6;
+            border: 2px solid #8b5cf6;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #8b5cf6;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .today-btn {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .today-btn:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 0.75rem 0;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.875rem;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e2e8f0;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+
+        .dark .calendar-days {
+            background: #334155;
+        }
+
+        .calendar-day {
+            background: white;
+            min-height: 100px;
+            padding: 0.5rem;
+            position: relative;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark .calendar-day {
+            background: #1e293b;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-day {
+                min-height: 80px;
+                padding: 0.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calendar-day {
+                min-height: 60px;
+                padding: 0.25rem;
+            }
+        }
+
+        .calendar-day:hover {
+            background: #f8fafc;
+            transform: scale(1.02);
+            z-index: 1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .dark .calendar-day:hover {
+            background: #2d3748;
+        }
+
+        .day-number {
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: #1e293b;
+            align-self: flex-start;
+        }
+
+        .dark .day-number {
+            color: #f1f5f9;
+        }
+
+        .today .day-number {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .inactive {
+            background: #f8fafc;
+            cursor: default;
+        }
+
+        .dark .inactive {
+            background: #0f172a;
+        }
+
+        .inactive .day-number {
+            color: #94a3b8;
+            opacity: 0.6;
+        }
+
+        .inactive:hover {
+            transform: none;
+            background: #f8fafc;
+        }
+
+        .dark .inactive:hover {
+            background: #0f172a;
+        }
+
+        /* Session Badges */
+        .session-badge {
+            padding: 0.25rem 0.5rem;
+            margin: 0.125rem 0;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            transition: all 0.2s;
+            line-height: 1.2;
+            border-left-width: 3px;
+            border-left-style: solid;
+        }
+
+        .session-badge:hover {
+            transform: translateX(3px);
+        }
+
+        .session-confirmed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border-left-color: #047857;
+        }
+
+        .session-cancelled {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border-left-color: #b91c1c;
+        }
+
+        .session-modified {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-left-color: #b45309;
+        }
+
+        .session-time {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            display: block;
+            margin-top: 0.125rem;
+            font-weight: 500;
+        }
+
+        /* Section Planning */
+        .planning-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark .planning-section {
+            background: #1e293b;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .dark .section-title {
+            color: #f1f5f9;
+            border-bottom: 2px solid #334155;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #8b5cf6;
+            background: white;
+            color: #8b5cf6;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            transition: all 0.2s;
+        }
+
+        .dark .filter-btn {
+            background: #1e293b;
+            color: #c4b5fd;
+            border-color: #8b5cf6;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .dark .filter-btn:hover, .dark .filter-btn.active {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        /* Sessions List */
+        .sessions-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+            padding-right: 0.5rem;
+        }
+
+        .no-sessions {
+            text-align: center;
+            color: #64748b;
+            padding: 2.5rem 1.25rem;
+            font-style: italic;
+            font-size: 0.875rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dark .no-sessions {
+            color: #94a3b8;
+        }
+
+        .session-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 5px solid #8b5cf6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .dark .session-card {
+            background: #1e293b;
+            border-left: 5px solid #8b5cf6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .session-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .dark .session-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .session-card.cancelled {
+            opacity: 0.7;
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .dark .session-card.cancelled {
+            background: rgba(127, 29, 29, 0.3);
+            border-left-color: #ef4444;
+        }
+
+        .session-card.modified {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .dark .session-card.modified {
+            background: rgba(120, 53, 15, 0.3);
+            border-left-color: #f59e0b;
+        }
+
+        .session-card.confirmed {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .dark .session-card.confirmed {
+            background: rgba(6, 78, 59, 0.3);
+            border-left-color: #10b981;
+        }
+
+        .session-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.625rem;
+        }
+
+        @media (min-width: 640px) {
+            .session-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+        }
+
+        .session-subject {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 0.9375rem;
+        }
+
+        .dark .session-subject {
+            color: #f1f5f9;
+        }
+
+        .session-date {
+            color: #64748b;
+            font-size: 0.75rem;
+            background: #f1f5f9;
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        .dark .session-date {
+            color: #94a3b8;
+            background: #334155;
+        }
+
+        .session-time-range {
+            color: #8b5cf6;
+            font-weight: 600;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .session-code {
+            background: #1e293b;
+            color: white;
+            padding: 0.375rem 0.625rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.6875rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+            word-break: break-all;
+        }
+
+        .dark .session-code {
+            background: #0f172a;
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-direction: column;
+        }
+
+        @media (min-width: 480px) {
+            .session-actions {
+                flex-direction: row;
+            }
+        }
+
+        .action-btn {
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .modify-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .modify-btn:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            transform: translateY(-1px);
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+        }
+
+        /* ==================== STYLES PROFIL ==================== */
+        .profil-section {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .profil-header {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profil-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .edit-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .edit-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
+        }
+
+        .profil-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .profil-content {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+
+        .dark .info-card {
+            background: #1e293b;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-group {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dark .info-group {
+            border-bottom: 1px solid #334155;
+        }
+
+        .info-group:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dark .info-label {
+            color: #94a3b8;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #1e293b;
+            min-height: 1.5rem;
+        }
+
+        .dark .info-value {
+            color: #f1f5f9;
+        }
+
+        .info-value.editable {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .info-value.editable:hover {
+            background: #f8fafc;
+        }
+
+        .dark .info-value.editable:hover {
+            background: #2d3748;
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            color: #1e293b;
+            transition: all 0.2s;
+        }
+
+        .dark .edit-input {
+            background: #1e293b;
+            color: #f1f5f9;
+            border-color: #8b5cf6;
+        }
+
+        .edit-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .dark .edit-input:focus {
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .save-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-2px);
+        }
+
+        .password-section {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .dark .password-section {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+
+        /* Avatar Section */
+        .avatar-section {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #10b981;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid white;
+        }
+
+        .dark .upload-btn {
+            border-color: #1e293b;
+        }
+
+        .upload-btn:hover {
+            background: #059669;
+            transform: scale(1.1);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .dark .stat-item {
+            background: #2d3748;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #8b5cf6;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .dark .stat-label {
+            color: #94a3b8;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .dark .modal-content {
+            background: #1e293b;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .selected-date-modal {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .dark .form-group label {
+            color: #f1f5f9;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .dark .form-control {
+            background: #1e293b;
+            border-color: #4b5563;
+            color: #f1f5f9;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .dark .form-control:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e293b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            padding-right: 40px;
+        }
+
+        .dark .form-select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f1f5f9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        }
+
+        .time-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (min-width: 480px) {
+            .time-inputs {
+                flex-direction: row;
+                gap: 16px;
+            }
+        }
+
+        .code-section {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .dark .code-section {
+            background: #0f172a;
+        }
+
+        .generated-code {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 2px dashed #8b5cf6;
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .dark .generated-code {
+            background: #1e293b;
+            color: #f1f5f9;
+            border: 2px dashed #8b5cf6;
+        }
+
+        .generate-code-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .generate-code-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .dark .modal-footer {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+        }
+
+        @media (min-width: 480px) {
+            .modal-footer {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-size: 15px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        @media (min-width: 480px) {
+            .btn {
+                flex: none;
+            }
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* IA Button */
+        .ia-btn {
+            position: relative;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .ia-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+        }
+
+        .ia-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #8b5cf6, #3b82f6, #8b5cf6);
+            border-radius: 52px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .ia-btn:hover::before {
+            opacity: 1;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .ia-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .stats-card {
+                min-width: auto;
+            }
+            
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .content-space {
+                padding: 10px;
+            }
+            
+            .calendar-section,
+            .planning-section {
+                padding: 16px;
+            }
+            
+            .calendar-weekdays {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-dark-950 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+    <!-- Structure Container -->
+    <div class="min-h-screen">
+        <!-- Sidebar Navigation Fixe -->
+        <aside id="sidebar" class="sidebar-container glass-effect shadow-xl hidden lg:block">
+            <!-- Logo -->
+            <div class="p-6 border-b border-gray-200 dark:border-dark-700">
+                <!-- Logo and Title - Responsive -->
+                <a href="/" class="flex items-center space-x-2 sm:space-x-3 shrink-0 min-w-0 -ml-1 sm:-ml-2" aria-label="Accueil EduConnect Africa">
+                    <img src="../../../Images/Logo.png" alt="Logo EduConnect Africa" class="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 drop-shadow-lg hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'" />
+                    
+                    <div class="leading-tight flex flex-col">
+                        <h1 class="text-lg sm:text-xl lg:text-2xl font-bold whitespace-nowrap">
+                            <span style="background: linear-gradient(90deg, #ff3131, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Edu</span><span style="background: linear-gradient(90deg, #8c52ff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connect</span>
+                        </h1>
+                        <span class="text-sm sm:text-base lg:text-lg font-bold whitespace-nowrap" style="background: linear-gradient(90deg, #8c52ff, #ff914d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                            Africa
+                        </span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 p-4 space-y-2">
+                <!-- Tableau de bord -->
+                <a href="#" data-section="dashboard" 
+                   class="sidebar-item active flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-dark-800">
+                    <i class="fas fa-home w-5 h-5"></i>
+                    <span>Tableau de bord</span>
+                </a>
+
+                <!-- Disponibilité -->
+                <a href="#" data-section="disponibilite" 
+                   class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-dark-800">
+                    <i class="fas fa-calendar-alt w-5 h-5"></i>
+                    <span>Disponibilité</span>
+                </a>
+
+                <!-- Mon profil -->
+                <a href="#" data-section="profil" 
+                   class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-dark-800">
+                    <i class="fas fa-user-circle w-5 h-5"></i>
+                    <span>Mon profil</span>
+                </a>
+
+                <!-- Paramètres -->
+                <a href="#" data-section="parametres" 
+                   class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-dark-800">
+                    <i class="fas fa-cog w-5 h-5"></i>
+                    <span>Paramètres</span>
+                </a>
+            </nav>
+
+            <!-- Logout Button -->
+            <div class="p-4 border-t border-gray-200 dark:border-dark-700">
+                <a href="#" id="logout-btn"
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+                    <i class="fas fa-sign-out-alt w-5 h-5"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header (Fixed) -->
+            <header class="sticky top-0 z-20 bg-white dark:bg-dark-800 shadow-lg border-b border-gray-200 dark:border-dark-700">
+                <div class="flex items-center justify-between px-4 lg:px-8 py-4">
+                    <!-- Mobile Menu Button & Current Page -->
+                    <div class="flex items-center gap-4">
+                        <button id="mobile-menu-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700">
+                            <i class="fas fa-bars w-6 h-6"></i>
+                        </button>
+                        
+                        <div>
+                            <h2 class="text-lg lg:text-xl font-bold text-gray-800 dark:text-white" id="pageTitle">Tableau de bord</h2>
+                            <p class="text-xs text-gray-500 dark:text-gray-400" id="pageSubtitle">Vue d'ensemble de votre activité</p>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar & Actions -->
+                    <div class="flex items-center gap-4">
+                        <!-- IA Button -->
+                        <a href="srt/ia.html" class="ia-btn hidden md:flex">
+                            <i class="fas fa-robot ia-pulse"></i>
+                            <span>Assistant IA</span>
+                        </a>
+
+                        <!-- Search Bar -->
+                        <div class="relative hidden md:block">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                            <input type="text" 
+                                   id="global-search" 
+                                   placeholder="Rechercher étudiants, cours..."
+                                   class="pl-10 pr-4 py-2 w-64 lg:w-80 border border-gray-300 dark:border-dark-600 rounded-xl bg-gray-50 dark:bg-dark-700 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent transition-all">
+                        </div>
+
+                        <!-- Dark Mode Toggle -->
+                        <button id="dark-mode-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                            <i id="dark-mode-icon" class="fas fa-moon w-5 h-5 text-gray-600 dark:text-yellow-300"></i>
+                        </button>
+
+                        <!-- Notifications -->
+                        <div class="relative">
+                            <button id="notifications-btn" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                                <i class="fas fa-bell w-5 h-5 text-gray-600 dark:text-gray-300"></i>
+                                <span class="notification-badge">3</span>
+                            </button>
+                            <!-- Notifications Dropdown (Hidden by default) -->
+                            <div id="notifications-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-dark-800 rounded-xl shadow-2xl border border-gray-200 dark:border-dark-700 z-30">
+                                <div class="p-4 border-b border-gray-200 dark:border-dark-700">
+                                    <h3 class="font-bold text-gray-800 dark:text-white">Notifications</h3>
+                                </div>
+                                <div class="max-h-96 overflow-y-auto">
+                                    <!-- Notification items will be loaded here -->
+                                </div>
+                                <div class="p-4 border-t border-gray-200 dark:border-dark-700 text-center">
+                                    <a href="#" class="text-primary-600 dark:text-primary-400 text-sm font-medium hover:underline">Voir toutes les notifications</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Profile -->
+                        <div class="relative">
+                            <button id="user-menu-btn" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                                <div class="text-right hidden lg:block">
+                                    <p class="font-semibold text-sm text-gray-800 dark:text-white user-name">Chargement...</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 user-role">Professeur</p>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                                    <span class="text-white font-semibold user-initials">...</span>
+                                </div>
+                            </button>
+
+                            <!-- User Dropdown Menu -->
+                            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-dark-800 rounded-xl shadow-2xl border border-gray-200 dark:border-dark-700 z-30">
+                                <div class="p-4 border-b border-gray-200 dark:border-dark-700">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                                            <span class="text-white font-semibold text-lg user-initials">...</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-gray-800 dark:text-white user-name">Chargement...</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400 user-role">Professeur</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="py-2">
+                                    <a href="#" data-section="profil" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                                        <i class="fas fa-user-circle w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                                        <span class="text-gray-700 dark:text-gray-300">Mon compte</span>
+                                    </a>
+                                    <a href="#" data-section="parametres" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                                        <i class="fas fa-cog w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                                        <span class="text-gray-700 dark:text-gray-300">Paramètres</span>
+                                    </a>
+                                    <hr class="my-2 border-gray-200 dark:border-dark-700">
+                                    <a href="#" id="dropdown-logout-btn" class="flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors">
+                                        <i class="fas fa-sign-out-alt w-5 h-5"></i>
+                                        <span>Déconnexion</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Espace principal pour le contenu -->
+            <div class="content-space">
+                <!-- Zone de contenu principale -->
+                <div class="max-w-7xl mx-auto">
+                    <!-- SECTION TABLEAU DE BORD -->
+                    <div id="dashboard-section" class="content-section active">
+                        <!-- Message de bienvenue personnalisé -->
+                        <div class="bg-gradient-to-r from-primary-500 to-purple-600 rounded-2xl p-6 text-white mb-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h2 class="text-2xl font-bold mb-2">Bonjour, <span id="welcome-name" class="animate-pulse">Chargement...</span> !</h2>
+                                    <p class="opacity-90">Bienvenue sur votre tableau de bord EduConnect Africa</p>
+                                </div>
+                                <div class="hidden md:block">
+                                    <i class="fas fa-chalkboard-teacher text-4xl opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section informations personnelles -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                            <!-- Carte Informations -->
+                            <div class="bg-white dark:bg-dark-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-dark-700">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                                        <span class="text-white font-bold text-xl user-initials">...</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-lg text-gray-800 dark:text-white user-name">Chargement...</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 user-role">Professeur</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2 text-sm">
+                                        <i class="fas fa-envelope text-gray-400 w-4"></i>
+                                        <span id="user-email" class="text-gray-600 dark:text-gray-300">Chargement...</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm">
+                                        <i class="fas fa-graduation-cap text-gray-400 w-4"></i>
+                                        <span id="user-diplome" class="text-gray-600 dark:text-gray-300">Chargement...</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm">
+                                        <i class="fas fa-language text-gray-400 w-4"></i>
+                                        <span id="user-langue" class="text-gray-600 dark:text-gray-300">Chargement...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Carte Matières enseignées -->
+                            <div class="bg-white dark:bg-dark-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-dark-700">
+                                <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-4">Matières enseignées</h3>
+                                <div id="matieres-list" class="space-y-2">
+                                    <div class="animate-pulse">
+                                        <div class="h-4 bg-gray-200 dark:bg-dark-700 rounded w-3/4 mb-2"></div>
+                                        <div class="h-4 bg-gray-200 dark:bg-dark-700 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Carte Statistiques -->
+                            <div class="bg-white dark:bg-dark-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-dark-700">
+                                <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-4">Statistiques du compte</h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600 dark:text-gray-400">Statut du compte</span>
+                                            <span id="user-statut" class="font-semibold animate-pulse">Chargement...</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 dark:bg-dark-700 rounded-full h-2">
+                                            <div id="statut-bar" class="bg-green-500 h-2 rounded-full w-0"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-600 dark:text-gray-400">Email vérifié</span>
+                                            <span id="email-verified" class="font-semibold animate-pulse">Chargement...</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 dark:bg-dark-700 rounded-full h-2">
+                                            <div id="email-bar" class="bg-blue-500 h-2 rounded-full w-0"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION DISPONIBILITÉ -->
+                    <div id="disponibilite-section" class="content-section">
+                        <!-- Header -->
+                        <div class="mb-6">
+                            <h1 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-white">Gestion des Disponibilités</h1>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2" id="currentDateDisplay">Mercredi 14 Décembre 2025</p>
+                        </div>
+
+                        <!-- Deux sections côte à côte -->
+                        <div class="disponibilite-grid">
+                            <!-- Section Calendrier -->
+                            <section class="calendar-section">
+                                <div class="calendar-header">
+                                    <div class="current-date">
+                                        <i class="fas fa-calendar-alt text-purple-600"></i>
+                                        <span id="currentMonthYear">Janvier 2024</span>
+                                    </div>
+                                    <div class="calendar-nav">
+                                        <button class="nav-btn" id="prevMonth">
+                                            <i class="fas fa-chevron-left"></i>
+                                            <span class="nav-text hidden sm:inline">Précédent</span>
+                                        </button>
+                                        <button class="nav-btn today-btn" id="todayBtn">
+                                            <i class="fas fa-calendar-day"></i>
+                                            <span class="nav-text hidden sm:inline">Aujourd'hui</span>
+                                        </button>
+                                        <button class="nav-btn" id="nextMonth">
+                                            <span class="nav-text hidden sm:inline">Suivant</span>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="calendar">
+                                    <div class="calendar-weekdays">
+                                        <div>Lun</div>
+                                        <div>Mar</div>
+                                        <div>Mer</div>
+                                        <div>Jeu</div>
+                                        <div>Ven</div>
+                                        <div>Sam</div>
+                                        <div>Dim</div>
+                                    </div>
+                                    <div class="calendar-days" id="calendarDays">
+                                        <!-- Les jours seront générés par JavaScript -->
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Section Planning -->
+                            <section class="planning-section">
+                                <h2 class="section-title">
+                                    <i class="fas fa-clipboard-list text-purple-600"></i>
+                                    Planning des Cours
+                                </h2>
+                                
+                                <div class="filters">
+                                    <button class="filter-btn active" data-filter="all">Tous</button>
+                                    <button class="filter-btn" data-filter="confirmed">Confirmés</button>
+                                    <button class="filter-btn" data-filter="modified">Modifiés</button>
+                                    <button class="filter-btn" data-filter="cancelled">Annulés</button>
+                                </div>
+                                
+                                <div class="sessions-list" id="sessionsList">
+                                    <div class="no-sessions">
+                                        <i class="fas fa-calendar-plus fa-3x text-purple-400"></i>
+                                        <p>Aucune session planifiée</p>
+                                        <p class="text-sm">Cliquez sur une date dans le calendrier pour planifier une session</p>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <!-- SECTION PROFIL -->
+                    <div id="profil-section" class="content-section profil-section">
+                        <div class="profil-header">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h1 class="text-2xl lg:text-3xl font-bold mb-2">Mon Profil</h1>
+                                    <p class="opacity-90">Gérez vos informations personnelles</p>
+                                </div>
+                                <div class="hidden md:block">
+                                    <i class="fas fa-user-circle text-4xl opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profil-content">
+                            <!-- Section Informations personnelles -->
+                            <div class="info-card">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-xl font-bold text-gray-800 dark:text-white">Informations personnelles</h3>
+                                    <button class="edit-btn" id="editAllBtn">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="info-group">
+                                    <div class="info-label">
+                                        <span>Nom complet</span>
+                                        <button class="text-xs text-purple-600 hover:text-purple-800 edit-field-btn" data-field="nomComplet">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                    <div class="info-value editable" id="profil-nom-complet" data-field="nomComplet">Chargement...</div>
+                                </div>
+                                
+                                <div class="info-group">
+                                    <div class="info-label">
+                                        <span>Email</span>
+                                        <button class="text-xs text-purple-600 hover:text-purple-800 edit-field-btn" data-field="email">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                    <div class="info-value editable" id="profil-email" data-field="email">Chargement...</div>
+                                </div>
+                                
+                                <div class="info-group">
+                                    <div class="info-label">
+                                        <span>Diplôme</span>
+                                        <button class="text-xs text-purple-600 hover:text-purple-800 edit-field-btn" data-field="diplome">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                    <div class="info-value editable" id="profil-diplome" data-field="diplome">Chargement...</div>
+                                </div>
+                                
+                                <div class="info-group">
+                                    <div class="info-label">
+                                        <span>Langue préférée</span>
+                                        <button class="text-xs text-purple-600 hover:text-purple-800 edit-field-btn" data-field="langue">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                    <div class="info-value editable" id="profil-langue" data-field="langue">Chargement...</div>
+                                </div>
+                                
+                                <div class="info-group">
+                                    <div class="info-label">
+                                        <span>Matières enseignées</span>
+                                        <button class="text-xs text-purple-600 hover:text-purple-800 edit-field-btn" data-field="matieres">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                    <div id="profil-matieres" class="info-value" data-field="matieres">
+                                        Chargement...
+                                    </div>
+                                </div>
+                                
+                                <div class="info-group">
+                                    <div class="info-label">
+                                        <span>Statut du compte</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span id="profil-statut" class="info-value">Chargement...</span>
+                                        <span id="profil-statut-badge" class="px-2 py-1 text-xs rounded-full"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Bouton Enregistrer (caché par défaut) -->
+                                <button class="save-btn hidden" id="saveProfileBtn">
+                                    <i class="fas fa-save"></i>
+                                    Enregistrer les modifications
+                                </button>
+                            </div>
+                            
+                            <!-- Section Photo de profil et statistiques -->
+                            <div>
+                                <!-- Photo de profil -->
+                                <div class="info-card mb-6">
+                                    <div class="avatar-section">
+                                        <div class="avatar-container">
+                                            <div class="avatar">
+                                                <span class="user-initials">...</span>
+                                            </div>
+                                            <button class="upload-btn">
+                                                <i class="fas fa-camera"></i>
+                                            </button>
+                                        </div>
+                                        <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Photo de profil</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                            Les initiales sont générées automatiquement à partir de votre nom
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Statistiques -->
+                                <div class="info-card mb-6">
+                                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Statistiques</h3>
+                                    <div class="stats-section">
+                                        <div class="stat-item">
+                                            <div class="stat-number" id="stats-sessions">0</div>
+                                            <div class="stat-label">Sessions</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-number" id="stats-students">0</div>
+                                            <div class="stat-label">Étudiants</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-number" id="stats-hours">0h</div>
+                                            <div class="stat-label">Heures</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-number" id="stats-rating">5.0</div>
+                                            <div class="stat-label">Note</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Informations du compte -->
+                                <div class="info-card">
+                                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Informations du compte</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600 dark:text-gray-400">Rôle:</span>
+                                            <span id="profil-role" class="text-sm font-medium text-gray-800 dark:text-white">Chargement...</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600 dark:text-gray-400">Membre depuis:</span>
+                                            <span id="profil-date-inscription" class="text-sm font-medium text-gray-800 dark:text-white">Chargement...</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600 dark:text-gray-400">Dernière connexion:</span>
+                                            <span id="profil-derniere-connexion" class="text-sm font-medium text-gray-800 dark:text-white">Chargement...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Mot de passe -->
+                        <div class="password-section">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Modifier le mot de passe</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Mot de passe actuel
+                                    </label>
+                                    <input type="password" id="current-password" class="edit-input" placeholder="Entrez votre mot de passe actuel">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Nouveau mot de passe
+                                    </label>
+                                    <input type="password" id="new-password" class="edit-input" placeholder="Entrez votre nouveau mot de passe">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Confirmer le mot de passe
+                                    </label>
+                                    <input type="password" id="confirm-password" class="edit-input" placeholder="Confirmez votre nouveau mot de passe">
+                                </div>
+                                <button class="save-btn" id="changePasswordBtn">
+                                    <i class="fas fa-key"></i>
+                                    Modifier le mot de passe
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION PARAMÈTRES -->
+                    <div id="parametres-section" class="content-section">
+                        <div class="bg-gradient-to-r from-primary-500 to-purple-600 rounded-2xl p-6 text-white mb-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h2 class="text-2xl font-bold mb-2">Paramètres</h2>
+                                    <p class="opacity-90">Gérez vos préférences et paramètres du compte</p>
+                                </div>
+                                <div class="hidden md:block">
+                                    <i class="fas fa-cogs text-4xl opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-white dark:bg-dark-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-dark-700">
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Préférences d'affichage</h3>
+                                
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="font-medium text-gray-700 dark:text-gray-300">Mode sombre</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Activer/désactiver le mode sombre</p>
+                                        </div>
+                                        <button id="dark-mode-toggle-settings" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                                            <i class="fas fa-moon w-5 h-5 text-gray-600 dark:text-yellow-300"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="font-medium text-gray-700 dark:text-gray-300">Notifications</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Activer/désactiver les notifications</p>
+                                        </div>
+                                        <div class="relative">
+                                            <input type="checkbox" id="notifications-toggle" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Langue de l'interface
+                                        </label>
+                                        <select id="interface-lang" class="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700">
+                                            <option value="fr">Français</option>
+                                            <option value="en">English</option>
+                                            <option value="es">Español</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white dark:bg-dark-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-dark-700">
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Sécurité</h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="font-medium text-gray-700 dark:text-gray-300 mb-2">Authentification à deux facteurs</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                            Ajoutez une couche de sécurité supplémentaire à votre compte
+                                        </p>
+                                        <button class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition">
+                                            Configurer 2FA
+                                        </button>
+                                    </div>
+                                    
+                                    <div>
+                                        <p class="font-medium text-gray-700 dark:text-gray-300 mb-2">Sessions actives</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                            Gérez vos sessions de connexion actives
+                                        </p>
+                                        <button class="px-4 py-2 bg-gray-100 dark:bg-dark-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-dark-600 transition">
+                                            Voir les sessions
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="pt-4 border-t border-gray-200 dark:border-dark-700">
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                            Pour modifier votre mot de passe, veuillez utiliser la section "Modifier le mot de passe" dans votre profil.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
+    <!-- Mobile Sidebar -->
+    <aside id="mobile-sidebar" class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-dark-800 shadow-2xl z-40 transform -translate-x-full transition-transform duration-300 lg:hidden">
+        <div class="p-6 h-full flex flex-col">
+            <!-- Mobile Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">E</span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-xl text-gray-800 dark:text-white">EduConnect</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Africa</p>
+                    </div>
+                </div>
+                <button id="close-mobile-menu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700">
+                    <i class="fas fa-times w-6 h-6 text-gray-600 dark:text-gray-300"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <nav class="flex-1 space-y-2 overflow-y-auto">
+                <a href="#" data-section="dashboard" 
+                   class="sidebar-item active flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-dark-700">
+                    <i class="fas fa-home w-5 h-5"></i>
+                    <span>Tableau de bord</span>
+                </a>
+
+                <a href="#" data-section="disponibilite" 
+                   class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-dark-800">
+                    <i class="fas fa-calendar-alt w-5 h-5"></i>
+                    <span>Disponibilité</span>
+                </a>
+
+                <a href="#" data-section="profil" 
+                   class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-dark-800">
+                    <i class="fas fa-user-circle w-5 h-5"></i>
+                    <span>Mon profil</span>
+                </a>
+
+                <a href="#" data-section="parametres" 
+                   class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-dark-800">
+                    <i class="fas fa-cog w-5 h-5"></i>
+                    <span>Paramètres</span>
+                </a>
+            </nav>
+
+            <!-- Mobile IA Button -->
+            <div class="my-4">
+                <a href="srt/ia.html" class="ia-btn w-full justify-center">
+                    <i class="fas fa-robot ia-pulse"></i>
+                    <span>Assistant IA</span>
+                </a>
+            </div>
+
+            <!-- Mobile User Info -->
+            <div class="pt-4 border-t border-gray-200 dark:border-dark-700">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                        <span class="text-white font-semibold user-initials">...</span>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-800 dark:text-white user-name">Chargement...</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 user-role">Professeur</p>
+                    </div>
+                </div>
+                
+                <!-- Mobile Logout -->
+                <a href="#" id="mobile-logout-btn"
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+                    <i class="fas fa-sign-out-alt w-5 h-5"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Session Modal -->
+    <div class="modal" id="sessionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Planifier une Session</h2>
+                <div class="selected-date-modal" id="selectedDateModal">Date sélectionnée: 15 Janvier 2024</div>
+            </div>
+            <div class="modal-body">
+                <form id="sessionForm">
+                    <div class="form-group">
+                        <label for="subject">
+                            <i class="fas fa-book"></i>
+                            Matière
+                        </label>
+                        <select id="subject" class="form-control form-select" required>
+                            <option value="">Sélectionnez une matière</option>
+                            <option value="Mathématiques">Mathématiques</option>
+                            <option value="Physique">Physique</option>
+                            <option value="Sciences de la Terre">Sciences de la Terre</option>
+                            <option value="Littérature camerounaise">Littérature camerounaise</option>
+                            <option value="Informatique">Informatique</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="time-inputs">
+                            <div style="flex: 1;">
+                                <label for="startTime">
+                                    <i class="fas fa-clock"></i>
+                                    Heure de début
+                                </label>
+                                <input type="time" id="startTime" class="form-control" required>
+                            </div>
+                            <div style="flex: 1;">
+                                <label for="endTime">
+                                    <i class="fas fa-clock"></i>
+                                    Heure de fin
+                                </label>
+                                <input type="time" id="endTime" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="code-section">
+                        <label>
+                            <i class="fas fa-key"></i>
+                            Code de session unique
+                        </label>
+                        <div class="generated-code" id="generatedCode">
+                            Cliquez sur "Générer le code" pour créer un identifiant unique
+                        </div>
+                        <button type="button" class="generate-code-btn" id="generateCodeBtn">
+                            <i class="fas fa-cogs"></i>
+                            Générer le code unique
+                        </button>
+                    </div>
+                    
+                    <input type="hidden" id="sessionId">
+                    <input type="hidden" id="selectedDate">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" id="cancelModalBtn">
+                    <i class="fas fa-times"></i>
+                    Annuler
+                </button>
+                <button type="button" class="btn btn-confirm" id="confirmBtn">
+                    <i class="fas fa-check"></i>
+                    Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== INITIALISATION FIREBASE ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
+            authDomain: "achitectureweb-groupe-10.firebaseapp.com",
+            projectId: "achitectureweb-groupe-10",
+            storageBucket: "achitectureweb-groupe-10.firebasestorage.app",
+            messagingSenderId: "646899550480",
+            appId: "1:646899550480:web:687fd4f4b2e0ca646efd95"
+        };
+        
+        // Initialiser Firebase
+        let firebaseApp = null;
+        let firebaseAuth = null;
+        let firebaseDb = null;
+        let currentUser = null;
+        let currentUserInfo = null;
+        
+        function initFirebase() {
+            try {
+                if (!firebase.apps.length) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                } else {
+                    firebaseApp = firebase.app();
+                }
+                
+                firebaseAuth = firebase.auth();
+                firebaseDb = firebase.firestore();
+                
+                console.log("✅ Firebase initialisé avec succès");
+                return true;
+            } catch (error) {
+                console.error("❌ Erreur d'initialisation Firebase:", error);
+                return false;
+            }
+        }
+        
+        // ==================== GESTION UTILISATEUR ====================
+        async function getUserInfo() {
+            try {
+                const auth = firebase.auth();
+                const user = auth.currentUser;
+                
+                if (!user) {
+                    console.log("⚠️ Aucun utilisateur connecté");
+                    return null;
+                }
+                
+                console.log("🔍 Récupération des informations pour l'utilisateur:", user.uid);
+                
+                // Vérifier d'abord si c'est un enseignant
+                const enseignantDoc = await firebaseDb.collection('enseignants').doc(user.uid).get();
+                
+                if (enseignantDoc.exists) {
+                    const data = enseignantDoc.data();
+                    console.log("✅ Données enseignant trouvées:", data);
+                    return {
+                        uid: user.uid,
+                        email: user.email,
+                        role: 'enseignant',
+                        ...data
+                    };
+                }
+                
+                // Si ce n'est pas un enseignant, vérifier si c'est un étudiant
+                const etudiantDoc = await firebaseDb.collection('etudiants').doc(user.uid).get();
+                
+                if (etudiantDoc.exists) {
+                    const data = etudiantDoc.data();
+                    console.log("✅ Données étudiant trouvées:", data);
+                    return {
+                        uid: user.uid,
+                        email: user.email,
+                        role: 'etudiant',
+                        ...data
+                    };
+                }
+                
+                console.log("⚠️ Aucun document trouvé pour l'utilisateur");
+                return {
+                    uid: user.uid,
+                    email: user.email,
+                    role: 'utilisateur',
+                    display_name: user.displayName || user.email.split('@')[0],
+                    name: '',
+                    prenom: ''
+                };
+                
+            } catch (error) {
+                console.error("❌ Erreur lors de la récupération des informations:", error);
+                return null;
+            }
+        }
+        
+        function getInitials(userInfo) {
+            if (!userInfo) return 'U';
+            
+            const prenom = userInfo.prenom || '';
+            const name = userInfo.name || '';
+            
+            if (prenom && name) {
+                return (prenom.charAt(0) + name.charAt(0)).toUpperCase();
+            } else if (prenom) {
+                return prenom.charAt(0).toUpperCase();
+            } else if (name) {
+                return name.charAt(0).toUpperCase();
+            } else if (userInfo.display_name) {
+                const parts = userInfo.display_name.split(' ');
+                if (parts.length >= 2) {
+                    return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+                } else {
+                    return parts[0].charAt(0).toUpperCase();
+                }
+            } else {
+                return 'U';
+            }
+        }
+        
+        function getFullName(userInfo) {
+            if (!userInfo) return 'Utilisateur';
+            
+            if (userInfo.display_name) {
+                return userInfo.display_name;
+            } else if (userInfo.prenom && userInfo.name) {
+                return `${userInfo.prenom} ${userInfo.name}`;
+            } else if (userInfo.prenom) {
+                return userInfo.prenom;
+            } else if (userInfo.name) {
+                return userInfo.name;
+            } else {
+                return userInfo.email.split('@')[0];
+            }
+        }
+        
+        function getMainSubject(userInfo) {
+            if (!userInfo) return 'Professeur';
+            
+            if (userInfo.role === 'enseignant') {
+                if (userInfo.matieres_text && userInfo.matieres_text.length > 0) {
+                    return userInfo.matieres_text[0];
+                } else if (userInfo.matieres && userInfo.matieres.length > 0) {
+                    const subject = userInfo.matieres[0];
+                    return subject.charAt(0).toUpperCase() + subject.slice(1).replace('-', ' ');
+                } else if (userInfo.diplome) {
+                    return `Diplômé en ${userInfo.diplome}`;
+                } else {
+                    return 'Professeur';
+                }
+            } else if (userInfo.role === 'etudiant') {
+                return 'Étudiant';
+            } else {
+                return 'Membre';
+            }
+        }
+        
+        async function updateUIWithUserData() {
+            try {
+                currentUserInfo = await getUserInfo();
+                
+                if (!currentUserInfo) {
+                    console.log("⚠️ Impossible de récupérer les données utilisateur");
+                    return;
+                }
+                
+                console.log("📊 Données utilisateur chargées:", currentUserInfo);
+                
+                // Mettre à jour le nom dans l'en-tête
+                const userNameElements = document.querySelectorAll('.user-name');
+                const userRoleElements = document.querySelectorAll('.user-role');
+                const userInitialsElements = document.querySelectorAll('.user-initials');
+                
+                const fullName = getFullName(currentUserInfo);
+                const initials = getInitials(currentUserInfo);
+                const mainSubject = getMainSubject(currentUserInfo);
+                
+                userNameElements.forEach(element => {
+                    if (currentUserInfo.role === 'enseignant') {
+                        element.textContent = `Dr. ${fullName}`;
+                    } else {
+                        element.textContent = fullName;
+                    }
+                });
+                
+                userRoleElements.forEach(element => {
+                    element.textContent = mainSubject;
+                });
+                
+                userInitialsElements.forEach(element => {
+                    element.textContent = initials;
+                });
+                
+                // Mettre à jour le titre de la page
+                const pageTitle = document.querySelector('title');
+                if (pageTitle && currentUserInfo.role === 'enseignant') {
+                    pageTitle.textContent = `EduConnect Africa - Tableau de bord de ${fullName}`;
+                }
+                
+                // Mettre à jour le profil
+                updateProfilSection(currentUserInfo);
+                
+                // Mettre à jour les statistiques
+                updateStatistics();
+                
+            } catch (error) {
+                console.error("❌ Erreur lors de la mise à jour de l'interface:", error);
+            }
+        }
+
+        function updateProfilSection(userInfo) {
+            // Nom complet
+            const nomComplet = document.getElementById('profil-nom-complet');
+            if (nomComplet) {
+                nomComplet.textContent = getFullName(userInfo);
+                nomComplet.dataset.original = getFullName(userInfo);
+            }
+            
+            // Email
+            const profilEmail = document.getElementById('profil-email');
+            if (profilEmail) {
+                profilEmail.textContent = userInfo.email || 'Non spécifié';
+                profilEmail.dataset.original = userInfo.email || 'Non spécifié';
+            }
+            
+            // Diplôme
+            const profilDiplome = document.getElementById('profil-diplome');
+            if (profilDiplome) {
+                const diplomeValue = userInfo.diplome ? 
+                    userInfo.diplome.charAt(0).toUpperCase() + userInfo.diplome.slice(1) : 
+                    'Non spécifié';
+                profilDiplome.textContent = diplomeValue;
+                profilDiplome.dataset.original = diplomeValue;
+            }
+            
+            // Langue
+            const profilLangue = document.getElementById('profil-langue');
+            if (profilLangue) {
+                const langueValue = userInfo.langue ? 
+                    userInfo.langue.charAt(0).toUpperCase() + userInfo.langue.slice(1) : 
+                    'Français';
+                profilLangue.textContent = langueValue;
+                profilLangue.dataset.original = langueValue;
+            }
+            
+            // Matières
+            const profilMatieres = document.getElementById('profil-matieres');
+            if (profilMatieres) {
+                let matieresText = '';
+                if (userInfo.matieres_text && userInfo.matieres_text.length > 0) {
+                    matieresText = userInfo.matieres_text.map(matiere => 
+                        `<div class="mb-1">• ${matiere}</div>`
+                    ).join('');
+                } else if (userInfo.matieres && userInfo.matieres.length > 0) {
+                    matieresText = userInfo.matieres.map(matiere => 
+                        `<div class="mb-1">• ${matiere.charAt(0).toUpperCase() + matiere.slice(1).replace('-', ' ')}</div>`
+                    ).join('');
+                } else {
+                    matieresText = 'Aucune matière spécifiée';
+                }
+                profilMatieres.innerHTML = matieresText;
+                profilMatieres.dataset.original = matieresText;
+            }
+            
+            // Statut
+            const profilStatut = document.getElementById('profil-statut');
+            const profilStatutBadge = document.getElementById('profil-statut-badge');
+            if (profilStatut && profilStatutBadge) {
+                if (userInfo.statut === 'actif') {
+                    profilStatut.textContent = 'Actif';
+                    profilStatutBadge.textContent = '✓';
+                    profilStatutBadge.className = 'px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                } else {
+                    profilStatut.textContent = 'Inactif';
+                    profilStatutBadge.textContent = '✗';
+                    profilStatutBadge.className = 'px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                }
+            }
+            
+            // Rôle
+            const profilRole = document.getElementById('profil-role');
+            if (profilRole) {
+                profilRole.textContent = userInfo.role === 'enseignant' ? 'Enseignant' : 'Étudiant';
+            }
+            
+            // Date d'inscription
+            const profilDateInscription = document.getElementById('profil-date-inscription');
+            if (profilDateInscription && userInfo.date_inscription) {
+                try {
+                    const date = userInfo.date_inscription.toDate ? 
+                        userInfo.date_inscription.toDate() : 
+                        new Date(userInfo.date_inscription);
+                    profilDateInscription.textContent = date.toLocaleDateString('fr-FR');
+                } catch (e) {
+                    profilDateInscription.textContent = 'Non disponible';
+                }
+            }
+            
+            // Dernière connexion
+            const derniereConnexion = document.getElementById('profil-derniere-connexion');
+            if (derniereConnexion) {
+                derniereConnexion.textContent = new Date().toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        }
+
+        function updateStatistics() {
+            // Sessions totales
+            const totalSessions = sessions.filter(s => s.status !== 'cancelled').length;
+            document.getElementById('stats-sessions').textContent = totalSessions;
+            
+            // Nombre d'étudiants (simulé)
+            const students = Math.floor(Math.random() * 50) + 10;
+            document.getElementById('stats-students').textContent = students;
+            
+            // Heures totales (simulé)
+            const hours = totalSessions * 1.5;
+            document.getElementById('stats-hours').textContent = `${hours.toFixed(1)}h`;
+            
+            // Note moyenne (simulé)
+            const rating = (4.5 + Math.random() * 0.5).toFixed(1);
+            document.getElementById('stats-rating').textContent = rating;
+        }
+
+        async function updateUserProfileInFirebase(updatedData) {
+            try {
+                if (!currentUser || !currentUser.uid) {
+                    throw new Error("Utilisateur non connecté");
+                }
+                
+                // Mettre à jour dans la collection enseignants
+                await firebaseDb.collection('enseignants').doc(currentUser.uid).update(updatedData);
+                
+                // Mettre à jour les données locales
+                currentUserInfo = { ...currentUserInfo, ...updatedData };
+                
+                return true;
+            } catch (error) {
+                console.error("❌ Erreur lors de la mise à jour du profil:", error);
+                throw error;
+            }
+        }
+
+        async function changeUserPassword(currentPassword, newPassword) {
+            try {
+                const user = firebaseAuth.currentUser;
+                
+                if (!user) {
+                    throw new Error("Utilisateur non connecté");
+                }
+                
+                // Recréer les identifiants pour vérifier le mot de passe actuel
+                const credential = firebase.auth.EmailAuthProvider.credential(
+                    user.email, 
+                    currentPassword
+                );
+                
+                // Vérifier le mot de passe actuel
+                await user.reauthenticateWithCredential(credential);
+                
+                // Mettre à jour le mot de passe
+                await user.updatePassword(newPassword);
+                
+                return true;
+            } catch (error) {
+                console.error("❌ Erreur lors du changement de mot de passe:", error);
+                throw error;
+            }
+        }
+
+        // ==================== GESTION DISPONIBILITÉ ====================
+        let currentDate = new Date();
+        let selectedDate = null;
+        let sessions = JSON.parse(localStorage.getItem('classCalendarSessions')) || [];
+        let editingSessionId = null;
+        let currentFilter = 'all';
+
+        const subjects = [
+            "Mathématiques",
+            "Physique", 
+            "Sciences de la Terre",
+            "Littérature camerounaise",
+            "Informatique"
+        ];
+
+        function initDisponibilite() {
+            updateCurrentDateDisplay();
+            renderCalendar(currentDate);
+            setupEventListeners();
+            renderSessionsList();
+            updateCurrentDateHeader();
+            updateStats();
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderSessionsList();
+                });
+            });
+        }
+
+        function initCalendar() {
+            if (document.getElementById('calendarDays').children.length === 0) {
+                updateCurrentDateDisplay();
+                renderCalendar(currentDate);
+                renderSessionsList();
+                updateCurrentDateHeader();
+                updateStats();
+            }
+        }
+
+        function updateStats() {
+            const totalSessions = sessions.filter(s => s.status !== 'cancelled').length;
+            document.getElementById('totalSessions').textContent = totalSessions;
+        }
+
+        function updateCurrentDateHeader() {
+            const today = new Date();
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            const formattedDate = today.toLocaleDateString('fr-FR', options);
+            document.getElementById('currentDateDisplay').textContent = formattedDate;
+        }
+
+        function updateCurrentDateDisplay() {
+            const options = { year: 'numeric', month: 'long' };
+            document.getElementById('currentMonthYear').textContent = 
+                currentDate.toLocaleDateString('fr-FR', options);
+        }
+
+        function renderCalendar(date) {
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+            
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            let firstDayIndex = firstDay.getDay();
+            firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+            
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            
+            // Jours du mois précédent
+            for (let i = firstDayIndex; i > 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day inactive';
+                day.innerHTML = `<div class="day-number">${prevMonthLastDay - i + 1}</div>`;
+                calendarDays.appendChild(day);
+            }
+            
+            // Jours du mois actuel
+            const today = new Date();
+            const isToday = (day) => {
+                return day === today.getDate() && 
+                       month === today.getMonth() && 
+                       year === today.getFullYear();
+            };
+            
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                if (isToday(day)) {
+                    dayElement.classList.add('today');
+                }
+                
+                dayElement.innerHTML = `<div class="day-number">${day}</div>`;
+                dayElement.dataset.date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                // Ajouter les sessions pour ce jour
+                const daySessions = sessions.filter(s => s.date === dayElement.dataset.date && s.status !== 'cancelled');
+                daySessions.forEach(session => {
+                    const badge = document.createElement('div');
+                    badge.className = `session-badge session-${session.status}`;
+                    badge.innerHTML = `
+                        <div>${session.subject.substring(0, 10)}${session.subject.length > 10 ? '...' : ''}</div>
+                        <span class="session-time">${session.startTime}</span>
+                    `;
+                    badge.dataset.sessionId = session.id;
+                    badge.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        editSession(session.id);
+                    });
+                    dayElement.appendChild(badge);
+                });
+                
+                dayElement.addEventListener('click', () => openSessionModal(dayElement.dataset.date));
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Jours du mois suivant
+            const totalCells = 42;
+            const daysInCalendar = firstDayIndex + lastDay.getDate();
+            const remainingCells = totalCells - daysInCalendar;
+            
+            for (let i = 1; i <= remainingCells; i++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day inactive';
+                day.innerHTML = `<div class="day-number">${i}</div>`;
+                calendarDays.appendChild(day);
+            }
+        }
+
+        function renderSessionsList() {
+            const sessionsList = document.getElementById('sessionsList');
+            sessionsList.innerHTML = '';
+            
+            let filteredSessions = sessions;
+            if (currentFilter !== 'all') {
+                filteredSessions = sessions.filter(s => s.status === currentFilter);
+            }
+            
+            filteredSessions.sort((a, b) => {
+                const dateCompare = new Date(b.date) - new Date(a.date);
+                if (dateCompare !== 0) return dateCompare;
+                return b.startTime.localeCompare(a.startTime);
+            });
+            
+            if (filteredSessions.length === 0) {
+                sessionsList.innerHTML = `
+                    <div class="no-sessions">
+                        <i class="fas fa-calendar-times fa-3x" style="margin-bottom: 15px; color: #94a3b8;"></i>
+                        <p>Aucune session ${currentFilter !== 'all' ? currentFilter : 'planifiée'}</p>
+                        <p class="text-sm">Cliquez sur une date dans le calendrier pour planifier une session</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredSessions.forEach(session => {
+                const dateObj = new Date(session.date + 'T00:00:00');
+                const dateStr = dateObj.toLocaleDateString('fr-FR', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short'
+                });
+                
+                const sessionCard = document.createElement('div');
+                sessionCard.className = `session-card ${session.status}`;
+                sessionCard.innerHTML = `
+                    <div class="session-header">
+                        <div class="session-subject">${session.subject}</div>
+                        <div class="session-date">${dateStr}</div>
+                    </div>
+                    <div class="session-time-range">
+                        <i class="far fa-clock"></i>
+                        ${session.startTime} - ${session.endTime}
+                    </div>
+                    <div class="session-code">${session.code}</div>
+                    ${session.status !== 'cancelled' ? `
+                    <div class="session-actions">
+                        <button class="action-btn modify-btn" onclick="editSession('${session.id}')">
+                            <i class="fas fa-edit"></i>
+                            Modifier
+                        </button>
+                        <button class="action-btn cancel-btn" onclick="cancelSessionFromList('${session.id}')">
+                            <i class="fas fa-times"></i>
+                            Annuler
+                        </button>
+                    </div>
+                    ` : ''}
+                `;
+                
+                sessionsList.appendChild(sessionCard);
+            });
+        }
+
+        function openSessionModal(date, sessionId = null) {
+            selectedDate = date;
+            editingSessionId = sessionId;
+            
+            const modal = document.getElementById('sessionModal');
+            const dateObj = new Date(date + 'T00:00:00');
+            const dateStr = dateObj.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            document.getElementById('selectedDateModal').textContent = `Date sélectionnée: ${dateStr}`;
+            document.getElementById('selectedDate').value = date;
+            
+            document.getElementById('sessionForm').reset();
+            document.getElementById('generatedCode').textContent = 'Cliquez sur "Générer le code" pour créer un identifiant unique';
+            
+            if (sessionId) {
+                const session = sessions.find(s => s.id === sessionId);
+                if (session) {
+                    document.getElementById('subject').value = session.subject;
+                    document.getElementById('startTime').value = session.startTime;
+                    document.getElementById('endTime').value = session.endTime;
+                    document.getElementById('sessionId').value = session.id;
+                    document.getElementById('generatedCode').textContent = session.code;
+                }
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeSessionModal() {
+            document.getElementById('sessionModal').classList.remove('active');
+            editingSessionId = null;
+        }
+
+        function generateUniqueCode() {
+            const timestamp = Date.now().toString(36);
+            const randomStr = Math.random().toString(36).substring(2, 8);
+            const sessionCode = `COURS-${timestamp}-${randomStr}`.toUpperCase();
+            
+            document.getElementById('generatedCode').textContent = sessionCode;
+            return sessionCode;
+        }
+
+        function editSession(sessionId) {
+            const session = sessions.find(s => s.id === sessionId);
+            if (session) {
+                openSessionModal(session.date, sessionId);
+            }
+        }
+
+        function cancelSessionFromList(sessionId) {
+            if (confirm('Voulez-vous vraiment annuler cette session ?')) {
+                const sessionIndex = sessions.findIndex(s => s.id === sessionId);
+                if (sessionIndex !== -1) {
+                    sessions[sessionIndex].status = 'cancelled';
+                    saveSessions();
+                    renderCalendar(currentDate);
+                    renderSessionsList();
+                    updateStats();
+                    updateStatistics();
+                    showNotification('Session annulée avec succès !', 'success');
+                }
+            }
+        }
+
+        function confirmSession() {
+            const subject = document.getElementById('subject').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            let code = document.getElementById('generatedCode').textContent;
+            
+            if (!subject || !startTime || !endTime) {
+                showNotification('Veuillez remplir tous les champs obligatoires', 'error');
+                return;
+            }
+            
+            if (code === 'Cliquez sur "Générer le code" pour créer un identifiant unique') {
+                showNotification('Veuillez générer un code unique pour la session', 'error');
+                return;
+            }
+            
+            if (!editingSessionId) {
+                code = generateUniqueCode();
+            }
+            
+            if (editingSessionId) {
+                const sessionIndex = sessions.findIndex(s => s.id === editingSessionId);
+                if (sessionIndex !== -1) {
+                    sessions[sessionIndex].subject = subject;
+                    sessions[sessionIndex].startTime = startTime;
+                    sessions[sessionIndex].endTime = endTime;
+                    sessions[sessionIndex].code = code;
+                    sessions[sessionIndex].status = sessions[sessionIndex].status === 'confirmed' ? 'modified' : sessions[sessionIndex].status;
+                }
+            } else {
+                const sessionId = 'session-' + Date.now();
+                
+                const newSession = {
+                    id: sessionId,
+                    date: selectedDate,
+                    subject: subject,
+                    startTime: startTime,
+                    endTime: endTime,
+                    code: code,
+                    status: 'confirmed'
+                };
+                
+                sessions.push(newSession);
+            }
+            
+            saveSessions();
+            renderCalendar(currentDate);
+            renderSessionsList();
+            updateStats();
+            updateStatistics();
+            closeSessionModal();
+            
+            showNotification(editingSessionId ? 'Session modifiée avec succès!' : 'Session planifiée avec succès!', 'success');
+        }
+
+        function saveSessions() {
+            localStorage.setItem('classCalendarSessions', JSON.stringify(sessions));
+        }
+
+        function setupEventListeners() {
+            // Navigation du calendrier
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                updateCurrentDateDisplay();
+                renderCalendar(currentDate);
+            });
+            
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                updateCurrentDateDisplay();
+                renderCalendar(currentDate);
+            });
+            
+            document.getElementById('todayBtn').addEventListener('click', () => {
+                currentDate = new Date();
+                updateCurrentDateDisplay();
+                renderCalendar(currentDate);
+            });
+            
+            // Boutons du modal
+            document.getElementById('generateCodeBtn').addEventListener('click', generateUniqueCode);
+            document.getElementById('confirmBtn').addEventListener('click', confirmSession);
+            document.getElementById('cancelModalBtn').addEventListener('click', closeSessionModal);
+            
+            // Fermer le modal
+            document.getElementById('sessionModal').addEventListener('click', (e) => {
+                if (e.target.id === 'sessionModal') {
+                    closeSessionModal();
+                }
+            });
+            
+            document.querySelector('.modal-content').addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Validation des heures
+            document.getElementById('endTime').addEventListener('change', function() {
+                const startTime = document.getElementById('startTime').value;
+                const endTime = this.value;
+                
+                if (startTime && endTime && startTime >= endTime) {
+                    showNotification("L'heure de fin doit être après l'heure de début", 'error');
+                    this.value = '';
+                }
+            });
+            
+            // Gestion responsive pour les boutons
+            function updateButtonText() {
+                const navTexts = document.querySelectorAll('.nav-text');
+                if (window.innerWidth < 640) {
+                    navTexts.forEach(text => text.style.display = 'none');
+                } else {
+                    navTexts.forEach(text => text.style.display = 'inline');
+                }
+            }
+            
+            updateButtonText();
+            window.addEventListener('resize', updateButtonText);
+        }
+
+        // ==================== GESTION PROFIL ====================
+        function initProfil() {
+            // Édition des champs
+            document.querySelectorAll('.edit-field-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const field = this.dataset.field;
+                    enableFieldEdit(field);
+                });
+            });
+            
+            // Édition de tous les champs
+            document.getElementById('editAllBtn').addEventListener('click', function() {
+                enableAllFieldsEdit();
+            });
+            
+            // Enregistrement des modifications
+            document.getElementById('saveProfileBtn').addEventListener('click', saveProfileChanges);
+            
+            // Changement de mot de passe
+            document.getElementById('changePasswordBtn').addEventListener('click', changePassword);
+        }
+
+        function enableFieldEdit(field) {
+            const fieldElement = document.querySelector(`[data-field="${field}"]`);
+            if (!fieldElement) return;
+            
+            const originalValue = fieldElement.dataset.original || fieldElement.textContent;
+            
+            if (field === 'matieres') {
+                // Pour les matières, créer un textarea
+                const textarea = document.createElement('textarea');
+                textarea.className = 'edit-input';
+                textarea.value = originalValue.replace(/<div class="mb-1">• /g, '').replace(/<\/div>/g, '\n').replace(/• /g, '');
+                textarea.rows = 4;
+                textarea.placeholder = "Entrez une matière par ligne";
+                
+                fieldElement.innerHTML = '';
+                fieldElement.appendChild(textarea);
+                fieldElement.isEditing = true;
+            } else {
+                // Pour les autres champs, créer un input
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'edit-input';
+                input.value = originalValue;
+                
+                fieldElement.innerHTML = '';
+                fieldElement.appendChild(input);
+                fieldElement.isEditing = true;
+            }
+            
+            // Afficher le bouton enregistrer
+            document.getElementById('saveProfileBtn').classList.remove('hidden');
+        }
+
+        function enableAllFieldsEdit() {
+            const fields = ['nomComplet', 'email', 'diplome', 'langue', 'matieres'];
+            fields.forEach(field => enableFieldEdit(field));
+            
+            // Afficher le bouton enregistrer
+            document.getElementById('saveProfileBtn').classList.remove('hidden');
+        }
+
+        async function saveProfileChanges() {
+            try {
+                const updatedData = {};
+                let hasChanges = false;
+                
+                // Collecter les données modifiées
+                const fields = ['nomComplet', 'email', 'diplome', 'langue', 'matieres'];
+                fields.forEach(field => {
+                    const fieldElement = document.querySelector(`[data-field="${field}"]`);
+                    if (fieldElement && fieldElement.isEditing) {
+                        const input = fieldElement.querySelector('input, textarea');
+                        if (input) {
+                            const newValue = input.value.trim();
+                            const originalValue = fieldElement.dataset.original || '';
+                            
+                            if (newValue !== originalValue) {
+                                hasChanges = true;
+                                
+                                if (field === 'nomComplet') {
+                                    const parts = newValue.split(' ');
+                                    updatedData.prenom = parts[0] || '';
+                                    updatedData.name = parts.slice(1).join(' ') || '';
+                                } else if (field === 'email') {
+                                    updatedData.email = newValue;
+                                } else if (field === 'diplome') {
+                                    updatedData.diplome = newValue.toLowerCase();
+                                } else if (field === 'langue') {
+                                    updatedData.langue = newValue.toLowerCase();
+                                } else if (field === 'matieres') {
+                                    const matieresArray = newValue.split('\n')
+                                        .filter(line => line.trim() !== '')
+                                        .map(line => line.trim());
+                                    updatedData.matieres_text = matieresArray;
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                if (!hasChanges) {
+                    showNotification('Aucune modification détectée', 'info');
+                    return;
+                }
+                
+                // Mettre à jour dans Firebase
+                await updateUserProfileInFirebase(updatedData);
+                
+                // Mettre à jour l'interface
+                await updateUIWithUserData();
+                
+                // Réinitialiser l'édition
+                resetProfileEditing();
+                
+                showNotification('Profil mis à jour avec succès!', 'success');
+                
+            } catch (error) {
+                console.error("❌ Erreur lors de la sauvegarde:", error);
+                showNotification('Erreur lors de la mise à jour du profil', 'error');
+            }
+        }
+
+        function resetProfileEditing() {
+            // Cacher le bouton enregistrer
+            document.getElementById('saveProfileBtn').classList.add('hidden');
+            
+            // Réinitialiser tous les champs en édition
+            document.querySelectorAll('[data-field]').forEach(fieldElement => {
+                fieldElement.isEditing = false;
+            });
+        }
+
+        async function changePassword() {
+            try {
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showNotification('Veuillez remplir tous les champs', 'error');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showNotification('Les mots de passe ne correspondent pas', 'error');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    showNotification('Le mot de passe doit contenir au moins 6 caractères', 'error');
+                    return;
+                }
+                
+                // Changer le mot de passe
+                await changeUserPassword(currentPassword, newPassword);
+                
+                // Réinitialiser les champs
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                
+                showNotification('Mot de passe changé avec succès!', 'success');
+                
+            } catch (error) {
+                console.error("❌ Erreur lors du changement de mot de passe:", error);
+                showNotification('Erreur lors du changement de mot de passe', 'error');
+            }
+        }
+
+        // ==================== NOTIFICATIONS ====================
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full`;
+            
+            let bgColor = 'bg-blue-500';
+            let icon = 'fa-info-circle';
+            
+            if (type === 'success') {
+                bgColor = 'bg-green-500';
+                icon = 'fa-check-circle';
+            } else if (type === 'error') {
+                bgColor = 'bg-red-500';
+                icon = 'fa-exclamation-circle';
+            } else if (type === 'warning') {
+                bgColor = 'bg-yellow-500';
+                icon = 'fa-exclamation-triangle';
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center gap-3 text-white">
+                    <i class="fas ${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            notification.classList.add(bgColor);
+            document.body.appendChild(notification);
+            
+            // Animation d'entrée
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+                notification.classList.add('translate-x-0');
+            }, 10);
+            
+            // Animation de sortie après 5 secondes
+            setTimeout(() => {
+                notification.classList.remove('translate-x-0');
+                notification.classList.add('translate-x-full');
+                
+                // Supprimer après l'animation
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // ==================== INITIALISATION GLOBALE ====================
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log("🚀 Initialisation du tableau de bord...");
+            
+            // Initialiser Firebase
+            const firebaseInitialized = initFirebase();
+            
+            if (firebaseInitialized) {
+                // Vérifier si l'utilisateur est connecté
+                firebase.auth().onAuthStateChanged(async (user) => {
+                    if (user) {
+                        console.log("✅ Utilisateur connecté:", user.email);
+                        currentUser = user;
+                        await updateUIWithUserData();
+                        
+                        // Initialiser les sections
+                        initDisponibilite();
+                        initProfil();
+                        
+                    } else {
+                        console.log("⚠️ Utilisateur non connecté, redirection vers la page de connexion");
+                        window.location.href = '/src/views/templates/Connexion.html';
+                    }
+                });
+            } else {
+                console.error("❌ Firebase non initialisé");
+                showNotification("Erreur d'initialisation de l'application. Veuillez rafraîchir la page.", 'error');
+            }
+            
+            // Initialiser la navigation
+            initNavigation();
+            
+            // Initialiser les interactions UI
+            initUIInteractions();
+        });
+
+        function initNavigation() {
+            document.querySelectorAll('[data-section]').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section') + '-section';
+                    showSection(sectionId);
+                    
+                    document.querySelectorAll('.sidebar-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    if (window.innerWidth < 1024) {
+                        document.getElementById('mobile-sidebar').classList.add('-translate-x-full');
+                        document.getElementById('mobile-overlay').classList.add('hidden');
+                    }
+                });
+            });
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+                updatePageTitle(sectionId);
+                
+                if (sectionId === 'disponibilite-section') {
+                    initCalendar();
+                }
+            }
+        }
+
+        function updatePageTitle(sectionId) {
+            const titleMap = {
+                'dashboard-section': { title: 'Tableau de bord', subtitle: 'Vue d\'ensemble de votre activité' },
+                'disponibilite-section': { title: 'Disponibilité', subtitle: 'Gérez vos créneaux de cours' },
+                'profil-section': { title: 'Mon Profil', subtitle: 'Gérez vos informations personnelles' },
+                'parametres-section': { title: 'Paramètres', subtitle: 'Configurez vos préférences' }
+            };
+            
+            const titles = titleMap[sectionId] || { title: 'Tableau de bord', subtitle: 'Vue d\'ensemble' };
+            document.getElementById('pageTitle').textContent = titles.title;
+            document.getElementById('pageSubtitle').textContent = titles.subtitle;
+        }
+
+        function initUIInteractions() {
+            // Dark Mode Toggle
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const darkModeIcon = document.getElementById('dark-mode-icon');
+            
+            if (localStorage.getItem('darkMode') === 'enabled' || 
+                (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkModeIcon.classList.remove('fa-moon');
+                darkModeIcon.classList.add('fa-sun');
+            }
+
+            darkModeToggle.addEventListener('click', function() {
+                document.documentElement.classList.toggle('dark');
+                
+                if (document.documentElement.classList.contains('dark')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    darkModeIcon.classList.remove('fa-moon');
+                    darkModeIcon.classList.add('fa-sun');
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    darkModeIcon.classList.remove('fa-sun');
+                    darkModeIcon.classList.add('fa-moon');
+                }
+            });
+
+            // Mobile Menu
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const closeMobileMenu = document.getElementById('close-mobile-menu');
+            const mobileSidebar = document.getElementById('mobile-sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                mobileSidebar.classList.remove('-translate-x-full');
+                mobileOverlay.classList.remove('hidden');
+            });
+
+            closeMobileMenu.addEventListener('click', function() {
+                mobileSidebar.classList.add('-translate-x-full');
+                mobileOverlay.classList.add('hidden');
+            });
+
+            mobileOverlay.addEventListener('click', function() {
+                mobileSidebar.classList.add('-translate-x-full');
+                mobileOverlay.classList.add('hidden');
+            });
+
+            // Dropdowns
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            const notificationsBtn = document.getElementById('notifications-btn');
+            const notificationsDropdown = document.getElementById('notifications-dropdown');
+
+            userMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('hidden');
+                notificationsDropdown.classList.add('hidden');
+            });
+
+            notificationsBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationsDropdown.classList.toggle('hidden');
+                userDropdown.classList.add('hidden');
+            });
+
+            document.addEventListener('click', function() {
+                userDropdown.classList.add('hidden');
+                notificationsDropdown.classList.add('hidden');
+            });
+
+            // Logout
+            const logoutButtons = document.querySelectorAll('#logout-btn, #dropdown-logout-btn, #mobile-logout-btn');
+            logoutButtons.forEach(button => {
+                if (button) {
+                    button.addEventListener('click', async function(e) {
+                        e.preventDefault();
+                        
+                        if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                            try {
+                                if (firebaseAuth) {
+                                    await firebaseAuth.signOut();
+                                    console.log("✅ Déconnexion réussie");
+                                    
+                                    sessionStorage.removeItem('user_info');
+                                    sessionStorage.removeItem('educonnect_user');
+                                    sessionStorage.removeItem('classCalendarSessions');
+                                    
+                                    window.location.href = '/src/views/templates/Connexion.html';
+                                } else {
+                                    window.location.href = '/src/views/templates/Connexion.html';
+                                }
+                            } catch (error) {
+                                console.error("❌ Erreur lors de la déconnexion:", error);
+                                window.location.href = '/src/views/templates/Connexion.html';
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        // ==================== FONCTIONS GLOBALES ====================
+        window.editSession = editSession;
+        window.cancelSessionFromList = cancelSessionFromList;
+
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        dark: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

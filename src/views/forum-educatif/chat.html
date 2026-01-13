@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messagerie - EduConnect Africa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <nav class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo + Bouton retour -->
+                <div class="flex items-center space-x-4">
+                    <a href="forum.html" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-arrow-left text-gray-700 dark:text-gray-300"></i>
+                    </a>
+                    
+                    <a href="index.html" class="flex items-center space-x-1 text-2xl font-bold">
+                        <span class="bg-gradient-to-r from-[#ff3131] to-[#ff914d] bg-clip-text text-transparent">Edu</span>
+                        <span class="bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] bg-clip-text text-transparent">Connect</span>
+                        <span class="bg-gradient-to-r from-[#8c52ff] to-[#ff914d] bg-clip-text text-transparent">Africa</span>
+                    </a>
+                </div>
+
+                <!-- Titre de la discussion -->
+                <div class="hidden md:block">
+                    <h1 id="chatTitle" class="text-lg font-semibold text-gray-800 dark:text-white">
+                        Chargement...
+                    </h1>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                        <i class="fas fa-moon text-gray-700 dark:text-yellow-300"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenu du chat -->
+    <main class="pt-24 pb-32 container mx-auto px-4">
+        <!-- En-tête du chat -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 id="chatTitleMobile" class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+                        Chargement de la discussion...
+                    </h1>
+                    <p id="chatDescription" class="text-gray-600 dark:text-gray-300">
+                        Rejoignez la conversation avec d'autres étudiants passionnés
+                    </p>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="text-right">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">En ligne</div>
+                        <div class="font-semibold text-gray-800 dark:text-white">25 participants</div>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] flex items-center justify-center text-white">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="chatMessages" class="space-y-4 mb-6">
+            <!-- Messages seront chargés dynamiquement -->
+            <div class="text-center py-8">
+                <div class="inline-block p-4 bg-gray-100 dark:bg-gray-800 rounded-xl">
+                    <i class="fas fa-comments text-3xl text-gray-400 mb-2"></i>
+                    <p class="text-gray-500 dark:text-gray-400">Chargement des messages...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone d'écriture -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4">
+            <div class="container mx-auto">
+                <!-- Actions supplémentaires -->
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex space-x-3">
+                        <button id="attachFile" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                            <i class="fas fa-paperclip text-gray-600 dark:text-gray-300"></i>
+                        </button>
+                        <button id="recordAudio" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                            <i class="fas fa-microphone text-gray-600 dark:text-gray-300"></i>
+                        </button>
+                        <input type="file" id="fileInput" class="hidden" multiple>
+                    </div>
+                    
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <span id="charCount">0</span>/500 caractères
+                    </div>
+                </div>
+                
+                <!-- Zone de texte et bouton d'envoi -->
+                <div class="flex space-x-3">
+                    <div class="flex-grow relative">
+                        <textarea 
+                            id="messageInput"
+                            placeholder="Écrivez votre message ici..."
+                            class="w-full p-4 bg-gray-100 dark:bg-gray-700 rounded-2xl border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8c52ff] resize-none"
+                            rows="2"
+                            maxlength="500"
+                        ></textarea>
+                        <div class="absolute bottom-3 right-3 text-gray-400">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                    </div>
+                    
+                    <button id="sendMessage" class="self-end bg-gradient-to-r from-[#8c52ff] to-[#5ce1e6] text-white p-4 rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105">
+                        <i class="fas fa-paper-plane text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Fichiers joints -->
+                <div id="attachedFiles" class="mt-3 hidden">
+                    <div class="flex items-center space-x-2 text-sm">
+                        <i class="fas fa-paperclip text-gray-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300">Fichiers joints :</span>
+                        <div id="fileList" class="flex space-x-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer sera chargé par JS -->
+    <div id="footer-container"></div>
+
+    <script src="js/dark-mode.js"></script>
+    <script src="js/footer-loader.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>

@@ -381,6 +381,12 @@ class TutorListManager {
         const onlineStatus = tutor.online ? 'En ligne' : 'Hors ligne';
         const onlineClass = tutor.online ? 'online' : 'offline';
         
+        // Formater le prix
+        const priceFormatted = new Intl.NumberFormat('fr-CF', {
+            style: 'currency',
+            currency: 'XAF'
+        }).format(tutor.pricePerHour);
+        
         return `
             <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover fade-in" data-tutor-id="${tutor.id}">
                 <!-- En-tête avec couleur de matière -->
@@ -437,7 +443,7 @@ class TutorListManager {
                         </div>
                     </div>
                     
-                    <!-- Statut (PRIX SUPPRIMÉ) -->
+                    <!-- Statut et prix -->
                     <div class="flex justify-between items-center mb-4">
                         <div>
                             <span class="px-3 py-1 rounded-full text-sm font-bold ${availabilityClass}">
@@ -447,11 +453,15 @@ class TutorListManager {
                                 <span class="${onlineClass}"></span>${onlineStatus}
                             </div>
                         </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-[#1A3B52]">${priceFormatted}/h</p>
+                            <p class="text-xs text-gray-500">Tarif horaire</p>
+                        </div>
                     </div>
                     
                     <!-- Bouton d'action -->
                     <button class="w-full py-3 bg-gradient-to-r from-[#1A3B52] to-[#2C5282] text-white rounded-lg hover:opacity-90 transition flex items-center justify-center gap-2"
-                            onclick="selectTutor('${tutor.id}', '${encodeURIComponent(tutor.name)}', '${tutor.subject}')"
+                            onclick="selectTutor(${tutor.id}, '${tutor.name.replace(/'/g, "\\'")}', '${tutor.subject}')"
                             ${!tutor.available ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
                         <i class="fas fa-video"></i>
                         ${tutor.available ? 'Rejoindre la session' : 'Indisponible'}
