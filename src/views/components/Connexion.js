@@ -18,6 +18,14 @@ let firebaseInitialized = false;
 let userEmail = null;
 let userCategory = null;
 
+// ==================== CONFIGURATION DES REDIRECTIONS PAR RÔLE ====================
+const ROLE_REDIRECTS = {
+    enseignant: '/src/views/templates/dashboardTutor.html',
+    etudiant: '/src/views/templates/etudiantDashboard.html',
+    admin: '/src/views/templates/adminDashboard.html',
+    default: '/src/views/templates/etudiantDashboard.html'
+};
+
 // ==================== FONCTIONS POUR GARDER LES INFOS ====================
 function saveUserInfo(email, category) {
     userEmail = email;
@@ -58,7 +66,12 @@ function clearUserInfo() {
     sessionStorage.removeItem('user_info');
 }
 
-// Dans Connexion.html, ajoutez ce code
+// Fonction pour obtenir l'URL de redirection selon le rôle
+function getRedirectUrlByRole(role) {
+    return ROLE_REDIRECTS[role] || ROLE_REDIRECTS.default;
+}
+
+// ==================== GESTION DES CALLBACKS FIREBASE ====================
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     
@@ -82,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Fonction pour gérer le callback de Firebase
 async function handleFirebaseCallback(mode, oobCode) {
     try {
         console.log('🔗 Traitement callback Firebase:', { mode, oobCode });
@@ -129,7 +141,7 @@ async function handleFirebaseCallback(mode, oobCode) {
     }
 }
 
-// Fonction de connexion modifiée pour Firebase
+// ==================== FONCTIONS DE CONNEXION ====================
 async function loginUser(email, password) {
     try {
         if (!firebaseAuth) {
@@ -168,7 +180,6 @@ async function loginUser(email, password) {
     }
 }
 
-// Fonction pour renvoyer la vérification d'email
 async function resendVerification(email) {
     try {
         if (!firebaseAuth) {
@@ -389,7 +400,6 @@ function setupPasswordToggle() {
 }
 
 // ==================== FONCTIONS DE SÉCURITÉ ====================
-
 async function clearExistingSessions() {
     if (!firebaseAuth) return;
     
@@ -521,7 +531,7 @@ async function getUserProfile(userId, role) {
     }
 }
 
-// ==================== GESTION DE LA CONNEXION SÉCURISÉE ====================
+// ==================== GESTION DE LA CONNEXION SÉCURISÉE - CORRIGÉE ====================
 async function handleLogin(e) {
     e.preventDefault();
     
@@ -579,10 +589,9 @@ async function handleLogin(e) {
             userProfile = await getUserProfile(user.uid, userRole);
         }
         
-        // ==================== SAUVEGARDER LES INFOS ====================
+        // Sauvegarder les infos utilisateur
         saveUserInfo(user.email, userRole);
         console.log('📝 Infos sauvegardées:', user.email, userRole);
-        // ==============================================================
         
         const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         const userSessionData = {
@@ -615,14 +624,16 @@ async function handleLogin(e) {
             const redirectToken = btoa(Date.now() + '|' + sessionId);
             sessionStorage.setItem('redirect_token', redirectToken);
             
-            let redirectUrl = '/src/views/templates/dashboardTutor.html';
-            if (userRole === 'enseignant') {
-                redirectUrl = `/src/views/templates/dashboardTutor.html?token=${redirectToken}`;
-            } else if (userRole === 'etudiant') {
-                redirectUrl = `/src/views/templates/etudiantDashboard.html?token=${redirectToken}`;
-            }
+            // CORRECTION IMPORTANTE : Utiliser la fonction getRedirectUrlByRole
+            let redirectUrl = getRedirectUrlByRole(userRole);
             
+            // Ajouter le token à l'URL
+            redirectUrl += `?token=${redirectToken}`;
+            
+            console.log('🎯 Rôle:', userRole);
             console.log('🔄 Redirection vers:', redirectUrl);
+            
+            // Redirection
             window.location.href = redirectUrl;
             
         }, 1500);
@@ -725,7 +736,7 @@ async function initFirebase() {
                     
                     // Initialiser Firebase avec la syntaxe compatibilité
                     firebaseApp = firebase.initializeApp(firebaseConfig);
-                    firebaseAuth = firebaseApp; // Dans la version compat, l'app contient tout
+                    firebaseAuth = firebaseApp;
                     firebaseDb = firebase.firestore();
                     
                     // Configurer la persistance
@@ -923,8 +934,9 @@ window.firebaseFunctions = {
     validateLoginForm,
     setupSocialButtons,
     initFirebase,
+    getRedirectUrlByRole,
     
-    // ==================== AJOUT DES FONCTIONS UTILISATEUR ====================
+    // Fonctions utilisateur
     saveUserInfo,
     getUserInfo,
     clearUserInfo
