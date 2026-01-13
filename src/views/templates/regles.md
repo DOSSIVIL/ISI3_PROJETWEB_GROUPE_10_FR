@@ -36,8 +36,4 @@ service cloud.firestore {
 
 ```
 
-## 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
-
-## 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
-
 // Jnuior@02

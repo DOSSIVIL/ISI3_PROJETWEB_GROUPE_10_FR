@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduConnect Africa - Tableau de Bord Étudiant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAHnlS177olRKu3WJBO-yTQsd4vNI0MIFs",
+        authDomain: "achitectureweb-groupe-10.firebaseapp.com",
+        projectId: "achitectureweb-groupe-10",
+        storageBucket: "achitectureweb-groupe-10.firebasestorage.app",
+        messagingSenderId: "646899550480",
+        appId: "1:646899550480:web:687fd4f4b2e0ca646efd95",
+      };
+
+      let firebaseApp = null;
+      let firebaseAuth = null;
+      let firebaseDb = null;
+      let currentUser = null;
+
+      function initFirebase() {
+        try {
+          if (!firebase.apps.length) {
+            firebaseApp = firebase.initializeApp(firebaseConfig);
+          } else {
+            firebaseApp = firebase.app();
+          }
+          firebaseAuth = firebase.auth();
+          firebaseDb = firebase.firestore();
+          console.log("✅ Firebase initialisé");
+          return true;
+        } catch (error) {
+          console.error("❌ Erreur Firebase:", error);
+          return false;
+        }
+      }
+
+      async function getUserInfo() {
+        try {
+          const auth = firebase.auth();
+          const user = auth.currentUser;
+
+          if (!user) return null;
+
+          const etudiantDoc = await firebaseDb
+            .collection("etudiants")
+            .doc(user.uid)
+            .get();
+
+          if (etudiantDoc.exists) {
+            const data = etudiantDoc.data();
+            return {
+              uid: user.uid,
+              email: user.email,
+              role: "etudiant",
+              ...data,
+            };
+          }
+
+          return {
+            uid: user.uid,
+            email: user.email,
+            role: "etudiant",
+            display_name: user.displayName || user.email.split("@")[0],
+            name: "",
+            prenom: "",
+            filiere: "",
+            niveau: "",
+          };
+        } catch (error) {
+          console.error("❌ Erreur getUserInfo:", error);
+          return null;
+        }
+      }
+
+      function getInitials(userInfo) {
+        if (!userInfo) return "E";
+        const prenom = userInfo.prenom || "";
+        const name = userInfo.name || "";
+        if (prenom && name) {
+          return (prenom.charAt(0) + name.charAt(0)).toUpperCase();
+        }
+        return (prenom || name || userInfo.display_name || "E")
+          .charAt(0)
+          .toUpperCase();
+      }
+
+      function getFullName(userInfo) {
+        if (!userInfo) return "Étudiant";
+        if (userInfo.display_name) return userInfo.display_name;
+        if (userInfo.prenom && userInfo.name)
+          return `${userInfo.prenom} ${userInfo.name}`;
+        return userInfo.prenom || userInfo.name || userInfo.email.split("@")[0];
+      }
+
+      async function updateUIWithUserData() {
+        try {
+          const userInfo = await getUserInfo();
+          if (!userInfo) return;
+
+          const fullName = getFullName(userInfo);
+          const initials = getInitials(userInfo);
+
+          document.querySelectorAll(".user-name").forEach((el) => {
+            el.textContent = fullName;
+          });
+
+          document.querySelectorAll(".user-initials").forEach((el) => {
+            el.textContent = initials;
+          });
+
+          document.querySelectorAll(".user-filiere").forEach((el) => {
+            el.textContent = userInfo.filiere || "Non spécifié";
+          });
+
+          document.querySelectorAll(".user-niveau").forEach((el) => {
+            el.textContent = userInfo.niveau || "Non spécifié";
+          });
+
+          const welcomeName = document.getElementById("welcome-name");
+          if (welcomeName) {
+            welcomeName.textContent = fullName;
+            welcomeName.classList.remove("animate-pulse");
+          }
+
+          const userEmail = document.getElementById("user-email");
+          if (userEmail) {
+            userEmail.textContent = userInfo.email;
+          }
+
+          const userFiliere = document.getElementById("user-filiere-detail");
+          if (userFiliere) {
+            userFiliere.textContent = userInfo.filiere || "Non spécifié";
+          }
+
+          const userNiveau = document.getElementById("user-niveau-detail");
+          if (userNiveau) {
+            userNiveau.textContent = userInfo.niveau || "Non spécifié";
+          }
+
+          window.currentUserInfo = userInfo;
+        } catch (error) {
+          console.error("❌ Erreur updateUI:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        const firebaseInitialized = initFirebase();
+
+        if (firebaseInitialized) {
+          firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+              currentUser = user;
+              await updateUIWithUserData();
+              await loadRecentSessions();
+              await loadAssistantHistory();
+            } else {
+              window.location.href = "/src/views/templates/Connexion.html";
+            }
+          });
+        }
+      });
+
+      async function loadRecentSessions() {
+        try {
+          const sessionsContainer = document.getElementById("recent-sessions");
+          if (!sessionsContainer) return;
+
+          sessionsContainer.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-dark-700">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
+                                    <i class="text-white fas fa-book"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Mathématiques</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Avec Prof. Dubois - Hier à 14h</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-semibold text-green-600 dark:text-green-400">Complété</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-dark-700">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
+                                    <i class="text-white fas fa-flask"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Physique</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Avec Prof. Martin - 18 Jan à 10h</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-semibold text-yellow-600 dark:text-yellow-400">À venir</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-dark-700">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500">
+                                    <i class="text-white fas fa-globe"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-white">Anglais</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Avec Prof. Smith - 10 Jan à 16h</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-semibold text-green-600 dark:text-green-400">Complété</span>
+                        </div>
+                    </div>
+                `;
+        } catch (error) {
+          console.error("❌ Erreur loadRecentSessions:", error);
+        }
+      }
+
+      async function loadAssistantHistory() {
+        try {
+          const historyContainer = document.getElementById("assistant-history");
+          if (!historyContainer) return;
+
+          historyContainer.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="p-4 border-l-4 border-blue-500 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                            <p class="mb-2 text-sm font-semibold text-gray-800 dark:text-white">Comment résoudre une équation du second degré ?</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Il y a 2 heures</p>
+                        </div>
+                        <div class="p-4 border-l-4 border-purple-500 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+                            <p class="mb-2 text-sm font-semibold text-gray-800 dark:text-white">Explique-moi la loi de Newton</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Hier à 15h30</p>
+                        </div>
+                        <div class="p-4 border-l-4 border-green-500 rounded-lg bg-green-50 dark:bg-green-900/20">
+                            <p class="mb-2 text-sm font-semibold text-gray-800 dark:text-white">Quels sont les temps en anglais ?</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Il y a 3 jours</p>
+                        </div>
+                    </div>
+                `;
+        } catch (error) {
+          console.error("❌ Erreur loadAssistantHistory:", error);
+        }
+      }
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                500: "#0ea5e9",
+                600: "#0284c7",
+              },
+              dark: {
+                700: "#334155",
+                800: "#1e293b",
+                950: "#020617",
+              },
+            },
+          },
+        },
+      };
+    </script> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .dark .glass-effect {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sidebar-item.active {
+        background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+        color: white;
+      }
+      .sidebar-container {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 16rem;
+        overflow-y: auto;
+        z-index: 30;
+      }
+      .main-content {
+        margin-left: 16rem;
+        width: calc(100% - 16rem);
+        min-height: 100vh;
+      }
+      @media (max-width: 1023px) {
+        .sidebar-container {
+          transform: translateX(-100%);
+          transition: transform 0.3s;
+        }
+        .sidebar-container.mobile-open {
+          transform: translateX(0);
+        }
+        .main-content {
+          margin-left: 0;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-gray-800 bg-gray-50 dark:bg-dark-950 dark:text-gray-200">
+    <div class="min-h-screen">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="hidden shadow-xl sidebar-container glass-effect lg:block"
+      >
+        <div class="p-6 border-b border-gray-200 dark:border-dark-700">
+          <a href="/" class="flex items-center space-x-3">
+            <img
+              src="../../../Images/Logo.png"
+              alt="Logo"
+              class="w-12 h-12 drop-shadow-lg"
+              onerror="this.style.display='none'"
+            />
+            <div class="leading-tight">
+              <h1 class="text-xl font-bold">
+                <span
+                  style="
+                    background: linear-gradient(90deg, #ff3131, #ff914d);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                  "
+                  >Edu</span
+                ><span
+                  style="
+                    background: linear-gradient(90deg, #8c52ff, #5ce1e6);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                  "
+                  >Connect</span
+                >
+              </h1>
+              <span
+                class="text-base font-bold"
+                style="
+                  background: linear-gradient(90deg, #8c52ff, #ff914d);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                "
+                >Africa</span
+              >
+            </div>
+          </a>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-2">
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 font-medium sidebar-item active rounded-xl"
+          >
+            <i class="w-5 h-5 fas fa-home"></i>
+            <span class="">Tableau de bord</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 font-medium text-gray-800 sidebar-item rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800"
+          >
+            <i class="w-5 h-5 fas fa-chalkboard-teacher"></i>
+            <span>Mes cours</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 font-medium text-gray-600 sidebar-item rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800"
+          >
+            <i class="w-5 h-5 fas fa-search"></i>
+            <span>Trouver un tuteur</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 font-medium text-gray-600 sidebar-item rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800"
+          >
+            <i class="w-5 h-5 fas fa-robot"></i>
+            <span>Assistant IA</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 font-medium text-gray-600 sidebar-item rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800"
+          >
+            <i class="w-5 h-5 fas fa-calendar-alt"></i>
+            <span>Mon calendrier</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 font-medium text-gray-600 sidebar-item rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800"
+          >
+            <i class="w-5 h-5 fas fa-user-circle"></i>
+            <span>Mon profil</span>
+          </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200 dark:border-dark-700">
+          <a
+            href="#"
+            id="logout-btn"
+            class="flex items-center gap-3 px-4 py-3 font-medium text-red-600 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20"
+          >
+            <i class="w-5 h-5 fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <header
+          class="sticky top-0 z-20 bg-white border-b border-gray-200 shadow-lg dark:bg-dark-800 dark:border-dark-700"
+        >
+          <div class="flex items-center justify-between px-4 py-4 lg:px-8">
+            <div class="flex items-center gap-4">
+              <button
+                id="mobile-menu-toggle"
+                class="p-2 rounded-lg lg:hidden hover:bg-gray-100 dark:hover:bg-dark-700"
+              >
+                <i class="w-6 h-6 fas fa-bars"></i>
+              </button>
+              <div>
+                <h2 class="text-xl font-bold text-black">Tableau de bord</h2>
+                <p class="text-xs text-gray-900">
+                  Bienvenue sur votre espace étudiant
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <button
+                id="dark-mode-toggle"
+                class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700"
+              >
+                <i id="dark-mode-icon" class="w-5 h-5 fas fa-moon"></i>
+              </button>
+
+              <div class="relative">
+                <button
+                  id="user-menu-btn"
+                  class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700"
+                >
+                  <div class="hidden text-right lg:block">
+                    <p class="text-sm font-semibold user-name">Chargement...</p>
+                    <p class="text-xs text-gray-900 user-filiere">Étudiant</p>
+                  </div>
+                  <div
+                    class="flex items-center justify-center w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-500"
+                  >
+                    <span class="font-semibold text-white user-initials"
+                      >E</span
+                    >
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-4 lg:p-8">
+          <div class="mx-auto max-w-7xl">
+            <!-- Message de bienvenue -->
+            <div
+              class="p-6 mb-6 text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <h2 class="mb-2 text-2xl font-bold">
+                    Bonjour,
+                    <span id="welcome-name" class="animate-pulse"
+                      >Chargement...</span
+                    >
+                    !
+                  </h2>
+                  <p class="opacity-90">Prêt à apprendre aujourd'hui ?</p>
+                </div>
+                <div class="hidden md:block">
+                  <i class="text-4xl opacity-50 fas fa-graduation-cap"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Statistiques rapides -->
+            <div
+              class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2 lg:grid-cols-4"
+            >
+              <div class="p-6 bg-white shadow-lg dark:bg-dark-800 rounded-xl">
+                <div class="flex items-center justify-between mb-4">
+                  <div
+                    class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full dark:bg-blue-900/30"
+                  >
+                    <i
+                      class="text-xl text-blue-600 fas fa-book dark:text-blue-400"
+                    ></i>
+                  </div>
+                  <span class="text-2xl font-bold text-blue-600">12</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-900">
+                  Cours suivis
+                </h3>
+                <p class="mt-1 text-xs text-gray-900">Ce mois-ci</p>
+              </div>
+
+              <div class="p-6 bg-white shadow-lg dark:bg-dark-800 rounded-xl">
+                <div class="flex items-center justify-between mb-4">
+                  <div
+                    class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full dark:bg-green-900/30"
+                  >
+                    <i
+                      class="text-xl text-green-600 fas fa-clock dark:text-green-400"
+                    ></i>
+                  </div>
+                  <span class="text-2xl font-bold text-green-600">24h</span>
+                </div>
+                <h3 class="font-semibold text-black dark:text-gray-900">
+                  Heures d'étude
+                </h3>
+                <p class="mt-1 text-xs text-gray-800">Cette semaine</p>
+              </div>
+
+              <div class="p-6 bg-white shadow-lg dark:bg-dark-800 rounded-xl">
+                <div class="flex items-center justify-between mb-4">
+                  <div
+                    class="flex items-center justify-center w-12 h-12 bg-purple-500 rounded-full dark:bg-purple-900/30"
+                  >
+                    <i
+                      class="text-xl text-purple-900 fas fa-users dark:text-purple-400"
+                    ></i>
+                  </div>
+                  <span class="text-2xl font-bold text-purple-600">5</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-800">
+                  Tuteurs actifs
+                </h3>
+                <p class="mt-1 text-xs text-gray-900">Disponibles</p>
+              </div>
+
+              <div class="p-6 bg-white shadow-lg dark:bg-dark-800 rounded-xl">
+                <div class="flex items-center justify-between mb-4">
+                  <div
+                    class="flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-full dark:bg-yellow-900/30"
+                  >
+                    <i
+                      class="text-xl text-yellow-600 fas fa-robot dark:text-yellow-400"
+                    ></i>
+                  </div>
+                  <span class="text-2xl font-bold text-yellow-600">18</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 dark:text-gray-800">
+                  Questions IA
+                </h3>
+                <p class="mt-1 text-xs text-gray-800">Cette semaine</p>
+              </div>
+            </div>
+
+            <!-- Informations personnelles et sections -->
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <!-- Profil étudiant -->
+              <div class="p-6 bg-white shadow-lg dark:bg-dark-800 rounded-xl">
+                <h3 class="mb-4 text-lg font-bold text-gray-900">Mon profil</h3>
+                <div class="flex items-center gap-4 mb-4">
+                  <div
+                    class="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500"
+                  >
+                    <span class="text-xl font-bold text-white user-initials"
+                      >E</span
+                    >
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-gray-900 user-name">
+                      Chargement...
+                    </h4>
+                    <p class="text-sm text-gray-950 user-filiere">Étudiant</p>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2 text-sm">
+                    <i class="w-4 text-gray-400 fas fa-envelope"></i>
+                    <span
+                      id="user-email"
+                      class="text-gray-800 dark:text-gray-900"
+                      >Chargement...</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-2 text-sm">
+                    <i class="w-4 text-gray-900 fas fa-graduation-cap"></i>
+                    <span
+                      id="user-filiere-detail"
+                      class="text-gray-800 dark:text-gray-900"
+                      >Chargement...</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-2 text-sm">
+                    <i class="w-4 text-gray-900 fas fa-layer-group"></i>
+                    <span
+                      id="user-niveau-detail"
+                      class="text-gray-900 dark:text-gray-950"
+                      >Chargement...</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sessions récentes -->
+              <div class="p-6 bg-white shadow-lg dark:bg-dark-900 rounded-xl">
+                <h3 class="mb-4 text-lg font-bold text-gray-800">
+                  Sessions récentes
+                </h3>
+                <div id="recent-sessions">
+                  <div class="space-y-3 animate-pulse">
+                    <div
+                      class="h-16 bg-gray-600 rounded dark:bg-dark-700"
+                    ></div>
+                    <div
+                      class="h-16 bg-gray-600 rounded dark:bg-dark-700"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Historique Assistant IA -->
+              <div class="p-6 bg-white shadow-lg dark:bg-dark-800 rounded-xl">
+                <h3 class="mb-4 text-lg font-bold text-gray-800">
+                  Assistant IA récent
+                </h3>
+                <div id="assistant-history">
+                  <div class="space-y-3 animate-pulse">
+                    <div
+                      class="h-16 bg-gray-800 rounded dark:bg-dark-700"
+                    ></div>
+                    <div
+                      class="h-16 bg-gray-800 rounded dark:bg-dark-700"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const darkModeToggle = document.getElementById("dark-mode-toggle");
+        const darkModeIcon = document.getElementById("dark-mode-icon");
+        const logoutBtn = document.getElementById("logout-btn");
+
+        if (localStorage.getItem("darkMode") === "enabled") {
+          document.documentElement.classList.add("dark");
+          darkModeIcon.classList.replace("fa-moon", "fa-sun");
+        }
+
+        darkModeToggle.addEventListener("click", function () {
+          document.documentElement.classList.toggle("dark");
+          if (document.documentElement.classList.contains("dark")) {
+            localStorage.setItem("darkMode", "enabled");
+            darkModeIcon.classList.replace("fa-moon", "fa-sun");
+          } else {
+            localStorage.setItem("darkMode", "disabled");
+            darkModeIcon.classList.replace("fa-sun", "fa-moon");
+          }
+        });
+
+        logoutBtn.addEventListener("click", async function (e) {
+          e.preventDefault();
+          if (confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
+            try {
+              if (firebaseAuth) {
+                await firebaseAuth.signOut();
+              }
+              window.location.href = "/src/views/templates/Connexion.html";
+            } catch (error) {
+              console.error("❌ Erreur déconnexion:", error);
+              window.location.href = "/src/views/templates/Connexion.html";
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
