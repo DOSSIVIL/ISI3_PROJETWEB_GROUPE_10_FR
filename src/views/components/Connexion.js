@@ -615,11 +615,11 @@ async function handleLogin(e) {
             const redirectToken = btoa(Date.now() + '|' + sessionId);
             sessionStorage.setItem('redirect_token', redirectToken);
             
-            let redirectUrl = '/dashboard/';
+            let redirectUrl = '/src/views/templates/etudiantDashboard.html';
             if (userRole === 'enseignant') {
-                redirectUrl = `/dashboard/tuteur.html?token=${redirectToken}`;
+                redirectUrl = `/src/views/templates/dashboardTutor.html?token=${redirectToken}`;
             } else if (userRole === 'etudiant') {
-                redirectUrl = `/dashboard/etudiant.html?token=${redirectToken}`;
+                redirectUrl = `/src/views/templates/etudiantDashboard.html?token=${redirectToken}`;
             }
             
             console.log('🔄 Redirection vers:', redirectUrl);

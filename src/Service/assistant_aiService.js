@@ -12,7 +12,7 @@ import { db } from "../firebase/firebase-config.js";
 export class AssistantIAService {
   constructor() {
     this.collectionName = "assistantIA";
-    this.apiKey = "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";
+    this.apiKey = "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";
   }
 
   // APPEL À L'API IA avec contexte amélioré
