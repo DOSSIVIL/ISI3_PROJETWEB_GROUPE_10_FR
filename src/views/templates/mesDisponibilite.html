@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Disponibilité - EduConnect Africa</title>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8b5cf6",
+                        "primary-dark": "#7c3aed",
+                        "primary-light": "#f3f0ff",
+                        "primary-50": "#f5f3ff",
+                        "primary-100": "#ede9fe",
+                        "primary-200": "#ddd6fe",
+                        "primary-300": "#c4b5fd",
+                        "primary-400": "#a78bfa",
+                        "primary-500": "#8b5cf6",
+                        "primary-600": "#7c3aed",
+                        "primary-700": "#6d28d9",
+                        "primary-800": "#5b21b6",
+                        "primary-900": "#4c1d95",
+                        "secondary": "#f97316",
+                        "secondary-light": "#fff7ed",
+                        "accent-blue": "#3b82f6",
+                        "accent-blue-light": "#dbeafe",
+                        "accent-yellow": "#f59e0b",
+                        "accent-yellow-light": "#fef3c7",
+                        "fuchsia": "#d946ef",
+                        "fuchsia-500": "#d946ef",
+                        "fuchsia-600": "#c026d3",
+                        "background-light": "#f8fafc",
+                        "surface-white": "#ffffff",
+                        "border-light": "#e2e8f0",
+                        "text-main": "#0f172a",
+                        "text-secondary": "#64748b",
+                        "unavailable": "#f1f5f9",
+                        "conflict-bg": "#fef2f2",
+                        "conflict-border": "#fecaca",
+                        "conflict-text": "#ef4444",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "2xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    
+    /* Dégradés du premier code */
+    .gradient-bg {
+        background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+    }
+    
+    .gradient-bg-hover:hover {
+        background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%);
+    }
+    
+    .gradient-orange {
+        background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+    }
+    
+    .gradient-blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    }
+    
+    .gradient-yellow {
+        background: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
+    }
+    
+    .gradient-purple {
+        background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+    }
+    
+    .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.85);
+    }
+    
+    .hover-scale {
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .hover-scale:hover {
+        transform: translateY(-2px);
+    }
+    
+    .shadow-purple {
+        box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.15);
+    }
+    
+    .shadow-purple-md {
+        box-shadow: 0 4px 20px 0 rgba(139, 92, 246, 0.2);
+    }
+    
+    .border-purple-glow {
+        box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3);
+    }
+</style>
+</head>
+<body class="bg-background-light text-text-main font-display overflow-hidden h-screen flex w-full">
+
+<main class="flex-1 flex flex-col h-full overflow-hidden relative bg-background-light">
+<header class="flex flex-col gap-6 px-8 py-6 pt-8 bg-surface-white border-b border-border-light z-10 shadow-sm">
+<div class="flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-col gap-1">
+<h2 class="text-text-main text-2xl font-bold leading-tight tracking-tight">Gérer vos disponibilités</h2>
+<p class="text-text-secondary text-sm font-normal">Définissez vos créneaux horaires pour la semaine.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-light text-text-secondary hover:text-primary hover:border-primary/50 hover:bg-primary-50 transition-all text-sm font-medium">
+<span class="material-symbols-outlined text-[18px]">history</span>
+<span>Réinitialiser</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-lg gradient-bg text-white hover:opacity-90 transition-all text-sm font-bold shadow-purple-md">
+<span class="material-symbols-outlined text-[20px]">save</span>
+<span>Enregistrer les disponibilités</span>
+</button>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-4 bg-primary-50 p-3 rounded-xl border border-primary-200">
+<div class="flex items-center gap-6 px-2">
+<div class="flex items-center gap-3">
+<span class="p-2 rounded-md bg-white border border-primary-200 text-primary shadow-sm">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+</span>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Début</span>
+<div class="relative group">
+<span class="text-text-main font-bold font-mono text-sm cursor-pointer hover:text-primary transition-colors flex items-center gap-1">08:00 <span class="material-symbols-outlined text-[14px]">expand_more</span></span>
+</div>
+</div>
+</div>
+<div class="h-8 w-px bg-primary-300"></div>
+<div class="flex items-center gap-3">
+<span class="p-2 rounded-md bg-white border border-primary-200 text-primary shadow-sm">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+</span>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Fin</span>
+<div class="relative group">
+<span class="text-text-main font-bold font-mono text-sm cursor-pointer hover:text-primary transition-colors flex items-center gap-1">20:00 <span class="material-symbols-outlined text-[14px]">expand_more</span></span>
+</div>
+</div>
+</div>
+<div class="h-8 w-px bg-primary-300"></div>
+<div class="flex items-center gap-3">
+<span class="p-2 rounded-md bg-white border border-primary-200 text-primary shadow-sm">
+<span class="material-symbols-outlined text-[20px]">timelapse</span>
+</span>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-wider text-text-secondary font-bold">Durée Slot</span>
+<span class="text-text-main font-bold text-sm">1h</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-6 px-4 py-2">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full gradient-bg border border-primary-700/20 shadow-sm"></div>
+<span class="text-xs text-text-main font-medium">Disponible</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-slate-200 border border-slate-300 shadow-inner"></div>
+<span class="text-xs text-text-secondary font-medium">Indisponible</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-red-100 border border-red-500 shadow-sm relative flex items-center justify-center">
+<div class="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+</div>
+<span class="text-xs text-conflict-text font-medium">Conflit</span>
+</div>
+</div>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto overflow-x-hidden px-8 pb-10 bg-background-light">
+<div class="min-w-[800px] flex flex-col">
+<div class="grid grid-cols-[60px_1fr] gap-4 sticky top-0 bg-background-light z-10 py-4 border-b border-border-light/60 shadow-sm backdrop-blur-sm bg-opacity-90">
+<div class="text-text-secondary text-xs font-bold uppercase tracking-wider flex items-end justify-center pb-2">UTC+1</div>
+<div class="grid grid-cols-7 gap-3 text-center">
+<div class="flex flex-col items-center gap-1">
+<span class="text-text-secondary text-xs font-bold uppercase tracking-widest">Lun</span>
+<span class="text-text-main font-bold text-lg">12</span>
+</div>
+<div class="flex flex-col items-center gap-1 relative">
+<span class="text-primary text-xs font-bold uppercase tracking-widest">Mar</span>
+<div class="w-8 h-8 flex items-center justify-center gradient-bg text-white rounded-full font-bold text-sm shadow-purple-md">13</div>
+<div class="absolute -bottom-5 w-1 h-1 rounded-full gradient-bg"></div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-text-secondary text-xs font-bold uppercase tracking-widest">Mer</span>
+<span class="text-text-main font-bold text-lg">14</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-text-secondary text-xs font-bold uppercase tracking-widest">Jeu</span>
+<span class="text-text-main font-bold text-lg">15</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-text-secondary text-xs font-bold uppercase tracking-widest">Ven</span>
+<span class="text-text-main font-bold text-lg">16</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-text-secondary text-xs font-bold uppercase tracking-widest">Sam</span>
+<span class="text-text-main font-bold text-lg">17</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="text-text-secondary text-xs font-bold uppercase tracking-widest">Dim</span>
+<span class="text-text-main font-bold text-lg">18</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-[60px_1fr] gap-4 mt-4">
+<div class="flex flex-col gap-3 py-1">
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">08:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">09:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">10:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">11:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">12:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">13:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">14:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">15:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">16:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">17:00</div>
+<div class="h-12 flex items-center justify-center text-xs font-mono text-text-secondary font-medium">18:00</div>
+</div>
+<div class="grid grid-cols-7 gap-3 py-1">
+<div class="flex flex-col gap-3">
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all group relative overflow-hidden shadow-sm">
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary absolute inset-0 m-auto flex items-center justify-center text-xl transition-colors">add</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">09:00</span>
+<div class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer border border-slate-100">
+<span class="material-symbols-outlined text-[12px] text-red-500 font-bold">close</span>
+</div>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">10:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">11:00</span>
+</button>
+<div class="h-12 w-full flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-300 text-lg">restaurant</span>
+</div>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+</div>
+<div class="flex flex-col gap-3">
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<div class="h-12 w-full flex items-center justify-center"></div>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">13:00</span>
+</button>
+<button class="h-[108px] w-full rounded-md bg-conflict-bg border border-conflict-border flex flex-col items-center justify-center gap-1 hover:bg-red-100 transition-colors cursor-pointer shadow-sm relative group overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-conflict-text"></div>
+<span class="material-symbols-outlined text-conflict-text text-xl">warning</span>
+<span class="text-conflict-text text-[10px] font-bold uppercase tracking-wide">Conflit</span>
+</button>
+<div class="h-1"></div>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+</div>
+<div class="flex flex-col gap-3">
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">08:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">09:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">10:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">11:00</span>
+</button>
+<div class="h-12 w-full flex items-center justify-center"></div>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+</div>
+<div class="flex flex-col gap-3">
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<div class="h-12 w-full flex items-center justify-center"></div>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">13:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">14:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">15:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">16:00</span>
+</button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+</div>
+<div class="flex flex-col gap-3">
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">08:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">09:00</span>
+</button>
+<button class="h-12 w-full rounded-md gradient-bg hover:opacity-90 transition-all shadow-purple-md flex items-center justify-center relative group text-white border border-primary-700/20">
+<span class="font-bold text-sm">10:00</span>
+</button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<div class="h-12 w-full flex items-center justify-center"></div>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+<button class="h-12 w-full rounded-md bg-unavailable border border-slate-200 hover:border-primary hover:bg-primary-50 transition-all shadow-sm"></button>
+</div>
+<div class="flex flex-col gap-3">
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<div class="h-12 w-full flex items-center justify-center"></div>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+<button class="h-12 w-full rounded-md bg-slate-50 border border-slate-100 text-slate-300 hover:border-primary/30 transition-colors flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">block</span>
+</button>
+</div>
+<div class="flex flex-col gap-3">
+<div class="h-full w-full rounded-xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-2 p-4 col-span-1 row-span-11 min-h-[500px]">
+<span class="material-symbols-outlined text-slate-300 text-3xl">weekend</span>
+<span class="text-slate-400 text-sm font-medium text-center">Jour de repos</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+</body></html>

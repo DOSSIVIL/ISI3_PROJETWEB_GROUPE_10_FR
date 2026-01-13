@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect Africa - Statistiques</title>
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8b5cf6",
+                        "primary-dark": "#7c3aed",
+                        "primary-50": "#f5f3ff",
+                        "primary-100": "#ede9fe",
+                        "primary-200": "#ddd6fe",
+                        "primary-300": "#c4b5fd",
+                        "primary-400": "#a78bfa",
+                        "primary-500": "#8b5cf6",
+                        "primary-600": "#7c3aed",
+                        "primary-700": "#6d28d9",
+                        "primary-800": "#5b21b6",
+                        "primary-900": "#4c1d95",
+                        "fuchsia": "#d946ef",
+                        "fuchsia-500": "#d946ef",
+                        "fuchsia-600": "#c026d3",
+                        "accent-blue": "#3b82f6",
+                        "accent-blue-light": "#dbeafe",
+                        "accent-yellow": "#f59e0b",
+                        "accent-yellow-light": "#fef3c7",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "1.5rem",
+                        "xl": "2rem",
+                        "2xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Styles pour le scroll */
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Dégradés du premier code */
+        .gradient-bg {
+            background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+        }
+        
+        .gradient-bg-hover:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%);
+        }
+        
+        .gradient-orange {
+            background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+        }
+        
+        .gradient-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        }
+        
+        .gradient-yellow {
+            background: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
+        }
+        
+        .gradient-purple {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+        }
+        
+        .shadow-purple {
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.08);
+        }
+        
+        .shadow-purple-md {
+            box-shadow: 0 4px 20px 0 rgba(139, 92, 246, 0.2);
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .hover-scale:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Améliorations pour mobile */
+        @media (max-width: 640px) {
+            .material-symbols-outlined {
+                font-size: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex flex-col lg:flex-row overflow-hidden">
+ 
+
+
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    
+
+        <div class="flex-1 overflow-y-auto p-3 lg:p-6 xl:p-10 scrollbar-hide">
+            <div class="max-w-7xl mx-auto flex flex-col gap-4 lg:gap-6 xl:gap-8">
+                <!-- Time Range Buttons -->
+                <div class="flex flex-wrap items-center gap-2 lg:gap-3">
+                    <button class="px-4 py-1.5 lg:px-5 lg:py-2 rounded-full gradient-bg text-white text-xs lg:text-sm font-bold shadow-purple-md transition-transform hover:opacity-90 whitespace-nowrap">
+                        30 derniers jours
+                    </button>
+                    <button class="px-4 py-1.5 lg:px-5 lg:py-2 rounded-full bg-slate-200 dark:bg-surface-dark text-slate-600 dark:text-slate-300 text-xs lg:text-sm font-medium hover:bg-slate-300 dark:hover:bg-white/10 transition-colors whitespace-nowrap">
+                        Ce trimestre
+                    </button>
+                    <button class="px-4 py-1.5 lg:px-5 lg:py-2 rounded-full bg-slate-200 dark:bg-surface-dark text-slate-600 dark:text-slate-300 text-xs lg:text-sm font-medium hover:bg-slate-300 dark:hover:bg-white/10 transition-colors whitespace-nowrap">
+                        Cette année
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                    <div class="bg-white dark:bg-surface-dark p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm hover:border-primary/30 transition-colors group hover-scale">
+                        <div class="flex justify-between items-start mb-3 lg:mb-4">
+                            <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-white text-lg lg:text-xl">group</span>
+                            </div>
+                            <span class="flex items-center text-xs font-bold text-primary bg-primary-100 dark:bg-primary/10 px-2 py-0.5 lg:py-1 rounded">
+                                +3 <span class="material-symbols-outlined text-[12px] ml-0.5">trending_up</span>
+                            </span>
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm font-medium">Total Étudiants</p>
+                        <h3 class="text-xl lg:text-2xl xl:text-3xl font-bold text-slate-900 dark:text-white mt-1">47</h3>
+                    </div>
+                    <div class="bg-white dark:bg-surface-dark p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm hover:border-primary/30 transition-colors group hover-scale">
+                        <div class="flex justify-between items-start mb-3 lg:mb-4">
+                            <div class="w-10 h-10 gradient-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-white text-lg lg:text-xl">thumb_up</span>
+                            </div>
+                            <span class="flex items-center text-xs font-bold text-primary bg-primary-100 dark:bg-primary/10 px-2 py-0.5 lg:py-1 rounded">
+                                +1.2%
+                            </span>
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm font-medium">Taux de Satisfaction</p>
+                        <h3 class="text-xl lg:text-2xl xl:text-3xl font-bold text-slate-900 dark:text-white mt-1">98%</h3>
+                    </div>
+                    <div class="bg-white dark:bg-surface-dark p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm hover:border-primary/30 transition-colors group hover-scale">
+                        <div class="flex justify-between items-start mb-3 lg:mb-4">
+                            <div class="w-10 h-10 gradient-purple rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-white text-lg lg:text-xl">schedule</span>
+                            </div>
+                            <span class="flex items-center text-xs font-bold text-primary bg-primary-100 dark:bg-primary/10 px-2 py-0.5 lg:py-1 rounded">
+                                +15h
+                            </span>
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm font-medium">Heures Enseignées</p>
+                        <h3 class="text-xl lg:text-2xl xl:text-3xl font-bold text-slate-900 dark:text-white mt-1">156h</h3>
+                    </div>
+                    <div class="bg-white dark:bg-surface-dark p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm hover:border-primary/30 transition-colors group hover-scale">
+                        <div class="flex justify-between items-start mb-3 lg:mb-4">
+                            <div class="w-10 h-10 gradient-yellow rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-white text-lg lg:text-xl">star</span>
+                            </div>
+                            <span class="flex items-center text-xs font-bold text-primary bg-primary-100 dark:bg-primary/10 px-2 py-0.5 lg:py-1 rounded">
+                                +0.2
+                            </span>
+                        </div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs lg:text-sm font-medium">Note Moyenne</p>
+                        <h3 class="text-xl lg:text-2xl xl:text-3xl font-bold text-slate-900 dark:text-white mt-1">4.9<span class="text-base lg:text-lg text-slate-400 ml-1">/5</span></h3>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+                    <!-- Line Chart -->
+                    <div class="bg-white dark:bg-surface-dark p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm lg:col-span-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 lg:mb-6 gap-3">
+                            <div>
+                                <h3 class="text-base lg:text-lg font-bold text-slate-900 dark:text-white">Sessions par mois</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-xl lg:text-2xl font-bold text-slate-900 dark:text-white">18</span>
+                                    <span class="text-sm font-medium text-slate-500 dark:text-slate-400">sessions ce mois</span>
+                                </div>
+                            </div>
+                            <button class="self-start sm:self-center p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full text-slate-400 transition-colors">
+                                <span class="material-symbols-outlined">more_horiz</span>
+                            </button>
+                        </div>
+                        <div class="h-48 lg:h-64 w-full relative">
+                            <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 800 300">
+                                <defs>
+                                    <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"></stop>
+                                        <stop offset="100%" stop-color="#d946ef" stop-opacity="0"></stop>
+                                    </linearGradient>
+                                </defs>
+                                <line stroke="#94a3b8" stroke-dasharray="4" stroke-opacity="0.2" stroke-width="1" x1="0" x2="800" y1="250" y2="250"></line>
+                                <line stroke="#94a3b8" stroke-dasharray="4" stroke-opacity="0.2" stroke-width="1" x1="0" x2="800" y1="175" y2="175"></line>
+                                <line stroke="#94a3b8" stroke-dasharray="4" stroke-opacity="0.2" stroke-width="1" x1="0" x2="800" y1="100" y2="100"></line>
+                                <line stroke="#94a3b8" stroke-dasharray="4" stroke-opacity="0.2" stroke-width="1" x1="0" x2="800" y1="25" y2="25"></line>
+                                <path d="M0,250 
+                                         L100,200 
+                                         L200,220 
+                                         L300,150 
+                                         L400,180 
+                                         L500,80 
+                                         L600,100 
+                                         L700,50 
+                                         L800,90 
+                                         L800,300 L0,300 Z" fill="url(#chartGradient)"></path>
+                                <path d="M0,250 
+                                         L100,200 
+                                         L200,220 
+                                         L300,150 
+                                         L400,180 
+                                         L500,80 
+                                         L600,100 
+                                         L700,50 
+                                         L800,90" fill="none" stroke="#8b5cf6" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+                                <circle class="fill-white dark:fill-surface-dark stroke-primary" cx="100" cy="200" r="3" stroke-width="2"></circle>
+                                <circle class="fill-white dark:fill-surface-dark stroke-primary" cx="300" cy="150" r="3" stroke-width="2"></circle>
+                                <circle class="fill-white dark:fill-surface-dark stroke-primary" cx="500" cy="80" r="3" stroke-width="2"></circle>
+                                <circle class="fill-primary stroke-white dark:stroke-background-dark" cx="700" cy="50" r="5" stroke-width="2"></circle>
+                            </svg>
+                            <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-2 px-1 lg:px-2 font-medium">
+                                <span>Jan</span>
+                                <span>Fév</span>
+                                <span>Mar</span>
+                                <span>Avr</span>
+                                <span>Mai</span>
+                                <span>Juin</span>
+                                <span>Juil</span>
+                                <span>Août</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Doughnut Chart -->
+                    <div class="bg-white dark:bg-surface-dark p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm flex flex-col">
+                        <h3 class="text-base lg:text-lg font-bold text-slate-900 dark:text-white mb-4 lg:mb-6">Répartition par matière</h3>
+                        <div class="flex-1 flex flex-col items-center justify-center relative">
+                            <div class="relative h-40 w-40 lg:h-48 lg:w-48">
+                                <svg class="donut transform -rotate-90" height="100%" viewBox="0 0 42 42" width="100%">
+                                    <circle class="donut-hole" cx="21" cy="21" fill="transparent" r="15.91549430918954"></circle>
+                                    <circle class="donut-ring" cx="21" cy="21" fill="transparent" r="15.91549430918954" stroke="#e2e8f0" stroke-width="6"></circle>
+                                    <circle class="donut-segment" cx="21" cy="21" fill="transparent" r="15.91549430918954" stroke="#8b5cf6" stroke-dasharray="45 55" stroke-dashoffset="0" stroke-width="6"></circle>
+                                    <circle class="donut-segment" cx="21" cy="21" fill="transparent" r="15.91549430918954" stroke="#3b82f6" stroke-dasharray="30 70" stroke-dashoffset="-45" stroke-width="6"></circle>
+                                    <circle class="donut-segment" cx="21" cy="21" fill="transparent" r="15.91549430918954" stroke="#d946ef" stroke-dasharray="25 75" stroke-dashoffset="-75" stroke-width="6"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">3</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400">Matières</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 lg:mt-6 flex flex-col gap-2 lg:gap-3">
+                            <div class="flex items-center justify-between text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-primary"></span>
+                                    <span class="text-slate-600 dark:text-slate-300 text-xs lg:text-sm">Mathématiques</span>
+                                </div>
+                                <span class="font-bold text-slate-900 dark:text-white text-xs lg:text-sm">45%</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-blue-500"></span>
+                                    <span class="text-slate-600 dark:text-slate-300 text-xs lg:text-sm">Physique</span>
+                                </div>
+                                <span class="font-bold text-slate-900 dark:text-white text-xs lg:text-sm">30%</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-fuchsia-500"></span>
+                                    <span class="text-slate-600 dark:text-slate-300 text-xs lg:text-sm">Chimie</span>
+                                </div>
+                                <span class="font-bold text-slate-900 dark:text-white text-xs lg:text-sm">25%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 pb-6 lg:pb-10">
+                    <!-- Bar Chart -->
+                    <div class="bg-white dark:bg-surface-dark p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm">
+                        <div class="flex flex-col gap-2 mb-4 lg:mb-6">
+                            <p class="text-base lg:text-lg font-bold text-slate-900 dark:text-white">Volume horaire</p>
+                            <div class="flex flex-col sm:flex-row sm:items-end gap-2">
+                                <span class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white leading-none">42h</span>
+                                <span class="text-sm font-medium text-primary">+5% cette semaine</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-4 gap-3 lg:gap-4 h-40 lg:h-48 items-end pb-2">
+                            <div class="flex flex-col items-center gap-2 h-full justify-end group cursor-pointer">
+                                <div class="w-full bg-slate-100 dark:bg-white/5 rounded-t-lg relative h-[60%] group-hover:bg-primary/20 transition-colors overflow-hidden">
+                                    <div class="absolute bottom-0 w-full bg-slate-300 dark:bg-slate-600 group-hover:bg-primary transition-all h-full rounded-t-lg"></div>
+                                </div>
+                                <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Sem 1</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 h-full justify-end group cursor-pointer">
+                                <div class="w-full bg-slate-100 dark:bg-white/5 rounded-t-lg relative h-[85%] group-hover:bg-primary/20 transition-colors overflow-hidden">
+                                    <div class="absolute bottom-0 w-full bg-slate-300 dark:bg-slate-600 group-hover:bg-primary transition-all h-full rounded-t-lg"></div>
+                                </div>
+                                <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Sem 2</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 h-full justify-end group cursor-pointer">
+                                <div class="w-full bg-slate-100 dark:bg-white/5 rounded-t-lg relative h-[40%] group-hover:bg-primary/20 transition-colors overflow-hidden">
+                                    <div class="absolute bottom-0 w-full bg-slate-300 dark:bg-slate-600 group-hover:bg-primary transition-all h-full rounded-t-lg"></div>
+                                </div>
+                                <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Sem 3</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 h-full justify-end group cursor-pointer">
+                                <div class="w-full bg-slate-100 dark:bg-white/5 rounded-t-lg relative h-[75%] group-hover:bg-primary/20 transition-colors overflow-hidden">
+                                    <div class="absolute bottom-0 w-full gradient-bg rounded-t-lg shadow-[0_0_15px_rgba(139,92,246,0.4)]"></div>
+                                </div>
+                                <span class="text-xs font-bold text-primary">Sem 4</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sessions Table -->
+                    <div class="bg-white dark:bg-surface-dark p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm lg:col-span-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 lg:mb-6 gap-3">
+                            <h3 class="text-base lg:text-lg font-bold text-slate-900 dark:text-white">Sessions récentes</h3>
+                            <a class="text-sm font-bold text-primary hover:text-primary-400 transition-colors whitespace-nowrap" href="#">Voir tout</a>
+                        </div>
+                        <div class="overflow-x-auto scrollbar-hide">
+                            <table class="w-full text-left border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr class="border-b border-slate-200 dark:border-white/5">
+                                        <th class="py-2 px-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date</th>
+                                        <th class="py-2 px-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Étudiant</th>
+                                        <th class="py-2 px-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Matière</th>
+                                        <th class="py-2 px-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Durée</th>
+                                        <th class="py-2 px-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 dark:divide-white/5">
+                                    <tr class="group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                        <td class="py-3 px-2 text-sm font-medium text-slate-700 dark:text-slate-300">Aujourd'hui</td>
+                                        <td class="py-3 px-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="h-6 w-6 lg:h-8 lg:w-8 rounded-full bg-cover bg-center" style='background-image: url("https://i.pravatar.cc/150?img=1");'></div>
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">Amina D.</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-2">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300 whitespace-nowrap">
+                                                Mathématiques
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-2 text-right text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">1h 30m</td>
+                                        <td class="py-3 px-2 text-right">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">5.0</span>
+                                                <span class="material-symbols-outlined text-amber-400 text-[14px] lg:text-[16px] fill-1">star</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                        <td class="py-3 px-2 text-sm font-medium text-slate-700 dark:text-slate-300">Hier</td>
+                                        <td class="py-3 px-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="h-6 w-6 lg:h-8 lg:w-8 rounded-full bg-cover bg-center" style='background-image: url("https://i.pravatar.cc/150?img=2");'></div>
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">Kwame M.</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-2">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 whitespace-nowrap">
+                                                Physique
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-2 text-right text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">1h 00m</td>
+                                        <td class="py-3 px-2 text-right">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">4.8</span>
+                                                <span class="material-symbols-outlined text-amber-400 text-[14px] lg:text-[16px] fill-1">star</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                        <td class="py-3 px-2 text-sm font-medium text-slate-700 dark:text-slate-300">12 Mai</td>
+                                        <td class="py-3 px-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="h-6 w-6 lg:h-8 lg:w-8 rounded-full bg-cover bg-center" style='background-image: url("https://i.pravatar.cc/150?img=3");'></div>
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">Fatou C.</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-2">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300 whitespace-nowrap">
+                                                Mathématiques
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-2 text-right text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">2h 00m</td>
+                                        <td class="py-3 px-2 text-right">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">4.5</span>
+                                                <span class="material-symbols-outlined text-amber-400 text-[14px] lg:text-[16px] fill-1">star</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

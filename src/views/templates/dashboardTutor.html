@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect Africa - Dashboard Enseignant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" href="/src/views/css/myStyle.css">
+</head>
+<body class="bg-gray-50">
+<div class="flex flex-col lg:flex-row h-screen overflow-hidden">
+    <!-- Mobile Menu Button -->
+    <div class="lg:hidden bg-white shadow-lg px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <img src="/public/Images/Logo.png" alt="EduConnect" class="w-10 h-10 rounded-full">
+            <div>
+                <h2 class="font-bold text-gray-800">EduConnect</h2>
+                <p class="text-xs text-gray-500">Africa</p>
+            </div>
+        </div>
+        <button id="mobile-menu-button" class="p-2 rounded-lg hover:bg-gray-100">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Sidebar - Hidden on mobile -->
+    <div id="sidebar" class="hidden lg:block lg:w-64 glass-effect shadow-2xl">
+        <div class="p-4 lg:p-6">
+            <!-- Logo (Hidden on mobile, shown in header) -->
+            <div class="hidden lg:flex items-center gap-3 mb-8">
+                <img src="/public/Images/Logo.png" alt="EduConnect" class="w-12 h-12 rounded-full">
+                <div>
+                    <h2 class="font-bold text-lg text-gray-800">EduConnect</h2>
+                    <p class="text-xs text-gray-500">Africa</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-2">
+                <a href="#" class="active-menu flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all text-sm lg:text-base">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>Accueil</span>
+                </a>
+
+                <a href="/src/views/templates/mesEtudiants.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all text-sm lg:text-base">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <span>Mes étudiants</span>
+                </a>
+
+                <a href="/src/views/templates/mesDisponibilite.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all text-sm lg:text-base">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Disponibilité</span>
+                </a>
+
+                <a href="/src/views/templates/monProfile.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all text-sm lg:text-base">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span>Mon profil</span>
+                </a>
+
+                <a href="/src/views/templates/statistiques.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all text-sm lg:text-base">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Statistiques</span>
+                </a>
+                
+                <a href="/src/views/templates/parametre.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all text-sm lg:text-base">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>Paramètres</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Teacher Card -->
+        <div class="px-4 lg:px-6 pb-6 absolute bottom-0 w-64 hidden lg:block">
+            <div class="gradient-bg rounded-2xl p-4 text-white">
+                <div class="flex items-center gap-3 mb-3">
+                    <img src="https://i.pravatar.cc/150?img=16" alt="Teacher" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 border-white">
+                    <div>
+                        <p class="font-semibold text-sm lg:text-base">Dr. Kouassi Jean</p>
+                        <p class="text-xs opacity-90">Mathématiques</p>
+                    </div>
+                </div>
+                <div class="flex justify-between text-center">
+                    <div>
+                        <p class="text-xl lg:text-2xl font-bold">156</p>
+                        <p class="text-xs opacity-90">Heures</p>
+                    </div>
+                    <div>
+                        <p class="text-xl lg:text-2xl font-bold">47</p>
+                        <p class="text-xs opacity-90">Étudiants</p>
+                    </div>
+                    <div>
+                        <p class="text-xl lg:text-2xl font-bold">4.9</p>
+                        <p class="text-xs opacity-90">Note</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto">
+        <!-- Header -->
+        <div class="bg-white shadow-lg border-b px-4 lg:px-8 py-4 sticky top-0 z-10">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-lg lg:text-2xl font-bold text-gray-800">Bienvenue, Dr. Kouassi</h1>
+                    <p class="text-gray-500 text-xs lg:text-sm">Mercredi 14 Décembre 2025</p>
+                </div>
+                <div class="flex items-center gap-2 lg:gap-4">
+                    <button class="relative p-2 hover:bg-gray-100 rounded-full transition-all">
+                        <svg class="w-5 h-5 lg:w-6 lg:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                    <button class="relative p-2 hover:bg-gray-100 rounded-full transition-all">
+                        <svg class="w-5 h-5 lg:w-6 lg:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <span class="absolute top-1 left-5 flex size-2 lg:size-3">
+                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex size-2 lg:size-3 rounded-full bg-red-500"></span>
+                        </span>
+                    </button>
+                    <button class="p-2 hover:bg-gray-100 rounded-full transition-all">
+                        <svg class="w-5 h-5 lg:w-6 lg:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 lg:p-8 bg-white" id="ContenuPrincipal">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-6 lg:mb-8">
+                <div class="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg hover-scale">
+                    <div class="flex items-center gap-3 lg:gap-4">
+                        <div class="w-10 h-10 lg:w-14 lg:h-14 gradient-bg rounded-lg lg:rounded-xl flex items-center justify-center">
+                            <svg class="w-5 h-5 lg:w-7 lg:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs lg:text-sm">Demandes</p>
+                            <p class="text-xl lg:text-3xl font-bold text-gray-800">12</p>
+                            <div class="line gradient-bg mt-1 lg:mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg hover-scale">
+                    <div class="flex items-center gap-3 lg:gap-4">
+                        <div class="w-10 h-10 lg:w-14 lg:h-14 gradient-orange rounded-lg lg:rounded-xl flex items-center justify-center">
+                            <svg class="w-5 h-5 lg:w-7 lg:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs lg:text-sm">Séances cette semaine</p>
+                            <p class="text-xl lg:text-3xl font-bold text-gray-800">18</p>
+                            <div class="line gradient-orange mt-1 lg:mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg hover-scale">
+                    <div class="flex items-center gap-3 lg:gap-4">
+                        <div class="w-10 h-10 lg:w-14 lg:h-14 gradient-blue rounded-lg lg:rounded-xl flex items-center justify-center">
+                            <svg class="w-5 h-5 lg:w-7 lg:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs lg:text-sm">Total étudiants</p>
+                            <p class="text-xl lg:text-3xl font-bold text-gray-800">47</p>
+                            <div class="line gradient-blue mt-1 lg:mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg hover-scale">
+                    <div class="flex items-center gap-3 lg:gap-4">
+                        <div class="w-10 h-10 lg:w-14 lg:h-14 gradient-yellow rounded-lg lg:rounded-xl flex items-center justify-center">
+                            <svg class="w-5 h-5 lg:w-7 lg:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs lg:text-sm">Évaluation</p>
+                            <p class="text-xl lg:text-3xl font-bold text-gray-800">4.9</p>
+                            <div class="line gradient-yellow mt-1 lg:mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Pending Requests -->
+                    <div class="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg border-t-4 border-fuchsia-600">
+                        <div class="flex justify-between items-center mb-4 lg:mb-6">
+                            <h2 class="text-lg lg:text-xl font-bold text-gray-800">Demandes de tutorat</h2>
+                            <span class="text-xs lg:text-sm text-purple-600 font-semibold cursor-pointer hover:text-purple-700">Tout voir</span>
+                        </div>
+                        <div class="space-y-3 lg:space-y-4">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 lg:p-4 bg-purple-50 rounded-lg lg:rounded-xl hover:bg-purple-100 transition-all cursor-pointer gap-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://i.pravatar.cc/150?img=1" alt="Student" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full">
+                                    <div>
+                                        <p class="font-semibold text-gray-800 text-sm lg:text-base">Amina Diallo</p>
+                                        <p class="text-xs lg:text-sm text-gray-600">Algèbre linéaire • Niveau L1</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 w-full sm:w-auto">
+                                    <button class="flex-1 sm:flex-none px-3 lg:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all text-xs lg:text-sm font-medium ring-2 lg:ring-4 ring-green-400">Accepter</button>
+                                    <button class="flex-1 sm:flex-none px-3 lg:px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all text-xs lg:text-sm font-medium">Refuser</button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 lg:p-4 bg-purple-50 rounded-lg lg:rounded-xl hover:bg-purple-100 transition-all cursor-pointer gap-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://i.pravatar.cc/150?img=2" alt="Student" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full">
+                                    <div>
+                                        <p class="font-semibold text-gray-800 text-sm lg:text-base">Kwame Mensah</p>
+                                        <p class="text-xs lg:text-sm text-gray-600">Calcul différentiel • Niveau L2</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 w-full sm:w-auto">
+                                    <button class="flex-1 sm:flex-none px-3 lg:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all text-xs lg:text-sm font-medium ring-2 lg:ring-4 ring-green-400">Accepter</button>
+                                    <button class="flex-1 sm:flex-none px-3 lg:px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all text-xs lg:text-sm font-medium">Refuser</button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 lg:p-4 bg-purple-50 rounded-lg lg:rounded-xl hover:bg-purple-100 transition-all cursor-pointer gap-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://i.pravatar.cc/150?img=3" alt="Student" class="w-10 h-10 lg:w-12 lg:h-12 rounded-full">
+                                    <div>
+                                        <p class="font-semibold text-gray-800 text-sm lg:text-base">Fatima Ndiaye</p>
+                                        <p class="text-xs lg:text-sm text-gray-600">Probabilités • Niveau L3</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 w-full sm:w-auto">
+                                    <button class="flex-1 sm:flex-none px-3 lg:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all text-xs lg:text-sm font-medium ring-2 lg:ring-4 ring-green-400">Accepter</button>
+                                    <button class="flex-1 sm:flex-none px-3 lg:px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all text-xs lg:text-sm font-medium">Refuser</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Sessions -->
+                    <div class="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg border-t-4 border-fuchsia-600">
+                        <div class="flex justify-between items-center mb-4 lg:mb-6">
+                            <h2 class="text-lg lg:text-xl font-bold text-gray-800">Séances planifiées</h2>
+                            <span class="text-xs lg:text-sm text-purple-600 font-semibold cursor-pointer hover:text-purple-700">Tout voir</span>
+                        </div>
+                        <div class="space-y-3 lg:space-y-4">
+                            <div class="flex flex-col sm:flex-row items-center gap-3 lg:gap-4 p-3 lg:p-4 border-l-4 border-purple-500 bg-purple-50 rounded-r-lg lg:rounded-r-xl">
+                                <div class="text-center">
+                                    <p class="text-lg lg:text-2xl font-bold text-purple-600">14:00</p>
+                                    <p class="text-xs text-gray-500">Aujourd'hui</p>
+                                </div>
+                                <div class="flex-1 text-center sm:text-left">
+                                    <p class="font-semibold text-gray-800 text-sm lg:text-base">Algèbre - Amina Diallo</p>
+                                    <p class="text-xs lg:text-sm text-gray-600">Système d'équations linéaires</p>
+                                </div>
+                                <button class="w-full sm:w-auto px-3 lg:px-4 py-2 gradient-bg text-white rounded-lg hover:opacity-90 transition-all text-xs lg:text-sm font-medium ring-2 lg:ring-4 ring-purple-300">Rejoindre</button>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-center gap-3 lg:gap-4 p-3 lg:p-4 border-l-4 border-blue-500 bg-blue-50 rounded-r-lg lg:rounded-r-xl">
+                                <div class="text-center">
+                                    <p class="text-lg lg:text-2xl font-bold text-blue-600">16:30</p>
+                                    <p class="text-xs text-gray-500">Aujourd'hui</p>
+                                </div>
+                                <div class="flex-1 text-center sm:text-left">
+                                    <p class="font-semibold text-gray-800 text-sm lg:text-base">Calcul - Youssef Ibrahim</p>
+                                    <p class="text-xs lg:text-sm text-gray-600">Intégrales multiples</p>
+                                </div>
+                                <button class="w-full sm:w-auto px-3 lg:px-4 py-2 gradient-blue text-white rounded-lg hover:opacity-90 transition-all text-xs lg:text-sm font-medium ring-2 lg:ring-4 ring-blue-200">Rejoindre</button>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row items-center gap-3 lg:gap-4 p-3 lg:p-4 border-l-4 border-orange-500 bg-orange-50 rounded-r-lg lg:rounded-r-xl">
+                                <div class="text-center">
+                                    <p class="text-lg lg:text-2xl font-bold text-orange-600">10:00</p>
+                                    <p class="text-xs text-gray-500">Demain</p>
+                                </div>
+                                <div class="flex-1 text-center sm:text-left">
+                                    <p class="font-semibold text-gray-800 text-sm lg:text-base">Statistiques - Grace Okafor</p>
+                                    <p class="text-xs lg:text-sm text-gray-600">Tests d'hypothèses</p>
+                                </div>
+                                <button class="w-full sm:w-auto px-3 lg:px-4 py-2 gradient-orange text-white rounded-lg hover:opacity-90 transition-all text-xs lg:text-sm font-medium ring-2 lg:ring-4 ring-pink-300">Détails</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- Calendar -->
+ <!-- Remplacez la section de calendrier existante avec ce code amélioré -->
+<div class="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg border-t-4 border-fuchsia-600">
+    <div class="flex justify-between items-center mb-4">
+        <div>
+            <h3 id="calendar-month-year" class="font-bold text-gray-800 text-sm lg:text-base">Décembre 2025</h3>
+            <p id="calendar-today" class="text-xs text-gray-500">Aujourd'hui</p>
+        </div>
+        <div class="flex gap-2">
+            <button id="prev-month" class="p-1 hover:bg-gray-100 rounded">
+                <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <button id="today-btn" class="px-2 py-1 text-xs bg-purple-100 text-purple-600 rounded hover:bg-purple-200">
+                Aujourd'hui
+            </button>
+            <button id="next-month" class="p-1 hover:bg-gray-100 rounded">
+                <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="grid grid-cols-7 gap-1 lg:gap-2 text-center mb-2">
+        <div class="text-xs font-semibold text-gray-500">Lun</div>
+        <div class="text-xs font-semibold text-gray-500">Mar</div>
+        <div class="text-xs font-semibold text-gray-500">Mer</div>
+        <div class="text-xs font-semibold text-gray-500">Jeu</div>
+        <div class="text-xs font-semibold text-gray-500">Ven</div>
+        <div class="text-xs font-semibold text-gray-500">Sam</div>
+        <div class="text-xs font-semibold text-gray-500">Dim</div>
+    </div>
+    <div class="grid grid-cols-7 gap-1 lg:gap-2 text-center text-xs lg:text-sm" id="calendar">
+        <!-- Calendrier dynamique -->
+    </div>
+    <div class="mt-4 pt-3 border-t border-gray-100">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                <span class="text-xs text-gray-600">Séance de tutorat</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span class="text-xs text-gray-600">Demande en attente</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Achievements Badge -->
+                    <div class="gradient-bg rounded-xl lg:rounded-2xl p-4 lg:p-6 text-white shadow-lg">
+                        <div class="text-center">
+                            <div class="w-16 h-16 lg:w-24 lg:h-24 mx-auto mb-3 lg:mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                <svg class="w-10 h-10 lg:w-16 lg:h-16 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg lg:text-xl font-bold mb-1 lg:mb-2">Expert Enseignant</h3>
+                            <p class="text-white text-opacity-90 text-xs lg:text-sm mb-3 lg:mb-4">156 heures de tutorat complétées</p>
+                            <div class="w-full bg-white bg-opacity-20 rounded-full h-1 lg:h-2 mb-1 lg:mb-2">
+                                <div class="bg-yellow-300 h-1 lg:h-2 rounded-full" style="width: 78%"></div>
+                            </div>
+                            <p class="text-xs text-white text-opacity-80">44 heures jusqu'au prochain badge</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg border-t-4 border-fuchsia-600">
+                        <h3 class="font-bold text-gray-800 text-sm lg:text-base mb-3 lg:mb-4">Statistiques rapides</h3>
+                        <div class="space-y-3 lg:space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600 text-xs lg:text-sm">Taux de satisfaction</span>
+                                    <span class="font-bold text-green-600 text-xs lg:text-sm">98%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 lg:h-2 mt-1">
+                                    <div class="bg-green-500 h-1 lg:h-2 rounded-full" style="width: 98%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600 text-xs lg:text-sm">Heures ce mois</span>
+                                    <span class="font-bold text-blue-600 text-xs lg:text-sm">42h</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 lg:h-2 mt-1">
+                                    <div class="gradient-blue h-1 lg:h-2 rounded-full" style="width: 70%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600 text-xs lg:text-sm">Nouveaux étudiants</span>
+                                    <span class="font-bold text-purple-600 text-xs lg:text-sm">8</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1 lg:h-2 mt-1">
+                                    <div class="gradient-bg h-1 lg:h-2 rounded-full" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Sidebar Overlay (hidden by default) -->
+<div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+<!-- Mobile Sidebar (hidden by default) -->
+<div id="mobile-sidebar" class="fixed left-0 top-0 h-full w-64 glass-effect shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 lg:hidden">
+    <!-- Mobile sidebar content same as desktop sidebar -->
+    <div class="p-6">
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-3">
+                <img src="/public/Images/Logo.png" alt="EduConnect" class="w-12 h-12 rounded-full">
+                <div>
+                    <h2 class="font-bold text-lg text-gray-800">EduConnect</h2>
+                    <p class="text-xs text-gray-500">Africa</p>
+                </div>
+            </div>
+            <button id="close-mobile-menu" class="p-2 hover:bg-gray-100 rounded-lg">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="space-y-2">
+            <a href="#" class="active-menu flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                Accueil
+            </a>
+
+            <a href="/src/views/templates/mesEtudiants.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                Mes étudiants
+            </a>
+
+            <a href="/src/views/templates/mesDisponibilite.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Disponibilité
+            </a>
+
+            <a href="/src/views/templates/monProfile.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                Mon profil
+            </a>
+
+            <a href="/src/views/templates/statistiques.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                Statistiques
+            </a>
+            
+            <a href="/src/views/templates/parametre.html" class="async-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 font-medium transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Paramètres
+            </a>
+        </nav>
+
+        <!-- Teacher Card for Mobile -->
+        <div class="px-6 pb-6 absolute bottom-0 w-64">
+            <div class="gradient-bg rounded-2xl p-4 text-white">
+                <div class="flex items-center gap-3 mb-3">
+                    <img src="https://i.pravatar.cc/150?img=16" alt="Teacher" class="w-12 h-12 rounded-full border-2 border-white">
+                    <div>
+                        <p class="font-semibold">Dr. Kouassi Jean</p>
+                        <p class="text-xs opacity-90">Mathématiques</p>
+                    </div>
+                </div>
+                <div class="flex justify-between text-center">
+                    <div>
+                        <p class="text-2xl font-bold">156</p>
+                        <p class="text-xs opacity-90">Heures</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold">47</p>
+                        <p class="text-xs opacity-90">Étudiants</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold">4.9</p>
+                        <p class="text-xs opacity-90">Note</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/src/views/components/dash.js"></script>
+<script>
+    // Mobile menu functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const closeMobileMenu = document.getElementById('close-mobile-menu');
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+        
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', function() {
+                mobileSidebar.classList.remove('-translate-x-full');
+                mobileOverlay.classList.remove('hidden');
+            });
+        }
+        
+        if (closeMobileMenu) {
+            closeMobileMenu.addEventListener('click', function() {
+                mobileSidebar.classList.add('-translate-x-full');
+                mobileOverlay.classList.add('hidden');
+            });
+        }
+        
+        if (mobileOverlay) {
+            mobileOverlay.addEventListener('click', function() {
+                mobileSidebar.classList.add('-translate-x-full');
+                mobileOverlay.classList.add('hidden');
+            });
+        }
+        
+        // Calendrier Dynamique
+        class DynamicCalendar {
+            constructor() {
+                this.currentDate = new Date();
+                this.currentMonth = this.currentDate.getMonth();
+                this.currentYear = this.currentDate.getFullYear();
+                this.today = new Date().getDate();
+                this.todayMonth = new Date().getMonth();
+                this.todayYear = new Date().getFullYear();
+                
+                this.months = [
+                    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                ];
+                
+                this.init();
+            }
+            
+            init() {
+                this.renderCalendar();
+                this.addEventListeners();
+                this.updateTodaysDate();
+            }
+            
+            getDaysInMonth(month, year) {
+                return new Date(year, month + 1, 0).getDate();
+            }
+            
+            getFirstDayOfMonth(month, year) {
+                const firstDay = new Date(year, month, 1).getDay();
+                // Convertir dimanche (0) à 6, lundi (1) à 0, etc.
+                return firstDay === 0 ? 6 : firstDay - 1;
+            }
+            
+            renderCalendar() {
+                const calendarEl = document.getElementById('calendar');
+                const monthYearEl = document.getElementById('calendar-month-year');
+                
+                if (!calendarEl || !monthYearEl) return;
+                
+                // Mettre à jour le titre
+                monthYearEl.textContent = `${this.months[this.currentMonth]} ${this.currentYear}`;
+                
+                // Vider le calendrier
+                calendarEl.innerHTML = '';
+                
+                const daysInMonth = this.getDaysInMonth(this.currentMonth, this.currentYear);
+                const firstDayIndex = this.getFirstDayOfMonth(this.currentMonth, this.currentYear);
+                
+                // Ajouter les jours vides avant le premier jour
+                for (let i = 0; i < firstDayIndex; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'p-1 lg:p-2 text-gray-300';
+                    calendarEl.appendChild(emptyDay);
+                }
+                
+                // Ajouter les jours du mois
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayEl = document.createElement('div');
+                    dayEl.className = 'calendar-day p-1 lg:p-2 rounded-lg transition-all duration-200 cursor-pointer';
+                    
+                    // Vérifier si c'est aujourd'hui
+                    const isToday = day === this.today && 
+                                   this.currentMonth === this.todayMonth && 
+                                   this.currentYear === this.todayYear;
+                    
+                    // Vérifier s'il y a des événements ce jour (simulation)
+                    const hasEvent = this.hasEventOnDay(day);
+                    const hasSession = this.hasSessionOnDay(day);
+                    
+                    // Appliquer les classes CSS
+                    let classes = 'text-gray-700 hover:bg-gray-100';
+                    
+                    if (isToday) {
+                        classes = 'gradient-bg text-white shadow-md';
+                    } else if (hasSession) {
+                        classes = 'bg-purple-100 text-purple-700 border border-purple-200';
+                    } else if (hasEvent) {
+                        classes = 'bg-blue-50 text-blue-700 border border-blue-200';
+                    }
+                    
+                    dayEl.className = `calendar-day p-1 lg:p-2 rounded-lg transition-all duration-200 cursor-pointer ${classes}`;
+                    
+                    dayEl.innerHTML = `
+                        <div class="font-medium">${day}</div>
+                        ${hasSession || hasEvent ? '<div class="mt-1 flex justify-center"><div class="w-1 h-1 rounded-full ' + (hasSession ? 'bg-purple-500' : 'bg-blue-500') + '"></div></div>' : ''}
+                    `;
+                    
+                    // Ajouter un événement au clic
+                    dayEl.addEventListener('click', () => {
+                        this.onDayClick(day);
+                    });
+                    
+                    calendarEl.appendChild(dayEl);
+                }
+            }
+            
+            hasEventOnDay(day) {
+                // Simulation d'événements - dans une vraie app, cela viendrait d'une API
+                const events = {
+                    3: 'Demande',
+                    7: 'Demande',
+                    12: 'Demande',
+                    15: 'Demande',
+                    20: 'Demande',
+                    25: 'Demande'
+                };
+                return events[day];
+            }
+            
+            hasSessionOnDay(day) {
+                // Simulation de sessions - dans une vraie app, cela viendrait d'une API
+                const sessions = {
+                    14: 'Séance',
+                    16: 'Séance',
+                    18: 'Séance',
+                    22: 'Séance',
+                    28: 'Séance'
+                };
+                return sessions[day];
+            }
+            
+            onDayClick(day) {
+                const date = new Date(this.currentYear, this.currentMonth, day);
+                const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+                const formattedDate = date.toLocaleDateString('fr-FR', options);
+                
+                // Mettre à jour la date du jour sélectionné
+                document.getElementById('calendar-today').textContent = `Sélectionné: ${formattedDate}`;
+                
+                // Surligner le jour sélectionné
+                const days = document.querySelectorAll('.calendar-day');
+                days.forEach(d => {
+                    if (d.textContent.includes(day)) {
+                        d.classList.add('ring-2', 'ring-purple-400');
+                    } else {
+                        d.classList.remove('ring-2', 'ring-purple-400');
+                    }
+                });
+            }
+            
+            changeMonth(direction) {
+                if (direction === 'prev') {
+                    this.currentMonth--;
+                    if (this.currentMonth < 0) {
+                        this.currentMonth = 11;
+                        this.currentYear--;
+                    }
+                } else if (direction === 'next') {
+                    this.currentMonth++;
+                    if (this.currentMonth > 11) {
+                        this.currentMonth = 0;
+                        this.currentYear++;
+                    }
+                }
+                this.renderCalendar();
+            }
+            
+            goToToday() {
+                this.currentDate = new Date();
+                this.currentMonth = this.currentDate.getMonth();
+                this.currentYear = this.currentDate.getFullYear();
+                this.renderCalendar();
+                this.updateTodaysDate();
+            }
+            
+            updateTodaysDate() {
+                const today = new Date();
+                const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+                const formattedDate = today.toLocaleDateString('fr-FR', options);
+                document.getElementById('calendar-today').textContent = `Aujourd'hui: ${formattedDate}`;
+            }
+            
+            addEventListeners() {
+                const prevBtn = document.getElementById('prev-month');
+                const nextBtn = document.getElementById('next-month');
+                const todayBtn = document.getElementById('today-btn');
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => this.changeMonth('prev'));
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => this.changeMonth('next'));
+                }
+                
+                if (todayBtn) {
+                    todayBtn.addEventListener('click', () => this.goToToday());
+                }
+            }
+        }
+        
+        // Initialiser le calendrier dynamique
+        const calendar = new DynamicCalendar();
+        
+        // Ajouter du CSS pour l'effet de survol
+        const style = document.createElement('style');
+        style.textContent = `
+            .calendar-day:hover {
+                transform: scale(1.05);
+            }
+            .calendar-day.active {
+                background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+                color: white;
+                font-weight: bold;
+            }
+            .calendar-day.has-event::after {
+                content: '';
+                position: absolute;
+                bottom: 2px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background-color: #3b82f6;
+            }
+            .calendar-day.has-session::after {
+                content: '';
+                position: absolute;
+                bottom: 2px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background-color: #8b5cf6;
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+</body>
+</html>
